@@ -41,6 +41,10 @@ FWHMFormat, powerlawFormat                       = ["%.2f"]*2
 # alpha and beta parameters for a Ferrer profile
 alphaFerrerFormat, betaFerrerFormat              = ["%.1f"]*2
 
+# sky parameters
+backgroundFormat                                 = "%.2f"
+xGradientFormat, yGradientFormat                 = ["%.3f"]*2
+
 defaultComments = {'object':'Object type', 
                    'pos':'position x, y            [pixel]',
                    'magTot':'total magnitude',
@@ -63,7 +67,10 @@ defaultComments = {'object':'Object type',
                    'alphaFerrer':'Alpha (outer truncation sharpness)',
                    'betaFerrer':'Beta (central slope)',
                    'mu0':'mu(0) (Central surface brightness in mag/arcsec^2)',
-                   'rc':'Core radius Rc           [pixel]'}
+                   'rc':'Core radius Rc           [pixel]',
+                   'background':'sky background       [ADU counts]',
+                   'xGradient':'dsky/dx (sky gradient in x)',
+                   'yGradient':'dsky/dy (sky gradient in y)'}
 
 
 #####################################################################
@@ -766,7 +773,7 @@ def genPSF(posX, posY, magTot, skipComponentInResidual=False, fixedParams=[], co
     ---------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude,  etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
@@ -780,7 +787,7 @@ def genPSF(posX, posY, magTot, skipComponentInResidual=False, fixedParams=[], co
             whether to not provide any comments or not
         fixedParams : list
             list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
-            For instance, if one wants to fix FWHM and posX, one may provide fixedParams=["FWHM", "posX"] in the function call.
+            For instance, if one wants to fix magTot and posX, one may provide fixedParams=["magTot", "posX"] in the function call.
         skipComponentInResidual : boolean
             whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
         
@@ -861,7 +868,55 @@ def genSersic(posX, posY, magTot, re, n=4, bOvera=1.0, PA=0.0, skipComponentInRe
                     mainComment='Sersic function')
 
 
-
+def genSky(background, xGradient, yGradient, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+    """
+    Construct a sky function configuration.
+    
+    Mandatory inputs
+    ----------------
+        background : float
+            sky background ADU counts
+        xGradient : float
+            sky gradient along x, dsky/dx (in ADU/px)
+        yGradient : float
+            sky gradient along y, dsky/dy (in ADU/px)
+            
+    Optional inputs
+    ---------------
+        comments : dict
+            dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'background' for the background level, xGradient for the sky gradient along x, etc.).
+            The key value is the comment you want.
+            
+            You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
+            
+            WARNINGS:
+                - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
+                - to add a comment to the line with index Z, use the key name 'Zline'
+            
+        noComments : boolean
+            whether to not provide any comments or not
+        fixedParams : list
+            list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
+            For instance, if one wants to fix background and xGradient, one may provide fixedParams=["background", "xGradient"] in the function call.
+        skipComponentInResidual : boolean
+            whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
+        
+    Returns a complete sky function galfit configuration as formatted text.
+    """
+    
+    # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
+    isFixed  = createIsFixedDict(["background", "xGradient", "yGradient"], fixedParams)
+    comments = createCommentsDict(["object", "background", "xGradient", "yGradient", "skipComponentInResidual"], comments)
+            
+    return genModel("sky",
+                    [1, 2, 3, 'Z'],
+                    [background, xGradient, yGradient, skipComponentInResidual],
+                    [isFixed['background'], isFixed["xGradient"], isFixed['yGradient'], ""],
+                    [backgroundFormat, xGradientFormat, yGradientFormat, "%d"],
+                    comments=[comments['object'], comments["background"], comments["xGradient"], comments['yGradient'], comments['skipComponentInResidual']], 
+                    noComments=noComments,
+                    mainComment='sky')
     
     
 ################################################################
