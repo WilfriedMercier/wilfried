@@ -45,6 +45,9 @@ alphaFerrerFormat, betaFerrerFormat              = ["%.1f"]*2
 backgroundFormat                                 = "%.2f"
 xGradientFormat, yGradientFormat                 = ["%.3f"]*2
 
+#bending mode parameters
+bendingFormat                                    = "%.2f"
+
 defaultComments = {'object':'Object type', 
                    'pos':'position x, y            [pixel]',
                    'magTot':'total magnitude',
@@ -176,7 +179,7 @@ def genHeader(outputImage, xmin, xmax, ymin, ymax,
     return out
 
 
-def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comments=None, noComments=False, mainComment=None):
+def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comments=None, noComments=False, mainComment=None, removeLine0=False, prefix=""):
     """
     Very general function which can output any galfit model configuration. This function is not supposed to be used directly by the user, but should be called by a function whose goal is to output the galfilt configuration of a specific profile. 
     This should only be seen as a bare skeleton which is used in function calls in order to build specific galfit model configuration for feedme files.
@@ -212,36 +215,51 @@ def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comment
             main comment which appears before the configuration line (generally the full model name)
         noComments : boolean
             whether to not provide any comments or not.
+        prefix : str
+            prefix to add before the line index. For instance the index 1) would become B1) with the prefix "B".
+        removeLine0 : boolean
+            whether to remove line number 0 (model name). This is useful when one wants to make an output for additional terms such as bending modes.
         
     Return the galfit model configuration as formatted text.
     """
 
-    length        = len(listLineIndex)  
     listLineIndex = toStr(listLineIndex)
+    length        = len(listLineIndex)
+    
+    #this is used to know the size the comments list should have
+    if removeLine0:
+        size = length
+    else:
+        size = length+1
     
     #first line with the model name
     if mainComment is not None:
-        firstLine     = "# " + mainComment + "\n"
+        firstLine     = "# " + mainComment + "\n\n"
     else:
         firstLine     = ""
-    
+
     #define comment as an empty string if not provided
-    if comments is None:
-        comments  = [""]*length
-    elif len(comments) != (length+1) and not noComments:
-        print("InputError: optional argument 'comment' does not have the same length as listLineIndex. Either provide no comment at all, or one for every line. Cheers !")
-        return None
-    
+    if not noComments:
+        if comments is None:
+            comments  = [""]*size
+        elif len(comments) != size:
+            print("InputError: optional argument 'comment' does not have the same length as 'listLineIndex'. Either provide no comment at all, or one for every line. Cheers !")
+            return None
+        
     # This is the maximum string length in listLineIndex (it is used to align the first column only)
     lenIndex      = max(computeStringsLen(listLineIndex))
-    formatIndex   = "%" + "%d" %lenIndex + "s" + ") "
+    formatIndex   = prefix + "%" + "%d" %lenIndex + "s" + ") "
     
-    # Create a list with all lines as an element
-    # First line is model name which is not provided in the index list
-    allLines      = [formatIndex%"0" + modelName]
+    # Create a list with all lines as an element. First line is model name which is not provided in the index list
+    if not removeLine0:
+        allLines      = [formatIndex%"0" + modelName]
+        startPoint    = 1
+    else:
+        allLines      = []
+        startPoint    = 0
     
     # Generate each (other) line separately
-    for num, idx, pm, fx, pf in zip(range(1, length+1) , listLineIndex, params, fixedOrNot, paramsFormat):
+    for num, idx, pm, fx, pf in zip(range(startPoint, length+1) , listLineIndex, params, fixedOrNot, paramsFormat):
         #First add the index value
         allLines.append(formatIndex %idx)
         
@@ -258,11 +276,11 @@ def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comment
     if not noComments:
         # Retrieve the length of the longest line in order to align the comments
         maxLineLen             = maxStringsLen(allLines)
-        for num, com in zip(range(length+1), comments):
+        for num, com in zip(range(size), comments):
             if com is not None:
                 allLines[num]  = ("%-" + "%d" %maxLineLen + "s") %allLines[num] + "  # " + com
             
-    return putStringsTogether([firstLine] + allLines)
+    return firstLine + putStringsTogether(allLines)
     
 
 ##############################################################
@@ -895,17 +913,16 @@ def genSky(background, xGradient, yGradient, skipComponentInResidual=False, fixe
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
         noComments : boolean
-            whether to not provide any comments or not
+            whether to provide no comments or not
         fixedParams : list
             list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
             For instance, if one wants to fix background and xGradient, one may provide fixedParams=["background", "xGradient"] in the function call.
         skipComponentInResidual : boolean
             whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
         
-    Returns a complete sky function galfit configuration as formatted text.
+    Return a complete sky function galfit configuration as formatted text.
     """
     
-    # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
     isFixed  = createIsFixedDict(["background", "xGradient", "yGradient"], fixedParams)
     comments = createCommentsDict(["object", "background", "xGradient", "yGradient", "skipComponentInResidual"], comments)
             
@@ -917,6 +934,53 @@ def genSky(background, xGradient, yGradient, skipComponentInResidual=False, fixe
                     comments=[comments['object'], comments["background"], comments["xGradient"], comments['yGradient'], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='sky')
+    
+    
+######################################################################
+#                   Additional galfit tag functions                  #
+######################################################################
+    
+def bendingModes(listModes, listModesValues, fixedParams=[], comments=None, noComments=False):
+    """
+    Construct bending modes galfit configuration.
+    
+    Mandatory inputs
+    ----------------
+        listModes : list of int
+            mode number
+        listModesValues : list of floats
+            value of the corresponding mode
+            
+    Optional inputs
+    ---------------
+        comments : dict
+            dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
+            The dictionnary key names are the modes number (ex: 1 for bending mode 1, 2 for bending mode 2, etc.).
+            The key value is the comment you want.
+            
+            You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
+            
+        noComments : boolean
+            whether to provide no comments or not
+        fixedParams : list of int
+            list of mode numbers which must be fixed during galfit fitting routine
+    
+    Return a complete bending modes galfit configuration as formatted text.
+    """
+    
+    isFixed     = [0 if i in fixedParams else 1 for i in listModes]
+    
+    if comments is None:
+        comments = ["Bending mode %d" %i for i in listModes]
+    else:
+        comment    = createCommentsDict(listModes, comments)
+        comments   = [comment[i] for i in listModes]
+    
+    return genModel(None, listModes, listModesValues, isFixed, [bendingFormat]*len(listModes), 
+                    comments=comments, noComments=noComments, removeLine0=True, prefix="B")
+    
+    
+    
     
     
 ################################################################
