@@ -272,9 +272,9 @@ def gendeVaucouleur(posX, posY, magTot, re, bOvera=1.0, PA=0.0, skipComponentInR
         magTot : float
             total integrated magnitude of the profile
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the de Vaucouleur profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the de Vaucouleur profile center  (in px)
         re : float
             half-light (effective) radius of the profile (in px)
             
@@ -333,9 +333,9 @@ def genEdgeOnDisk(posX, posY, mu, diskScaleLength, diskScaleHeight, PA=0.0,
         mu : float
             central surface brightness (mag/arcsec^2) of the profile
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the edge-on disk profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the edge-on disk profile center  (in px)
         diskScaleLength : float
             major axis disk scale-length (in px)
 
@@ -383,16 +383,16 @@ def genEdgeOnDisk(posX, posY, mu, diskScaleLength, diskScaleHeight, PA=0.0,
 
 def genExpDisk(posX, posY, magTot, rs, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
-    Construct an Exponential disk function configuration.
+    Construct an exponential disk function configuration.
     
     Mandatory inputs
     ----------------
         magTot : float
             total integrated magnitude of the profile
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the exponential disk profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the exponential disk profile center  (in px)
         rs : float
             disk scale-length (in px) such that rs = re/1.678, with re the effective radius of an equivalent n=1 Sersic profile
 
@@ -450,9 +450,9 @@ def genFerrer(posX, posY, mu, rt, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, P
         mu : float
             surface brightness (mag/arcsec^2) at radius rb
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the Ferrer profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the Ferrer profile center  (in px)
         rt : float
             outer truncation radius (in px)
             
@@ -514,9 +514,9 @@ def genGaussian(posX, posY, magTot, FWHM, bOvera=1.0, PA=0.0, skipComponentInRes
         magTot : float
             total integrated magnitude of the profile
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the Gaussian profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the Gaussian profile center  (in px)
             
     Optional inputs
     ---------------
@@ -573,9 +573,9 @@ def genKing(posX, posY, mu0, rc, rt, powerlaw=2.0, bOvera=1.0, PA=0.0,
         powerlaw : float
             powerlaw (powerlaw=2.0 for a standard King profile)
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the King profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the King profile center  (in px)
         rc : float
             core radius (in px) 
         rt : float
@@ -635,9 +635,9 @@ def genMoffat(posX, posY, magTot, FWHM, powerlaw=1.0, bOvera=1.0, PA=0.0, skipCo
         magTot : float
             total integrated magnitude of the profile
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the Moffat profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the Moffat profile center  (in px)
             
     Optional inputs
     ---------------
@@ -694,9 +694,9 @@ def genNuker(posX, posY, mu, rb, alpha=1.0, beta=0.5, gamma=0.7, bOvera=1.0, PA=
         mu : float
             surface brightness (mag/arcsec^2) at radius rb
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the Nuker profile center (in px)
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the Nuker profile center  (in px)
         rb : float
             break radius (in px) where the slope is the average between \beta and \gamma and where the maximum curvature (in log space) is reached. It roughly corresponds to the radius of transition between the inner and outer powerlaws.
             
@@ -747,6 +747,58 @@ def genNuker(posX, posY, mu, rb, alpha=1.0, beta=0.5, gamma=0.7, bOvera=1.0, PA=
                     comments=[comments['object'], comments["pos"], comments["mu"], comments["rb"], comments["alpha"], comments["beta"], comments["gamma"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Nuker function')
+
+
+def genPSF(posX, posY, magTot, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+    """
+    Construct PSF function configuration. This PSF is technically not a function, but uses the psf image provided in the header to fit a given point source.
+    
+    Mandatory inputs
+    ----------------
+        magTot : float
+            total integrated magnitude of the profile
+        posX : int/float
+            X position of the profile center (in px)
+        poxY : int/float
+            Y position of the profile center  (in px)
+            
+    Optional inputs
+    ---------------
+        comments : dict
+            dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            The key value is the comment you want.
+            
+            You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
+            
+            WARNINGS:
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
+                - to add a comment to the line with index Z, use the key name 'Zline'
+            
+        noComments : boolean
+            whether to not provide any comments or not
+        fixedParams : list
+            list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
+            For instance, if one wants to fix FWHM and posX, one may provide fixedParams=["FWHM", "posX"] in the function call.
+        skipComponentInResidual : boolean
+            whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
+        
+    Returns a complete PSF function galfit configuration as formatted text.
+    """
+    
+    # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
+    isFixed  = createIsFixedDict(["posX", "posY", "magTot"], fixedParams)
+    comments = createCommentsDict(["object", "pos", "magTot", "skipComponentInResidual"], comments)
+            
+    return genModel("psf",
+                    [1, 3, 'Z'],
+                    [[posX, posY], magTot, skipComponentInResidual],
+                    [[isFixed["posX"], isFixed["posY"]], isFixed["magTot"], ""],
+                    [[posFormatX, posFormatY], magFormat, "%d"],
+                    comments=[comments['object'], comments["pos"], comments["magTot"], comments['skipComponentInResidual']], 
+                    noComments=noComments,
+                    mainComment='PSF fit')
 
 
 def genSersic(posX, posY, magTot, re, n=4, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
