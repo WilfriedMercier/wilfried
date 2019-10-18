@@ -9,6 +9,7 @@ Functions related to automating galfit modelling.
 """
 
 from wilfried.strings.strings import putStringsTogether, toStr, computeStringsLen, maxStringsLen
+from numpy import ravel
 
 ##########################################
 #          Global variables              #
@@ -45,8 +46,12 @@ alphaFerrerFormat, betaFerrerFormat              = ["%.1f"]*2
 backgroundFormat                                 = "%.2f"
 xGradientFormat, yGradientFormat                 = ["%.3f"]*2
 
-#bending mode parameters
+# bending mode parameters
 bendingFormat                                    = "%.2f"
+
+# Fourier mode parameters
+ampFourierFormat                                 = "%.2f"
+phaseFourierFormat                               = "%.1f"
 
 defaultComments = {'object':'Object type', 
                    'pos':'position x, y            [pixel]',
@@ -959,19 +964,19 @@ def bendingModes(listModes, listModesValues, fixedParams=[], comments=None, noCo
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
-            
+
+        fixedParams : list of int
+            list of mode numbers which must be fixed during galfit fitting routine            
         noComments : boolean
             whether to provide no comments or not
-        fixedParams : list of int
-            list of mode numbers which must be fixed during galfit fitting routine
     
     Return a complete bending modes galfit configuration as formatted text.
     """
     
-    isFixed     = [0 if i in fixedParams else 1 for i in listModes]
+    isFixed        = [0 if i in fixedParams else 1 for i in listModes]
     
     if comments is None:
-        comments = ["Bending mode %d" %i for i in listModes]
+        comments   = ["Bending mode %d" %i for i in listModes]
     else:
         comment    = createCommentsDict(listModes, comments)
         comments   = [comment[i] for i in listModes]
@@ -980,9 +985,56 @@ def bendingModes(listModes, listModesValues, fixedParams=[], comments=None, noCo
                     comments=comments, noComments=noComments, removeLine0=True, prefix="B")
     
     
+def fourierModes(listModes, listModesAmplitudes, listModesPhases, fixedParams=[], comments=None, noComments=False):
+    """
+    Construct Azimuthal fourier modes galfit configuration.
     
+    Mandatory inputs
+    ----------------
+        listModes : list of int
+            mode number
+        listModesAmplitudes : list of floats
+            amplitudes of the corresponding mode
+        listModesPhases : list of floats
+            phases of the corresponding mode
+            
+    Optional inputs
+    ---------------
+        comments : dict
+            dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
+            The dictionnary key names are the modes number followed by A for amplitude and P for phase (ex: '1A' for the amplitude of the fourier mode 1, '2P' for the phase of Fourier mode 2, etc.).
+            The key value is the comment you want.
+            
+            You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
+
+        fixedParams : list of str
+            list of Fourier modes amplitudes and/or phases which must be fixed in galfit. 
+            For instance, if one wants to fix the amplitude of the Fourier mode 1 and the phase of Fourier mode 2, one may write fixedParams=['1A', '2P'], with A for amplitude and P for phase.
+        
+        noComments : boolean
+            whether to provide no comments or not
     
+    Return a complete Azimuthal fourier modes galfit configuration as formatted text.
+    """
     
+    listModesValues       = []
+    for amp, ph in zip(listModesAmplitudes, listModesPhases):
+        listModesValues.append([amp, ph])
+    
+    # we use the behaviour that True is 1 and False is 0 in python
+    isFixed = [[int(('%dA' %i) not in fixedParams), int(('%dP' %i) not in fixedParams)] for i in listModes]
+    
+    if comments is None:
+        comments          = ["Az. Fourier mode %d, amplitude and phase angle" %i for i in listModes]
+    else:
+        possibleModesKeys = ravel([["%dA" %i, "%dP" %i] for i in listModes])
+        comment           = createCommentsDict(possibleModesKeys, comments)
+        comments          = [[comment["%dA" %i], comment["%dP" %i]] for i in listModes]
+    
+    return genModel(None, listModes, listModesValues, isFixed, [[ampFourierFormat, phaseFourierFormat]]*len(listModes), 
+                    comments=comments, noComments=noComments, removeLine0=True, prefix="F")
+    
+
 ################################################################
 #                   Miscellanous functions                     #
 ################################################################
