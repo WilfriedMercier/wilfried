@@ -5,6 +5,8 @@ Created on Fri Oct 11 16:43:25 2019
 
 @author: Wilfried Mercier - IRAP
 
+Acknowledgments to Issa Lina - ENS who spotted a quite tough bug in asManyPlots when it computes the minimum of the cmap when one wants to jointly plots a scatter plot with any other kind of plot.
+
 Functions to automatise as much as possible plotting of data of any kind.
 """
 
@@ -333,7 +335,7 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
                 
 def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideYticks=False,
                 placeYaxisOnRight=False, xlabel="", ylabel='', marker='o', color='black', plotFlag=True,
-                label='', zorder=0, textsize=24, showLegend=False, legendTextSize=24, linestyle='None',
+                label='', zorder=None, textsize=24, showLegend=False, legendTextSize=24, linestyle='None',
                 ylim=[None, None], xlim=[None, None], cmap='Greys', cmapMin=None, cmapMax=None,
                 showColorbar=False, locLegend='best', tickSize=24, title='', titlesize=24, 
                 colorbarOrientation='vertical', colorbarLabel=None, colorbarTicks=None, colorbarTicksLabels=None,
@@ -475,7 +477,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
         
     #If we have an array instead of a list of arrays, transform it to the latter
     try:
-        np.shape(datax[1])[0]
+        np.shape(datax[0])[0]
     except:
         datax = [datax]
         datay = [datay]
@@ -511,15 +513,13 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
         np.shape(legendLineColor)[0]
     except:
         legendLineColor = [legendLineColor]*lx
-    try:
-        np.shape(color)[0]
-    except:
+    
+    if len(color) ==  1:
         color = [color]*lx
+     
+    if zorder is None:
+        zorder = range(1, lx+1)
         
-    try:
-        np.shape(zorder)[0]
-    except:
-        zorder = [zorder]*lx
     try:
         np.shape(plotFlag)[0]
     except:
@@ -569,6 +569,14 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
     #list of handels for the legend
     handles = []
     
+    # Compute cmap minimum and maximum if there are any scatter plots (it is ineficient because color list contains lists and strings, so we cannot convert it easily to an array to use vectorized function)
+    tmp = []
+    for col, flag in zip(color, np.array(plotFlag)==False):
+        if flag:
+            tmp.append(col)
+    cmapMin = np.min(tmp)
+    cmapMax = np.max(tmp)
+    
     for dtx, dty, mrkr, mrkrSz, clr, zrdr, lnstl, lbl, pltFlg, fllstl, lph, nflldFlg in zip(datax, datay, marker, markerSize, color, zorder, linestyle, label, plotFlag, fillstyle, alpha, unfilledFlag):
         edgecolor = clr
         if nflldFlg:
@@ -581,17 +589,12 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
                            linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=edgecolor,
                            markersize=mrkrSz, linewidth=linewidth))
             handles.append(copy(tmp[-1][0]))
-        else:     
-            #Defining default bounds for scatter plot if not given
-            if cmapMin is None:
-                cmapMin = np.min(color[plotFlag==False])
-            if cmapMax is None:
-                cmapMax = np.max(color[plotFlag==False])
-            
-            print("marker Size", mrkrSz)
+        else:
+            print(clr, cmap)
             markerObject = MarkerStyle(marker=mrkr, fillstyle=fllstl)
             sct = plt.scatter(dtx, dty, label=lbl, marker=markerObject, zorder=zrdr, 
                               cmap=cmap, norm=norm, vmin=cmapMin, vmax=cmapMax, alpha=lph, c=clr, s=mrkrSz)
+            print(sct)
             tmp.append(sct)
             
             if nflldFlg:
