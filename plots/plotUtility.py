@@ -715,7 +715,7 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
                   For instance, if one writes grid = gridspec(2, 1, height_ratios=[1, 0.2]) this should generate a grid with the second subplot below the first one, with the same width and a height 1/5th of the figure. Then one can provide grid[0] (grid[1]) for numPlot if one wants to plot on the first (second) subplot.
             
         datax: dict
-            dictionnary containing x axis data. The way the data is organised is as follows:
+            dictionnary containing x-axis data. The way the data is organised is as follows:
                 - AT MOST three keys must be given -> 'plot' and/or 'scatter' and/or 'mix'
                 - each key value contains A SINGLE LIST OF DATA ARRAYS/LISTS. So a list of arrays (with each array beeing some data to plot) or a list of lists.
                 - each key corresponds to a type of plot
@@ -733,7 +733,7 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
             Obviously, order is important within the lists in datax and datay, as they will be mapped between datax and datay when the plot will occur.
             
         datay : dict
-            dictionnary containing y axis data. See datax description to understand what kind of dictionnary the user is expected to provide.
+            dictionnary containing y-axis data. See datax description to understand what kind of dictionnary the user is expected to provide.
             
     Optional inputs
     ---------------
