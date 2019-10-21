@@ -53,6 +53,9 @@ bendingFormat                                    = "%.2f"
 ampFourierFormat                                 = "%.2f"
 phaseFourierFormat                               = "%.1f"
 
+# Diskyness/boxyness parameter
+boxy_diskyFormat                                 = "%.2f"
+
 defaultComments = {'object':'Object type', 
                    'pos':'position x, y            [pixel]',
                    'magTot':'total magnitude',
@@ -983,6 +986,31 @@ def bendingModes(listModes, listModesValues, fixedParams=[], comments=None, noCo
     
     return genModel(None, listModes, listModesValues, isFixed, [bendingFormat]*len(listModes), 
                     comments=comments, noComments=noComments, removeLine0=True, prefix="B")
+    
+    
+def boxy_diskyness(value, isFixed, comment=None):
+    """
+    Construct a boxy/diskyness (genralised ellipses) galfit configuration.
+    
+    Mandatory inputs
+    ----------------
+        isFixed : bool
+            whether to fix the parameter during galfit fitting routine
+        value : float
+            value of the diskyness/boxyness parameter (negative = more disky, positive = more boxy)
+            
+    Optional inputs
+    ---------------
+        comment : str
+            comment to append at the end of the line
+            
+    Return a complete boxyness/diskyness galfit configuration.
+    """
+    
+    if comment is None:
+        comment = "traditional diskyness(-)/boxyness(+)"
+        
+    return genModel(None, [0], [value], [int(not isFixed)], [boxy_diskyFormat], comments=[comment], noComments=False, removeLine0=True, prefix="c")
     
     
 def fourierModes(listModes, listModesAmplitudes, listModesPhases, fixedParams=[], comments=None, noComments=False):
