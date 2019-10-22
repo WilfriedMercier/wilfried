@@ -105,7 +105,8 @@ fullKeys = {'header': {'mandatory':['outputImage', 'xmin', 'xmax', 'ymin', 'ymax
             'psf': {'mandatory':['posX', 'posY', 'magTot'], 
                     'optional':['skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
             'sersic': {'mandatory':['posX', 'posY', 'magTot', 're'], 
-                       'optional':['n', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']}}
+                       'optional':['n', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+            'sky': {'mandatory':['background', 'xGradient', 'yGradient'], 'optional':['skipComponentInResidual', 'fixedParams', 'comments', 'noComments']}}
 
 
 #####################################################################
@@ -122,21 +123,38 @@ def genFeedme(header, listProfiles):
             dictionnary with key names corresponding to input parameter names in genHeader function.
         listProfiles : list of dict
             list of dictionnaries. Each dictionnary corresponds to a profile:
-                - in order for the function to know whi, 'edgeOnDisk'ch profile to use, you must provide a key 'name' whose value is one of the following:
+                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
                     'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
                 - key names are input parameter names. See each profile description, to know which key to use
                 - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
                 
     Return a full galfit.feedme file with header and body.
     """
-            
-    # Checking that header has at the very least the mandatory keys provided
-    if checkDict(header, keys=mandatoryKeys['header'], dictName='header') == KeyError:
-        return KeyError
     
-    # Checking that profiles are correct
-    for profileDict in listProfiles:
+    header['name'] = 'header'
+    fullList = [header] + listProfiles
+    
+    for dic in fullList:
+        # Check that name is okay
+        if dic['name'] not in ['deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky']:
+            print("ValueError: given name %s is not correct. Please provide a name in the list 'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'. Cheers !")
+            return ValueError
         
+        # Check that the given keys contain at the very least the mandatory keys
+        if checkInDict(dic, keys=fullKeys[dic['name']['mandatory']], dictname='header or listProfiles') == KeyError:
+            return KeyError
+        
+        # Check that the given dictionnary does not have unauthorised keys
+        if checkDictKeys(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], dictname='header or listProfiles') == KeyError:
+            return KeyError
+    
+        # Set default values if not provided
+        dic = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1])
+    
+        if dic['name'] == 'header':
+            out = genHeader(dic["outputImage"], dic["xmin"], dic["xmax"], dic["ymin"], dic["ymax"], dic["inputImage"], dic["sigmaImage"], dic["psfImage"], dic["maskImage"], dic["couplingFiledefault"] dic["psfSamplingFactordefault"] dic["zeroPointMagdefault"] dic["arcsecPerPixeldefault"] dic["sizeConvXdefault"] dic["sizeConvYdefault"] dic["displayTypedefault"] dic["option"]])
+        else:
+            out += "\n\n" + genHeader([])
     
     header = setDict(header, keys=['outputImage', 'xmin', 'xmax', 'ymin', 'ymax', 'inputImage', 'sigmaImage', 'psfImage', 'maskImage', 'couplingFile', 'psfSamplingFactor', 'zeroPointMag', 'arcsecPerPixel', 'sizeConvX', 'sizeConvY', 'displayType', 'option'])
     
@@ -1184,7 +1202,7 @@ def createCommentsDict(fullListOfNames, comments):
     return comments
     
 
-def setDict(dictionnary, keys=None, defaultVals=None):
+def setDict(dictionnary, keys=None, default=None):
     """
     Create a dictionnary whose desired keys are either retrieved from a dictionnary, or set to default values otherwise.
     
@@ -1195,22 +1213,42 @@ def setDict(dictionnary, keys=None, defaultVals=None):
             
     Optional inputs
     ---------------
-        defaultVals : list
+        default : list
             list of default values for keys listed in 'keys' if no value is given in 'dictionnary'
         keys : list of str
-            list of key names which should be retrieved either from 'dictionnary' or from 'defaultVals'
+            list of key names which should be retrieved either from 'dictionnary' or from 'default'
     
-    Return a new dictionnary with keys listed in 'keys' having values either from 'dictionnary' or 'defaultVals'.
+    Return a new dictionnary with keys listed in 'keys' having values either from 'dictionnary' or 'default'.
     """
-    out = {}
-    for k, df in zip(keys, defaultVals):
-        if k in dictionnary:
-            out[k] = dictionnary[k]
-        else:
-            out[k] = df
-    return out
+    
+    for k, df in zip(keys, default):
+        dictionnary.setdefault(k, default=df)
+    return dictionnary
 
-def checkDict(dictionnary, keys=None, dictName=None):
+
+def checkDictKeys(dictionnary, keys=[], dictName='NOT PROVIDED'):
+    """
+    Check that every dictionnary key is among the keys list 'keys'.
+    
+    Mandatory inputs
+    ----------------
+        dictionnary : dict
+            dictionnary from which we want to test if given keys are in 'keys' list
+        
+    Optional inputs
+    ---------------
+        dictName : str
+            dictionnary variable name printed in the error message
+        keys : list of str
+            list of authorised keys names 
+            
+    Return None if 'dictionnary' has only keys in 'keys', or KeyError if one of the keys is not in 'keys' list.
+    """
+    
+    
+    
+
+def checkInDict(dictionnary, keys=[], dictName='NOT PROVIDED'):
     """
     Check that given keys exist in the dictionnary.
     
@@ -1228,6 +1266,7 @@ def checkDict(dictionnary, keys=None, dictName=None):
             
     Return None if keys exist, or KeyError if one of the keys was missing.
     """
+    
     dictkeys = dictionnary.keys()
     for name in keys:
         if name not in dictkeys:
