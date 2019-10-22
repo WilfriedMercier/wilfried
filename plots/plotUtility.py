@@ -693,7 +693,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
 
 
 
-def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, colorbarProperties={}, legendProperties={},
+def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={}, titleProperties={}, colorbarProperties={}, legendProperties={},
                 marker='o', color='black',
                 zorder=None , showLegend=False, linestyle='None',
                 locLegend='best',
@@ -714,26 +714,17 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
                 - finally, if one wants to generate a grid with subplots having different x and y sizes (say a main subplot plot and a smaller residual subplot appended to the bottom of the main one), one can generate a highly tunable grid using matplotlib.gridspec.gridspec and then provide the desired subplot with the correct array element.
                   For instance, if one writes grid = gridspec(2, 1, height_ratios=[1, 0.2]) this should generate a grid with the second subplot below the first one, with the same width and a height 1/5th of the figure. Then one can provide grid[0] (grid[1]) for numPlot if one wants to plot on the first (second) subplot.
             
-        datax: dict
-            dictionnary containing x-axis data. The way the data is organised is as follows:
-                - AT MOST three keys must be given -> 'plot' and/or 'scatter' and/or 'mix'
-                - each key value contains A SINGLE LIST OF DATA ARRAYS/LISTS. So a list of arrays (with each array beeing some data to plot) or a list of lists.
-                - each key corresponds to a type of plot
-                
-                Possible Keys
-                -------------
-                    'plot' : list of numpy arrays/lists 
-                        simple plot, either with data points (with the same color) or (colored) lines  
-                    'scatter' : list of numpy arrays/lists 
-                        scatter plot, without any line, but with points whose color and size can change according to some third list of values (refered in the following as z component)
-                    'mix' : list of numpy arrays/lists
-                        line plot where lines are colored according to some third value. It is a mix between a plot and a scatter plot AND IS NOT IMPLEMENTED YET !
+        datax: list of numpy arrays/lists
+            list of x-axis data which should be plotted. Each data belongs to a single array. A LIST MUST BE PROVIDED, so even if only one data is plotted you should write [yourDataArray] and not directly yourDataArray.
             
-            For instance, assume one wants to plot two simple plots with data x0, y0 and x1, y1, as well as a scatter plot with data x2, y2, then one must write {'plot':[x0, x1], 'scatter':[x2]} for datax and {'plot':[y0, y1], 'scatter':[y2]} for datay.
-            Obviously, order is important within the lists in datax and datay, as they will be mapped between datax and datay when the plot will occur.
+            You may want to plot your data differently on the same plot (for instance one usual line plot and one scatter plot). This can be set in plotProperties dictionnary using the key 'type' (see below for more information).
+            asManyPlots provide three kinds of plots:
+                - usual plot (line or points) with a potential global color set in the dictionnary plotProperties with the key 'color'
+                - scatter plot (only points, no line), where the color (set with 'color' key as well) and size of points (set with 'size' key in plotProperties dict) can vary from point to point to show any variation with a third dimension (refered as the z component in the following)
+                - 'mix' type of plot where lines only are plotted and colour coded according to a third value (also set with 'color' key in plotProperties dict)
             
-        datay : dict
-            dictionnary containing y-axis data. See datax description to understand what kind of dictionnary the user is expected to provide.
+        datay : list of numpy arrays/lists
+            list of y-axis data which should be plotted. See datax description for more details.
             
     Optional inputs
     ---------------
@@ -742,6 +733,26 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
     
     For those who are not familiar with dictionnaries, here we provide an example. Say, one wants to put labels on the x and y axes. This can be done by providing values to 'xlabel' and 'ylabel' keys of axesProperties dictionnary.
     Thus, one would write axesProperties={'xlabel':'this is my x label', 'ylabel':'this is another text for the y label'}.
+    
+        generalProperties : dict
+            dictionnary gathering all tunable general properties. See the list below for the complete list of dictionnary keys.
+            
+            Ticks related keys
+            ------------------
+                'hideTicksLabels' : bool
+                    whether to hide ticks labels. Default is False.
+                'tickDirection' : 'in', 'out' or 'inout'
+                    direction of the ticks on the plot. Default is 'inout'.
+                    
+            Text related keys
+            -----------------
+                'size' : int
+                    overall text size in points. Default is 24.
+                    
+            Scale related keys
+            ------------------
+                'scale' : str
+                    scale of both axes
     
         axesProperties : dict
             dictionnary gathering all tunable axes properties. See the list below for the complete list of dictionnary keys.
@@ -752,16 +763,14 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
                     whether to hide the x-axis ticks labels or not. Default is False.
                 'hideYticksLabels' : bool
                     whether to hide the y-axis ticks labels or not. Default is False.
-                'tickSize' : int
-                    size of the ticks on every axis. Default is 24.
                 'xTickDirection' : 'in', 'out' or 'inout'
-                    where the x-axis ticks will appear. If 'in', they will be plotted within the subplots, if 'out', they will be plotted outside of the subplot and if 'inout', they will appear both within and outside. Default is 'in'.
+                    where the x-axis ticks will appear. If 'in', they will be plotted within the subplots, if 'out', they will be plotted outside of the subplot and if 'inout', they will appear both within and outside. Default is 'tickDirection' value.
                 'xTickSize' : int
-                    size of the ticks on the x-axis. Default is None. If a value is given, the 'tickSize' key value will be overriden. 
+                    size of the ticks on the x-axis. Default is 'tickSize' value. If a value is given, the 'tickSize' key value will be overriden. 
                 'yTickDirection' : 'in', 'out' or 'inout'
-                    where the y-axis ticks will appear. If 'in', they will be plotted within the subplots, if 'out', they will be plotted outside of the subplot and if 'inout', they will appear both within and outside. Default is 'in'.
+                    where the y-axis ticks will appear. If 'in', they will be plotted within the subplots, if 'out', they will be plotted outside of the subplot and if 'inout', they will appear both within and outside. Default is 'tickDirection' value.
                 'yTickSize' : int
-                    size of the ticks on the y-axis. Default is None. If a value is given, the 'tickSize' key value will be overriden. 
+                    size of the ticks on the y-axis. Default is 'tickSize' value. If a value is given, the 'tickSize' key value will be overriden. 
                 
             Label related keys
             ------------------
@@ -888,31 +897,31 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
             
             General legend properties keys
             ------------------------------
-                'numberColumns' : int
+                'loc' : str/int
+                    legend location on the plot. Default is 'best'.
+                'ncols' : int
                     number of columns in the legend. Default is 1 so that every label will appear on a new line. 
                     For instance legendProperties={'numberColumns':3} will split labels into three columns.
             
             Text related keys
             -----------------
                 'labels' : list of str
-                    legend labels for the data. Default is None, so that no labels are shown.
-                    If provided, this list must contain as many labels as there are data plotted. For instance, if one plots a plot and a scatter plot, one may write legendProperties={'labels':["first label", "second label"]} to add the label "first label" to the first plot and "second label" to the second plot.
-                    If one does not want to add a label for some data, one may either write an empty string '' or None.
+                    list of labels for the data. Labels must be given in the same order as the plots. Default is None so that no labels are shown for any kind of plot.
                 'size' : int
                     size of the text in the legend. Default is 24.
             
             Lines and markers related keys
             ------------------------------
                 'lineColor' : list of str
-                    color of the lines appearing in the legend before the text. Default is None so that the line color in the plot is used for plots and black is used for scatter plots.
+                    list of colors of the lines appearing in the legend before the text. Default is None so that the line color in the plot is used for plots and 'black' is used for scatter plots.
                     If provided, this list must contain as many colors as there are data plotted. For instance, if one plots a plot and a scatter plot, one may write legendProperties{'lineColor':['red', 'blue']} to draw the plot line in red and the scatter plot marker in blue within the legend.
 
                 'markerEdgeColor' : list of str
-                    edge color of the markers shown in the legend. Default is None so that the line color in the plot is used for plots marker edges and black is used for scatter plots marker edges.
+                    list of marker edge colors shown in the legend. Default is None so that the line color in the plot is used for plots marker edges and black is used for scatter plots marker edges.
                     If provided, this list must contain as many colors as there are data plotted. For instance, if one plots a plot and a scatter plot, one may write legendProperties={'markerEdgeColor':['red', 'blue']} to draw the plot marker edge color in red and the scatter plot marker edge color in blue within the legend.
             
                 'markerFaceColor' : list of str
-                    face color (main area) of the markers shown in the legend. Default is None so that the line color in the plot is used for plots markers and black is used for scatter plots markers.
+                    list of marker face colors (main area) shown in the legend. Default is None so that the line color in the plot is used for plots markers and black is used for scatter plots markers.
                     If provided, this list must contain as many colors as there are data plotted. For instance, if one plots a plot and a scatter plot, one may write legendProperties={'markerFaceColor':['red', 'blue']} to draw the plot marker face color in red and the scatter plot marker face color in blue within the legend.
     
                 
@@ -927,16 +936,10 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
 
     fillstyle : string, list of strings
         which fillstyle use for the markers (see matplotlib fillstyles for more information)
-     legendNcols : int
-        number of columns in the legend
-    legendTextSize : int
-        size for the legend
     linestyle : string, list of strings for many plots
-        which line style to use
+        which line style to usereturn TypeError
     linewidth : float
         the width of the line
-    locLegend : string, int
-        position where to place the legend
     marker : string, char, list of both for many plots
         the marker to use for the data
     markerSize : float or list of floats for scatter plots
@@ -997,21 +1000,11 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
     #           Checking datax and datay are dictionnaries with correct keys and values            #
     ################################################################################################
     
-    if not isType(datax, dict, "dataX"):
+    if not isType(datax, list, "dataX"):
         return TypeError
     
-    if not isType(datay, dict, "dataY"):
+    if not isType(datay, list, "dataY"):
         return TypeError
-    
-    for name in datax.keys():
-        if name not in ['plot', 'scatter', 'mix']:
-            print("KeyError: key %s in 'datax' dictionnary is not an acceptable name. Only 'plot', 'scatter' or 'mix' are allowed. Please provide a key name from those. Cheers !" %name)
-            return KeyError
-        
-    for name in datay.keys():
-        if name not in ['plot', 'scatter', 'mix']:
-            print("KeyError: key %s in 'datay' dictionnary is not an acceptable name. Only 'plot', 'scatter' or 'mix' are allowed. Please provide a key name from those. Cheers !" %name)
-            return KeyError
     
     # Checking shape consistency between datax and datay
     shpX = np.shape(datax)
@@ -1019,13 +1012,6 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
     if shpX != shpY:
         print("Shape inconsistency: datax has shape %s but datay has shape %s. Both datax and datay should be lists with the same shape. Please provide data with similar shape. Cheers !" %(str(shpX), str(shpY)))
         return ValueError
-        
-    # If we have an array instead of a list of arrays, transform it to the latter
-    try:
-        len(datax[0])
-    except TypeError:
-        datax = [datax]
-        datay = [datay]
     lx = len(datax)
     
     ############################################################################################
@@ -1034,29 +1020,45 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
     
     # If some properties are provided, fillVariableFromDict will set them and the other ones will get default values
     
+    # General layout properties
+    layout = gatherThingsUp()
+    if isType(generalProperties, dict, 'generalProperties') == TypeError:
+        return TypeError
+    else:
+        layout.size, layout.hideTicksLabels, layout.scale, layout.tickDirection = fillVariablesFromDict(generalProperties, keys=['size', 'hideTicksLabels', 'scale', 'tickDirection'], default=[24, False, 'linear', 'in'])
+    
     # Axes properties dict
     xaxis = gatherThingsUp()
     yaxis = gatherThingsUp()
     if isType(axesProperties, dict, 'axesProperties') == TypeError:
-        xaxis.label, yaxis.label, xaxis.hideTicks, yaxis.hideTicks, xaxis.tickSize, yaxis.tickSize, xaxis.size, yaxis.size, tickSize, labelTextSize, xaxis.scale, yaxis.scale, yaxis.pos, xaxis.pos, xaxis.tickDirection, yaxis.tickDirection, xaxis.min, xaxis.max, yaxis.min, yaxis.max = fillVariablesFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticks", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xmin", "xmax", "ymin", "ymax", "tickSize", "labelTextSize", "xscale", "xTickDirection", "yscale", "yTickDirection", "yAxisPos", "xAxisPos"], default=['']*2 + [False]*2 + [None]*8 + [24]*2 + ["linear", "in"]*2 + ["left", "bottom"])
-        xaxis.tickSize, yaxis.tickSize, xaxis.size, yaxis.size = isOrisNotNone([xaxis.tickSize, yaxis.tickSize, xaxis.size, yaxis.size], default=[tickSize]*2 + [labelTextSize]*2)
-    else:
         return TypeError
-    
+    else:
+        xaxis.label, yaxis.label, xaxis.hideTicksLabels, yaxis.hideTicksLabels, xaxis.tickSize, yaxis.tickSize, xaxis.size, yaxis.size, xaxis.scale, yaxis.scale, xaxis.pos, yaxis.pos, xaxis.tickDirection, yaxis.tickDirection, xaxis.min, xaxis.max, yaxis.min, yaxis.max = fillVariablesFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticksLabels", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xscale", "yscale", "xAxisPos", "yAxisPos", "xTickDirection", "yTickDirection", "xmin", "xmax", "ymin", "ymax"], default=['', '', False, False, layout.size, layout.size, layout.size, layout.size, layout.scale, layout.scale, "bottom", "left", layout.tickDirection, layout.tickDirection, None, None, None, None])
+        # NEED TO ADD DEFAULT VALUES TO XMIN, XMAX, YMIN, YMAX IN THE LINE ABOVE
+        
     # Title properties dict
     title = gatherThingsUp()
     if isType(titleProperties, dict, 'titleProperties') == TypeError:
-        title.color, title.font, title.label, title.size, title.style, title.weight, title.position, title.verticalOffset = fillVariablesFromDict(titleProperties, keys=["color", "font", "label", "size", "style", "weight", "position", "verticalOffset"], default=['black', 'sans-serif', '', 26, 'normal', 'regular', 'center', None])
-    else:
         return TypeError
+    else:
+        title.color, title.font, title.label, title.size, title.style, title.weight, title.position, title.verticalOffset = fillVariablesFromDict(titleProperties, keys=["color", "font", "label", "size", "style", "weight", "position", "verticalOffset"], default=['black', 'sans-serif', '', 26, 'normal', 'regular', 'center', None])
     
     # Colormap properties dict
     colorbar = gatherThingsUp()
     if isType(colorbarProperties, dict, 'colorbarProperties') == TypeError:
-        colorbar.hide, colorbar.orientation, colorbar.cmap, colorbar.min, colorbar.max, colorbar.offsetCenter, colorbar.ticksLabels, colorbar.ticksLabelsSize, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale, colorbar.label, colorbar.labelSize, colorbar.ticksSize, colorbar.ticks = fillVariablesFromDict(colorbarProperties, keys=["hide", "orientation", "cmap", "min", "max", "offsetCenter", "ticks", "ticksLabels", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale", "label", "labelSize", "ticksLabelsSize"], default=[False, 'vertical', 'Greys'] + [None]*5 + ['linear', 0.1, 1, ''] + [24]*2)
-    else:
         return TypeError
+    else:
+        colorbar.hide, colorbar.orientation, colorbar.cmap, colorbar.min, colorbar.max, colorbar.offsetCenter, colorbar.ticksLabels, colorbar.ticksLabelsSize, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale, colorbar.label, colorbar.labelSize, colorbar.ticksSize, colorbar.ticks = fillVariablesFromDict(colorbarProperties, keys=["hide", "orientation", "cmap", "min", "max", "offsetCenter", "ticks", "ticksLabels", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale", "label", "labelSize", "ticksLabelsSize"], default=[False, 'vertical', 'Greys'] + [None]*5 + ['linear', 0.1, 1, ''] + [24]*2)
+        #MIN, MAX MUST BE COMPUTED
+        #OFFSET CENTER IS NONE, SO NORMALIZATION SHOULD BE DIFFERENT, TICKS AND TICKSLABELS ARE NONE, CHECK IF THIS IS OKAY
     
+    # Legend properties dict
+    legend = gatherThingsUp()
+    if isType(legendProperties, dict, 'legendProperties') == TypeError:
+        return TypeError
+    else:
+        legend.loc, legend.ncols, legend.size, legend.labels, legend.lineColor, legend.markerEdgeColor, legend.markerFaceColor = fillVariablesFromDict(legendProperties, keys=['loc', 'ncols', 'size',' labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, 24, ['']*lx] + [None]*3)
+        
     
     
     ############################################################################################
@@ -1065,7 +1067,7 @@ def asManyPlots2(numPlot, datax, datay, axesProperties={}, titleProperties={}, c
     
     # Generate subplot
     typ = type(numPlot)
-    if typ == list or typ == numpy.ndarray:
+    if typ == list or typ == np.ndarray:
         ax1 = plt.subplot(numPlot[0], numPlot[1], numPlot[2])
     else:
         ax1 = plt.subplot(numPlot)
