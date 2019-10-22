@@ -574,8 +574,9 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
     for col, flag in zip(color, np.array(plotFlag)==False):
         if flag:
             tmp.append(col)
-    cmapMin = np.min(tmp)
-    cmapMax = np.max(tmp)
+    if len(tmp) > 0:
+        cmapMin = np.min(tmp)
+        cmapMax = np.max(tmp)
     
     for dtx, dty, mrkr, mrkrSz, clr, zrdr, lnstl, lbl, pltFlg, fllstl, lph, nflldFlg in zip(datax, datay, marker, markerSize, color, zorder, linestyle, label, plotFlag, fillstyle, alpha, unfilledFlag):
         edgecolor = clr
@@ -1188,8 +1189,9 @@ def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={},
     for col, flag in zip(color, np.array(plotFlag)==False):
         if flag:
             tmp.append(col)
-    cmapMin = np.min(tmp)
-    cmapMax = np.max(tmp)
+    if len(tmp) > 0:
+        cmapMin = np.min(tmp)
+        cmapMax = np.max(tmp)
     
     for dtx, dty, mrkr, mrkrSz, clr, zrdr, lnstl, lbl, pltFlg, fllstl, lph, nflldFlg in zip(datax, datay, marker, markerSize, color, zorder, linestyle, label, plotFlag, fillstyle, alpha, unfilledFlag):
         edgecolor = clr
