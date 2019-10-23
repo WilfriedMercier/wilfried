@@ -161,30 +161,35 @@ def genFeedme(header, listProfiles):
     
     for pos, dic in enumerate([header] + listProfiles):
         # Check that name is okay in dictionnaries
-        if dic['name'] not in correctNames:
-            print("ValueError: given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
-            return ValueError
-        
-        # Check that the given keys contain at the very least the mandatory ones
-        if checkInDict(dic, keys=fullKeys[dic['name']]['mandatory'], dictName='header or listProfiles') == KeyError:
+        try:
+            if dic['name'] not in correctNames:
+                print("ValueError: given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
+                return ValueError
+        except KeyError:
+            print("KeyError: key 'name' is not provided in one of the dictionnaries.")
             return KeyError
         
-        # Check that the given dictionnary only have valid keys
-        if checkDictKeys(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], dictName='header or listProfiles') == KeyError:
+        # Check that the given keys contain at the very least the mandatory ones
+        if checkInDict(dic, keys=fullKeys[dic['name']]['mandatory'] + ['name'], dictName='header or listProfiles') == KeyError:
+            return KeyError
+        
+        # Check that the given dictionnary only has valid keys
+        if checkDictKeys(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0] + ['name'], dictName='header or listProfiles') == KeyError:
             return KeyError
     
         # Set default values if not provided
         if pos==0:
-            header = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1])
+            header = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0] + ['name'], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1] + [dic['name']])
         else:
-            listProfiles[pos-1] = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1])
+            listProfiles[pos-1] = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0] + ['name'], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1] + [dic['name']])
     
     # Append each profile configuration into a variable of type str    
     header.pop('name')
-    out = genHeader(**header)
+    out      = genHeader(**header)
     for dic in listProfiles:
+        func =  modelFunctions[dic['name']]
         dic.pop('name')
-        out += "\n\n" + genHeader(**dic)
+        out += "\n\n" + func(**dic)
         
     return out
     
@@ -1045,6 +1050,19 @@ def genSky(background, xGradient, yGradient, skipComponentInResidual=False, fixe
                     noComments=noComments,
                     mainComment='sky')
     
+
+# Keeping track of the model functions
+modelFunctions = {  'deVaucouleur': gendeVaucouleur, 
+                    'edgeOnDisk': genEdgeOnDisk,     
+                    'expDisk': genExpDisk,    
+                    'ferrer': genFerrer,
+                    'gaussian': genGaussian,
+                    'king': genKing,
+                    'moffat': genMoffat,
+                    'nuker': genNuker,
+                    'psf': genPSF,        
+                    'sersic': genSersic,
+                    'sky': genSky}
     
 ######################################################################
 #                   Additional galfit tag functions                  #
@@ -1252,7 +1270,7 @@ def setDict(dictionnary, keys=None, default=None):
     """
     
     for k, df in zip(keys, default):
-        dictionnary.setdefault(k, default=df)
+        dictionnary.setdefault(k, df)
     return dictionnary
 
 
@@ -1277,7 +1295,7 @@ def checkDictKeys(dictionnary, keys=[], dictName='NOT PROVIDED'):
     
     for k in dictionnary.keys():
         if k not in keys:
-            print("KeyError: key '%s' in dictionnary %s is not a valid key among %s" %(k, dictionnary, keys))
+            print("KeyError: key '%s' in dictionnary %s is not a valid key among %s" %(k, dictName, keys))
             return KeyError
     return None
     
