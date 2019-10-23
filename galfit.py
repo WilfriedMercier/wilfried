@@ -85,28 +85,53 @@ defaultComments = {'object':'Object type',
 
 # If you change a variable name in a function declaration, you must also change the name here
 fullKeys = {'header': {'mandatory':['outputImage', 'xmin', 'xmax', 'ymin', 'ymax'], 
-                       'optional':['inputImage', 'sigmaImage', 'psfImage', 'maskImage', 'couplingFile', 'psfSamplingFactor', 'zeroPointMag', 'arcsecPerPixel', 'sizeConvX', 'sizeConvY', 'displayType', 'option']},
+                       'optional':[['inputImage', 'sigmaImage', 'psfImage', 'maskImage', 'couplingFile', 'psfSamplingFactor', 'zeroPointMag', 'arcsecPerPixel', 'sizeConvX', 'sizeConvY', 'displayType', 'option'],
+                                   ["none", "none", "none", "none", "none", 1, 30.0, [0.03, 0.03], None, None, "regular", 0]]},
+                                   
             'deVaucouleur': {'mandatory':['posX', 'posY', 'magTot', 're'], 
-                             'optional':['bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                             'optional':[['bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                         [1.0, 0.0, False, [], None, False]]},
+                                         
             'edgeOnDisk': {'mandatory':['posX', 'posY', 'mu', 'diskScaleLength', 'diskScaleHeight'], 
-                           'optional':['PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                           'optional':[['PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                       [0.0, False, [], None, False]]},
+                                       
             'expDisk': {'mandatory':['posX', 'posY', 'magTot', 'rs'], 
-                        'optional':['bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                        'optional':[['bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                    [1.0, 0.0, False, [], None, False]]},
+                                    
             'ferrer': {'mandatory':['posX', 'posY', 'mu', 'rt'], 
-                       'optional':['alphaFerrer', 'betaFerrer', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                       'optional':[['alphaFerrer', 'betaFerrer', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                   [3.0, 2.5, 1.0, 0.0, False, [], None, False]]},
+                                   
             'gaussian': {'mandatory':['posX', 'posY', 'magTot', 'FWHM'], 
-                         'optional':['bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                         'optional':[['bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                    [1.0, 0.0, False, [], None, False]]},
+
             'king': {'mandatory':['posX', 'posY', 'mu0', 'rc', 'rt'], 
-                     'optional':['powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                     'optional':[['powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                [2.0, 1.0, 0.0, False, [], None, False]]},
+
             'moffat': {'mandatory':['posX', 'posY', 'magTot', 'FWHM'], 
-                       'optional':['powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                       'optional':[['powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                  [1.0, 1.0, 0.0, False, [], None, False]]},
+
             'nuker': {'mandatory':['posX', 'posY', 'mu', 'rb'], 
-                      'optional':['alpha', 'beta', 'gamma', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                      'optional':[['alpha', 'beta', 'gamma', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                 [1.0, 0.5, 0.7, 1.0, 0.0, False, [], None, False]]},
+
             'psf': {'mandatory':['posX', 'posY', 'magTot'], 
-                    'optional':['skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
+                    'optional':[['skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                               [False, [], None, False]]},
+                    
             'sersic': {'mandatory':['posX', 'posY', 'magTot', 're'], 
-                       'optional':['n', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments']},
-            'sky': {'mandatory':['background', 'xGradient', 'yGradient'], 'optional':['skipComponentInResidual', 'fixedParams', 'comments', 'noComments']}}
+                       'optional':[['n', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                                  [4, 1.0, 0.0, False, [], None, False]]},
+                       
+            'sky': {'mandatory':['background', 'xGradient', 'yGradient'], 
+                    'optional':[['skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+                               [False, [], None, False]]}
+            }
 
 
 #####################################################################
@@ -120,7 +145,7 @@ def genFeedme(header, listProfiles):
     Mandatory inputs
     ----------------
         header : dict
-            dictionnary with key names corresponding to input parameter names in genHeader function.
+            dictionnary with key names corresponding to input parameter names in genHeader function
         listProfiles : list of dict
             list of dictionnaries. Each dictionnary corresponds to a profile:
                 - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
