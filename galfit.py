@@ -128,35 +128,40 @@ def genFeedme(header, listProfiles):
                 - key names are input parameter names. See each profile description, to know which key to use
                 - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
                 
-    Return a full galfit.feedme file with header and body.
+    Return a full galfit.feedme configuration with header and body as formatted text.
     """
     
     header['name'] = 'header'
-    fullList = [header] + listProfiles
+    correctNames   = fullKeys.keys()
     
-    for dic in fullList:
-        # Check that name is okay
-        if dic['name'] not in ['deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky']:
-            print("ValueError: given name %s is not correct. Please provide a name in the list 'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'. Cheers !")
+    for pos, dic in enumerate([header] + listProfiles):
+        # Check that name is okay in dictionnaries
+        if dic['name'] not in correctNames:
+            print("ValueError: given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
             return ValueError
         
-        # Check that the given keys contain at the very least the mandatory keys
-        if checkInDict(dic, keys=fullKeys[dic['name']['mandatory']], dictname='header or listProfiles') == KeyError:
+        # Check that the given keys contain at the very least the mandatory ones
+        if checkInDict(dic, keys=fullKeys[dic['name']]['mandatory'], dictName='header or listProfiles') == KeyError:
             return KeyError
         
-        # Check that the given dictionnary does not have unauthorised keys
-        if checkDictKeys(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], dictname='header or listProfiles') == KeyError:
+        # Check that the given dictionnary only have valid keys
+        if checkDictKeys(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], dictName='header or listProfiles') == KeyError:
             return KeyError
     
         # Set default values if not provided
-        dic = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1])
-    
-        if dic['name'] == 'header':
-            out = genHeader(dic["outputImage"], dic["xmin"], dic["xmax"], dic["ymin"], dic["ymax"], dic["inputImage"], dic["sigmaImage"], dic["psfImage"], dic["maskImage"], dic["couplingFiledefault"] dic["psfSamplingFactordefault"] dic["zeroPointMagdefault"] dic["arcsecPerPixeldefault"] dic["sizeConvXdefault"] dic["sizeConvYdefault"] dic["displayTypedefault"] dic["option"]])
+        if pos==0:
+            header = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1])
         else:
-            out += "\n\n" + genHeader([])
+            listProfiles[pos-1] = setDict(dic, keys=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][0], default=fullKeys[dic['name']]['mandatory'] + fullKeys[dic['name']]['optional'][1])
     
-    header = setDict(header, keys=['outputImage', 'xmin', 'xmax', 'ymin', 'ymax', 'inputImage', 'sigmaImage', 'psfImage', 'maskImage', 'couplingFile', 'psfSamplingFactor', 'zeroPointMag', 'arcsecPerPixel', 'sizeConvX', 'sizeConvY', 'displayType', 'option'])
+    # Append each profile configuration into a variable of type str    
+    header.pop('name')
+    out = genHeader(**header)
+    for dic in listProfiles:
+        dic.pop('name')
+        out += "\n\n" + genHeader(**dic)
+        
+    return out
     
 
 def genHeader(outputImage, xmin, xmax, ymin, ymax,
@@ -1245,7 +1250,11 @@ def checkDictKeys(dictionnary, keys=[], dictName='NOT PROVIDED'):
     Return None if 'dictionnary' has only keys in 'keys', or KeyError if one of the keys is not in 'keys' list.
     """
     
-    
+    for k in dictionnary.keys():
+        if k not in keys:
+            print("KeyError: key '%s' in dictionnary %s is not a valid key among %s" %(k, dictionnary, keys))
+            return KeyError
+    return None
     
 
 def checkInDict(dictionnary, keys=[], dictName='NOT PROVIDED'):
