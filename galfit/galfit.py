@@ -11,6 +11,7 @@ Functions related to automating galfit modelling.
 from wilfried.galfit.models import gendeVaucouleur, genEdgeOnDisk, genExpDisk, genFerrer, genGaussian, genKing, genMoffat, genNuker, genPSF, genSersic, genSky
 from wilfried.utilities.dictionnaries import checkDictKeys, checkInDict, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
+from os.path import isdir
 
 
 ##########################################
@@ -134,7 +135,7 @@ def genFeedme(header, listProfiles):
     return out
 
 
-def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeNames=[]):
+def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeNames=[], path="./feedme/"):
     """
     Make galfit.feedme files using the same profiles.
     
@@ -159,13 +160,29 @@ def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeName
             list of .feedme galfit configuration files
         outputNames: list of str
             list of galaxies .fits files output names in the header
+        path : str
+            location of the feedme file names relative to the current folder or in absolute
     
     Write full galfit.feedme configuration files for many galaxies.
     """
     
     if len(inputNames) != len(outputNames) or len(inputNames) != len(feedmeNames):
-        raise ValueError("Lists intputNames, outputNames and feedmeNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
+        raise ValueError("lists intputNames, outputNames and feedmeNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
     
+    if not isdir(path):
+        raise OSError("Given path directory %s does not exists or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !")
+    
+    for inp, out, fee in zip(inputNames, outputNames, feedmeNames):
+        file = open(path + fee, "w")
+        
+        # Set input and ouput file names
+        header['inputImage']  = inp
+        header['outputImage'] = out
+        
+        # Get formatted text, check in genFeedme that dict keys are okay and write into file if so
+        out = genFeedme(header, listProfiles)
+        file.write(out)
+        file.close()
 
 def genHeader(outputImage, xmin, xmax, ymin, ymax,
               inputImage="none", sigmaImage="none", psfImage="none", maskImage="none", couplingFile="none",
