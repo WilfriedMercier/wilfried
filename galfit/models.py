@@ -244,7 +244,7 @@ def gendeVaucouleur(posX=50, posY=50, magTot=25, re=10, bOvera=1.0, PA=0.0, skip
     Construct a de Vaucouleur function configuration.
     
     Main inputs
-    ----------------
+    -----------
         magTot : float
             total integrated magnitude of the profile. Default is 25 mag.
         posX : int/float
@@ -255,7 +255,7 @@ def gendeVaucouleur(posX=50, posY=50, magTot=25, re=10, bOvera=1.0, PA=0.0, skip
             half-light (effective) radius of the profile (in px). Default is 10 pix.
             
     Additional inputs
-    ---------------
+    -----------------
         bOvera : float between 0 and 1
             axis ratio b/a of the minor over major axes. Default is 1.0.
         comments : dict
@@ -297,27 +297,27 @@ def gendeVaucouleur(posX=50, posY=50, magTot=25, re=10, bOvera=1.0, PA=0.0, skip
                     mainComment='de Vaucouleur function')
 
 
-def genEdgeOnDisk(posX, posY, mu, diskScaleLength, diskScaleHeight, PA=0.0, 
+def genEdgeOnDisk(posX=50, posY=50, mu=20, diskScaleLength=10, diskScaleHeight=2, PA=0.0, 
                   skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
-    Construct an Edge-on Disk function configuration.
+    Construct an Edge-on disk function configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         diskScaleHeight : float
-            disk scale-height perpendicular to the disk
+            disk scale-height perpendicular to the disk (in px). Default is 2 px.
         mu : float
-            central surface brightness (mag/arcsec^2) of the profile
+            central surface brightness (mag/arcsec^2) of the profile. Default is 20 mag/arcsec^2.
         posX : int/float
-            X position of the edge-on disk profile center (in px)
+            X position of the edge-on disk profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the edge-on disk profile center  (in px)
+            Y position of the edge-on disk profile center  (in px). Default is 50 px.
         diskScaleLength : float
-            major axis disk scale-length (in px)
+            major axis disk scale-length (in px). Default is 10 px.
 
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
             In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mu for central surface brightness, etc.).
