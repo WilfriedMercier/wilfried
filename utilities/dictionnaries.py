@@ -77,7 +77,10 @@ def removeKeys(dictionnary, keys=[]):
     
     dicCopy = dictionnary.copy()
     for k in keys:
-        dicCopy.pop(k)
+        try:
+            dicCopy.pop(k)
+        except KeyError:
+            pass
     return dicCopy
     
 
