@@ -239,20 +239,20 @@ def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comment
 #               Profiles avaiblable in galfit                #
 ##############################################################
 
-def gendeVaucouleur(posX=50, posY=50, magTot=25, re=10, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def gendeVaucouleur(posX=50, posY=50, magTot=25.0, re=10.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a de Vaucouleur function configuration.
     
     Main inputs
     -----------
         magTot : float
-            total integrated magnitude of the profile. Default is 25 mag.
+            total integrated magnitude of the profile. Default is 25.0 mag.
         posX : int/float
             X position of the de Vaucouleur profile center (in px). Default is 50 pix.
         poxY : int/float
             Y position of the de Vaucouleur profile center  (in px). Default is 50 pix
         re : float
-            half-light (effective) radius of the profile (in px). Default is 10 pix.
+            half-light (effective) radius of the profile (in px). Default is 10.0 pix.
             
     Additional inputs
     -----------------
@@ -297,7 +297,7 @@ def gendeVaucouleur(posX=50, posY=50, magTot=25, re=10, bOvera=1.0, PA=0.0, skip
                     mainComment='de Vaucouleur function')
 
 
-def genEdgeOnDisk(posX=50, posY=50, mu=20, diskScaleLength=10, diskScaleHeight=2, PA=0.0, 
+def genEdgeOnDisk(posX=50, posY=50, mu=20.0, diskScaleLength=10.0, diskScaleHeight=2.0, PA=0.0, 
                   skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an Edge-on disk function configuration.
@@ -305,15 +305,15 @@ def genEdgeOnDisk(posX=50, posY=50, mu=20, diskScaleLength=10, diskScaleHeight=2
     Main inputs
     -----------
         diskScaleHeight : float
-            disk scale-height perpendicular to the disk (in px). Default is 2 px.
+            disk scale-height perpendicular to the disk (in px). Default is 2.0 px.
         mu : float
-            central surface brightness (mag/arcsec^2) of the profile. Default is 20 mag/arcsec^2.
+            central surface brightness (mag/arcsec^2) of the profile. Default is 20.0 mag/arcsec^2.
         posX : int/float
             X position of the edge-on disk profile center (in px). Default is 50 px.
         poxY : int/float
             Y position of the edge-on disk profile center  (in px). Default is 50 px.
         diskScaleLength : float
-            major axis disk scale-length (in px). Default is 10 px.
+            major axis disk scale-length (in px). Default is 10.0 px.
 
             
     Additional inputs
@@ -357,24 +357,24 @@ def genEdgeOnDisk(posX=50, posY=50, mu=20, diskScaleLength=10, diskScaleHeight=2
                     mainComment='Edge-on disk function')
 
 
-def genExpDisk(posX=50, posY=50, magTot=25, rs=8, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genExpDisk(posX=50, posY=50, magTot=25.0, rs=8.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an exponential disk function configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         magTot : float
-            total integrated magnitude of the profile (in mag/arcsec^2). Default is 25 mag/arcsec^2. 
+            total integrated magnitude of the profile (in mag/arcsec^2). Default is 25.0 mag/arcsec^2. 
         posX : int/float
             X position of the exponential disk profile center (in px). Default is 50 px.
         poxY : int/float
             Y position of the exponential disk profile center  (in px). Default is 50 px.
         rs : float
-            disk scale-length (in px) such that rs = re/1.678, with re the effective radius of an equivalent n=1 Sersic profile. Default is 8 px.
+            disk scale-length (in px) such that rs = re/1.678, with re the effective radius of an equivalent n=1 Sersic profile. Default is 8.0 px.
 
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         bOvera : float between 0 and 1
             axis ratio b/a of the minor over major axes
         comments : dict
@@ -416,24 +416,24 @@ def genExpDisk(posX=50, posY=50, magTot=25, rs=8, bOvera=1.0, PA=0.0, skipCompon
                     mainComment='Exponential function')
 
 
-def genFerrer(posX=50, posY=50, mu=20, rt=5, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, PA=0.0, 
+def genFerrer(posX=50, posY=50, mu=20.0, rt=5.0, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, PA=0.0, 
              skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Ferrer function (generally used to fit bars) configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         mu : float
-            surface brightness (mag/arcsec^2) at radius rb. Default is 20 mag./arcsec^2
+            surface brightness (mag/arcsec^2) at radius rb. Default is 20.0 mag./arcsec^2
         posX : int/float
             X position of the Ferrer profile center (in px). Default is 50 px.
         poxY : int/float
             Y position of the Ferrer profile center  (in px). Default is 50 px.
         rt : float
-            outer truncation radius (in px). Default is 5 px.
+            outer truncation radius (in px). Default is 5.0 px.
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         alphaFerrer : float
             sharpness of the truncation
         betaFerrer : float
@@ -479,23 +479,23 @@ def genFerrer(posX=50, posY=50, mu=20, rt=5, alphaFerrer=3.0, betaFerrer=2.5, bO
                     mainComment='Nuker function')
     
     
-def genGaussian(posX=50, posY=50, magTot=25, FWHM=3, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genGaussian(posX=50, posY=50, magTot=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Gaussian function configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         FWHM : float
-            full width at half maximum of the PSF (in px). Default is 3 px.
+            full width at half maximum of the PSF (in px). Default is 3.0 px.
         magTot : float
-            total integrated magnitude of the profile (in mag/arcsec^2). Default is 25 mag/arcsec^2. 
+            total integrated magnitude of the profile (in mag/arcsec^2). Default is 25.0 mag/arcsec^2. 
         posX : int/float
             X position of the Gaussian profile center (in px). Default is 50 px.
         poxY : int/float
             Y position of the Gaussian profile center  (in px). Default is 50 px.
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         bOvera : float between 0 and 1
             axis ratio b/a of the minor over major axes
         comments : dict
@@ -537,28 +537,28 @@ def genGaussian(posX=50, posY=50, magTot=25, FWHM=3, bOvera=1.0, PA=0.0, skipCom
                     mainComment='Gaussian function')
     
     
-def genKing(posX, posY, mu0, rc, rt, powerlaw=2.0, bOvera=1.0, PA=0.0, 
+def genKing(posX=50, posY=59, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.0, PA=0.0, 
             skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an empirical King profile (generally used to fit globular clusters) configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         mu0 : float
-            central surface brightness (mag/arcsec^2)
+            central surface brightness (mag/arcsec^2). Default is 20.0 mag/arcsec^2.
         powerlaw : float
-            powerlaw (powerlaw=2.0 for a standard King profile)
+            powerlaw (powerlaw=2.0 for a standard King profile). Default is 2.0.
         posX : int/float
-            X position of the King profile center (in px)
+            X position of the King profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the King profile center  (in px)
+            Y position of the King profile center  (in px). Default is 50 px.
         rc : float
-            core radius (in px) 
+            core radius (in px). Default is 3.0 px.
         rt : float
-            truncation radius (in px)
+            truncation radius (in px). Default is 30.0 px.
         
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         bOvera : float between 0 and 1
             axis ratio b/a of the minor over major axes
         comments : dict
@@ -600,23 +600,23 @@ def genKing(posX, posY, mu0, rc, rt, powerlaw=2.0, bOvera=1.0, PA=0.0,
                     mainComment='The Empirical King Profile')
 
     
-def genMoffat(posX, posY, magTot, FWHM, powerlaw=1.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genMoffat(posX=50, posY=50, magTot=25.0, FWHM=3.0, powerlaw=1.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a de Vaucouleur function configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         FWHM : float
-            full width at half maximum of the PSF (in px)
+            full width at half maximum of the PSF (in px). Default is 3.0 px.
         magTot : float
-            total integrated magnitude of the profile
+            total integrated magnitude of the profile. Default is 25.0 mag.
         posX : int/float
-            X position of the Moffat profile center (in px)
+            X position of the Moffat profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the Moffat profile center  (in px)
+            Y position of the Moffat profile center  (in px). Default is 50 px.
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         bOvera : float between 0 and 1
             axis ratio b/a of the minor over major axes
         comments : dict
@@ -660,24 +660,24 @@ def genMoffat(posX, posY, magTot, FWHM, powerlaw=1.0, bOvera=1.0, PA=0.0, skipCo
                     mainComment='Moffat function')
     
     
-def genNuker(posX, posY, mu, rb, alpha=1.0, beta=0.5, gamma=0.7, bOvera=1.0, PA=0.0, 
+def genNuker(posX=50, posY=50, mu=20.0, rb=10.0, alpha=1.0, beta=0.5, gamma=0.7, bOvera=1.0, PA=0.0, 
              skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Nuker function (introduced to fit the nuclear region of nearby galaxies) configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         mu : float
-            surface brightness (mag/arcsec^2) at radius rb
+            surface brightness (mag/arcsec^2) at radius rb. Default is 20.0 mag/arcsec^2.
         posX : int/float
-            X position of the Nuker profile center (in px)
+            X position of the Nuker profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the Nuker profile center  (in px)
+            Y position of the Nuker profile center  (in px). Default is 50 px.
         rb : float
-            break radius (in px) where the slope is the average between \beta and \gamma and where the maximum curvature (in log space) is reached. It roughly corresponds to the radius of transition between the inner and outer powerlaws.
+            break radius (in px) where the slope is the average between \beta and \gamma and where the maximum curvature (in log space) is reached. Default is 10.0 px. It roughly corresponds to the radius of transition between the inner and outer powerlaws.
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         alpha : float
             sharpness of transition between the inner part and the outer part
         beta : float
@@ -725,21 +725,21 @@ def genNuker(posX, posY, mu, rb, alpha=1.0, beta=0.5, gamma=0.7, bOvera=1.0, PA=
                     mainComment='Nuker function')
 
 
-def genPSF(posX, posY, magTot, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genPSF(posX=50, posY=50, magTot=25.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct PSF function configuration. This PSF is technically not a function, but uses the psf image provided in the header to fit a given point source.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         magTot : float
-            total integrated magnitude of the profile
+            total integrated magnitude of the profile. Default is 25.0 mag.
         posX : int/float
-            X position of the profile center (in px)
+            X position of the profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the profile center  (in px)
+            Y position of the profile center  (in px). Default is 50 px.
             
-    Optional inputs
-    ---------------
+    Additioinal inputs
+    ------------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
             In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude,  etc.).
@@ -777,23 +777,23 @@ def genPSF(posX, posY, magTot, skipComponentInResidual=False, fixedParams=[], co
                     mainComment='PSF fit')
 
 
-def genSersic(posX, posY, magTot, re, n=4, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genSersic(posX=50, posY=50, magTot=25.0, re=10.0, n=4, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Sersic function configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         magTot : float
-            total integrated magnitude of the profile
+            total integrated magnitude of the profile. Default is 25.0 mag.
         posX : int/float
-            X position of the Sersic profile center (in px)
+            X position of the Sersic profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the Sersic profile center  (in px)
+            Y position of the Sersic profile center  (in px). Default is 50 px.
         re : float
-            half-light (effective) radius of the profile (in px)
+            half-light (effective) radius of the profile (in px). Default is 10.0 px.
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         bOvera : float between 0 and 1
             axis ratio b/a of the minor over major axes
         comments : dict
@@ -837,21 +837,21 @@ def genSersic(posX, posY, magTot, re, n=4, bOvera=1.0, PA=0.0, skipComponentInRe
                     mainComment='Sersic function')
 
 
-def genSky(background, xGradient, yGradient, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genSky(background=1.0, xGradient=0.0, yGradient=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a sky function configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         background : float
-            sky background ADU counts
+            sky background  (in ADU counts). Default is 1.0 ADU.
         xGradient : float
-            sky gradient along x, dsky/dx (in ADU/px)
+            sky gradient along x, dsky/dx (in ADU/px). Default is 0.0 ADU/px.
         yGradient : float
-            sky gradient along y, dsky/dy (in ADU/px)
+            sky gradient along y, dsky/dy (in ADU/px). Default is 0.0 ADU/px.
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
             In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'background' for the background level, xGradient for the sky gradient along x, etc.).
@@ -891,19 +891,19 @@ def genSky(background, xGradient, yGradient, skipComponentInResidual=False, fixe
 #                   Additional galfit tag functions                  #
 ######################################################################
     
-def bendingModes(listModes, listModesValues, fixedParams=[], comments=None, noComments=False):
+def bendingModes(listModes=[1], listModesValues=[0.5], fixedParams=[], comments=None, noComments=False):
     """
     Construct bending modes galfit configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         listModes : list of int
-            mode number
+            mode number. Default is [1].
         listModesValues : list of floats
-            value of the corresponding mode
+            value of the corresponding mode. Default is [0.5].
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
             The dictionnary key names are the modes number (ex: 1 for bending mode 1, 2 for bending mode 2, etc.).
@@ -931,19 +931,19 @@ def bendingModes(listModes, listModesValues, fixedParams=[], comments=None, noCo
                     comments=comments, noComments=noComments, removeLine0=True, prefix="B")
     
     
-def boxy_diskyness(value, isFixed, comment=None):
+def boxy_diskyness(value=0.5, isFixed=False, comment=None):
     """
     Construct a boxy/diskyness (genralised ellipses) galfit configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         isFixed : bool
             whether to fix the parameter during galfit fitting routine
         value : float
             value of the diskyness/boxyness parameter (negative = more disky, positive = more boxy)
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         comment : str
             comment to append at the end of the line
             
@@ -956,21 +956,21 @@ def boxy_diskyness(value, isFixed, comment=None):
     return genModel(None, [0], [value], [int(not isFixed)], [formats['boxy_diskyFormat']], comments=[comment], noComments=False, removeLine0=True, prefix="c")
     
     
-def fourierModes(listModes, listModesAmplitudes, listModesPhases, fixedParams=[], comments=None, noComments=False):
+def fourierModes(listModes=[1], listModesAmplitudes=[1.0], listModesPhases=[0.0], fixedParams=[], comments=None, noComments=False):
     """
     Construct Azimuthal fourier modes galfit configuration.
     
-    Mandatory inputs
-    ----------------
+    Main inputs
+    -----------
         listModes : list of int
-            mode number
+            mode number. Default is [1].
         listModesAmplitudes : list of floats
-            amplitudes of the corresponding mode
+            amplitudes of the corresponding mode. Default is [1.0].
         listModesPhases : list of floats
-            phases of the corresponding mode
+            phases of the corresponding mode. Default is [0.0].
             
-    Optional inputs
-    ---------------
+    Additional inputs
+    -----------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
             The dictionnary key names are the modes number followed by A for amplitude and P for phase (ex: '1A' for the amplitude of the fourier mode 1, '2P' for the phase of Fourier mode 2, etc.).
