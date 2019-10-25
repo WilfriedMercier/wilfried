@@ -98,8 +98,29 @@ def genFeedme(header, listProfiles):
             list of dictionnaries. Each dictionnary corresponds to a profile:
                 - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
                     'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
-                - key names are input parameter names. See each profile description, to know which key to use
+                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
                 - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
+            
+            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
+                'fourier', 'bending', 'boxyness'
+            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
+            
+            Example
+            -------
+                Say one wants to make a galfit configuration with a:
+                    - output image output.fits and a zeroPointMag = 25.4 mag
+                    - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
+                    - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
+                    - bending modes 1 and 3 with values 0.2 and 0.4 respectively added to the Nuker profile
+                    
+                Then one may write something like
+                    header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
+                    sersic  = {'name':'sersic', 'posX':45, 'posY':56, 'magTot':25, 're':10, 'n':1, 'PA':100, 'isFixed':['n']}
+                    
+                    bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
+                    nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
+                    
+                    genFeedme(header, [sersic, nuker])
                 
     Return a full galfit.feedme configuration with header and body as formatted text.
     """
@@ -157,9 +178,9 @@ def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeName
         inputNames : list of str
             list of galaxies .fits files input names in the header
         feedmeNames : list of str
-            list of .feedme galfit configuration files
+            list of .feedme galfit configuration files. If not provided, the feedme files will have the same name as the input ones but with .feedme extensions at the end.
         outputNames: list of str
-            list of galaxies .fits files output names in the header
+            list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the extension.
         path : str
             location of the feedme file names relative to the current folder or in absolute
     
@@ -170,7 +191,7 @@ def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeName
         raise ValueError("lists intputNames, outputNames and feedmeNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
     
     if not isdir(path):
-        raise OSError("Given path directory %s does not exists or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !")
+        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !")
     
     for inp, out, fee in zip(inputNames, outputNames, feedmeNames):
         file = open(path + fee, "w")
