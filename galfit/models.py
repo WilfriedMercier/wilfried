@@ -357,20 +357,20 @@ def genEdgeOnDisk(posX=50, posY=50, mu=20, diskScaleLength=10, diskScaleHeight=2
                     mainComment='Edge-on disk function')
 
 
-def genExpDisk(posX, posY, magTot, rs, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genExpDisk(posX=50, posY=50, magTot=25, rs=8, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an exponential disk function configuration.
     
     Mandatory inputs
     ----------------
         magTot : float
-            total integrated magnitude of the profile
+            total integrated magnitude of the profile (in mag/arcsec^2). Default is 25 mag/arcsec^2. 
         posX : int/float
-            X position of the exponential disk profile center (in px)
+            X position of the exponential disk profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the exponential disk profile center  (in px)
+            Y position of the exponential disk profile center  (in px). Default is 50 px.
         rs : float
-            disk scale-length (in px) such that rs = re/1.678, with re the effective radius of an equivalent n=1 Sersic profile
+            disk scale-length (in px) such that rs = re/1.678, with re the effective radius of an equivalent n=1 Sersic profile. Default is 8 px.
 
             
     Optional inputs
