@@ -617,7 +617,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
             
     if showLegend:
         
-        def isOrisNotNone(data, default):
+        def setDefault(data, default):
             for num, i in enumerate(data):
                 if i is None:
                     data[num] = default
@@ -625,7 +625,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
         
         if pltFlg:
             for h, mkfclr, mkeclr, lc, c in zip(handles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor, color):
-                mkfclr, mkeclr, lc = isOrisNotNone([mkfclr, mkeclr, lc], c)
+                mkfclr, mkeclr, lc = setDefault([mkfclr, mkeclr, lc], c)
                 
                 h.set_color(lc)
                 h.set_markerfacecolor(mkfclr)
@@ -638,7 +638,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
                              ncol=legendNcols)
             
             for marker, mkfclr, mkeclr, lc in zip(leg.legendHandles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor):
-                mkfclr = isOrisNotNone([mkfclr], 'black')
+                mkfclr = setDefault([mkfclr], 'black')
                 
                 marker.set_color(mkfclr)
                 
@@ -694,7 +694,8 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
 
 
 
-def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={}, titleProperties={}, colorbarProperties={}, legendProperties={},
+def asManyPlots2(numPlot, datax, datay, 
+                 generalProperties={}, axesProperties={}, titleProperties={}, colorbarProperties={}, legendProperties={},
                 marker='o', color='black',
                 zorder=None , showLegend=False, linestyle='None',
                 locLegend='best',
@@ -716,7 +717,7 @@ def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={},
                   For instance, if one writes grid = gridspec(2, 1, height_ratios=[1, 0.2]) this should generate a grid with the second subplot below the first one, with the same width and a height 1/5th of the figure. Then one can provide grid[0] (grid[1]) for numPlot if one wants to plot on the first (second) subplot.
             
         datax: list of numpy arrays/lists
-            list of x-axis data which should be plotted. Each data belongs to a single array. A LIST MUST BE PROVIDED, so even if only one data is plotted you should write [yourDataArray] and not directly yourDataArray.
+            list of x-axis data which should be plotted. Each data belongs to a single array. A LIST MUST BE PROVIDED, so even if just one data is plotted one should write [yourDataArray] and not directly yourDataArray.
             
             You may want to plot your data differently on the same plot (for instance one usual line plot and one scatter plot). This can be set in plotProperties dictionnary using the key 'type' (see below for more information).
             asManyPlots provide three kinds of plots:
@@ -972,14 +973,31 @@ def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={},
     #                    Fonctions used to speed things up in the code                         #
     ############################################################################################
     
-    def isType(data, typeToCheck, varName):
+    def isType(data, typeToCheck, varName='NOT PROVIDED'):
+        """
+        Check data type.
+        
+        Mandatory inputs
+        ----------------
+            data : any type
+                data we want to check the type
+            typeToCheck : any type
+                type data should have
+                
+        Optional inputs
+        ---------------
+            varName : str
+                the name of the variable we want to test. It is used if an error is raised.
+        
+        Raise a TypeError if the data type is not correct or return True if it is.
+        """
+        
         typ = type(data)
         if typ!=typeToCheck:
-            print("TypeError: the given variable '%s' has type %s but the program requires it to have type %s. In order for the program to work, please provide the correct type. Cheers !" %(varName, typ, typeToCheck, ))
-            return TypeError
-        return None
+            raise TypeError("TypeError: the given variable '%s' has type %s but the program requires it to have type %s. In order for the program to work, please provide the correct type. Cheers !" %(varName, typ, typeToCheck, ))
+        return True
     
-    def isOrisNotNone(data, default=None):
+    def setDefault(data, default=None):
         for num, i in enumerate(data):
             if i is None:
                 data[num] = default
@@ -995,24 +1013,23 @@ def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={},
         return out
     
     class gatherThingsUp:
+        """
+        An empty class used to store data within the same object.
+        """
         info = "A simple container to gather things up."
         
     ################################################################################################
-    #           Checking datax and datay are dictionnaries with correct keys and values            #
+    #                  Checking datax and datay are lists with a similar shape                     #
     ################################################################################################
     
-    if not isType(datax, list, "dataX"):
-        return TypeError
-    
-    if not isType(datay, list, "dataY"):
-        return TypeError
+    isType(datax, list, "datax")
+    isType(datay, list, "datay")
     
     # Checking shape consistency between datax and datay
     shpX = np.shape(datax)
     shpY = np.shape(datay)
     if shpX != shpY:
-        print("Shape inconsistency: datax has shape %s but datay has shape %s. Both datax and datay should be lists with the same shape. Please provide data with similar shape. Cheers !" %(str(shpX), str(shpY)))
-        return ValueError
+        raise ValueError("Shape inconsistency: datax has shape %s but datay has shape %s. Both datax and datay should be lists with the same shape. Please provide data with similar shape. Cheers !" %(str(shpX), str(shpY)))
     lx = len(datax)
     
     ############################################################################################
@@ -1023,9 +1040,7 @@ def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={},
     
     # General layout properties
     layout = gatherThingsUp()
-    if isType(generalProperties, dict, 'generalProperties') == TypeError:
-        return TypeError
-    else:
+    if isType(generalProperties, dict, 'generalProperties') is None:
         layout.size, layout.hideTicksLabels, layout.scale, layout.tickDirection = fillVariablesFromDict(generalProperties, keys=['size', 'hideTicksLabels', 'scale', 'tickDirection'], default=[24, False, 'linear', 'in'])
     
     # Axes properties dict
@@ -1233,7 +1248,7 @@ def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={},
     if showLegend:        
         if pltFlg:
             for h, mkfclr, mkeclr, lc, c in zip(handles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor, color):
-                mkfclr, mkeclr, lc = isOrisNotNone([mkfclr, mkeclr, lc], c)
+                mkfclr, mkeclr, lc = setDefault([mkfclr, mkeclr, lc], c)
                 
                 h.set_color(lc)
                 h.set_markerfacecolor(mkfclr)
@@ -1246,7 +1261,7 @@ def asManyPlots2(numPlot, datax, datay, generalProperties={}, axesProperties={},
                              ncol=legendNcols)
             
             for marker, mkfclr, mkeclr, lc in zip(leg.legendHandles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor):
-                mkfclr = isOrisNotNone([mkfclr], 'black')
+                mkfclr = setDefault([mkfclr], 'black')
                 
                 marker.set_color(mkfclr)
         
