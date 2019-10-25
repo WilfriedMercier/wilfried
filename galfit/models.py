@@ -479,20 +479,20 @@ def genFerrer(posX=50, posY=50, mu=20, rt=5, alphaFerrer=3.0, betaFerrer=2.5, bO
                     mainComment='Nuker function')
     
     
-def genGaussian(posX, posY, magTot, FWHM, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genGaussian(posX=50, posY=50, magTot=25, FWHM=3, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Gaussian function configuration.
     
     Mandatory inputs
     ----------------
         FWHM : float
-            full width at half maximum of the PSF (in px)
+            full width at half maximum of the PSF (in px). Default is 3 px.
         magTot : float
-            total integrated magnitude of the profile
+            total integrated magnitude of the profile (in mag/arcsec^2). Default is 25 mag/arcsec^2. 
         posX : int/float
-            X position of the Gaussian profile center (in px)
+            X position of the Gaussian profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the Gaussian profile center  (in px)
+            Y position of the Gaussian profile center  (in px). Default is 50 px.
             
     Optional inputs
     ---------------
