@@ -416,7 +416,7 @@ def genExpDisk(posX=50, posY=50, magTot=25, rs=8, bOvera=1.0, PA=0.0, skipCompon
                     mainComment='Exponential function')
 
 
-def genFerrer(posX, posY, mu, rt, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, PA=0.0, 
+def genFerrer(posX=50, posY=50, mu=20, rt=5, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, PA=0.0, 
              skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Ferrer function (generally used to fit bars) configuration.
@@ -424,13 +424,13 @@ def genFerrer(posX, posY, mu, rt, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, P
     Mandatory inputs
     ----------------
         mu : float
-            surface brightness (mag/arcsec^2) at radius rb
+            surface brightness (mag/arcsec^2) at radius rb. Default is 20 mag./arcsec^2
         posX : int/float
-            X position of the Ferrer profile center (in px)
+            X position of the Ferrer profile center (in px). Default is 50 px.
         poxY : int/float
-            Y position of the Ferrer profile center  (in px)
+            Y position of the Ferrer profile center  (in px). Default is 50 px.
         rt : float
-            outer truncation radius (in px)
+            outer truncation radius (in px). Default is 5 px.
             
     Optional inputs
     ---------------
