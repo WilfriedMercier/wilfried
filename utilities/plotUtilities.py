@@ -1003,7 +1003,7 @@ def asManyPlots2(numPlot, datax, datay,
                 data[num] = default
         return data
     
-    def fillVariablesFromDict(dictionnary, keys=None, defaultVals=None):
+    def setListFromDict(dictionnary, keys=None, defaultVals=None):
         out = []
         for k, df in zip(keys, defaultVals):
             if k in dictionnary:
@@ -1030,7 +1030,16 @@ def asManyPlots2(numPlot, datax, datay,
     shpY = np.shape(datay)
     if shpX != shpY:
         raise ValueError("Shape inconsistency: datax has shape %s but datay has shape %s. Both datax and datay should be lists with the same shape. Please provide data with similar shape. Cheers !" %(str(shpX), str(shpY)))
-    lx = len(datax)
+    
+    # If everything went fine, we can define a few general properties useful later on
+    data, data.x, data.y        = [gatherThingsUp()]*3
+    data.x.data = datax
+    data.y.data = datay
+    data.x.min  = np.min(data.x.data)
+    data.x.max  = np.max(data.x.data)
+    data.y.min  = np.min(data.y.data)
+    data.y.max  = np.max(data.y.data)
+    data.len    = len(data.x.data)
     
     ############################################################################################
     #           Checking input type and setting values from optional dictionnaries             #
@@ -1040,31 +1049,28 @@ def asManyPlots2(numPlot, datax, datay,
     
     # General layout properties
     layout = gatherThingsUp()
-    if isType(generalProperties, dict, 'generalProperties') is None:
-        layout.size, layout.hideTicksLabels, layout.scale, layout.tickDirection = fillVariablesFromDict(generalProperties, keys=['size', 'hideTicksLabels', 'scale', 'tickDirection'], default=[24, False, 'linear', 'in'])
+    if isType(generalProperties, dict, 'generalProperties'):
+        layout.size, layout.hideTicksLabels, layout.scale, layout.tickDirection = setListFromDict(generalProperties, keys=['size', 'hideTicksLabels', 'scale', 'tickDirection'], default=[24, False, 'linear', 'in'])
     
     # Axes properties dict
     xaxis = gatherThingsUp()
     yaxis = gatherThingsUp()
-    if isType(axesProperties, dict, 'axesProperties') == TypeError:
-        return TypeError
-    else:
-        xaxis.label, yaxis.label, xaxis.hideTicksLabels, yaxis.hideTicksLabels, xaxis.tickSize, yaxis.tickSize, xaxis.size, yaxis.size, xaxis.scale, yaxis.scale, xaxis.pos, yaxis.pos, xaxis.tickDirection, yaxis.tickDirection, xaxis.min, xaxis.max, yaxis.min, yaxis.max = fillVariablesFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticksLabels", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xscale", "yscale", "xAxisPos", "yAxisPos", "xTickDirection", "yTickDirection", "xmin", "xmax", "ymin", "ymax"], default=['', '', False, False, layout.size, layout.size, layout.size, layout.size, layout.scale, layout.scale, "bottom", "left", layout.tickDirection, layout.tickDirection, None, None, None, None])
-        # NEED TO ADD DEFAULT VALUES TO XMIN, XMAX, YMIN, YMAX IN THE LINE ABOVE
+    if isType(axesProperties, dict, 'axesProperties'):
+        xaxis.label, yaxis.label, xaxis.hideTicksLabels, yaxis.hideTicksLabels, xaxis.tickSize, yaxis.tickSize, xaxis.size, yaxis.size, xaxis.scale, yaxis.scale, xaxis.pos, yaxis.pos, xaxis.tickDirection, yaxis.tickDirection, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticksLabels", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xscale", "yscale", "xAxisPos", "yAxisPos", "xTickDirection", "yTickDirection", "xmin", "xmax", "ymin", "ymax"], default=['', '', False, False, layout.size, layout.size, layout.size, layout.size, layout.scale, layout.scale, "bottom", "left", layout.tickDirection, layout.tickDirection, data.x.min, data.x.max, data.y.min, data.y.max])
         
     # Title properties dict
     title = gatherThingsUp()
     if isType(titleProperties, dict, 'titleProperties') == TypeError:
         return TypeError
     else:
-        title.color, title.font, title.label, title.size, title.style, title.weight, title.position, title.verticalOffset = fillVariablesFromDict(titleProperties, keys=["color", "font", "label", "size", "style", "weight", "position", "verticalOffset"], default=['black', 'sans-serif', '', 26, 'normal', 'regular', 'center', None])
+        title.color, title.font, title.label, title.size, title.style, title.weight, title.position, title.verticalOffset = setListFromDict(titleProperties, keys=["color", "font", "label", "size", "style", "weight", "position", "verticalOffset"], default=['black', 'sans-serif', '', 26, 'normal', 'regular', 'center', None])
     
     # Colormap properties dict
     colorbar = gatherThingsUp()
     if isType(colorbarProperties, dict, 'colorbarProperties') == TypeError:
         return TypeError
     else:
-        colorbar.hide, colorbar.orientation, colorbar.cmap, colorbar.min, colorbar.max, colorbar.offsetCenter, colorbar.ticksLabels, colorbar.ticksLabelsSize, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale, colorbar.label, colorbar.labelSize, colorbar.ticksSize, colorbar.ticks = fillVariablesFromDict(colorbarProperties, keys=["hide", "orientation", "cmap", "min", "max", "offsetCenter", "ticks", "ticksLabels", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale", "label", "labelSize", "ticksLabelsSize"], default=[False, 'vertical', 'Greys'] + [None]*5 + ['linear', 0.1, 1, ''] + [24]*2)
+        colorbar.hide, colorbar.orientation, colorbar.cmap, colorbar.min, colorbar.max, colorbar.offsetCenter, colorbar.ticksLabels, colorbar.ticksLabelsSize, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale, colorbar.label, colorbar.labelSize, colorbar.ticksSize, colorbar.ticks = setListFromDict(colorbarProperties, keys=["hide", "orientation", "cmap", "min", "max", "offsetCenter", "ticks", "ticksLabels", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale", "label", "labelSize", "ticksLabelsSize"], default=[False, 'vertical', 'Greys'] + [None]*5 + ['linear', 0.1, 1, ''] + [24]*2)
         #MIN, MAX MUST BE COMPUTED
         #OFFSET CENTER IS NONE, SO NORMALIZATION SHOULD BE DIFFERENT, TICKS AND TICKSLABELS ARE NONE, CHECK IF THIS IS OKAY
     
@@ -1073,7 +1079,7 @@ def asManyPlots2(numPlot, datax, datay,
     if isType(legendProperties, dict, 'legendProperties') == TypeError:
         return TypeError
     else:
-        legend.loc, legend.ncols, legend.size, legend.labels, legend.lineColor, legend.markerEdgeColor, legend.markerFaceColor = fillVariablesFromDict(legendProperties, keys=['loc', 'ncols', 'size',' labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, 24, ['']*lx] + [None]*3)
+        legend.loc, legend.ncols, legend.size, legend.labels, legend.lineColor, legend.markerEdgeColor, legend.markerFaceColor = setListFromDict(legendProperties, keys=['loc', 'ncols', 'size',' labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, 24, ['']*lx] + [None]*3)
         
     
     
