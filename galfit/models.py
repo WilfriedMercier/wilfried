@@ -239,25 +239,25 @@ def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comment
 #               Profiles avaiblable in galfit                #
 ##############################################################
 
-def gendeVaucouleur(posX, posY, magTot, re, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def gendeVaucouleur(posX=50, posY=50, magTot=25, re=10, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a de Vaucouleur function configuration.
     
-    Mandatory inputs
+    Main inputs
     ----------------
         magTot : float
-            total integrated magnitude of the profile
+            total integrated magnitude of the profile. Default is 25 mag.
         posX : int/float
-            X position of the de Vaucouleur profile center (in px)
+            X position of the de Vaucouleur profile center (in px). Default is 50 pix.
         poxY : int/float
-            Y position of the de Vaucouleur profile center  (in px)
+            Y position of the de Vaucouleur profile center  (in px). Default is 50 pix
         re : float
-            half-light (effective) radius of the profile (in px)
+            half-light (effective) radius of the profile (in px). Default is 10 pix.
             
-    Optional inputs
+    Additional inputs
     ---------------
         bOvera : float between 0 and 1
-            axis ratio b/a of the minor over major axes
+            axis ratio b/a of the minor over major axes. Default is 1.0.
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
             In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
@@ -271,16 +271,16 @@ def gendeVaucouleur(posX, posY, magTot, re, bOvera=1.0, PA=0.0, skipComponentInR
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
         noComments : boolean
-            whether to not provide any comments or not
+            whether to not provide any comments or not. Default is False.
         PA : int/float
-            position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.
+            position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°. Default is 0°.
         fixedParams : list
             list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
             For instance, if one wants to fix re and magTot, one may provide fixedParams=["re", "magTot"] in the function call.
         skipComponentInResidual : boolean
-            whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
+            whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model. Default is False.
         
-    Returns a complete de Vaucouleur function galfit configuration as formatted text.
+    Return a complete de Vaucouleur function galfit configuration as formatted text.
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
