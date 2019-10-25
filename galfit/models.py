@@ -31,32 +31,32 @@ formats = {'posFormat':"%.1f",
            'boxy_diskyFormat':"%.2f"
           }
 
-defaultComments = {'object':'Object type', 
-                   'pos':'position x, y            [pixel]',
-                   'magTot':'total magnitude',
-                   're':'effective radius R_e      [pixel]',
-                   'n':'Sersic exponent (deVauc=4, expdisk=1)',
-                   'bOvera':'axis ratio (b/a)',
-                   'PA':'position angle (PA)      [Degrees: Up=0, Left=90]',
-                   'skipComponentInResidual':'Skip this model in output image?  (yes=1, no=0)',
-                   'mu':'mu(Rb)                   [surface brightness mag. at Rb]',
-                   'rb':'break radius Rb          [pixel]',
-                   'alpha':'alpha  (sharpness of transition)',
-                   'beta':'beta   (outer powerlaw slope)',
-                   'gamma':'gamma  (inner powerlaw slope)',
-                   'rs':'scale-length R_s (R_e = 1.678R_s)     [pixel]',
-                   'diskScaleLength':'disk scale-length        [pixel]',
-                   'diskScaleHeight':'disk scale-height        [pixel]',
-                   'FWHM':'FWHM                                [pixel]',
-                   'powerlaw':'powerlaw',
-                   'rt':'Outer truncation radius               [pixel]',
-                   'alphaFerrer':'Alpha (outer truncation sharpness)',
-                   'betaFerrer':'Beta (central slope)',
-                   'mu0':'mu(0) (Central surface brightness in mag/arcsec^2)',
-                   'rc':'Core radius Rc                        [pixel]',
-                   'background':'sky background                [ADU counts]',
-                   'xGradient':'dsky/dx (sky gradient in x)',
-                   'yGradient':'dsky/dy (sky gradient in y)'
+defaultComments = {'object':                    'Object type', 
+                   'pos':                       'position x, y                         [pixel]',
+                   'magTot':                    'total magnitude',
+                   're':                        'effective radius R_e                  [pixel]',
+                   'n':                         'Sersic exponent (deVauc=4, expdisk=1)',
+                   'bOvera':                    'axis ratio (b/a)',
+                   'PA':                        'position angle (PA)                   [Degrees: Up=0, Left=90]',
+                   'skipComponentInResidual':   'Skip this model in output image?  (yes=1, no=0)',
+                   'mu':                        'mu(Rb)                                [surface brightness mag. at Rb]',
+                   'rb':                        'break radius Rb                       [pixel]',
+                   'alpha':                     'alpha  (sharpness of transition)',
+                   'beta':                      'beta   (outer powerlaw slope)',
+                   'gamma':                     'gamma  (inner powerlaw slope)',
+                   'rs':                        'scale-length R_s (R_e = 1.678R_s)     [pixel]',
+                   'diskScaleLength':           'disk scale-length                     [pixel]',
+                   'diskScaleHeight':           'disk scale-height                     [pixel]',
+                   'FWHM':                      'FWHM                                  [pixel]',
+                   'powerlaw':                  'powerlaw',
+                   'rt':                        'Outer truncation radius               [pixel]',
+                   'alphaFerrer':               'Alpha (outer truncation sharpness)',
+                   'betaFerrer':                'Beta (central slope)',
+                   'mu0':                       'mu(0) (Central surface brightness in mag/arcsec^2)',
+                   'rc':                        'Core radius Rc                        [pixel]',
+                   'background':                'sky background                        [ADU counts]',
+                   'xGradient':                 'dsky/dx (sky gradient in x)',
+                   'yGradient':                 'dsky/dy (sky gradient in y)'
                   }
 
 
@@ -537,7 +537,7 @@ def genGaussian(posX=50, posY=50, magTot=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, ski
                     mainComment='Gaussian function')
     
     
-def genKing(posX=50, posY=59, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.0, PA=0.0, 
+def genKing(posX=50, posY=50, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.0, PA=0.0, 
             skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an empirical King profile (generally used to fit globular clusters) configuration.
