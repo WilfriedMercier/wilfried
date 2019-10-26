@@ -1107,10 +1107,10 @@ def asManyPlots2(numPlot, datax, datay,
         layout.textsize, layout.hideTicksLabels, layout.scale, layout.tickDirection = setListFromDict(generalProperties, keys=['textsize', 'hideTicksLabels', 'scale', 'tickDirection'], default=[24, False, 'linear', 'in'])
     
     # Axes properties dict
-    xaxis = gatherThingsUp()
-    yaxis = gatherThingsUp()
+    xaxis, xaxis.label, xaxis.ticks = [gatherThingsUp()]*3
+    yaxis, yaxis.label, yaxis.ticks = [gatherThingsUp()]*3
     if isType(axesProperties, dict, 'axesProperties'):
-        xaxis.label, yaxis.label, xaxis.hideTicksLabels, yaxis.hideTicksLabels, xaxis.tickSize, yaxis.tickSize, xaxis.size, yaxis.size, xaxis.scale, yaxis.scale, xaxis.pos, yaxis.pos, xaxis.tickDirection, yaxis.tickDirection, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticksLabels", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xscale", "yscale", "xAxisPos", "yAxisPos", "xTickDirection", "yTickDirection", "xmin", "xmax", "ymin", "ymax"], default=['', '', False, False, layout.size, layout.size, layout.size, layout.size, layout.scale, layout.scale, "bottom", "left", layout.tickDirection, layout.tickDirection, data.x.min, data.x.max, data.y.min, data.y.max])
+        xaxis.label.text, yaxis.label.text, xaxis.ticks.hideLabels, yaxis.ticks.hideLabels, xaxis.tick.size, yaxis.tick.size, xaxis.text.size, yaxis.text.size, xaxis.scale, yaxis.scale, xaxis.pos, yaxis.pos, xaxis.ticks.direction, yaxis.ticks.direction, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticksLabels", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xscale", "yscale", "xAxisPos", "yAxisPos", "xTickDirection", "yTickDirection", "xmin", "xmax", "ymin", "ymax"], default=['', '', False, False, layout.size, layout.size, layout.size, layout.size, layout.scale, layout.scale, "bottom", "left", layout.tickDirection, layout.tickDirection, data.x.min, data.x.max, data.y.min, data.y.max])
         
     # Title properties dict
     title = gatherThingsUp()
@@ -1118,9 +1118,9 @@ def asManyPlots2(numPlot, datax, datay,
         title.color, title.font, title.label, title.size, title.style, title.weight, title.position, title.verticalOffset = setListFromDict(titleProperties, keys=["color", "font", "label", "size", "style", "weight", "position", "verticalOffset"], default=['black', 'sans-serif', '', 26, 'normal', 'regular', 'center', None])
     
     # Colormap properties dict
-    colorbar = gatherThingsUp()
+    colorbar, colorbar.ticks, colorbar.label, colorbar.cmap = [gatherThingsUp()]*4
     if isType(colorbarProperties, dict, 'colorbarProperties'):
-        colorbar.hide, colorbar.orientation, colorbar.cmap, colorbar.offsetCenter, colorbar.min, colorbar.max, colorbar.ticksLabels, colorbar.ticksLabelsSize, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale, colorbar.label, colorbar.labelSize, colorbar.ticksSize, colorbar.ticks = setListFromDict(colorbarProperties, keys=["hide", "orientation", "cmap", "min", "max", "offsetCenter", "ticks", "ticksLabels", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale", "label", "labelSize", "ticksLabelsSize"], default=[False, 'vertical', 'Greys', 0] + [None]*4 + ['linear', 0.1, 1, ''] + [24]*2)
+        colorbar.hide, colorbar.orientation, colorbar.cmap.name, colorbar.cmap.offsetCenter, colorbar.cmap.min, colorbar.cmap.max, colorbar.ticks, colorbar.ticks.labels, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale, colorbar.label.text, colorbar.label.size, colorbar.ticks.labelsSize, colorbar.ticks.size = setListFromDict(colorbarProperties, keys=["hide", "orientation", "cmap", "offsetCenter", "min", "max", "ticks", "ticksLabels", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale", "label", "labelSize", "ticksLabelsSize", "ticksSize"], default=[False, 'vertical', 'Greys', 0, None, None, None, None, 2, 'linear', 0.1, 1, '', 24, 24, 24])
         
         # TICKS AND TICKSLABELS ARE NONE, CHECK IF THIS IS OKAY
         
@@ -1310,8 +1310,8 @@ def asManyPlots2(numPlot, datax, datay,
         col = plt.colorbar(sct, orientation=colorbarOrientation)
         col.ax.tick_params(labelsize=colorbarTicksLabelsSize)
         
-        if colorbarLabel is not None:
-            col.set_label(colorbarLabel, size=colorbarLabelSize)
+        if colorbar.label is not None:
+            col.set_label(colorbar.label, size=colorbar.labelSize)
         if colorbarTicks is not None:
             col.set_ticks(colorbarTicks)
         if colorbarTicksLabels is not None:
