@@ -160,7 +160,7 @@ def genFeedme(header, listProfiles):
     return out
 
 
-def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], path="./feedme/"):
+def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", constraints=None):
     """
     Make galfit.feedme files using the same profiles.
     
@@ -194,7 +194,7 @@ def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
                     
                 Then one may write something like
                     >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
-                    >>> sersic  = {'name':'sersic', 'posX':45, 'posY':56, 'magTot':25, 're':10, 'n':1, 'PA':100, 'isFixed':['n']}
+                    >>> sersic  = {'name':'sersic', 'posX':45, 'posY':56, 'magTot':25, 're':10, 'n':1, 'PA':100, 'fixedParams':['n']}
                     
                     >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
                     >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
@@ -205,38 +205,104 @@ def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
     Optional inputs
     ---------------
         feedmeNames : list of str
-            list of .feedme galfit configuration files. If not provided, the feedme files will have the same name as the input ones but with .feedme extensions at the end.
+            list of .feedme galfit configuration files. If not provided, the feedme files will have the same name as the input ones but with .feedme extensions at the end.    
         outputNames: list of str
             list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
-        path : str
+        pathFeedme : str
             location of the feedme file names relative to the current folder or in absolute
+        pathIn : str
+            location of the input file names relative to the current folder or in absolute
+        pathOut : str
+            location of the output file names relative to the current folder or in absolute
+            
+    Additional input
+    ----------------
+        This additional parameter can be used to set constraints between components parameters (such as fixing some parameter range).
+    
+        constraints : dict
+            list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
+            
+            Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
+                
+                Dictionaries keys
+                -----------------
+                
+                'constraint' : dict with keys 'type' and 'value'
+                    set the type of constraint one wants to use and potentially the related range. 
+                    The possible 'type' of constraint are:
+                        - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
+                        - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
+                        - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
+                        - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
+                        - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
+                        - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
+                    
+                    And the corresponding values are:
+                        - 'offset' for an offset and 'ratio' for a ratio
+                        - a list of two float to define bounds for the other types
+                
+                'components' : int/list of int
+                    number (of appearance in the listProfiles) of the galfit models one wants to constrain.:
+                        - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
+                        - for both relative and absolute ranges, a single profile number (int) must be given
+                        - for component wise ranges or ratios, a list of two numbers (int) must be provided
+                        
+                'parameter' : str
+                    name of the parameter to contrain
     
     Write full galfit.feedme configuration files for many galaxies.
     """
+    
+    ################################################
+    #          Checking input parameters           #
+    ################################################
     
     if feedmeNames == []:
         feedmeNames = [i.replace('.fits', '.feedme') for i in inputNames]
     
     if outputNames == []:
-        outputNames = [i.replace('.fits', '_out.fits') for i in outputNames]
+        outputNames = [i.replace('.fits', '_out.fits') for i in inputNames]
     
     if len(inputNames) != len(outputNames) or len(inputNames) != len(feedmeNames):
         raise ValueError("Lists intputNames, outputNames and feedmeNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
     
-    if not isdir(path):
-        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !")
+    if not isdir(pathIn):
+        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathIn)
+    if not isdir(pathOut):
+        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathOut)
+    if not isdir(pathFeedme):
+        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathFeedme)
+    
+    ################################################
+    #                Writing files                 #
+    ################################################
     
     for inp, out, fee in zip(inputNames, outputNames, feedmeNames):
-        file = open(path + fee, "w")
+
+        # output .constraint file
+        if constraints is not None:
+            fname = pathFeedme + fee.replace('.feedme', '.constraints')
+            with open(fname, "w") as file:
+                # Get formatted text
+                tmp = genConstraint(constraints)
+                file.write(tmp)
+                
+                # set header key to add the file name into the .feedme file
+                header['couplingFile'] = fname
         
-        # Set input and ouput file names
-        header['inputImage']  = inp
-        header['outputImage'] = out
+        # output .feedme file
+        with open(pathFeedme + fee, "w") as file:
+            
+            # Set input and ouput file names
+            header['inputImage']  = pathIn + inp
+            header['outputImage'] = pathOut + out
+            
+            # Get formatted text, check in genFeedme that dict keys are okay and write into file if so
+            tmp = genFeedme(header, listProfiles)
+            file.write(tmp)
+            
         
-        # Get formatted text, check in genFeedme that dict keys are okay and write into file if so
-        out = genFeedme(header, listProfiles)
-        file.write(out)
-        file.close()
+        
         
 def genConstraint(dicts):
     """
@@ -336,9 +402,9 @@ def genConstraint(dicts):
                 tmp += "%d_" %num
             compList.append(tmp)
         elif constraint['type'] == 'componentWiseRange':
-            compList.append("%d-%d" %(components[0], components[1]))
+            compList.append("%d-%d" %tuple(components))
         elif constraint['type'] == 'componentWiseRatio':
-            compList.append("%d/%d" %(components[0], components[1]))
+            compList.append("%d/%d" %tuple(components))
         else:
             compList.append("%d" %components)
             
@@ -346,9 +412,9 @@ def genConstraint(dicts):
         if constraint['type'] in ['offset', 'ratio']:
             constraintList.append(constraint['type'])
         elif constraint == 'absoluteRange':
-            constraintList.append('%.1f to %.1f' %(constraint['value'][0], constraint['value'][1]))
+            constraintList.append('%.1f to %.1f' %tuple(constraint['value']))
         else:
-            constraintList.append('%.1f %.1f' %(constraint['value'][0], constraint['value'][1]))
+            constraintList.append('%.1f %.1f' %tuple(constraint['value']))
             
         # set parameter name
         paramList.append(param)
@@ -367,6 +433,7 @@ def genConstraint(dicts):
             out += "\n"
     
     return out
+
 
 def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", psfImage="none", maskImage="none", couplingFile="none", 
               xmin=0, xmax=100, ymin=0, ymax=100, sizeConvX=None, sizeConvY=None,
