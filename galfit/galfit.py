@@ -12,6 +12,7 @@ from wilfried.galfit.models import gendeVaucouleur, genEdgeOnDisk, genExpDisk, g
 from wilfried.utilities.dictionnaries import checkDictKeys, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
 from os.path import isdir
+from numpy import unique
 
 
 ##########################################
@@ -56,21 +57,27 @@ fullKeys = {'header': {'parameters':['outputImage', 'xmin', 'xmax', 'ymin', 'yma
                     'default':[1.0, 0.0, 0.0, False, [], None, False]}
             }
             
+# Every unique parameter
+everyParam = []
+for i in [fullKeys[name]['parameters'] for name in fullKeys]:
+    everyParam += i
+everyParam = unique(everyParam)
+            
 # Keeping track of the model functions
 modelFunctions = {  'deVaucouleur': gendeVaucouleur, 
-                    'edgeOnDisk': genEdgeOnDisk,     
-                    'expDisk': genExpDisk,    
-                    'ferrer': genFerrer,
-                    'gaussian': genGaussian,
-                    'king': genKing,
-                    'moffat': genMoffat,
-                    'nuker': genNuker,
-                    'psf': genPSF,        
-                    'sersic': genSersic,
-                    'sky': genSky, 
-                    'fourier':fourierModes,
-                    'bending':bendingModes,
-                    'boxyness':boxy_diskyness
+                    'edgeOnDisk'  : genEdgeOnDisk,     
+                    'expDisk'     : genExpDisk,    
+                    'ferrer'      : genFerrer,
+                    'gaussian'    : genGaussian,
+                    'king'        : genKing,
+                    'moffat'      : genMoffat,
+                    'nuker'       : genNuker,
+                    'psf'         : genPSF,        
+                    'sersic'      : genSersic,
+                    'sky'         : genSky, 
+                    'fourier'     : fourierModes,
+                    'bending'     : bendingModes,
+                    'boxyness'    : boxy_diskyness
                 }
 
 # Additional tag functions
@@ -127,9 +134,9 @@ def genFeedme(header, listProfiles):
         # Check that name is okay in dictionnaries
         try:
             if dic['name'] not in correctNames:
-                raise ValueError("given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
+                raise ValueError("Given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
         except KeyError:
-            raise KeyError("key 'name' is not provided in one of the dictionnaries.")
+            raise KeyError("Key 'name' is not provided in one of the dictionnaries.")
         
         # Check that the given dictionnary only has valid keys
         checkDictKeys(removeKeys(dic, keys=tags + ['name']), keys=fullKeys[dic['name']]['parameters'], dictName='header or listProfiles')
@@ -153,7 +160,7 @@ def genFeedme(header, listProfiles):
     return out
 
 
-def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeNames=[], path="./feedme/"):
+def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], path="./feedme/"):
     """
     Make galfit.feedme files using the same profiles.
     
@@ -162,6 +169,9 @@ def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeName
         header : dict
             dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file.
             You do not need to provide an input and an output image file name as this is given with the inputNames keyword.
+            
+        inputNames : list of str
+            list of galaxies .fits files input names in the header
             
         listProfiles : list of dict
             list of dictionnaries. Each dictionnary corresponds to a profile:
@@ -176,7 +186,7 @@ def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeName
             
             Example
             -------
-                Say one wants to make a galfit configuration with a:
+                Say one wants to make a galfit configuration for the galaxies gal1.fits, gal2.fits and galaxy.fits with a:
                     - output image output.fits and a zeroPointMag = 25.4 mag
                     - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
                     - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
@@ -188,25 +198,30 @@ def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeName
                     
                     >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
                     >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
+                    >>> galaxies = ["gal1.fits", "gal2.fits", "galaxy.fits"]
                     
-                    >>> writeFeedmes(header, [sersic, nuker])
+                    >>> writeFeedmes(header, [sersic, nuker], galaxies)
                 
     Optional inputs
     ---------------
-        inputNames : list of str
-            list of galaxies .fits files input names in the header
         feedmeNames : list of str
             list of .feedme galfit configuration files. If not provided, the feedme files will have the same name as the input ones but with .feedme extensions at the end.
         outputNames: list of str
-            list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the extension.
+            list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
         path : str
             location of the feedme file names relative to the current folder or in absolute
     
     Write full galfit.feedme configuration files for many galaxies.
     """
     
+    if feedmeNames == []:
+        feedmeNames = [i.replace('.fits', '.feedme') for i in inputNames]
+    
+    if outputNames == []:
+        outputNames = [i.replace('.fits', '_out.fits') for i in outputNames]
+    
     if len(inputNames) != len(outputNames) or len(inputNames) != len(feedmeNames):
-        raise ValueError("lists intputNames, outputNames and feedmeNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
+        raise ValueError("Lists intputNames, outputNames and feedmeNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
     
     if not isdir(path):
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !")
@@ -222,6 +237,85 @@ def writeFeedmes(header, listProfiles, inputNames=[], outputNames=[], feedmeName
         out = genFeedme(header, listProfiles)
         file.write(out)
         file.close()
+        
+def genConstraint(dicts):
+    
+    everyConstraint = ['offset', 'ratio', 'absoluteRange', 'relativeRange', 'componentWiseRange', 'componentWiseRatio']
+    
+    compList        = []
+    paramList       = []
+    constraintList  = []
+    for d in dicts:
+        
+        # Retrieve the three information (components, parameter and constraint type)
+        param       = d['parameter']
+        constraint  = d['constraint']
+        components  = d['components']
+        
+        
+        ############################################################
+        #           Check that given parameters are okay           #
+        ############################################################
+        
+        if param not in everyParam:
+            raise ValueError('Given parameter %s is not correct. Possible values are %s. Please provide one of these values if you want to put constraints on one of these parameters. Cheers !' %(param, everyParam))
+
+        if constraint['type'] not in everyConstraint:
+            raise ValueError('Given constraint type %s is not correct. Possible values are %s. Please provide one of these values if you want to put a constraint on parameters. Cheers !' %(constraint['type'], constraintList))
+        
+        if constraint['type'] in ['offset', 'ratio', 'componentWiseRange', 'componentWiseRatio']:
+            if type(components) is not list:
+                raise TypeError("Given components %s should be a list. Please provide a list. Cheers !" %components)
+            if len(components)<2:
+                raise ValueError("Given components list %s should contain at least two values. Please provide two component numbers at the very least. Cheers !" %components)
+            if constraint in ['componentWiseRange', 'componentWiseRatio'] and len(components) != 2:
+                raise ValueError("Given components list %s should have exactly two values. Please provide only two component numbers. Cheers !" %components)
+        else:
+            if type(components) is not int:
+                raise ValueError("Given component %s sould be a single integer value corresponding to the component number. Please provide an integer. Cheers !" %components)
+        
+        if constraint['type'] in ['absoluteRange', 'relativeRange', 'componentWiseRange', 'componentWiseRatio']:
+            if type(constraint['value']) is not list:
+                raise TypeError("Given constraint values are not a list. Please provide two values in order to have a range. Cheers !")
+            if len(constraint['type'])<2:
+                raise ValueError("Constraint list does have the correct amount of elements. Two values must be provided. Cheers !")
+        
+        #######################################
+        #        Gather columns values        #
+        #######################################
+        
+        # Set components
+        if constraint['type'] in ['offset', 'ratio']:
+            tmp = ""
+            for num in components:
+                tmp += "%d_" %num
+            compList.append(tmp)
+        elif constraint['type'] == 'componentWiseRange':
+            compList.append("%d-%d" %(components[0], components[1]))
+        elif constraint['type'] == 'componentWiseRatio':
+            compList.append("%d/%d" %(components[0], components[1]))
+        else:
+            compList.append("%d" %components)
+            
+        # Set constraint bounds
+        if constraint['type'] in ['offset', 'ratio']:
+            constraintList.append(constraint['type'])
+        elif constraint == 'absoluteRange':
+            constraintList.append('%.1f to %.1f' %(constraint['value'][0], constraint['value'][1]))
+        else:
+            constraintList.append('%.1f %.1f' %(constraint['value'][0], constraint['value'][1]))
+            
+        # set parameter name
+        paramList.append(param)
+        
+    lineFormat = "{:^" + "%d" %maxStringsLen(compList) + "s}   {:" + "%d" %maxStringsLen(paramList) + "s}   {:^" + "%d" %maxStringsLen(constraintList) + "s}"
+    out        = ""
+    for com, par, con in zip(compList, paramList, constraintList):
+        if con in ['offset', 'ratio']:
+            com = com[:-1]
+        out += lineFormat.format(com, par, con) + "\n"
+    
+    return out
 
 def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", psfImage="none", maskImage="none", couplingFile="none", 
               xmin=0, xmax=100, ymin=0, ymax=100, sizeConvX=None, sizeConvY=None,
