@@ -9,7 +9,7 @@ Functions related to automating galfit modelling.
 """
 
 from wilfried.galfit.models import gendeVaucouleur, genEdgeOnDisk, genExpDisk, genFerrer, genGaussian, genKing, genMoffat, genNuker, genPSF, genSersic, genSky, bendingModes, boxy_diskyness, fourierModes
-from wilfried.utilities.dictionnaries import checkDictKeys, removeKeys, setDict
+from wilfried.utilities.dictionaries import checkDictKeys, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
 from os.path import isdir
 from numpy import unique
@@ -97,7 +97,7 @@ def genFeedme(header, listProfiles):
         header : dict
             dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file
         listProfiles : list of dict
-            list of dictionnaries. Each dictionnary corresponds to a profile:
+            list of dictionaries. Each dictionnary corresponds to a profile:
                 - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
                     'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
                 - available key names coorespond to the input parameter names. See each profile description, to know which key to use
@@ -131,12 +131,12 @@ def genFeedme(header, listProfiles):
     correctNames   = fullKeys.keys()
     
     for pos, dic in enumerate([header] + listProfiles):
-        # Check that name is okay in dictionnaries
+        # Check that name is okay in dictionaries
         try:
             if dic['name'] not in correctNames:
                 raise ValueError("Given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
         except KeyError:
-            raise KeyError("Key 'name' is not provided in one of the dictionnaries.")
+            raise KeyError("Key 'name' is not provided in one of the dictionaries.")
         
         # Check that the given dictionnary only has valid keys
         checkDictKeys(removeKeys(dic, keys=tags + ['name']), keys=fullKeys[dic['name']]['parameters'], dictName='header or listProfiles')
@@ -174,7 +174,7 @@ def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
             list of galaxies .fits files input names in the header
             
         listProfiles : list of dict
-            list of dictionnaries. Each dictionnary corresponds to a profile:
+            list of dictionaries. Each dictionnary corresponds to a profile:
                 - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
                     'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
                 - available key names coorespond to the input parameter names. See each profile description, to know which key to use
@@ -239,19 +239,63 @@ def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
         file.close()
         
 def genConstraint(dicts):
+    """
+    Make a galfit .constraint file.
     
-    everyConstraint = ['offset', 'ratio', 'absoluteRange', 'relativeRange', 'componentWiseRange', 'componentWiseRatio']
+    Mandatory inputs
+    -----------------
+        dicts : list of dictionaries
+            list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
+            
+            Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
+                
+                Dictionaries keys
+                -----------------
+                
+                'constraint' : dict with keys 'type' and 'value'
+                    set the type of constraint one wants to use and potentially the related range. 
+                    The possible 'type' of constraint are:
+                        - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
+                        - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
+                        - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
+                        - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
+                        - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
+                        - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
+                    
+                    And the corresponding values are:
+                        - 'offset' for an offset and 'ratio' for a ratio
+                        - a list of two float to define bounds for the other types
+                
+                'components' : int/list of int
+                    number (of appearance in the .feedme file) of the galfit models one wants to constrain.:
+                        - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
+                        - for both relative and absolute ranges, a single profile number (int) must be given
+                        - for component wise ranges or ratios, a list of two numbers (int) must be provided
+                        
+                'parameter' : str
+                    name of the parameter to contrain
     
-    compList        = []
-    paramList       = []
-    constraintList  = []
+    Return a galfit .constraint file as formatted text.
+    """
+
+    if type(dicts) is not list:
+        raise TypeError("Given parameter 'dicts' is not a list. A list of dictionaries must be provided. Cheers !")
+    
+    everyConstraint     = ['offset', 'ratio', 'absoluteRange', 'relativeRange', 'componentWiseRange', 'componentWiseRatio']
+    
+    compList            = []
+    paramList           = []
+    constraintList      = []
     for d in dicts:
         
         # Retrieve the three information (components, parameter and constraint type)
-        param       = d['parameter']
-        constraint  = d['constraint']
-        components  = d['components']
-        
+        try:
+            param       = d['parameter']
+            constraint  = d['constraint']
+            components  = d['components']
+        except KeyError:
+            raise KeyError("One of the keys 'parameter', 'constraint' or 'components' is missing in one of the dictionaries.")
+
         
         ############################################################
         #           Check that given parameters are okay           #
@@ -279,6 +323,7 @@ def genConstraint(dicts):
                 raise TypeError("Given constraint values are not a list. Please provide two values in order to have a range. Cheers !")
             if len(constraint['type'])<2:
                 raise ValueError("Constraint list does have the correct amount of elements. Two values must be provided. Cheers !")
+        
         
         #######################################
         #        Gather columns values        #
@@ -308,12 +353,18 @@ def genConstraint(dicts):
         # set parameter name
         paramList.append(param)
         
-    lineFormat = "{:^" + "%d" %maxStringsLen(compList) + "s}   {:" + "%d" %maxStringsLen(paramList) + "s}   {:^" + "%d" %maxStringsLen(constraintList) + "s}"
-    out        = ""
+    compList       = ["# Component"] + compList
+    paramList      = ["parameter"] + paramList
+    constraintList = ["constraint"] + constraintList
+        
+    lineFormat     = "{:^" + "%d" %maxStringsLen(compList) + "s}   {:" + "%d" %maxStringsLen(paramList) + "s}   {:^" + "%d" %maxStringsLen(constraintList) + "s}"
+    out            = ""
     for com, par, con in zip(compList, paramList, constraintList):
         if con in ['offset', 'ratio']:
-            com = com[:-1]
-        out += lineFormat.format(com, par, con) + "\n"
+            com    = com[:-1]
+        out       += lineFormat.format(com, par, con) + "\n"
+        if com == "# Component":
+            out += "\n"
     
     return out
 
