@@ -289,7 +289,7 @@ def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.
         start : float
             starting point of the integration
             
-    Returns the integrated luminosity up to radius r and an estimation of its absolute error. If a list of radii is given, it returns a list of luminosities and a list of absolute errors.
+    Returns the integrated luminosity up to radius r and an estimation of its absolute error as a dictionary. If a list of radii is given, it returns a list of luminosities and a list of absolute errors.
     """
     
     #the integral we need to compute to have the luminosity
@@ -305,14 +305,16 @@ def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.
     try:
         lr=len(r)
     except TypeError:
-        return quad(the_integral, start, r, args=(n, re, Ie, bn, mag, offset))
+        integral, error = quad(the_integral, start, r, args=(n, re, Ie, bn, mag, offset))
+        return {'value':integral, 'error':error}
+    
     #else compute for each radius in the list
     integral = np.zeros(lr)
     error    = np.zeros(lr)
     for pos in range(lr):
         integral[pos],  error[pos] = quad(the_integral, start, r[pos], args=(n, re, Ie, bn, mag, offset))
         
-    return integral, error
+    return {'value':integral, 'error':error}
     
 
 def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None):
@@ -357,11 +359,11 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
     res               = 0
     err               = 0
     for n, re, ie, bn in zip(listn, listRe, listIe, listbn):
-        result, error = luminositySersic(r, n, re, bn=bn, Ie=ie)
-        res          += result
-        err          += error
+        lum           = luminositySersic(r, n, re, bn=bn, Ie=ie)
+        res          += lum['value']
+        err          += lum['error']
         
-    return res, err
+    return {'value':res, 'error':err}
 
 
 def total_luminosity(mag, offset, factor=1.0):
