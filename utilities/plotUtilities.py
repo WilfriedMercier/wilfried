@@ -696,10 +696,9 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
 
 def asManyPlots2(numPlot, datax, datay, 
                  dataProperties={}, generalProperties={}, axesProperties={}, titleProperties={}, colorbarProperties={}, legendProperties={},
-                zorder=None, linestyle='None',
+                linestyle='None',
                 outputName=None, overwrite=False, tightLayout=True, linewidth=3,
-                fillstyle='full', unfilledFlag=False,
-                markerSize=16):
+                fillstyle='full', unfilledFlag=False):
     
     """
     Function which plots on a highly configurable subplot grid either with pyplot.plot or pyplot.scatter. A list of X and Y arrays can be given to have multiple plots on the same subplot.
@@ -739,26 +738,43 @@ def asManyPlots2(numPlot, datax, datay,
             
             Data points related properties
             ------------------------------
-            'color' : list of str and/or arrays
-                list of colors for each plot. Each given color is mapped to the corresponding plot assuming 'color' and datax and datay are sorted in the same order. Default is 'black' for any kind of plot.
-                    - for simple aand 'mix' plots, color names must be provided
-                    - for scatter plots, a list/array of values must be provided. This is because scatter plots actually map values to a color range and will apply a color to each point separately using this range. 
-            
-            'marker' : str/char
-                list of markers used for the data. Default is 'o'.
-                If one does not want to have a marker (for instance for line plots), one can provide None for the given plot.
+                'color' : list of str and/or arrays
+                    list of colors for each plot. Each given color is mapped to the corresponding plot assuming 'color' and datax and datay are sorted in the same order. Default is 'black' for any kind of plot.
+                        - for simple aand 'mix' plots, color names must be provided
+                        - for scatter plots, a list/array of values must be provided. This is because scatter plots actually map values to a color range and will apply a color to each point separately using this range. 
                 
-            'transparency' : float, list of floats between 0 and 1
-                transparency of the data points (1 is plain, 0 is invisible). Default is 1 for any kind of plot.
+                'marker' : list of str/char/matplotlib markers
+                    list of markers used for the data. Default is 'o'.
+                        - if one does not want to have a marker (for instance for line plots), one can provide None for the given plot
+                        - by default, markers will not appear on 'mix' plots
+                    
+                'markerSize' : list of int
+                    list of marker sizes for each plot
+                        - for 'plot' plots a single value, a single value must be provided
+                        - for 'scatter' plots, either a single value or a list/array of values (one per data point) can be provided (the latter will scale data points size accordingly to their value)
+                        - for 'mix' plots, a single value can be provided if you want to have markers on your colored line plots
+                    
+                'transparency' : float, list of floats between 0 and 1
+                    transparency of the data points (1 is plain, 0 is invisible). Default is 1 for any kind of plot.
+                
+            Line related properties
+            -----------------------
+                'linewidth' : list of int
+                    list of line widths in the plots. For 'scatter' plots, any value can be given as there will be no line. Default is given by 'linewidth' key in generalProperties dict.
+                    
+                'linestyle' : list of str
+                    list of line styles. Default for 'plot' and 'mix' types of plots is given by 'linestyle' key in generalProperties dict.
                 
             Plot related properties
             -----------------------
-            'type' : list of 'plot', 'scatter' and/or 'mix'
-                list of plot type for each array in datax and datay. Default is 'plot' for every data. One value per array must be provided. Three values are possible:
-                    - 'plot' to plot a simple plot (line or points) with a single color applied to all the data points
-                    - 'scatter' to plot a scatter plot (only points, no line) where the points are colour coded according to some array of the same dimension as datax and datay provided in the 'color' key
-                    - 'mix' to plot a line plot only where each line will have a different colour
-    
+                'type' : list of 'plot', 'scatter' and/or 'mix'
+                    list of plot type for each array in datax and datay. Default is 'plot' for every data. One value per array must be provided. Three values are possible:
+                        - 'plot' to plot a simple plot (line or points) with a single color applied to all the data points
+                        - 'scatter' to plot a scatter plot (only points, no line) where the points are colour coded according to some array of the same dimension as datax and datay provided in the 'color' key
+                        - 'mix' to plot a line plot only where each line will have a different colour
+        
+                'order' : list of int
+                     order in which the data will be plotted. Data with the lowest order will be plotted first. Default is order of appearance in the datax and datay lists.
     
         generalProperties : dict
             dictionnary gathering all tunable general properties. See the list below for the complete list of dictionnary keys.
@@ -779,6 +795,14 @@ def asManyPlots2(numPlot, datax, datay,
             ------------------
                 'scale' : str
                     scale of both axes
+                    
+            Line plot related properties
+            -----------------------
+                'linewidth' : int
+                    overall line width used in plots. For 'scatter' plots, any value can be given as there will be no line. Default is 3.
+                    
+                'linestyle' : str
+                    overall line style used in plots. Default for 'plot' and 'mix' types of plots is plain style ('-').
                     
             Miscellanous keys
             -----------------
@@ -965,13 +989,7 @@ def asManyPlots2(numPlot, datax, datay,
     
     fillstyle : string, list of strings
         which fillstyle use for the markers (see matplotlib fillstyles for more information)
-    linestyle : string, list of strings for many plots
-        which line style to usereturn TypeError
-    linewidth : float
-        the width of the line
     
-    markerSize : float or list of floats for scatter plots
-        the size of the marker
     
     outputName : str
         name of the file to save the graph into. If None, the plot is not saved into a file
@@ -979,10 +997,9 @@ def asManyPlots2(numPlot, datax, datay,
         whether to overwrite the ouput file or not
     tightLayout : boolean
         whether to use bbox_inches='tight' if tightLayout is True or bbox_inches=None otherwise
+        
     unfilledFlag : boolean, list of booleans
         whether to unfill the points' markers or not
-    zorder : int, list of ints for many plots
-        whether the data will be plot in first position or in last. The lower the value, the earlier it will be plotted
         
     Return current axis and last plot.
     """
@@ -1018,13 +1035,11 @@ def asManyPlots2(numPlot, datax, datay,
         
         ll = len(data)
         if ll != length:
-            tmp = []
             for num in range(length):
-                if num < ll:
-                    tmp.append(data[num])
-                else:
-                    tmp.append(default)
-        return tmp
+                if num >= ll:
+                    data.append(default)
+
+        return data
     
     def isType(data, typeToCheck, varName='NOT PROVIDED'):
         """
@@ -1108,6 +1123,11 @@ def asManyPlots2(numPlot, datax, datay,
         """
         info = "A simple container to gather things up."
         
+    # General layout properties
+    layout = gatherThingsUp()
+    if isType(generalProperties, dict, 'generalProperties'):
+        layout.textsize, layout.hideTicksLabels, layout.scale, layout.tickDirection, layout.grid, layout.linewidth, layout.linestyle = setListFromDict(generalProperties, keys=['textsize', 'hideTicksLabels', 'scale', 'tickDirection', 'hideGrid', 'linewidth', 'linestyle'], default=[24, False, 'linear', 'in', False, 3, '-'])
+    
         
     ################################################################################################
     #                  Checking datax and datay are lists with a similar shape                     #
@@ -1123,47 +1143,72 @@ def asManyPlots2(numPlot, datax, datay,
         raise ValueError("Shape inconsistency: datax has shape %s but datay has shape %s. Both datax and datay should be lists with the same shape. Please provide data with similar shape. Cheers !" %(str(shpX), str(shpY)))
     
     
-    ############################################################################################
-    #           Checking input type and setting values from optional dictionnaries             #
-    ############################################################################################
-    
     ################################################################################################
-    #                Gathering data properties into a single object for simplicity                 #
+    #           Checking input type and setting values from optional dictionnaries                 #
+    #              Gathering data properties into a single object for simplicity                   #
     ################################################################################################   
     
     # If everything went fine, we can define a few general properties useful later on
-    data, data.x, data.y = [gatherThingsUp()]*3
-    data.x.data          = datax
-    data.y.data          = datay
-    data.x.min           = np.min(data.x.data)
-    data.x.max           = np.max(data.x.data)
-    data.y.min           = np.min(data.y.data)
-    data.y.max           = np.max(data.y.data)
-    data.nplots          = len(data.x.data)
+    data                     = gatherThingsUp()
+    data.marker, data.line   = gatherThingsUp(), gatherThingsUp()
+    data.x, data.y           = gatherThingsUp(), gatherThingsUp()
+    data.x.data              = datax
+    data.y.data              = datay
+    data.x.min               = np.min(data.x.data)
+    data.x.max               = np.max(data.x.data)
+    data.y.min               = np.min(data.y.data)
+    data.y.max               = np.max(data.y.data)
+    data.nplots              = len(data.x.data)
 
     if isType(dataProperties, dict, 'dataProperties'):
-        data.color, data.type, data.transparency, data.marker = setListFromDict(dataProperties, keys=['color', 'type', 'transparency', 'marker'], default=[None, ['plot']*data.nplots, [1]*data.nplots, ['o']*data.nplots])
+        data.zorder, data.color, data.type, data.transparency, data.marker.type, data.marker.size, data.line.width, data.line.style = setListFromDict(dataProperties, keys=['order', 'color', 'type', 'transparency', 'marker', 'markerSize', 'linewdith', 'linestyle'], default=[range(data.nplots), None, ['plot']*data.nplots, [1]*data.nplots, ['o']*data.nplots], None, None, None)
         
         # If the user provides a single value, we change it to a list
-        data.type         = checkTypeAndChangeValueToList(data.type, list, data.nplots)
-        data.transparency = checkTypeAndChangeValueToList(data.transparency, list, data.nplots)
-        data.marker       = checkTypeAndChangeValueToList(data.marker, list, data.nplots)
+        data.type            = checkTypeAndChangeValueToList(data.type, list, data.nplots)
+        data.transparency    = checkTypeAndChangeValueToList(data.transparency, list, data.nplots)
+        data.marker.type     = checkTypeAndChangeValueToList(data.marker, list, data.nplots)
         
-        # If the user provides an empty list, we complete it
-        data.transparency = completeList(data.transparency, data.nplots, 1)
-        data.marker       = completeList(data.marker, data.nplots, 'o')
+        # If the user provides an incomplete list, we complete it
+        completeList(data.transparency, data.nplots, 1)
+        completeList(data.marker.type, data.nplots, 'o')
+        
+        if data.marker.size is None:      
+            data.marker.size = []
+            
+        if data.line.width is None:
+            data.line.width = []
+            
+        if data.line.style is None:
+            data.line.style = []
+        
+        # Complete the size list with either 0 of the default value is the list is not complete
+        lms = len(data.marker.size)  
+        llw = len(data.line.width)
+        lls = len(data.line.style)
+        for pos, typ in enumerate(data.type):
+            if pos >= lms:
+                if typ == 'mix':
+                    data.marker.size.append(0)
+                else:
+                    data.marker.size.append(layout.textsize)
+            
+            if typ == 'scatter':
+                if pos >= llw:    
+                    data.line.width.append(0)
+                if pos >= lls:
+                    data.line.style.append("None")
+            else:
+                if pos >= llw:    
+                    data.line.width.append(layout.linewidth)
+                if pos >= lls:
+                    data.line.style.append(layout.linestyle) 
             
         # If data.color is not provided, we set plot colors to 'black' and scatter plots points to the same value
         if data.color is None:
             data.color = ['black']*data.nplots
         else:
             setDefault(data.color, default='black')
-    
-    # General layout properties
-    layout = gatherThingsUp()
-    if isType(generalProperties, dict, 'generalProperties'):
-        layout.textsize, layout.hideTicksLabels, layout.scale, layout.tickDirection, layout.grid = setListFromDict(generalProperties, keys=['textsize', 'hideTicksLabels', 'scale', 'tickDirection', 'hideGrid'], default=[24, False, 'linear', 'in', False])
-    
+
     # Axes properties dict
     xaxis, xaxis.label, xaxis.ticks = [gatherThingsUp()]*3
     yaxis, yaxis.label, yaxis.ticks = [gatherThingsUp()]*3
@@ -1216,17 +1261,29 @@ def asManyPlots2(numPlot, datax, datay,
         
         colorbar.norm = colorbarDict[colorbar.scale]['function'](**colorbarDict[colorbar.scale]['params'])
     
-    # Legend properties dict
-    legend, legend.marker = [gatherThingsUp()]*2
+    
+    ###########################################
+    #            Legend properties            #
+    ###########################################
+    
+    legend, legend.marker, legend.line   = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(legendProperties, dict, 'legendProperties'):
-        legend.loc, legend.ncols, legend.size, legend.labels, legend.lineColor, legend.marker.edgeColor, legend.marker.faceColor = setListFromDict(legendProperties, keys=['loc', 'ncols', 'size',' labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, 24, ['']*data.nplots, None, None, None]) 
+        legend.loc, legend.ncols, legend.size, legend.labels, legend.line.color, legend.marker.edgeColor, legend.marker.faceColor = setListFromDict(legendProperties, keys=['loc', 'ncols', 'size',' labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, 24, ['']*data.nplots, None, None, None]) 
     
         # Checking that given parameters have the correct type
-        checkTypeAndChangeValueToList(legend.labels, list, data.nplots)
+        legend.labels                    = checkTypeAndChangeValueToList(legend.labels, list, data.nplots)
+        legend.line.color                = checkTypeAndChangeValueToList(legend.line.color, list, data.nplots)
+        legend.marker.edgeColor          = checkTypeAndChangeValueToList(legend.marker.edgeColor, list, data.nplots)
+        legend.marker.faceColor          = checkTypeAndChangeValueToList(legend.marker.faceColor, list, data.nplots)
         
-        for col, typ in zip(data.color, data.type):
-            if data.type:
-                print("cocu")
+        # Set default color to black for scatter plots in legend 
+        for pos, col, typ in zip(range(data.nplots), data.color, data.type):
+            if typ == 'scatter':
+                col = 'black'
+            legend.marker.edgeColor[pos] = col
+            legend.marker.faceColor[pos] = col
+            legend.line.color[pos]       = col
+    
     
     ############################################################################################
     #                         Set subplot and its overall properties                           #
@@ -1247,39 +1304,7 @@ def asManyPlots2(numPlot, datax, datay,
     # Set ticks properties for x and y axes
     ax1.tick_params(axis='x', which='both', direction=xaxis.tickDirection, labelsize=xaxis.tickSize)
     ax1.tick_params(axis='y', which='both', direction=yaxis.tickDirection, labelsize=yaxis.tickSize)
-    
-    if not layout.grid:
-        plt.grid(zorder=1000)
-        
-    #If we have only one marker/color/zorder/linestyle/label/plotFlag, transform them to a list of the relevant length
-    if not noCheck:
-        try:
-            np.shape(linestyle)[0]
-        except:
-            linestyle = [linestyle]*lx
-    try:
-        np.shape(markerSize)[0]
-    except:
-        markerSize = [markerSize]*lx
-        
-    try: 
-        np.shape(legendMarkerFaceColor)[0]
-    except:
-        legendMarkerFaceColor = [legendMarkerFaceColor]*lx
-        
-    try: 
-        np.shape(legendMarkerEdgeColor)[0]
-    except:
-        legendMarkerEdgeColor = [legendMarkerEdgeColor]*lx
-        
-    try: 
-        np.shape(legendLineColor)[0]
-    except:
-        legendLineColor = [legendLineColor]*lx
-    
-     
-    if zorder is None:
-        zorder = range(1, lx+1)
+         
        
     try:
         np.shape(fillstyle)[0]
@@ -1326,7 +1351,7 @@ def asManyPlots2(numPlot, datax, datay,
     #list of handels for the legend
     handles = []
     
-    for dtx, dty, mrkr, mrkrSz, clr, zrdr, lnstl, lbl, pltFlg, fllstl, lph, nflldFlg in zip(datax, datay, marker, markerSize, color, zorder, linestyle, label, plotFlag, fillstyle, alpha, unfilledFlag):
+    for dtx, dty, mrkr, mrkrSz, clr, zrdr, lnstl, lbl, pltFlg, fllstl, lph, nflldFlg in zip(datax, datay, data.marker, data.markerSize, color, zorder, linestyle, label, plotFlag, fillstyle, alpha, unfilledFlag):
         edgecolor = clr
         if nflldFlg:
             facecolor = "none"
@@ -1339,11 +1364,9 @@ def asManyPlots2(numPlot, datax, datay,
                            markersize=mrkrSz, linewidth=linewidth))
             handles.append(copy(tmp[-1][0]))
         else:
-            print(clr, cmap)
             markerObject = MarkerStyle(marker=mrkr, fillstyle=fllstl)
             sct = plt.scatter(dtx, dty, label=lbl, marker=markerObject, zorder=zrdr, 
                               cmap=cmap, norm=norm, vmin=cmapMin, vmax=cmapMax, alpha=lph, c=clr, s=mrkrSz)
-            print(sct)
             tmp.append(sct)
             
             if nflldFlg:
@@ -1371,7 +1394,7 @@ def asManyPlots2(numPlot, datax, datay,
                 h.set_color(lc)
                 h.set_markerfacecolor(mkfclr)
                 h.set_markeredgecolor(mkeclr)
-            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, 
+            leg = plt.legend(loc=legend.loc, prop={'size': legendTextSize}, shadow=True, fancybox=True, 
                              ncol=legendNcols, handles=handles)
             
         if not pltFlg:
