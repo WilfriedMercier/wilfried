@@ -630,12 +630,10 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
                 h.set_color(lc)
                 h.set_markerfacecolor(mkfclr)
                 h.set_markeredgecolor(mkeclr)
-            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, 
-                             ncol=legendNcols, handles=handles)
+            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, ncol=legendNcols, handles=handles)
             
         if not pltFlg:
-            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, 
-                             ncol=legendNcols)
+            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, ncol=legendNcols)
             
             for marker, mkfclr, mkeclr, lc in zip(leg.legendHandles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor):
                 mkfclr = setDefault([mkfclr], 'black')
@@ -695,7 +693,8 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
 
 
 def asManyPlots2(numPlot, datax, datay, 
-                 dataProperties={}, generalProperties={}, axesProperties={}, titleProperties={}, colorbarProperties={}, legendProperties={},
+                 dataProperties={}, generalProperties={}, axesProperties={}, titleProperties={}, 
+                 colorbarProperties={}, legendProperties={}, outputProperties={},
                 outputName=None, overwrite=False, tightLayout=True):
     
     """
@@ -714,9 +713,9 @@ def asManyPlots2(numPlot, datax, datay,
         datax: list of numpy arrays/lists
             list of x-axis data which should be plotted. Each data belongs to a single array. A LIST MUST BE PROVIDED, so even if just one data is plotted one should write [yourDataArray] and not directly yourDataArray.
             
-            One may want to plot their data differently on the same plot (for instance one usual line plot and one scatter plot). This can be set in dataProperties dictionnary using the key 'type' (see below for more information).
+            One may want to plot their data differently on the same plot (for instance one usual line plot and one scatter plot). This can be set in dataProperties dictionary using the key 'type' (see below for more information).
             asManyPlots2 provide three kinds of plots:
-                - usual plot (line or points) with a potential global color set in the dictionnary dataProperties with the key 'color'
+                - usual plot (line or points) with a potential global color set in the dictionary dataProperties with the key 'color'
                 - scatter plot (only points, no line), where the color (set with 'color' key as well) and size of points (set with 'size' key in dataProperties dict) can vary from point to point to show any variation with a third dimension (refered as the z component in the following)
                 - 'mix' type of plot where lines only are plotted and colour coded according to a third value (also set with 'color' key in plotProperties dict). For this kind of plot, each array within the list will correspond to a single line.
             
@@ -726,9 +725,9 @@ def asManyPlots2(numPlot, datax, datay,
     Optional inputs
     ---------------
     
-    Most optional inputs have been gathered within dictionnary structures. This was done in order to reduce the number of optional parameters in the function declaration. Unless provided, default values will be used.
+    Most optional inputs have been gathered within dictionary structures. This was done in order to reduce the number of optional parameters in the function declaration. Unless provided, default values will be used.
     
-    For those who are not familiar with dictionnaries, here we provide an explanation on how to use them for this purpose. Say, one wants to put labels on the x and y axes. This can be done by providing values to 'xlabel' and 'ylabel' keys of axesProperties dictionnary.
+    For those who are not familiar with dictionnaries, here we provide an explanation on how to use them for this purpose. Say, one wants to put labels on the x and y axes. This can be done by providing values to 'xlabel' and 'ylabel' keys of axesProperties dictionary.
     Thus, one would write 
     
         >>> mydict = {'xlabel':'this is my x label', 'ylabel':'this is another text for the y label'}
@@ -737,7 +736,7 @@ def asManyPlots2(numPlot, datax, datay,
     which will plot datay as a function of datax on a single subplot with x and y labels attached to the axes.
     
         dataProperties : dict
-            dictionnary gathering all tunable properties related to the data. See the list below for the complete list of dicionnary keys.
+            dictionary gathering all tunable properties related to the data. See the list below for the complete list of dicionnary keys.
             
             Data points properties
             ----------------------
@@ -786,7 +785,7 @@ def asManyPlots2(numPlot, datax, datay,
                      order in which the data will be plotted. Data with the lowest order will be plotted first. Default is order of appearance in the datax and datay lists.
     
         generalProperties : dict
-            dictionnary gathering all tunable general properties. See the list below for the complete list of dictionnary keys.
+            dictionary gathering all tunable general properties. See the list below for the complete list of dictionary keys.
             
             Ticks properties
             ----------------
@@ -824,7 +823,7 @@ def asManyPlots2(numPlot, datax, datay,
     
     
         axesProperties : dict
-            dictionnary gathering all tunable axes properties. See the list below for the complete list of dictionnary keys.
+            dictionary gathering all tunable axes properties. See the list below for the complete list of dictionary keys.
             
             Ticks related keys
             ------------------
@@ -878,7 +877,7 @@ def asManyPlots2(numPlot, datax, datay,
                     where to place the main y-axis. Default is 'left'.   
                     
         titleProperties : dict
-            dictionnary gathering all tunable main title properties. See the list below for the complete list of dictionnary keys.
+            dictionary gathering all tunable main title properties. See the list below for the complete list of dictionary keys.
             
             Text related keys
             -----------------
@@ -903,7 +902,7 @@ def asManyPlots2(numPlot, datax, datay,
                     title vertical offset from the regular position. Default is None, so that no offset is applied.
                     
         colorbarProperties : dict
-            dictionnary gathering all tunable colorbar properties. See the list below for the complete list of dictionnary keys.
+            dictionary gathering all tunable colorbar properties. See the list below for the complete list of dictionary keys.
             A colorbar will only be plotted if at least one scatter plot is provided.
             
             General colobar properties
@@ -971,8 +970,7 @@ def asManyPlots2(numPlot, datax, datay,
                     size of the labels associated to the ticks. Default is given by 'ticksLabelsSize' in generalProperties dict.
                     
         legendProperties : dict
-            dictionnary gathering all tunable legend properties. See the list below for the complete list of dictionnary keys.
-            By default, the legend will not appear. To activate it, set 'hideLegend' key value to False.
+            dictionary gathering all tunable legend properties. See the list below for the complete list of dictionary keys.
             
             General legend properties keys
             ------------------------------
@@ -1005,14 +1003,22 @@ def asManyPlots2(numPlot, datax, datay,
                     list of marker face colors (main area) shown in the legend. Default is None so that the line color in the plot is used for plots markers and black is used for scatter plots markers.
                     If provided, this list must contain as many colors as there are data plotted. For instance, if one plots a plot and a scatter plot, one may write legendProperties={'markerFaceColor':['red', 'blue']} to draw the plot marker face color in red and the scatter plot marker face color in blue within the legend.
     
-    outputName : str
-        name of the file to save the graph into. If None, the plot is not saved into a file
-    overwrite : boolean
-        whether to overwrite the ouput file or not
-    tightLayout : boolean
-        whether to use bbox_inches='tight' if tightLayout is True or bbox_inches=None otherwise
+    
+        outputProperties : dict
+            dictionary gathering all tunable ouput properties. See the list below for the comple list of dictionary keys.
+            
+            Properties
+            ----------
+                'outputName' : str
+                    name of the file to save the graph into. If None, the plot will not be saved into a file. Default is None.
+                'overwrite' : bool
+                    whether to overwrite the ouput file or not. Default is False.
+                'tightLayout' : bool
+                    whether to set a tight_layout in the ouput image (no blank space on the sides) or not. Default is True.
         
-    Return current axis and last plot.
+    Ouputs
+    ------
+        Return the current subplot as well as a list of all the different plot outputs.
     """
     
     ############################################################################################
@@ -1046,6 +1052,20 @@ def asManyPlots2(numPlot, datax, datay,
         return data
             
     def completeList(data, length, default):
+        """
+        Complete a list with a default value if it is too short.
+        
+        Mandatory inputs
+        ----------------
+            data : list
+                data to append default values to
+            default : any type
+                default value to append at the end of the data to complete the list
+            length : int
+                length the data list should have 
+        
+        Append default values to the list and return the new list.
+        """
         
         ll = len(data)
         if ll != length:
@@ -1104,29 +1124,29 @@ def asManyPlots2(numPlot, datax, datay,
                 data[num] = default[num]
         return data
     
-    def setListFromDict(dictionnary, keys=None, defaultVals=None):
+    def setListFromDict(dictionary, keys=None, defaultVals=None):
         """
-        Fill a list with values from a dictionnary or from default ones if the key is not in the dictionnary.
+        Fill a list with values from a dictionary or from default ones if the key is not in the dictionary.
         
         Mandatory inputs
         ----------------
-            dictionnary : dict
-                dictionnary to get the keys values from
+            dictionary : dict
+                dictionary to get the keys values from
         
         Optional inputs
         ---------------
             defaultVals : list
-                list of default values if given key is not in dictionnary
+                list of default values if given key is not in dictionary
             keys : list of str
                 list of key names whose values will be appended into the list
                 
-        Return a list with values retrived from a dictionnary keys or from a list of default values.
+        Return a list with values retrived from a dictionary keys or from a list of default values.
         """
         
         out = []
         for k, df in zip(keys, defaultVals):
-            if k in dictionnary:
-                out.append(dictionnary[k])
+            if k in dictionary:
+                out.append(dictionary[k])
             else:
                 out.append(df)
         return out
@@ -1258,7 +1278,7 @@ def asManyPlots2(numPlot, datax, datay,
     #          Colormap properties         #
     ########################################
     
-    colorbar, colorbar.ticks, colorbar.ticks.labels, colorbar.label, colorbar.cmap = [gatherThingsUp()]*5
+    colorbar, colorbar.ticks, colorbar.ticks.label, colorbar.label, colorbar.cmap = [gatherThingsUp()]*5
     if isType(colorbarProperties, dict, 'colorbarProperties'):
         
         # General properties
@@ -1280,8 +1300,13 @@ def asManyPlots2(numPlot, datax, datay,
         if colorbar.cmap.min > colorbar.cmap.max:
             raise ValueError("Given minimum cmap value with key 'min' in colorbarProperties dict is larger than given maximum cmap value with key 'max'. Please provide value such that min <= max. Cheers !")
         
-        if len(colorbar.ticks.labels) != len(colorbar.ticks.values):
-            raise ValueError("Keys 'ticksLabels' and 'ticksLabelsSize' do not have the same length. Please provide both keys with the same number of elements. Cheers !")
+        if colorbar.ticks.label.text is not None and colorbar.ticks.values is not None:
+            try:
+                if len(colorbar.ticks.label.text) != len(colorbar.ticks.values):
+                    raise ValueError("Keys 'ticksLabels' and 'ticks' in colorbarProperties dict have different lengths. Please provide both keys with the same number of elements. Cheers !")
+            except TypeError:
+                raise TypeError("Keys 'ticksLabels' and 'ticks' should be lists or None. Please provide a list of values for 'ticks' at the very least if you want to change the colorbar ticks. Cheers !")
+        
         
         ###################################################
         #        Compute cmap minimum and maximum         #
@@ -1374,7 +1399,7 @@ def asManyPlots2(numPlot, datax, datay,
         ax1.yaxis.tick_left()
         ax1.yaxis.set_label_position("left")
     else:
-        raise ValueError("ValueError: given key 'yAxisPos' from dictionnary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
+        raise ValueError("ValueError: given key 'yAxisPos' from dictionary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
     
     if xaxis.pos.lower() == "bottom":
         ax1.xaxis.tick_bottom()
@@ -1383,7 +1408,7 @@ def asManyPlots2(numPlot, datax, datay,
         ax1.xaxis.tick_top()
         ax1.xaxis.set_label_position("top")
     else:
-        raise ValueError("ValueError: given key 'xAxisPos' from dictionnary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
+        raise ValueError("ValueError: given key 'xAxisPos' from dictionary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
 
     # Setting a list of plots to provide to the user in the end
     listPlots = []
@@ -1446,53 +1471,51 @@ def asManyPlots2(numPlot, datax, datay,
                            labelcolor=colorbar.ticks.label.color, labelrotation=colorbar.ticks.label.rotation,
                            color=colorbar.ticks.color)
         
-        col.set_label(colorbar.label, size=colorbar.labelSize)
-        if colorbarTicks is not None:
-            col.set_ticks(colorbarTicks)
-        if colorbarTicksLabels is not None:
-            if colorbarOrientation == 'vertical':
-                col.ax.set_yticklabels(colorbarTicksLabels, size=colorbarTicksLabelsSize)
-            elif colorbarOrientation == 'horizontal':
-                col.ax.set_xticklabels(colorbarTicksLabels, size=colorbarTicksLabelsSize)
+        # Set colorbar label
+        col.set_label(colorbar.label.text, size=colorbar.label.size)
+        
+        # Set colorbar ticks if provided
+        if colorbar.ticks.values is not None:
+            col.set_ticks(colorbar.ticks.values)
             
-    if showLegend:        
-        if pltFlg:
-            for h, mkfclr, mkeclr, lc, c in zip(handles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor, color):
-                mkfclr, mkeclr, lc = setDefault([mkfclr, mkeclr, lc], c)
-                
+        # Set colorbar ticks labels if provided
+        if colorbar.ticks.label.text is not None:
+            if colorbar.orientation == 'vertical':
+                col.ax.set_yticklabels(colorbar.ticks.label.text, size=colorbar.ticks.label.size)
+            elif colorbarOrientation == 'horizontal':
+                col.ax.set_xticklabels(colorbar.ticks.label.text, size=colorbar.ticks.label.size)
+       
+    
+    #######################################
+    #           Deal with legend          #
+    #######################################
+    
+    if not legend.hide:
+        
+        # Plot legend before making changes and get legend handles
+        leg = plt.legend(loc=legend.location, prop={'size': legend.label.size}, shadow=True, fancybox=True, ncol=legend.ncols)
+        
+        for h, mkfclr, mkeclr, lc, typ in zip(leg.legendHandles, legend.marker.facecolor, legend.marker.edgecolor, legend.line.color, data.type):
+            if typ in ['plot', 'mix']:
                 h.set_color(lc)
                 h.set_markerfacecolor(mkfclr)
                 h.set_markeredgecolor(mkeclr)
-            leg = plt.legend(loc=legend.loc, prop={'size': legendTextSize}, shadow=True, fancybox=True, 
-                             ncol=legendNcols, handles=handles)
-            
-        if not pltFlg:
-            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, 
-                             ncol=legendNcols)
-            
-            for marker, mkfclr, mkeclr, lc in zip(leg.legendHandles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor):
-                mkfclr = setDefault([mkfclr], 'black')
-                
-                marker.set_color(mkfclr)
+            elif typ == 'scatter':
+                h.set_color(mkfclr)
         
     # Set x and y scales        
     plt.yscale(yaxis.scale)
     plt.xscale(xaxis.scale)
         
     # Define x and y axes limits
-    if xaxis.min is not None:
-        ax1.set_xlim(left=xaxis.min)
-    if xaxis.max is not None:
-        ax1.set_xlim(right=xaxis.max)
-    if yaxis.min is not None:
-        ax1.set_ylim(bottom=yaxis.min)
-    if yaxis.max is not None:
-        ax1.set_ylim(top=yaxis.max)
+    ax1.set_xlim(left=xaxis.min, right=xaxis.max)
+    ax1.set_ylim(bottom=yaxis.min, top=yaxis.max)
 
     if outputName is not None:
         #If we do not want to overwrite the file
         f = None
         if not overwrite:
+            
             #Try to open it to check if it exists
             try:
                 f = open(outputName, 'r')
@@ -1510,4 +1533,5 @@ def asManyPlots2(numPlot, datax, datay,
             
         plt.savefig(outputName, bbox_inches=bbox_inches)
     
-    return ax1, tmp
+    plt.show()
+    return ax1, listPlots
