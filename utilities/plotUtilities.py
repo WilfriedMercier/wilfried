@@ -19,12 +19,10 @@ import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 from matplotlib.markers import MarkerStyle
 
-#astropy imports
 import astropy.io.fits as fits
 
-#copy imports
 from copy import copy
-
+from os.path import isfile
 
 ################################################################################################
 #                                   Plots functions                                            #
@@ -1361,6 +1359,13 @@ def asManyPlots2(numPlot, datax, datay,
             legend.line.color[pos]       = col
     
     
+    ########################################
+    #           Output properties          #
+    ########################################
+    output = gatherThingsUp()
+    if isType(outputProperties, dict, 'outputProperties'):
+        output.name, output.overwrite, output.tight = setListFromDict(outputProperties, keys=['outputName', 'overwrite', 'tightLayout'], defaultVals=[None, False, True])
+    
     ############################################################################################
     #                         Set subplot and its overall properties                           #
     ############################################################################################
@@ -1511,27 +1516,23 @@ def asManyPlots2(numPlot, datax, datay,
     ax1.set_xlim(left=xaxis.min, right=xaxis.max)
     ax1.set_ylim(bottom=yaxis.min, top=yaxis.max)
 
-    if outputName is not None:
-        #If we do not want to overwrite the file
-        f = None
-        if not overwrite:
-            
-            #Try to open it to check if it exists
-            try:
-                f = open(outputName, 'r')
-            except:
-                pass
-            if f is not None:
-                print('File %s already exists but overwritting was disabled. Thus exiting without writing.' %outputName)
-                return ax1, tmp
-                
-        f = open(outputName, 'w')
+
+    #################################
+    #       Deal with output        #
+    #################################
+    
+    if output.name is not None:
         
-        bbox_inches = None
-        if tightLayout:
-            bbox_inches = 'tight'
+        if not output.overwrite and isfile(output.name):
+            print("File %s already exists but overwritting was disabled, thus writing was stopped. Please either provide a new file name, or set 'overwriting' key in outputProperties dictionary as True to overwrite the already existing file. Cheers !" %output.name)
+        else:
+            f = open(outputName, 'w')
+            if tightLayout:
+                bbox_inches = 'tight'
+            else:
+                bbox_inches = None
             
-        plt.savefig(outputName, bbox_inches=bbox_inches)
+            plt.savefig(outputName, bbox_inches=bbox_inches)
     
     plt.show()
     return ax1, listPlots
