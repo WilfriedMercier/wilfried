@@ -696,9 +696,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
 
 def asManyPlots2(numPlot, datax, datay, 
                  dataProperties={}, generalProperties={}, axesProperties={}, titleProperties={}, colorbarProperties={}, legendProperties={},
-                linestyle='None',
-                outputName=None, overwrite=False, tightLayout=True, linewidth=3,
-                fillstyle='full', unfilledFlag=False):
+                outputName=None, overwrite=False, tightLayout=True):
     
     """
     Function which plots on a highly configurable subplot grid either with pyplot.plot or pyplot.scatter. A list of X and Y arrays can be given to have multiple plots on the same subplot.
@@ -730,18 +728,26 @@ def asManyPlots2(numPlot, datax, datay,
     
     Most optional inputs have been gathered within dictionnary structures. This was done in order to reduce the number of optional parameters in the function declaration. Unless provided, default values will be used.
     
-    For those who are not familiar with dictionnaries, here we provide an example. Say, one wants to put labels on the x and y axes. This can be done by providing values to 'xlabel' and 'ylabel' keys of axesProperties dictionnary.
-    Thus, one would write axesProperties={'xlabel':'this is my x label', 'ylabel':'this is another text for the y label'}.
+    For those who are not familiar with dictionnaries, here we provide an explanation on how to use them for this purpose. Say, one wants to put labels on the x and y axes. This can be done by providing values to 'xlabel' and 'ylabel' keys of axesProperties dictionnary.
+    Thus, one would write 
+    
+        >>> mydict = {'xlabel':'this is my x label', 'ylabel':'this is another text for the y label'}
+        >>> asManyPlots2(111, datax, datay, axesProperties=mydict)
+        
+    which will plot datay as a function of datax on a single subplot with x and y labels attached to the axes.
     
         dataProperties : dict
             dictionnary gathering all tunable properties related to the data. See the list below for the complete list of dicionnary keys.
             
-            Data points related properties
-            ------------------------------
+            Data points properties
+            ----------------------
                 'color' : list of str and/or arrays
                     list of colors for each plot. Each given color is mapped to the corresponding plot assuming 'color' and datax and datay are sorted in the same order. Default is 'black' for any kind of plot.
                         - for simple aand 'mix' plots, color names must be provided
                         - for scatter plots, a list/array of values must be provided. This is because scatter plots actually map values to a color range and will apply a color to each point separately using this range. 
+                
+                'fillstyle' : list of str
+                    marker fillstyle to use on the plot. Default is 'full' for 'plot' and 'scatter' plots and 'none' for 'mix' plots. Possible values are 'full', 'left', 'right', 'bottom', 'top', 'none'.
                 
                 'marker' : list of str/char/matplotlib markers
                     list of markers used for the data. Default is 'o'.
@@ -754,19 +760,22 @@ def asManyPlots2(numPlot, datax, datay,
                         - for 'scatter' plots, either a single value or a list/array of values (one per data point) can be provided (the latter will scale data points size accordingly to their value)
                         - for 'mix' plots, a single value can be provided if you want to have markers on your colored line plots
                     
+                'unfillMarker' : list of bool
+                    whether to unfill the markers or not. Default is False for every plot.
+                    
                 'transparency' : float, list of floats between 0 and 1
                     transparency of the data points (1 is plain, 0 is invisible). Default is 1 for any kind of plot.
                 
-            Line related properties
-            -----------------------
+            Line properties
+            ---------------
                 'linewidth' : list of int
                     list of line widths in the plots. For 'scatter' plots, any value can be given as there will be no line. Default is given by 'linewidth' key in generalProperties dict.
                     
                 'linestyle' : list of str
                     list of line styles. Default for 'plot' and 'mix' types of plots is given by 'linestyle' key in generalProperties dict.
-                
-            Plot related properties
-            -----------------------
+            
+            Plot properties
+            ---------------
                 'type' : list of 'plot', 'scatter' and/or 'mix'
                     list of plot type for each array in datax and datay. Default is 'plot' for every data. One value per array must be provided. Three values are possible:
                         - 'plot' to plot a simple plot (line or points) with a single color applied to all the data points
@@ -779,33 +788,37 @@ def asManyPlots2(numPlot, datax, datay,
         generalProperties : dict
             dictionnary gathering all tunable general properties. See the list below for the complete list of dictionnary keys.
             
-            Ticks related keys
-            ------------------
+            Ticks properties
+            ----------------
                 'hideTicksLabels' : bool
                     whether to hide ticks labels. Default is False.
-                'tickDirection' : 'in', 'out' or 'inout'
+                'ticksDirection' : 'in', 'out' or 'inout'
                     direction of the ticks on the plot. Default is 'inout'.
+                'ticksLabelsSize' : int
+                    size of the ticks labels on the plot and the colorbar. Default is 22.
+                'ticksSize' : int
+                    size of the ticks on the plot and on the colorbar if ther is one. Default is 10.
                     
-            Text related keys
-            -----------------
+            Text properties
+            ---------------
                 'textsize' : int
                     overall text size in points. Default is 24.
                     
-            Scale related keys
-            ------------------
+            Scale properties
+            ----------------
                 'scale' : str
                     scale of both axes
                     
-            Line plot related properties
-            -----------------------
+            Line plot properties
+            --------------------
                 'linewidth' : int
                     overall line width used in plots. For 'scatter' plots, any value can be given as there will be no line. Default is 3.
                     
                 'linestyle' : str
                     overall line style used in plots. Default for 'plot' and 'mix' types of plots is plain style ('-').
                     
-            Miscellanous keys
-            -----------------
+            Miscellanous properties
+            -----------------------
                 'hideGrid' : bool
                     whether to hide the grid or not. Default is False.
     
@@ -939,14 +952,23 @@ def asManyPlots2(numPlot, datax, datay,
             ------------------
                 'ticks' : list
                     list of ticks plotted on the colorbar. If 'ticksLabels' key values are given, these values will be overriden and replaced by those given by 'ticksLabels'. Default if None, so that matplotlib automatically adjust the ticks values.
+                'ticksColor' : str
+                    color of the ticks on the colorbar. Default is 'black'.
+                'ticksSize' : int
+                    size of the ticks in points. Default is given by 'ticksSize' key in generalProperties dict.
+                    
+            Ticks labels properties
+            -----------------------
                 'ticksLabels' : list
                     list of ticks labels (str, int, float, etc.) for the colorbar. Default value is None, so that the ticks values are plotted on the colorbar.
                     This key can be used to change the colorbar ticks printed on the figure, without changing the scatter plot z values.
-                'ticksLabelsSize' : int
-                    size of the labels associated to the ticks. Default is 24.
-                'ticksSize' : int
-                    size of the ticks in points. Default is 24.
                     
+                'ticksLabelsColor' : str
+                    color of the ticks labels on the colorbar. Default is 'black'
+                'ticksLabelsRotation' : float
+                    counter-clockwise rotation of the ticks labels in degrees. Default is 0°.
+                'ticksLabelsSize' : int
+                    size of the labels associated to the ticks. Default is given by 'ticksLabelsSize' in generalProperties dict.
                     
         legendProperties : dict
             dictionnary gathering all tunable legend properties. See the list below for the complete list of dictionnary keys.
@@ -967,7 +989,7 @@ def asManyPlots2(numPlot, datax, datay,
                 'labels' : list of str
                     list of labels for the data. Labels must be given in the same order as the plots. Default is None so that no labels are shown for any kind of plot.
                 'size' : int
-                    size of the text in the legend. Default is 24.
+                    size of the text in the legend. Default is given by 'textsize' key in generalProperties dict.
             
             Lines and markers related keys
             ------------------------------
@@ -983,23 +1005,12 @@ def asManyPlots2(numPlot, datax, datay,
                     list of marker face colors (main area) shown in the legend. Default is None so that the line color in the plot is used for plots markers and black is used for scatter plots markers.
                     If provided, this list must contain as many colors as there are data plotted. For instance, if one plots a plot and a scatter plot, one may write legendProperties={'markerFaceColor':['red', 'blue']} to draw the plot marker face color in red and the scatter plot marker face color in blue within the legend.
     
-                
-    
-
-    
-    fillstyle : string, list of strings
-        which fillstyle use for the markers (see matplotlib fillstyles for more information)
-    
-    
     outputName : str
         name of the file to save the graph into. If None, the plot is not saved into a file
     overwrite : boolean
         whether to overwrite the ouput file or not
     tightLayout : boolean
         whether to use bbox_inches='tight' if tightLayout is True or bbox_inches=None otherwise
-        
-    unfilledFlag : boolean, list of booleans
-        whether to unfill the points' markers or not
         
     Return current axis and last plot.
     """
@@ -1028,7 +1039,10 @@ def asManyPlots2(numPlot, datax, datay,
         """
         
         if data is not typeToCheck:
-            data = [data]*length
+            try:
+                data = list(data)
+            except TypeError:
+                data = [data]*length
         return data
             
     def completeList(data, length, default):
@@ -1124,9 +1138,9 @@ def asManyPlots2(numPlot, datax, datay,
         info = "A simple container to gather things up."
         
     # General layout properties
-    layout = gatherThingsUp()
+    layout, layout.ticks, layout.line = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(generalProperties, dict, 'generalProperties'):
-        layout.textsize, layout.hideTicksLabels, layout.scale, layout.tickDirection, layout.grid, layout.linewidth, layout.linestyle = setListFromDict(generalProperties, keys=['textsize', 'hideTicksLabels', 'scale', 'tickDirection', 'hideGrid', 'linewidth', 'linestyle'], default=[24, False, 'linear', 'in', False, 3, '-'])
+        layout.tick.labelSize, layout.ticks.size, layout.textsize, layout.ticks.hideLabels, layout.scale, layout.tick.direction, layout.grid, layout.line.width, layout.line.style = setListFromDict(generalProperties, keys=['ticksLabelsSize', 'ticksSize', 'textsize', 'hideTicksLabels', 'scale', 'tickDirection', 'hideGrid', 'linewidth', 'linestyle'], default=[22, 10, 24, False, 'linear', 'in', False, 3, '-'])
     
         
     ################################################################################################
@@ -1149,59 +1163,70 @@ def asManyPlots2(numPlot, datax, datay,
     ################################################################################################   
     
     # If everything went fine, we can define a few general properties useful later on
-    data                     = gatherThingsUp()
-    data.marker, data.line   = gatherThingsUp(), gatherThingsUp()
-    data.x, data.y           = gatherThingsUp(), gatherThingsUp()
-    data.x.data              = datax
-    data.y.data              = datay
-    data.x.min               = np.min(data.x.data)
-    data.x.max               = np.max(data.x.data)
-    data.y.min               = np.min(data.y.data)
-    data.y.max               = np.max(data.y.data)
-    data.nplots              = len(data.x.data)
+    data                   = gatherThingsUp()
+    data.marker, data.line = gatherThingsUp(), gatherThingsUp()
+    data.x, data.y         = gatherThingsUp(), gatherThingsUp()
+    data.x.data            = datax
+    data.y.data            = datay
+    data.x.min             = np.min(data.x.data)
+    data.x.max             = np.max(data.x.data)
+    data.y.min             = np.min(data.y.data)
+    data.y.max             = np.max(data.y.data)
+    data.nplots            = len(data.x.data)
 
     if isType(dataProperties, dict, 'dataProperties'):
-        data.zorder, data.color, data.type, data.transparency, data.marker.type, data.marker.size, data.line.width, data.line.style = setListFromDict(dataProperties, keys=['order', 'color', 'type', 'transparency', 'marker', 'markerSize', 'linewdith', 'linestyle'], default=[range(data.nplots), None, ['plot']*data.nplots, [1]*data.nplots, ['o']*data.nplots], None, None, None)
+        data.zorder, data.color, data.type, data.transparency, data.marker.type, data.marker.size, data.marker.fillstyle, data.marker.unfill, data.line.width, data.line.style = setListFromDict(dataProperties, keys=['order', 'color', 'type', 'transparency', 'marker', 'markerSize', 'markerFillstyle', 'unfillMarker', 'linewdith', 'linestyle'], default=[range(data.nplots), None, ['plot']*data.nplots, [1]*data.nplots, ['o']*data.nplots], None, None, [False]*data.npots, None, None)
         
         # If the user provides a single value, we change it to a list
-        data.type            = checkTypeAndChangeValueToList(data.type, list, data.nplots)
-        data.transparency    = checkTypeAndChangeValueToList(data.transparency, list, data.nplots)
-        data.marker.type     = checkTypeAndChangeValueToList(data.marker, list, data.nplots)
+        data.type          = checkTypeAndChangeValueToList(data.type, list, data.nplots)
+        data.transparency  = checkTypeAndChangeValueToList(data.transparency, list, data.nplots)
+        data.marker.type   = checkTypeAndChangeValueToList(data.marker.type, list, data.nplots)
+        data.marker.unfill = checkTypeAndChangeValueToList(data.marker.unfill, list, data.nplots)
         
         # If the user provides an incomplete list, we complete it
         completeList(data.transparency, data.nplots, 1)
         completeList(data.marker.type, data.nplots, 'o')
+        completeList(data.marker.unfill, data.nplots, False)
         
         if data.marker.size is None:      
-            data.marker.size = []
+            data.marker.size      = []
+            
+        if data.marker.fillstyle is None:
+            data.marker.fillstyle = []
             
         if data.line.width is None:
-            data.line.width = []
+            data.line.width       = []
             
         if data.line.style is None:
-            data.line.style = []
+            data.line.style       = []
         
         # Complete the size list with either 0 of the default value is the list is not complete
         lms = len(data.marker.size)  
+        lmf = len(data.marker.fillstyle)
         llw = len(data.line.width)
         lls = len(data.line.style)
         for pos, typ in enumerate(data.type):
-            if pos >= lms:
-                if typ == 'mix':
+            if typ == 'mix':
+                if pos >= lms:                
                     data.marker.size.append(0)
-                else:
+                if pos >= lmf:
+                    data.marker.fillstyle.append('none')
+            else:
+                if pos >= lms:
                     data.marker.size.append(layout.textsize)
+                if pos >= lmf:
+                    data.marker.fillstyle.append('full')
             
             if typ == 'scatter':
                 if pos >= llw:    
                     data.line.width.append(0)
                 if pos >= lls:
-                    data.line.style.append("None")
+                    data.line.style.append("None")    
             else:
                 if pos >= llw:    
-                    data.line.width.append(layout.linewidth)
+                    data.line.width.append(layout.line.width)
                 if pos >= lls:
-                    data.line.style.append(layout.linestyle) 
+                    data.line.style.append(layout.line.style)
             
         # If data.color is not provided, we set plot colors to 'black' and scatter plots points to the same value
         if data.color is None:
@@ -1209,27 +1234,53 @@ def asManyPlots2(numPlot, datax, datay,
         else:
             setDefault(data.color, default='black')
 
-    # Axes properties dict
+
+    ########################################
+    #            Axes properties           #
+    ########################################
+    
     xaxis, xaxis.label, xaxis.ticks = [gatherThingsUp()]*3
     yaxis, yaxis.label, yaxis.ticks = [gatherThingsUp()]*3
     if isType(axesProperties, dict, 'axesProperties'):
-        xaxis.label.text, yaxis.label.text, xaxis.ticks.hideLabels, yaxis.ticks.hideLabels, xaxis.ticks.size, yaxis.ticks.size, xaxis.label.size, yaxis.label.size, xaxis.scale, yaxis.scale, xaxis.pos, yaxis.pos, xaxis.ticks.direction, yaxis.ticks.direction, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticksLabels", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xscale", "yscale", "xAxisPos", "yAxisPos", "xTickDirection", "yTickDirection", "xmin", "xmax", "ymin", "ymax"], default=['', '', False, False, layout.size, layout.size, layout.size, layout.size, layout.scale, layout.scale, "bottom", "left", layout.tickDirection, layout.tickDirection, data.x.min, data.x.max, data.y.min, data.y.max])
+        xaxis.label.text, yaxis.label.text, xaxis.ticks.hideLabels, yaxis.ticks.hideLabels, xaxis.ticks.size, yaxis.ticks.size, xaxis.label.size, yaxis.label.size, xaxis.scale, yaxis.scale, xaxis.pos, yaxis.pos, xaxis.ticks.direction, yaxis.ticks.direction, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xlabel", "ylabel", "hideXticks", "hideYticksLabels", "xTickSize", "yTickSize", "xLabelTextSize", "yLabelTextSize", "xscale", "yscale", "xAxisPos", "yAxisPos", "xTickDirection", "yTickDirection", "xmin", "xmax", "ymin", "ymax"], default=['', '', False, False, layout.textsize, layout.textsize, layout.textsize, layout.textsize, layout.scale, layout.scale, "bottom", "left", layout.tick.direction, layout.tick.direction, data.x.min, data.x.max, data.y.min, data.y.max])
+      
         
-    # Title properties dict
+    #########################################
+    #             Title properties          #
+    #########################################
+    
     title = gatherThingsUp()
     if isType(titleProperties, dict, 'titleProperties'):
         title.color, title.font, title.label, title.size, title.style, title.weight, title.position, title.verticalOffset = setListFromDict(titleProperties, keys=["color", "font", "label", "size", "style", "weight", "position", "verticalOffset"], default=['black', 'sans-serif', '', 26, 'normal', 'regular', 'center', None])
     
-    # Colormap properties dict
-    colorbar, colorbar.ticks, colorbar.label, colorbar.cmap = [gatherThingsUp()]*4
+    
+    ########################################
+    #          Colormap properties         #
+    ########################################
+    
+    colorbar, colorbar.ticks, colorbar.ticks.labels, colorbar.label, colorbar.cmap = [gatherThingsUp()]*5
     if isType(colorbarProperties, dict, 'colorbarProperties'):
-        colorbar.hide, colorbar.orientation, colorbar.cmap.name, colorbar.cmap.offsetCenter, colorbar.cmap.min, colorbar.cmap.max, colorbar.ticks, colorbar.ticks.labels, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale, colorbar.label.text, colorbar.label.size, colorbar.ticks.labelsSize, colorbar.ticks.size = setListFromDict(colorbarProperties, keys=["hide", "orientation", "cmap", "offsetCenter", "min", "max", "ticks", "ticksLabels", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale", "label", "labelSize", "ticksLabelsSize", "ticksSize"], default=[False, 'vertical', 'Greys', 0, None, None, None, None, 2, 'linear', 0.1, 1, '', 24, 24, 24])
+        
+        # General properties
+        colorbar.hide, colorbar.orientation = setListFromDict(colorbarProperties, keys=["hide", "orientation"], default=[False, 'vertical'])
+        
+        # Cmap properties
+        colorbar.cmap.name, colorbar.cmap.min, colorbar.cmap.max = setListFromDict(colorbarProperties, keys=["cmap", "min", "max"], default=['Greys', 0, None, None])
+        
+        # Ticks properties
+        colorbar.ticks.values, colorbar.ticks.size, colorbar.ticks.color, colorbar.ticks.label.text, colorbar.ticks.label.size, colorbar.ticks.label.color, colorbar.ticks.label.rotation = setListFromDict(colorbarProperties, keys=["ticks", "ticksSize", "ticksColor", "ticksLabels", "ticksLabelsSize", "ticksLabelsColor", "ticksLabelsRotation"], default=[None,  layout.ticks.size, 'black', None, layout.ticks.labelsSize, 'black', 0])
+        
+        # Scale properties
+        colorbar.offsetCenter, colorbar.powerlaw, colorbar.scale, colorbar.symLogLinThresh, colorbar.symLogLinScale = setListFromDict(colorbarProperties, keys=["offsetCenter", "powerlaw", "scale", "symLogLinThresh", "symLogLinScale"], default=[0, 2, 'linear', 0.1, 1])
+        
+        # Label properties
+        colorbar.label.text, colorbar.label.size = setListFromDict(colorbarProperties, keys=["label", "labelSize"], default=['', layout.textsize])
         
         # Making a couple of tests
         if colorbar.cmap.min > colorbar.cmap.max:
             raise ValueError("Given minimum cmap value with key 'min' in colorbarProperties dict is larger than given maximum cmap value with key 'max'. Please provide value such that min <= max. Cheers !")
         
-        if len(colorbar.ticks.labels) != len(colorbar.ticks):
+        if len(colorbar.ticks.labels) != len(colorbar.ticks.values):
             raise ValueError("Keys 'ticksLabels' and 'ticksLabelsSize' do not have the same length. Please provide both keys with the same number of elements. Cheers !")
         
         ###################################################
@@ -1268,7 +1319,7 @@ def asManyPlots2(numPlot, datax, datay,
     
     legend, legend.marker, legend.line   = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(legendProperties, dict, 'legendProperties'):
-        legend.loc, legend.ncols, legend.size, legend.labels, legend.line.color, legend.marker.edgeColor, legend.marker.faceColor = setListFromDict(legendProperties, keys=['loc', 'ncols', 'size',' labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, 24, ['']*data.nplots, None, None, None]) 
+        legend.loc, legend.ncols, legend.size, legend.labels, legend.line.color, legend.marker.edgeColor, legend.marker.faceColor = setListFromDict(legendProperties, keys=['loc', 'ncols', 'size',' labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, layout.textsize, ['']*data.nplots, None, None, None]) 
     
         # Checking that given parameters have the correct type
         legend.labels                    = checkTypeAndChangeValueToList(legend.labels, list, data.nplots)
@@ -1291,7 +1342,7 @@ def asManyPlots2(numPlot, datax, datay,
     
     # Generate subplot
     typ = type(numPlot)
-    if typ == list or typ == np.ndarray:
+    if (typ == list or typ == np.ndarray) and len(numPlot)>=3:
         ax1 = plt.subplot(numPlot[0], numPlot[1], numPlot[2])
     else:
         ax1 = plt.subplot(numPlot)
@@ -1302,18 +1353,8 @@ def asManyPlots2(numPlot, datax, datay,
     ax1.set_title(title.label, loc=title.position, pad=title.verticalOffset, fontsize=title.size, color=title.color, fontfamily=title.font, fontweight=title.weight, fontstyle=title.style)
     
     # Set ticks properties for x and y axes
-    ax1.tick_params(axis='x', which='both', direction=xaxis.tickDirection, labelsize=xaxis.tickSize)
-    ax1.tick_params(axis='y', which='both', direction=yaxis.tickDirection, labelsize=yaxis.tickSize)
-         
-       
-    try:
-        np.shape(fillstyle)[0]
-    except:
-        fillstyle = [fillstyle]*lx
-    try:
-        np.shape(unfilledFlag)[0]
-    except:
-        unfilledFlag = [unfilledFlag]*lx
+    ax1.tick_params(axis='x', which='both', direction=xaxis.ticks.direction, labelsize=xaxis.ticks.size)
+    ax1.tick_params(axis='y', which='both', direction=yaxis.ticks.direction, labelsize=yaxis.ticks.size)
         
     # Set x and y labels
     plt.xlabel(xaxis.label.text, size=xaxis.label.size) 
@@ -1344,40 +1385,68 @@ def asManyPlots2(numPlot, datax, datay,
     else:
         raise ValueError("ValueError: given key 'xAxisPos' from dictionnary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
 
-    #Plotting
-    tmp     = []
-    sct     = None
+    # Setting a list of plots to provide to the user in the end
+    listPlots = []
+    sct       = None
     
-    #list of handels for the legend
+    # List of handles for the legend
     handles = []
     
-    for dtx, dty, mrkr, mrkrSz, clr, zrdr, lnstl, lbl, pltFlg, fllstl, lph, nflldFlg in zip(datax, datay, data.marker, data.markerSize, color, zorder, linestyle, label, plotFlag, fillstyle, alpha, unfilledFlag):
-        edgecolor = clr
-        if nflldFlg:
+    for dtx, dty, typ, clr, zrdr, mrkr, mrkrSz, fllstl, trnsprnc, nfll, lnstl, lnwdth, lbl in zip(data.x.data, data.y.data, data.type, data.color, data.zorder, data.marker.style, data.marker.size, data.marker.fillstyle, data.transparency, data.marker.unfill, data.line.style, data.line.width, legend.labels):
+        
+        # Set marker edgecolor in plot as the given color
+        edgecolor     = clr
+        
+        # Set marker facecelor to "none" if marker must be unfilled
+        if nfll:
             facecolor = "none"
         else:
-            facecolor=clr
+            facecolor = clr
         
-        if pltFlg:
-            tmp.append(plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=lph,
-                           linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=edgecolor,
-                           markersize=mrkrSz, linewidth=linewidth))
-            handles.append(copy(tmp[-1][0]))
-        else:
-            markerObject = MarkerStyle(marker=mrkr, fillstyle=fllstl)
-            sct = plt.scatter(dtx, dty, label=lbl, marker=markerObject, zorder=zrdr, 
-                              cmap=cmap, norm=norm, vmin=cmapMin, vmax=cmapMax, alpha=lph, c=clr, s=mrkrSz)
-            tmp.append(sct)
+        #######################################################
+        #            Deal with 'plot' type first              #
+        #######################################################
+        
+        if typ == 'plot':
+            listPlots.append( plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=trnsprnc,
+                                       linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=edgecolor,
+                                       markersize=mrkrSz, linewidth=lnwdth)
+                            )
+            handles.append(copy(listPlots[-1][0]))
+         
             
-            if nflldFlg:
+        #####################################################
+        #           Deal with 'scatter' type then           #
+        #####################################################
+        
+        elif typ == 'scatter':
+            
+            # Create a customisable marker object
+            markerObject = MarkerStyle(marker=mrkr, fillstyle=fllstl)
+            
+            sct          = plt.scatter(dtx, dty, label=lbl, marker=markerObject, zorder=zrdr, 
+                                       cmap=colorbar.cmap.name, norm=colorbar.norm, vmin=colorbar.cmap.min, 
+                                       vmax=colorbar.cmap.max, alpha=trnsprnc, c=clr, s=mrkrSz)
+            
+            if nfll:
                 sct.set_facecolor('none')
+                
+            listPlots.append(sct)
         
-    if np.any(np.logical_not(plotFlag)) and showColorbar:
-        col = plt.colorbar(sct, orientation=colorbarOrientation)
-        col.ax.tick_params(labelsize=colorbarTicksLabelsSize)
+    #################################################
+    #             Deal with the colorbar            #
+    #################################################
         
-        if colorbar.label is not None:
-            col.set_label(colorbar.label, size=colorbar.labelSize)
+    # If there is at least one 'scatter' or 'mix' type of plot and if the color bar should not be hidden
+    if np.any(np.array(data.type) != 'plot') and not colorbar.hide:
+        
+        # Make colorbar, set orientation, color, rotation and size
+        col = plt.colorbar(sct, orientation=colorbar.orientation)
+        col.ax.tick_params(labelsize=colorbar.ticks.label.size, length=colorbar.ticks.size,
+                           labelcolor=colorbar.ticks.label.color, labelrotation=colorbar.ticks.label.rotation,
+                           color=colorbar.ticks.color)
+        
+        col.set_label(colorbar.label, size=colorbar.labelSize)
         if colorbarTicks is not None:
             col.set_ticks(colorbarTicks)
         if colorbarTicksLabels is not None:
