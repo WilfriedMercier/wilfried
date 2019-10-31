@@ -792,9 +792,9 @@ def asManyPlots2(numPlot, datax, datay,
                 'ticksDirection' : 'in', 'out' or 'inout'
                     direction of the ticks on the plot. Default is 'inout'.
                 'ticksLabelsSize' : int
-                    size of the ticks labels on the plot and the colorbar. Default is 22.
+                    size of the ticks labels on the plot and the colorbar. Default is 2 points below 'textsize' key value.
                 'ticksSize' : int
-                    size of the ticks on the plot and on the colorbar if ther is one. Default is 10.
+                    size of the ticks on the plot and on the colorbar if ther is one. Default is 7.
                     
             Text properties
             ---------------
@@ -969,23 +969,21 @@ def asManyPlots2(numPlot, datax, datay,
                     size of the labels associated to the ticks. Default is given by 'ticksLabelsSize' in generalProperties dict.
                     
         legendProperties : dict
-            dictionary gathering all tunable legend properties. See the list below for the complete list of dictionary keys.
+            dictionary gathering all tunable legend properties. See the list below for the complete list of dictionary keys. By default, the legend is hidden.
             
             General legend properties keys
             ------------------------------
-                'hide' : bool
-                    whether to hide the legend or not. Default is False.
                 'loc' : str/int
                     legend location on the plot. Default is 'best'.
                 'ncols' : int
                     number of columns in the legend. Default is 1 so that every label will appear on a new line. 
                     For instance legendProperties={'numberColumns':3} will split labels into three columns.
-            
+                    
             Text related keys
             -----------------
                 'labels' : list of str
                     list of labels for the data. Labels must be given in the same order as the plots. Default is None so that no labels are shown for any kind of plot.
-                'size' : int
+                'labelSize' : int
                     size of the text in the legend. Default is given by 'textsize' key in generalProperties dict.
             
             Lines and markers related keys
@@ -1164,12 +1162,14 @@ def asManyPlots2(numPlot, datax, datay,
     layout, layout.ticks, layout.line = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(generalProperties, dict, 'generalProperties'):
         
+        layout.textsize, = setListFromDict(generalProperties, keys=['textsize'], default=[24])
+        
         # general ticks properties
-        layout.ticks.labelSize, layout.ticks.size, layout.ticks.direction = setListFromDict(generalProperties, keys=['ticksLabelsSize', 'ticksSize', 'tickDirection'], default=[22, 10, 'in'])
+        layout.ticks.labelSize, layout.ticks.size, layout.ticks.direction = setListFromDict(generalProperties, keys=['ticksLabelsSize', 'ticksSize', 'tickDirection'], default=[layout.textsize-2, 7, 'in'])
         
         # General properties
-        layout.markersize, layout.textsize, layout.ticks.hideLabels, layout.scale, layout.grid = setListFromDict(generalProperties, keys=['markersize', 'textsize', 'hideTicksLabels', 'scale', 'hideGrid'], default=[16, 24, False, 'linear', False])
-        
+        layout.markersize, layout.ticks.hideLabels, layout.scale, layout.grid = setListFromDict(generalProperties, keys=['markersize', 'hideTicksLabels', 'scale', 'hideGrid'], default=[16, False, 'linear', False])
+
         # General line properties
         layout.line.width, layout.line.style = setListFromDict(generalProperties, keys=['linewidth', 'linestyle'], default=[2, '-'])
     
@@ -1278,22 +1278,22 @@ def asManyPlots2(numPlot, datax, datay,
     #            Axes properties           #
     ########################################
     
-    xaxis, xaxis.label, xaxis.ticks = [gatherThingsUp()]*3
-    yaxis, yaxis.label, yaxis.ticks = [gatherThingsUp()]*3
+    xaxis, xaxis.label, xaxis.ticks = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
+    yaxis, yaxis.label, yaxis.ticks = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(axesProperties, dict, 'axesProperties'):
         
         # Label properties
         # X axis
-        xaxis.label.text, xaxis.label.size, xaxis.scale = setListFromDict(axesProperties, keys=["xlabel", "xLabelTextSize", "xscale"], default=['', layout.textsize, layout.scale])
+        xaxis.label.text, xaxis.label.size, xaxis.scale = setListFromDict(axesProperties, keys=["xlabel", "xLabelTextSize", "xscale"], default=['', layout.ticks.labelSize, layout.scale])
         # y-axis
-        yaxis.label.text, yaxis.label.size, yaxis.scale = setListFromDict(axesProperties, keys=["ylabel", "yLabelTextSize", "yscale"], default=['', layout.textsize, layout.scale])
-        
+        yaxis.label.text, yaxis.label.size, yaxis.scale = setListFromDict(axesProperties, keys=["ylabel", "yLabelTextSize", "yscale"], default=['', layout.ticks.labelSize, layout.scale])
+        print(yaxis.label.size)
         # Ticks properties
         # x-axis
-        xaxis.ticks.hideLabels, xaxis.ticks.size, xaxis.ticks.direction = setListFromDict(axesProperties, keys=["hideXticksLabels", "xTickSize", "xTickDirection"], default=[False, layout.textsize, layout.ticks.direction])
-        
+        xaxis.ticks.hideLabels, xaxis.ticks.size, xaxis.ticks.direction = setListFromDict(axesProperties, keys=["hideXticksLabels", "xTickSize", "xTickDirection"], default=[False, layout.ticks.size, layout.ticks.direction])
+
         # y-axis
-        yaxis.ticks.hideLabels, yaxis.ticks.size, yaxis.ticks.direction = setListFromDict(axesProperties, keys=["hideYticksLabels", "yTickSize", "yTickDirection"], default=[False, layout.textsize, layout.ticks.direction])
+        yaxis.ticks.hideLabels, yaxis.ticks.size, yaxis.ticks.direction = setListFromDict(axesProperties, keys=["hideYticksLabels", "yTickSize", "yTickDirection"], default=[False, layout.ticks.size, layout.ticks.direction])
         
         # Other properties
         xaxis.pos, yaxis.pos, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xAxisPos", "yAxisPos", "xmin", "xmax", "ymin", "ymax"], default=["bottom", "left", None, None, None, None])
@@ -1312,7 +1312,7 @@ def asManyPlots2(numPlot, datax, datay,
     #          Colormap properties         #
     ########################################
     
-    colorbar, colorbar.ticks, colorbar.ticks.label, colorbar.label, colorbar.cmap = [gatherThingsUp()]*5
+    colorbar, colorbar.ticks, colorbar.ticks.label, colorbar.label, colorbar.cmap = gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(colorbarProperties, dict, 'colorbarProperties'):
         
         # General properties
@@ -1379,12 +1379,19 @@ def asManyPlots2(numPlot, datax, datay,
     #            Legend properties            #
     ###########################################
     
-    legend, legend.marker, legend.line   = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
+    legend, legend.marker, legend.line, legend.labels = gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(legendProperties, dict, 'legendProperties'):
-        legend.hide, legend.loc, legend.ncols, legend.size, legend.labels, legend.line.color, legend.marker.edgecolor, legend.marker.facecolor = setListFromDict(legendProperties, keys=['hide', 'loc', 'ncols', 'size', 'labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=[False, 'best', 1, layout.textsize, ['']*data.nplots, None, None, None]) 
+        
+        # Hide legend if no key is provided
+        if legendProperties == {}:
+            legend.hide = True
+        else:
+            legend.hide = False
+            
+        legend.loc, legend.ncols, legend.labels.size, legend.labels.text, legend.line.color, legend.marker.edgecolor, legend.marker.facecolor = setListFromDict(legendProperties, keys=['loc', 'ncols', 'labelSize', 'labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, layout.textsize, ['']*data.nplots, None, None, None]) 
     
         # Checking that given parameters have the correct type
-        legend.labels                    = checkTypeAndChangeValueToList(legend.labels, list, data.nplots)
+        legend.labels.text               = checkTypeAndChangeValueToList(legend.labels.text, list, data.nplots)
         legend.line.color                = checkTypeAndChangeValueToList(legend.line.color, list, data.nplots)
         legend.marker.edgecolor          = checkTypeAndChangeValueToList(legend.marker.edgecolor, list, data.nplots)
         legend.marker.facecolor          = checkTypeAndChangeValueToList(legend.marker.facecolor, list, data.nplots)
@@ -1422,8 +1429,8 @@ def asManyPlots2(numPlot, datax, datay,
     ax1.set_title(title.label, loc=title.position, pad=title.verticalOffset, fontsize=title.size, color=title.color, fontfamily=title.font, fontweight=title.weight, fontstyle=title.style)
     
     # Set ticks properties for x and y axes
-    ax1.tick_params(axis='x', which='both', direction=xaxis.ticks.direction, labelsize=xaxis.ticks.size)
-    ax1.tick_params(axis='y', which='both', direction=yaxis.ticks.direction, labelsize=yaxis.ticks.size)
+    ax1.tick_params(axis='x', which='both', direction=xaxis.ticks.direction, labelsize=xaxis.label.size, length=xaxis.ticks.size)
+    ax1.tick_params(axis='y', which='both', direction=yaxis.ticks.direction, labelsize=yaxis.label.size, length=xaxis.ticks.size)
         
     # Set x and y labels
     plt.xlabel(xaxis.label.text, size=xaxis.label.size) 
@@ -1437,19 +1444,15 @@ def asManyPlots2(numPlot, datax, datay,
     
     # Place axes to the correct position
     if yaxis.pos.lower() == "right":
-        ax1.yaxis.tick_right()
         ax1.yaxis.set_label_position("right")
     elif yaxis.pos.lower() == "left":
-        ax1.yaxis.tick_left()
         ax1.yaxis.set_label_position("left")
     else:
         raise ValueError("ValueError: given key 'yAxisPos' from dictionary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
     
     if xaxis.pos.lower() == "bottom":
-        ax1.xaxis.tick_bottom()
         ax1.xaxis.set_label_position("bottom")
     elif xaxis.pos.lower() == "top":
-        ax1.xaxis.tick_top()
         ax1.xaxis.set_label_position("top")
     else:
         raise ValueError("ValueError: given key 'xAxisPos' from dictionary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
@@ -1464,7 +1467,7 @@ def asManyPlots2(numPlot, datax, datay,
     # List of handles for the legend
     handles = []
     
-    for dtx, dty, typ, clr, zrdr, mrkr, mrkrSz, fllstl, trnsprnc, nfll, lnstl, lnwdth, lbl in zip(data.x.data, data.y.data, data.type, data.color, data.zorder, data.marker.type, data.marker.size, data.marker.fillstyle, data.transparency, data.marker.unfill, data.line.style, data.line.width, legend.labels):
+    for dtx, dty, typ, clr, zrdr, mrkr, mrkrSz, fllstl, trnsprnc, nfll, lnstl, lnwdth, lbl in zip(data.x.data, data.y.data, data.type, data.color, data.zorder, data.marker.type, data.marker.size, data.marker.fillstyle, data.transparency, data.marker.unfill, data.line.style, data.line.width, legend.labels.text):
         
         # Set marker edgecolor in plot as the given color
         edgecolor     = clr
@@ -1480,7 +1483,7 @@ def asManyPlots2(numPlot, datax, datay,
         #######################################################
         
         if typ == 'plot':
-            print(clr,mrkrSz, lnwdth)
+            print('coucou', clr,mrkrSz, lnwdth)
             listPlots.append( plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=trnsprnc,
                                        linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=edgecolor,
                                        markersize=mrkrSz, linewidth=lnwdth)
@@ -1541,7 +1544,7 @@ def asManyPlots2(numPlot, datax, datay,
     if not legend.hide:
         
         # Plot legend before making changes and get legend handles
-        leg = plt.legend(loc=legend.loc, prop={'size': legend.size}, shadow=True, fancybox=True, ncol=legend.ncols)
+        leg = plt.legend(loc=legend.loc, prop={'size': legend.labels.size}, shadow=True, fancybox=True, ncol=legend.ncols)
         
         for h, mkfclr, mkeclr, lc, typ in zip(leg.legendHandles, legend.marker.facecolor, legend.marker.edgecolor, legend.line.color, data.type):
             if typ in ['plot', 'mix']:
