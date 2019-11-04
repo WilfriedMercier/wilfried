@@ -84,83 +84,8 @@ modelFunctions = {  'deVaucouleur': gendeVaucouleur,
 tags = ['fourier', 'bending', 'boxyness']
 
 
-#####################################################################
-#              General functions for galfit feedme files            #
-#####################################################################
-
-def genFeedme(header, listProfiles):
-    """
-    Make a galfit.feedme configuration using the profiles listed in models.py.
-    
-    Mandatory inputs
-    ----------------
-        header : dict
-            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file
-        listProfiles : list of dict
-            list of dictionaries. Each dictionnary corresponds to a profile:
-                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
-                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
-                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
-                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
-            
-            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
-                'fourier', 'bending', 'boxyness'
-            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
-            
-            Example
-            -------
-                Say one wants to make a galfit configuration with a:
-                    - output image output.fits and a zeroPointMag = 25.4 mag
-                    - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
-                    - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
-                    - bending modes 1 and 3 with values 0.2 and 0.4 respectively added to the Nuker profile
-                    
-                Then one may write something like
-                    >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
-                    >>> sersic  = {'name':'sersic', 'posX':45, 'posY':56, 'magTot':25, 're':10, 'n':1, 'PA':100, 'isFixed':['n']}
-                    
-                    >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
-                    >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
-                    
-                    >>> genFeedme(header, [sersic, nuker])
-                
-    Return a full galfit.feedme configuration with header and body as formatted text.
-    """
-    
-    header['name'] = 'header'
-    correctNames   = fullKeys.keys()
-    
-    for pos, dic in enumerate([header] + listProfiles):
-        # Check that name is okay in dictionaries
-        try:
-            if dic['name'] not in correctNames:
-                raise ValueError("Given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
-        except KeyError:
-            raise KeyError("Key 'name' is not provided in one of the dictionaries.")
-        
-        # Check that the given dictionnary only has valid keys
-        checkDictKeys(removeKeys(dic, keys=tags + ['name']), keys=fullKeys[dic['name']]['parameters'], dictName='header or listProfiles')
-    
-        # Set default values if not provided
-        if pos==0:
-            header = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
-        else:
-            listProfiles[pos-1] = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
-    
-    # Append each profile configuration into a variable of type str
-    out      = genHeader(**removeKeys(header, keys=['name']))
-    for dic in listProfiles:
-        out += "\n\n" + modelFunctions[dic['name']](**removeKeys(dic, keys=['name', 'fourier', 'bending', 'boxyness', 'name']))
-        
-        # Append tags such as fourier or bending modes if they are provided in the profile
-        for t in tags:
-            if t in dic:
-                out += "\n" + modelFunctions[t](**dic[t])
-        
-    return out
-
-
-def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", constraints=None):
+def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], constraintNames=[], constraints=None,
+                 pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstaints="./constraints"):
     """
     Make galfit.feedme files using the same profiles.
     
@@ -262,9 +187,12 @@ def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
     
     if outputNames == []:
         outputNames = [i.replace('.fits', '_out.fits') for i in inputNames]
+        
+    if constraintNames == []:
+        constraintNames = [i.replace('.fits', '.constraints') for i in inputNames]
     
-    if len(inputNames) != len(outputNames) or len(inputNames) != len(feedmeNames):
-        raise ValueError("Lists intputNames, outputNames and feedmeNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
+    if len(inputNames) != len(outputNames) or len(inputNames) != len(feedmeNames) or len(inputNames) != len(constraintNames):
+        raise ValueError("Lists intputNames, outputNames, feedmeNames and constraintNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
     
     if not isdir(pathIn):
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathIn)
@@ -272,16 +200,18 @@ def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathOut)
     if not isdir(pathFeedme):
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathFeedme)
+    if not isdir(pathConstaints):
+        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathConstaints)
     
-    ################################################
-    #                Writing files                 #
-    ################################################
+    #################################################################
+    #                Writing feedme and constraint files            #
+    #################################################################
     
-    for inp, out, fee in zip(inputNames, outputNames, feedmeNames):
+    for inp, out, fee, con in zip(inputNames, outputNames, feedmeNames, constraintNames):
 
         # output .constraint file
         if constraints is not None:
-            fname = pathFeedme + fee.replace('.feedme', '.constraints')
+            fname = pathConstaints + con
             with open(fname, "w") as file:
                 # Get formatted text
                 tmp = genConstraint(constraints)
@@ -300,8 +230,82 @@ def writeFeedmes(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
             # Get formatted text, check in genFeedme that dict keys are okay and write into file if so
             tmp = genFeedme(header, listProfiles)
             file.write(tmp)
+
+
+#####################################################################
+#              General functions for galfit config files            #
+#####################################################################
+
+def genFeedme(header, listProfiles):
+    """
+    Make a galfit.feedme configuration using the profiles listed in models.py.
+    
+    Mandatory inputs
+    ----------------
+        header : dict
+            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file
+        listProfiles : list of dict
+            list of dictionaries. Each dictionnary corresponds to a profile:
+                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
+                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
+                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
+                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
             
+            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
+                'fourier', 'bending', 'boxyness'
+            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
+            
+            Example
+            -------
+                Say one wants to make a galfit configuration with a:
+                    - output image output.fits and a zeroPointMag = 25.4 mag
+                    - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
+                    - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
+                    - bending modes 1 and 3 with values 0.2 and 0.4 respectively added to the Nuker profile
+                    
+                Then one may write something like
+                    >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
+                    >>> sersic  = {'name':'sersic', 'posX':45, 'posY':56, 'magTot':25, 're':10, 'n':1, 'PA':100, 'isFixed':['n']}
+                    
+                    >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
+                    >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
+                    
+                    >>> genFeedme(header, [sersic, nuker])
+                
+    Return a full galfit.feedme configuration with header and body as formatted text.
+    """
+    
+    header['name'] = 'header'
+    correctNames   = fullKeys.keys()
+    
+    for pos, dic in enumerate([header] + listProfiles):
+        # Check that name is okay in dictionaries
+        try:
+            if dic['name'] not in correctNames:
+                raise ValueError("Given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
+        except KeyError:
+            raise KeyError("Key 'name' is not provided in one of the dictionaries.")
         
+        # Check that the given dictionnary only has valid keys
+        checkDictKeys(removeKeys(dic, keys=tags + ['name']), keys=fullKeys[dic['name']]['parameters'], dictName='header or listProfiles')
+    
+        # Set default values if not provided
+        if pos==0:
+            header = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
+        else:
+            listProfiles[pos-1] = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
+    
+    # Append each profile configuration into a variable of type str
+    out      = genHeader(**removeKeys(header, keys=['name']))
+    for dic in listProfiles:
+        out += "\n\n" + modelFunctions[dic['name']](**removeKeys(dic, keys=['name', 'fourier', 'bending', 'boxyness', 'name']))
+        
+        # Append tags such as fourier or bending modes if they are provided in the profile
+        for t in tags:
+            if t in dic:
+                out += "\n" + modelFunctions[t](**dic[t])
+        
+    return out
         
         
 def genConstraint(dicts):
