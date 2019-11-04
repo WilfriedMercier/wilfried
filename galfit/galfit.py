@@ -85,7 +85,7 @@ tags = ['fourier', 'bending', 'boxyness']
 
 
 def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], constraintNames=[], constraints=None,
-                 pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstaints="./constraints"):
+                 pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstaints="./constraints/"):
     """
     Make galfit.feedme files using the same profiles.
     
@@ -349,7 +349,7 @@ def genConstraint(dicts):
     """
 
     if type(dicts) is not list:
-        raise TypeError("Given parameter 'dicts' is not a list. A list of dictionaries must be provided. Cheers !")
+        raise TypeError("Given parameter 'dicts' is not a list. Please provide a list of dictionaries. Cheers !")
     
     everyConstraint     = ['offset', 'ratio', 'absoluteRange', 'relativeRange', 'componentWiseRange', 'componentWiseRatio']
     
@@ -374,9 +374,12 @@ def genConstraint(dicts):
         if param not in everyParam:
             raise ValueError('Given parameter %s is not correct. Possible values are %s. Please provide one of these values if you want to put constraints on one of these parameters. Cheers !' %(param, everyParam))
 
-        if constraint['type'] not in everyConstraint:
-            raise ValueError('Given constraint type %s is not correct. Possible values are %s. Please provide one of these values if you want to put a constraint on parameters. Cheers !' %(constraint['type'], constraintList))
-        
+        try:
+            if constraint['type'] not in everyConstraint:
+                raise ValueError('Given constraint type %s is not correct. Possible values are %s. Please provide one of these values if you want to put a constraint on parameters. Cheers !' %(constraint['type'], everyConstraint))
+        except TypeError:
+            raise TypeError("'constraint' key value in dictionary should be a dictionary with keys 'type' and 'value'. Please provide a dictionary with these keys for the constraint. Cheers !")
+            
         if constraint['type'] in ['offset', 'ratio', 'componentWiseRange', 'componentWiseRatio']:
             if type(components) is not list:
                 raise TypeError("Given components %s should be a list. Please provide a list. Cheers !" %components)
@@ -415,7 +418,7 @@ def genConstraint(dicts):
         # Set constraint bounds
         if constraint['type'] in ['offset', 'ratio']:
             constraintList.append(constraint['type'])
-        elif constraint == 'absoluteRange':
+        elif constraint['type'] == 'absoluteRange':
             constraintList.append('%.1f to %.1f' %tuple(constraint['value']))
         else:
             constraintList.append('%.1f %.1f' %tuple(constraint['value']))
