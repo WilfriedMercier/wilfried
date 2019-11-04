@@ -14,6 +14,7 @@ Functions to automatise as much as possible plotting of data of any kind.
 import numpy as np
 
 #matplotlib imports
+#import matplotlib.colors
 from matplotlib.colors import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
