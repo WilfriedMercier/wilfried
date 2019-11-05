@@ -102,21 +102,21 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
     
     Mandatory inputs
     ----------------
-    fnamesList : list or string
-        list of all the file names (paths included) with the galfit images to be appended inside the tex file. If readFromFile is set True, give the name of a file containing all the different names (one per line) instead.
-    pdfOut : string
-        name of the output pdf file
-    
+        fnamesList : list or string
+            list of all the file names (paths included) with the galfit images to be appended inside the tex file. If readFromFile is set True, give the name of a file containing all the different names (one per line) instead.
+        pdfOut : string
+            name of the output pdf file
+        
     Optional inputs
     ---------------
-    cmap : string
-        color map to use when plotting
-    groupNumbers : list of strings
-        the list of groups the galaxies belong to
-    log : boolean
-        whether to show images as log or not
-    readFromFile : boolean
-        whether to read the file names from a file or not. If True, the names must be listed as one per line only.
+        cmap : string
+            color map to use when plotting
+        groupNumbers : list of strings
+            the list of groups the galaxies belong to
+        log : boolean
+            whether to show images as log or not
+        readFromFile : boolean
+            whether to read the file names from a file or not. If True, the names must be listed as one per line only.
     """
     
     #get file names from a file if necessary
