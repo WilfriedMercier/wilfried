@@ -11,6 +11,9 @@ Functions related to automating galfit modelling.
 from wilfried.galfit.models import gendeVaucouleur, genEdgeOnDisk, genExpDisk, genFerrer, genGaussian, genKing, genMoffat, genNuker, genPSF, genSersic, genSky, bendingModes, boxy_diskyness, fourierModes
 from wilfried.utilities.dictionaries import checkDictKeys, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
+from wilfried.utilities.plotUtilities import genMeThatPDF
+
+from os import mkdir, listdir
 from os.path import isdir, isfile
 from subprocess import run
 from numpy import unique, array
@@ -24,34 +27,34 @@ from numpy import unique, array
 fullKeys = {'header': {'parameters':['outputImage', 'xmin', 'xmax', 'ymin', 'ymax', 'inputImage', 'sigmaImage', 'psfImage', 'maskImage', 'couplingFile', 'psfSamplingFactor', 'zeroPointMag', 'arcsecPerPixel', 'sizeConvX', 'sizeConvY', 'displayType', 'option'], 
                        'default':['output.fits', 0, 100, 0, 100, "none", "none", "none", "none", "none", 1, 30.0, [0.03, 0.03], None, None, "regular", 0]},
                                    
-            'deVaucouleur': {'parameters':['posX', 'posY', 'magTot', 're', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'deVaucouleur': {'parameters':['x', 'y', 'mag', 're', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                              'default':[50, 50, 25.0, 10.0, 1.0, 0.0, False, [], None, False]},
                                          
-            'edgeOnDisk': {'parameters':['posX', 'posY', 'mu', 'diskScaleLength', 'diskScaleHeight', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'edgeOnDisk': {'parameters':['x', 'y', 'mu', 'diskScaleLength', 'diskScaleHeight', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                            'default':[50, 50, 20.0, 10.0, 2.0, 0.0, False, [], None, False]},
                                        
-            'expDisk': {'parameters':['posX', 'posY', 'magTot', 'rs', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'expDisk': {'parameters':['x', 'y', 'mag', 'rs', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                         'default':[50, 50, 25.0, 8.0, 1.0, 0.0, False, [], None, False]},
                                     
-            'ferrer': {'parameters':['posX', 'posY', 'mu', 'rt', 'alphaFerrer', 'betaFerrer', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'ferrer': {'parameters':['x', 'y', 'mu', 'rt', 'alphaFerrer', 'betaFerrer', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                        'default':[50, 50, 20.0, 5.0, 3.0, 2.5, 1.0, 0.0, False, [], None, False]},
                                    
-            'gaussian': {'parameters':['posX', 'posY', 'magTot', 'FWHM', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'gaussian': {'parameters':['x', 'y', 'mag', 'FWHM', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                          'default':[50, 50, 25.0, 3.0, 1.0, 0.0, False, [], None, False]},
 
-            'king': {'parameters':['posX', 'posY', 'mu0', 'rc', 'rt', 'powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'king': {'parameters':['x', 'y', 'mu0', 'rc', 'rt', 'powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                      'default':[50, 50, 20.0, 3.0, 30.0, 2.0, 1.0, 0.0, False, [], None, False]},
 
-            'moffat': {'parameters':['posX', 'posY', 'magTot', 'FWHM', 'powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'moffat': {'parameters':['x', 'y', 'mag', 'FWHM', 'powerlaw', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                        'default':[50, 50, 25.0, 3.0, 1.0, 1.0, 0.0, False, [], None, False]},
 
-            'nuker': {'parameters':['posX', 'posY', 'mu', 'rb', 'alpha', 'beta', 'gamma', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'nuker': {'parameters':['x', 'y', 'mu', 'rb', 'alpha', 'beta', 'gamma', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                       'default':[50, 50, 20.0, 10.0, 1.0, 0.5, 0.7, 1.0, 0.0, False, [], None, False]},
 
-            'psf': {'parameters':['posX', 'posY', 'magTot', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'psf': {'parameters':['x', 'y', 'mag', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                     'default':[50, 50, 25.0, False, [], None, False]},
                     
-            'sersic': {'parameters':['posX', 'posY', 'magTot', 're', 'n', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
+            'sersic': {'parameters':['x', 'y', 'mag', 're', 'n', 'bOvera', 'PA', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
                        'default':[50, 50, 25.0, 10.0, 4, 1.0, 0.0, False, [], None, False]},
                        
             'sky': {'parameters':['background', 'xGradient', 'yGradient', 'skipComponentInResidual', 'fixedParams', 'comments', 'noComments'], 
@@ -85,8 +88,9 @@ modelFunctions = {  'deVaucouleur': gendeVaucouleur,
 tags = ['fourier', 'bending', 'boxyness']
 
 
-def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[], constraints=None,
-                 pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/"):
+def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
+               pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/",
+               constraints=None, forceConfig=False):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
     If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
@@ -100,36 +104,38 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     Optional inputs
     ---------------
         constraints : dict
-        list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
+            list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
         
-        Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
-            
-            Dictionaries keys
-            -----------------
-            
-            'constraint' : dict with keys 'type' and 'value'
-                set the type of constraint one wants to use and potentially the related range. 
-                The possible 'type' of constraint are:
-                    - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
-                    - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
-                    - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
-                    - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
-                    - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
-                    - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
+            Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
                 
-                And the corresponding values are:
-                    - 'offset' for an offset and 'ratio' for a ratio
-                    - a list of two float to define bounds for the other types
-            
-            'components' : int/list of int
-                number (of appearance in the listProfiles) of the galfit models one wants to constrain.:
-                    - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
-                    - for both relative and absolute ranges, a single profile number (int) must be given
-                    - for component wise ranges or ratios, a list of two numbers (int) must be provided
+                Dictionaries keys
+                -----------------
+                
+                'constraint' : dict with keys 'type' and 'value'
+                    set the type of constraint one wants to use and potentially the related range. 
+                    The possible 'type' of constraint are:
+                        - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
+                        - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
+                        - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
+                        - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
+                        - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
+                        - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
                     
-            'parameter' : str
-                name of the parameter to contrain
-    
+                    And the corresponding values are:
+                        - 'offset' for an offset and 'ratio' for a ratio
+                        - a list of two float to define bounds for the other types
+                
+                'components' : int/list of int
+                    number (of appearance in the listProfiles) of the galfit models one wants to constrain.:
+                        - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
+                        - for both relative and absolute ranges, a single profile number (int) must be given
+                        - for component wise ranges or ratios, a list of two numbers (int) must be provided
+                        
+                'parameter' : str
+                    name of the parameter to contrain
+        
+        forceConfig : bool
+            whether to make all the configuration files no matter if they exist or not
         header : dict
             dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file.
             You do not need to provide an input and an output image file name as this is given with the inputNames keyword.
@@ -162,29 +168,30 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     if type(feedmeFiles) is not list:
         raise TypeError('Given feedmeFiles variable is not a list. Please provide a list of galfit .feedme file names. Cheers !')
     
-    # Add path to files if provided
-    feedmeFiles = [pathFeedme + i for i in feedmeFiles]
-    
     # Get where given .feedme files do not exist
-    notExists   = [not isfile(fname) for fname in feedmeFiles]
+    notExists             = [not isfile(pathFeedme + fname) for fname in feedmeFiles]
             
     # Make .feedme files if the user wants to
-    if any(notExists):
-        print('Some .feedme files do not exist yet. Do you want to generate automatically the files using the provided input parameters ? [N] or Y')
-        answer = input().lower()
-        if answer in ['y', 'yes']:
+    if forceConfig or any(notExists):
+        
+        if forceConfig:
+            notExists     = [True]*len(feedmeFiles)
+        else:
+            print('Some .feedme files do not exist yet. Do you want to generate automatically the files using the provided input parameters ? [N] or Y')
+            answer        = input().lower()
+            
+        if forceConfig or answer in ['y', 'yes']:
             try:
                 # If empty lists are given, do not apply the mask
                 if len(outputNames)>0:
-                    out = list(array(outputNames)[notExists])
+                    out   = list(array(outputNames)[notExists])
                 else:
-                    out = []
+                    out   = []
                 if len(constraintNames)>0:
-                    con = list(array(constraintNames)[notExists])
+                    con   = list(array(constraintNames)[notExists])
                 else:
-                    con = []
+                    con   = []
         
-                print(inputNames, feedmeFiles)
                 writeConfigs(header, listProfiles, inputNames=list(array(inputNames)[notExists]), outputNames=out, constraintNames=con, feedmeNames=list(array(feedmeFiles)[notExists]),
                              constraints=constraints, pathFeedme=pathFeedme, pathIn=pathIn, pathOut=pathOut, pathConstraints=pathConstraints)
                     
@@ -194,9 +201,21 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                 raise e
     
     # Run galfit
-    for fname in array(feedmeFiles)[[not i for i in notExists]]:
-        run('galfit', fname)
+    for num, fname in enumerate(array(feedmeFiles)[[not i for i in notExists]]):
+        print(fname)
+        run(['galfit', pathFeedme + fname])
             
+        if not isdir('log'):
+            mkdir('log')
+            
+        run(['mv', 'galfit.01', 'log/%s' %fname.replace('.feedme', '.01')])
+        run(['mv', 'fit.log', 'log/%s' %fname.replace('.feedme', '.log')])
+        
+    # Generate pdf recap file
+    outputFiles = [pathOut + i for i in listdir(pathOut)]
+    fname       = 'recap.pdf'
+    genMeThatPDF(outputFiles, fname)
+    run(['evince', fname])
     
 
 
@@ -235,7 +254,7 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
                     
                 Then one may write something like
                     >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
-                    >>> sersic  = {'name':'sersic', 'posX':45, 'posY':56, 'magTot':25, 're':10, 'n':1, 'PA':100, 'fixedParams':['n']}
+                    >>> sersic  = {'name':'sersic', 'x':45, 'y':56, 'mag':25, 're':10, 'n':1, 'PA':100, 'fixedParams':['n']}
                     
                     >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
                     >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
@@ -352,78 +371,7 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
 #              General functions for galfit config files            #
 #####################################################################
 
-def genFeedme(header, listProfiles):
-    """
-    Make a galfit.feedme configuration using the profiles listed in models.py.
-    
-    Mandatory inputs
-    ----------------
-        header : dict
-            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file
-        listProfiles : list of dict
-            list of dictionaries. Each dictionnary corresponds to a profile:
-                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
-                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
-                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
-                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
-            
-            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
-                'fourier', 'bending', 'boxyness'
-            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
-            
-            Example
-            -------
-                Say one wants to make a galfit configuration with a:
-                    - output image output.fits and a zeroPointMag = 25.4 mag
-                    - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
-                    - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
-                    - bending modes 1 and 3 with values 0.2 and 0.4 respectively added to the Nuker profile
-                    
-                Then one may write something like
-                    >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
-                    >>> sersic  = {'name':'sersic', 'posX':45, 'posY':56, 'magTot':25, 're':10, 'n':1, 'PA':100, 'isFixed':['n']}
-                    
-                    >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
-                    >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
-                    
-                    >>> genFeedme(header, [sersic, nuker])
-                
-    Return a full galfit.feedme configuration with header and body as formatted text.
-    """
-    
-    header['name'] = 'header'
-    correctNames   = fullKeys.keys()
-    
-    for pos, dic in enumerate([header] + listProfiles):
-        # Check that name is okay in dictionaries
-        try:
-            if dic['name'] not in correctNames:
-                raise ValueError("Given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
-        except KeyError:
-            raise KeyError("Key 'name' is not provided in one of the dictionaries.")
-        
-        # Check that the given dictionnary only has valid keys
-        checkDictKeys(removeKeys(dic, keys=tags + ['name']), keys=fullKeys[dic['name']]['parameters'], dictName='header or listProfiles')
-    
-        # Set default values if not provided
-        if pos==0:
-            header = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
-        else:
-            listProfiles[pos-1] = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
-    
-    # Append each profile configuration into a variable of type str
-    out      = genHeader(**removeKeys(header, keys=['name']))
-    for dic in listProfiles:
-        out += "\n\n" + modelFunctions[dic['name']](**removeKeys(dic, keys=['name', 'fourier', 'bending', 'boxyness', 'name']))
-        
-        # Append tags such as fourier or bending modes if they are provided in the profile
-        for t in tags:
-            if t in dic:
-                out += "\n" + modelFunctions[t](**dic[t])
-        
-    return out
-        
-        
+
 def genConstraint(dicts):
     """
     Make a galfit .constraint file.
@@ -489,6 +437,8 @@ def genConstraint(dicts):
         
         if param not in everyParam:
             raise ValueError('Given parameter %s is not correct. Possible values are %s. Please provide one of these values if you want to put constraints on one of these parameters. Cheers !' %(param, everyParam))
+        
+
 
         try:
             if constraint['type'] not in everyConstraint:
@@ -558,6 +508,78 @@ def genConstraint(dicts):
     return out
 
 
+def genFeedme(header, listProfiles):
+    """
+    Make a galfit.feedme configuration using the profiles listed in models.py.
+    
+    Mandatory inputs
+    ----------------
+        header : dict
+            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file
+        listProfiles : list of dict
+            list of dictionaries. Each dictionnary corresponds to a profile:
+                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
+                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
+                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
+                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
+            
+            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
+                'fourier', 'bending', 'boxyness'
+            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
+            
+            Example
+            -------
+                Say one wants to make a galfit configuration with a:
+                    - output image output.fits and a zeroPointMag = 25.4 mag
+                    - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
+                    - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
+                    - bending modes 1 and 3 with values 0.2 and 0.4 respectively added to the Nuker profile
+                    
+                Then one may write something like
+                    >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
+                    >>> sersic  = {'name':'sersic', 'x':45, 'y':56, 'mag':25, 're':10, 'n':1, 'PA':100, 'isFixed':['n']}
+                    
+                    >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
+                    >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
+                    
+                    >>> genFeedme(header, [sersic, nuker])
+                
+    Return a full galfit.feedme configuration with header and body as formatted text.
+    """
+    
+    header['name'] = 'header'
+    correctNames   = fullKeys.keys()
+    
+    for pos, dic in enumerate([header] + listProfiles):
+        # Check that name is okay in dictionaries
+        try:
+            if dic['name'] not in correctNames:
+                raise ValueError("Given name %s is not correct. Please provide a name among the list %s. Cheers !" %correctNames)
+        except KeyError:
+            raise KeyError("Key 'name' is not provided in one of the dictionaries.")
+        
+        # Check that the given dictionnary only has valid keys
+        checkDictKeys(removeKeys(dic, keys=tags + ['name']), keys=fullKeys[dic['name']]['parameters'], dictName='header or listProfiles')
+    
+        # Set default values if not provided
+        if pos==0:
+            header = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
+        else:
+            listProfiles[pos-1] = setDict(dic, keys=fullKeys[dic['name']]['parameters'], default=fullKeys[dic['name']]['default'])
+    
+    # Append each profile configuration into a variable of type str
+    out      = genHeader(**removeKeys(header, keys=['name']))
+    for dic in listProfiles:
+        out += "\n\n" + modelFunctions[dic['name']](**removeKeys(dic, keys=['name', 'fourier', 'bending', 'boxyness', 'name']))
+        
+        # Append tags such as fourier or bending modes if they are provided in the profile
+        for t in tags:
+            if t in dic:
+                out += "\n" + modelFunctions[t](**dic[t])
+        
+    return out
+
+
 def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", psfImage="none", maskImage="none", couplingFile="none", 
               xmin=0, xmax=100, ymin=0, ymax=100, sizeConvX=None, sizeConvY=None,
               psfSamplingFactor=1, zeroPointMag=30.0, arcsecPerPixel=[0.03, 0.03],
@@ -620,14 +642,14 @@ def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", p
     xmaxmin         = xmax-xmin
     ymaxmin         = ymax-ymin
     if sizeConvX is None:
-        sizeConvolX = xmaxmin
+        sizeConvX = xmaxmin
     if sizeConvY is None:
-        sizeConvolY = ymaxmin
+        sizeConvY = ymaxmin
     
     #Image region to fit
     imageRegion     = "%d %d %d %d" %(xmin, xmax, ymin, ymax)
     #convolution box X and Y size
-    convBox         = "%d %d" %(sizeConvolX, sizeConvolY)
+    convBox         = "%d %d" %(sizeConvX, sizeConvY)
     #angular size per pixel in X and Y directions
     plateScale      = "%d %d" %tuple(arcsecPerPixel)
         
