@@ -33,7 +33,7 @@ formats = {'posFormat':"%.1f",
 
 defaultComments = {'object':                    'Object type', 
                    'pos':                       'position x, y                         [pixel]',
-                   'magTot':                    'total magnitude',
+                   'mag':                    'total magnitude',
                    're':                        'effective radius R_e                  [pixel]',
                    'n':                         'Sersic exponent (deVauc=4, expdisk=1)',
                    'bOvera':                    'axis ratio (b/a)',
@@ -97,13 +97,13 @@ def createCommentsDict(fullListOfNames, comments):
     ----------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mag for total magnitude, 'bOvera' for b/a ratio, etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 
         fullListOfNames : list of str
@@ -239,17 +239,17 @@ def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comment
 #               Profiles avaiblable in galfit                #
 ##############################################################
 
-def gendeVaucouleur(posX=50, posY=50, magTot=25.0, re=10.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def gendeVaucouleur(x=50, y=50, mag=25.0, re=10.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a de Vaucouleur function configuration.
     
     Main inputs
     -----------
-        magTot : float
+        mag : float
             total integrated magnitude of the profile. Default is 25.0 mag.
-        posX : int/float
+        x : int/float
             X position of the de Vaucouleur profile center (in px). Default is 50 pix.
-        poxY : int/float
+        y : int/float
             Y position of the de Vaucouleur profile center  (in px). Default is 50 pix
         re : float
             half-light (effective) radius of the profile (in px). Default is 10.0 pix.
@@ -260,13 +260,13 @@ def gendeVaucouleur(posX=50, posY=50, magTot=25.0, re=10.0, bOvera=1.0, PA=0.0, 
             axis ratio b/a of the minor over major axes. Default is 1.0.
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mag for total magnitude, 'bOvera' for b/a ratio, etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -276,7 +276,7 @@ def gendeVaucouleur(posX=50, posY=50, magTot=25.0, re=10.0, bOvera=1.0, PA=0.0, 
             position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°. Default is 0°.
         fixedParams : list
             list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
-            For instance, if one wants to fix re and magTot, one may provide fixedParams=["re", "magTot"] in the function call.
+            For instance, if one wants to fix re and mag, one may provide fixedParams=["re", "mag"] in the function call.
         skipComponentInResidual : boolean
             whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model. Default is False.
         
@@ -284,20 +284,20 @@ def gendeVaucouleur(posX=50, posY=50, magTot=25.0, re=10.0, bOvera=1.0, PA=0.0, 
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "magTot", "re", "n", "bOvera", "PA"], fixedParams)
-    comments = createCommentsDict(["object", "pos", "magTot", "re", "n", "bOvera", "PA", "skipComponentInResidual"], comments)
+    isFixed  = createIsFixedDict(["x", "y", "mag", "re", "n", "bOvera", "PA"], fixedParams)
+    comments = createCommentsDict(["object", "pos", "mag", "re", "n", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("devauc",
                     [1, 3, 4, 9, 10, 'Z'],
-                    [[posX, posY], magTot, re, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["magTot"], isFixed["re"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mag, re, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mag"], isFixed["re"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['magFormat'], formats['radiusFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
-                    comments=[comments['object'], comments["pos"], comments["magTot"], comments["re"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
+                    comments=[comments['object'], comments["pos"], comments["mag"], comments["re"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='de Vaucouleur function')
 
 
-def genEdgeOnDisk(posX=50, posY=50, mu=20.0, diskScaleLength=10.0, diskScaleHeight=2.0, PA=0.0, 
+def genEdgeOnDisk(x=50, y=50, mu=20.0, diskScaleLength=10.0, diskScaleHeight=2.0, PA=0.0, 
                   skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an Edge-on disk function configuration.
@@ -308,9 +308,9 @@ def genEdgeOnDisk(posX=50, posY=50, mu=20.0, diskScaleLength=10.0, diskScaleHeig
             disk scale-height perpendicular to the disk (in px). Default is 2.0 px.
         mu : float
             central surface brightness (mag/arcsec^2) of the profile. Default is 20.0 mag/arcsec^2.
-        posX : int/float
+        x : int/float
             X position of the edge-on disk profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the edge-on disk profile center  (in px). Default is 50 px.
         diskScaleLength : float
             major axis disk scale-length (in px). Default is 10.0 px.
@@ -326,7 +326,7 @@ def genEdgeOnDisk(posX=50, posY=50, mu=20.0, diskScaleLength=10.0, diskScaleHeig
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -344,30 +344,30 @@ def genEdgeOnDisk(posX=50, posY=50, mu=20.0, diskScaleLength=10.0, diskScaleHeig
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "mu", "diskScaleHeight", "diskScaleLength", "PA"], fixedParams)
+    isFixed  = createIsFixedDict(["x", "y", "mu", "diskScaleHeight", "diskScaleLength", "PA"], fixedParams)
     comments = createCommentsDict(["object", "pos", "mu", "diskScaleHeight", "diskScaleLength", "PA", "skipComponentInResidual"], comments)
             
     return genModel("edgedisk",
                     [1, 3, 4, 5, 10, 'Z'],
-                    [[posX, posY], mu, diskScaleHeight, diskScaleLength, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["mu"], isFixed["diskScaleHeight"], isFixed["diskScaleLength"], isFixed["PA"], ""],
+                    [[x, y], mu, diskScaleHeight, diskScaleLength, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mu"], isFixed["diskScaleHeight"], isFixed["diskScaleLength"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['muFormat'], formats['radiusFormat'], formats['radiusFormat'], formats['PAFormat'], "%d"],
                     comments=[comments['object'], comments["pos"], comments["mu"], comments["diskScaleHeight"], comments["diskScaleLength"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Edge-on disk function')
 
 
-def genExpDisk(posX=50, posY=50, magTot=25.0, rs=8.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genExpDisk(x=50, y=50, mag=25.0, rs=8.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an exponential disk function configuration.
     
     Main inputs
     -----------
-        magTot : float
+        mag : float
             total integrated magnitude of the profile (in mag/arcsec^2). Default is 25.0 mag/arcsec^2. 
-        posX : int/float
+        x : int/float
             X position of the exponential disk profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the exponential disk profile center  (in px). Default is 50 px.
         rs : float
             disk scale-length (in px) such that rs = re/1.678, with re the effective radius of an equivalent n=1 Sersic profile. Default is 8.0 px.
@@ -379,13 +379,13 @@ def genExpDisk(posX=50, posY=50, magTot=25.0, rs=8.0, bOvera=1.0, PA=0.0, skipCo
             axis ratio b/a of the minor over major axes
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mag for total magnitude, 'bOvera' for b/a ratio, etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -403,20 +403,20 @@ def genExpDisk(posX=50, posY=50, magTot=25.0, rs=8.0, bOvera=1.0, PA=0.0, skipCo
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "magTot", "rs", "n", "bOvera", "PA"], fixedParams)
-    comments = createCommentsDict(["object", "pos", "magTot", "rs", "n", "bOvera", "PA", "skipComponentInResidual"], comments)
+    isFixed  = createIsFixedDict(["x", "y", "mag", "rs", "n", "bOvera", "PA"], fixedParams)
+    comments = createCommentsDict(["object", "pos", "mag", "rs", "n", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("expdisk",
                     [1, 3, 4, 9, 10, 'Z'],
-                    [[posX, posY], magTot, rs, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["magTot"], isFixed["rs"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mag, rs, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mag"], isFixed["rs"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['magFormat'], formats['radiusFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
-                    comments=[comments['object'], comments["pos"], comments["magTot"], comments["rs"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
+                    comments=[comments['object'], comments["pos"], comments["mag"], comments["rs"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Exponential function')
 
 
-def genFerrer(posX=50, posY=50, mu=20.0, rt=5.0, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, PA=0.0, 
+def genFerrer(x=50, y=50, mu=20.0, rt=5.0, alphaFerrer=3.0, betaFerrer=2.5, bOvera=1.0, PA=0.0, 
              skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Ferrer function (generally used to fit bars) configuration.
@@ -425,9 +425,9 @@ def genFerrer(posX=50, posY=50, mu=20.0, rt=5.0, alphaFerrer=3.0, betaFerrer=2.5
     -----------
         mu : float
             surface brightness (mag/arcsec^2) at radius rb. Default is 20.0 mag./arcsec^2
-        posX : int/float
+        x : int/float
             X position of the Ferrer profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the Ferrer profile center  (in px). Default is 50 px.
         rt : float
             outer truncation radius (in px). Default is 5.0 px.
@@ -448,7 +448,7 @@ def genFerrer(posX=50, posY=50, mu=20.0, rt=5.0, alphaFerrer=3.0, betaFerrer=2.5
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -466,20 +466,20 @@ def genFerrer(posX=50, posY=50, mu=20.0, rt=5.0, alphaFerrer=3.0, betaFerrer=2.5
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "mu", "rt", "alphaFerrer", "betaFerrer", "bOvera", "PA"], fixedParams)
+    isFixed  = createIsFixedDict(["x", "y", "mu", "rt", "alphaFerrer", "betaFerrer", "bOvera", "PA"], fixedParams)
     comments = createCommentsDict(["object", "pos", "mu", "rt", "alphaFerrer", "betaFerrer", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("nuker", 
                     [1, 3, 4, 5, 6, 9, 10, 'Z'],
-                    [[posX, posY], mu, rt, alphaFerrer, betaFerrer, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["mu"], isFixed["rt"], isFixed["alphaFerrer"], isFixed["betaFerrer"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mu, rt, alphaFerrer, betaFerrer, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mu"], isFixed["rt"], isFixed["alphaFerrer"], isFixed["betaFerrer"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormatY']], formats['muFormat'], formats['radiusFormat'], formats['powerlawFormat'], formats['powerlawFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
                     comments=[comments['object'], comments["pos"], comments["mu"], comments["rt"], comments["alphaFerrer"], comments["betaFerrer"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Nuker function')
     
     
-def genGaussian(posX=50, posY=50, magTot=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genGaussian(x=50, y=50, mag=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Gaussian function configuration.
     
@@ -487,11 +487,11 @@ def genGaussian(posX=50, posY=50, magTot=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, ski
     -----------
         FWHM : float
             full width at half maximum of the PSF (in px). Default is 3.0 px.
-        magTot : float
+        mag : float
             total integrated magnitude of the profile (in mag/arcsec^2). Default is 25.0 mag/arcsec^2. 
-        posX : int/float
+        x : int/float
             X position of the Gaussian profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the Gaussian profile center  (in px). Default is 50 px.
             
     Additional inputs
@@ -500,13 +500,13 @@ def genGaussian(posX=50, posY=50, magTot=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, ski
             axis ratio b/a of the minor over major axes
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mag for total magnitude, 'bOvera' for b/a ratio, etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -516,7 +516,7 @@ def genGaussian(posX=50, posY=50, magTot=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, ski
             position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.
         fixedParams : list
             list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
-            For instance, if one wants to fix FWHM and posX, one may provide fixedParams=["FWHM", "posX"] in the function call.
+            For instance, if one wants to fix FWHM and x, one may provide fixedParams=["FWHM", "x"] in the function call.
         skipComponentInResidual : boolean
             whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
         
@@ -524,20 +524,20 @@ def genGaussian(posX=50, posY=50, magTot=25.0, FWHM=3.0, bOvera=1.0, PA=0.0, ski
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "magTot", "FWHM", "bOvera", "PA"], fixedParams)
-    comments = createCommentsDict(["object", "pos", "magTot", "FWHM", "bOvera", "PA", "skipComponentInResidual"], comments)
+    isFixed  = createIsFixedDict(["x", "y", "mag", "FWHM", "bOvera", "PA"], fixedParams)
+    comments = createCommentsDict(["object", "pos", "mag", "FWHM", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("gaussian",
                     [1, 3, 4, 9, 10, 'Z'],
-                    [[posX, posY], magTot, FWHM, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["magTot"], isFixed["FWHM"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mag, FWHM, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mag"], isFixed["FWHM"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['magFormat'], formats['radiusFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
-                    comments=[comments['object'], comments["pos"], comments["magTot"], comments["FWHM"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
+                    comments=[comments['object'], comments["pos"], comments["mag"], comments["FWHM"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Gaussian function')
     
     
-def genKing(posX=50, posY=50, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.0, PA=0.0, 
+def genKing(x=50, y=50, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.0, PA=0.0, 
             skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct an empirical King profile (generally used to fit globular clusters) configuration.
@@ -548,9 +548,9 @@ def genKing(posX=50, posY=50, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.
             central surface brightness (mag/arcsec^2). Default is 20.0 mag/arcsec^2.
         powerlaw : float
             powerlaw (powerlaw=2.0 for a standard King profile). Default is 2.0.
-        posX : int/float
+        x : int/float
             X position of the King profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the King profile center  (in px). Default is 50 px.
         rc : float
             core radius (in px). Default is 3.0 px.
@@ -569,7 +569,7 @@ def genKing(posX=50, posY=50, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -587,20 +587,20 @@ def genKing(posX=50, posY=50, mu0=20.0, rc=3.0, rt=30.0, powerlaw=2.0, bOvera=1.
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "mu0", "rc", "rt", "powerlaw", "bOvera", "PA"], fixedParams)
+    isFixed  = createIsFixedDict(["x", "y", "mu0", "rc", "rt", "powerlaw", "bOvera", "PA"], fixedParams)
     comments = createCommentsDict(["object", "pos", "mu0", "rc", "rt", "powerlaw", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("king", 
                     [1, 3, 4, 5, 6, 9, 10, 'Z'],
-                    [[posX, posY], mu0, rc, rt, powerlaw, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["mu0"], isFixed["rc"], isFixed["rt"], isFixed["powerlaw"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mu0, rc, rt, powerlaw, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mu0"], isFixed["rc"], isFixed["rt"], isFixed["powerlaw"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['muFormat'], formats['radiusFormat'], formats['radiusFormat'], formats['powerlawFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
                     comments=[comments['object'], comments["pos"], comments["mu0"], comments["rc"], comments["rt"], comments["powerlaw"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='The Empirical King Profile')
 
     
-def genMoffat(posX=50, posY=50, magTot=25.0, FWHM=3.0, powerlaw=1.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genMoffat(x=50, y=50, mag=25.0, FWHM=3.0, powerlaw=1.0, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a de Vaucouleur function configuration.
     
@@ -608,11 +608,11 @@ def genMoffat(posX=50, posY=50, magTot=25.0, FWHM=3.0, powerlaw=1.0, bOvera=1.0,
     -----------
         FWHM : float
             full width at half maximum of the PSF (in px). Default is 3.0 px.
-        magTot : float
+        mag : float
             total integrated magnitude of the profile. Default is 25.0 mag.
-        posX : int/float
+        x : int/float
             X position of the Moffat profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the Moffat profile center  (in px). Default is 50 px.
             
     Additional inputs
@@ -621,13 +621,13 @@ def genMoffat(posX=50, posY=50, magTot=25.0, FWHM=3.0, powerlaw=1.0, bOvera=1.0,
             axis ratio b/a of the minor over major axes
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mag for total magnitude, 'bOvera' for b/a ratio, etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -639,7 +639,7 @@ def genMoffat(posX=50, posY=50, magTot=25.0, FWHM=3.0, powerlaw=1.0, bOvera=1.0,
             powerlaw/concentration index in the Moffat profile
         fixedParams : list
             list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
-            For instance, if one wants to fix FWHM and posX, one may provide fixedParams=["FWHM", "posX"] in the function call.
+            For instance, if one wants to fix FWHM and x, one may provide fixedParams=["FWHM", "x"] in the function call.
         skipComponentInResidual : boolean
             whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
         
@@ -647,20 +647,20 @@ def genMoffat(posX=50, posY=50, magTot=25.0, FWHM=3.0, powerlaw=1.0, bOvera=1.0,
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "magTot", "FWHM", "powerlaw", "bOvera", "PA"], fixedParams)
-    comments = createCommentsDict(["object", "pos", "magTot", "FWHM", "powerlaw", "bOvera", "PA", "skipComponentInResidual"], comments)
+    isFixed  = createIsFixedDict(["x", "y", "mag", "FWHM", "powerlaw", "bOvera", "PA"], fixedParams)
+    comments = createCommentsDict(["object", "pos", "mag", "FWHM", "powerlaw", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("moffat",
                     [1, 3, 4, 5, 9, 10, 'Z'],
-                    [[posX, posY], magTot, FWHM, powerlaw, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["magTot"], isFixed["FWHM"], isFixed["powerlaw"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mag, FWHM, powerlaw, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mag"], isFixed["FWHM"], isFixed["powerlaw"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['magFormat'], formats['radiusFormat'], formats['powerlawFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
-                    comments=[comments['object'], comments["pos"], comments["magTot"], comments["FWHM"], comments["powerlaw"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
+                    comments=[comments['object'], comments["pos"], comments["mag"], comments["FWHM"], comments["powerlaw"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Moffat function')
     
     
-def genNuker(posX=50, posY=50, mu=20.0, rb=10.0, alpha=1.0, beta=0.5, gamma=0.7, bOvera=1.0, PA=0.0, 
+def genNuker(x=50, y=50, mu=20.0, rb=10.0, alpha=1.0, beta=0.5, gamma=0.7, bOvera=1.0, PA=0.0, 
              skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Nuker function (introduced to fit the nuclear region of nearby galaxies) configuration.
@@ -669,9 +669,9 @@ def genNuker(posX=50, posY=50, mu=20.0, rb=10.0, alpha=1.0, beta=0.5, gamma=0.7,
     -----------
         mu : float
             surface brightness (mag/arcsec^2) at radius rb. Default is 20.0 mag/arcsec^2.
-        posX : int/float
+        x : int/float
             X position of the Nuker profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the Nuker profile center  (in px). Default is 50 px.
         rb : float
             break radius (in px) where the slope is the average between \beta and \gamma and where the maximum curvature (in log space) is reached. Default is 10.0 px. It roughly corresponds to the radius of transition between the inner and outer powerlaws.
@@ -692,7 +692,7 @@ def genNuker(posX=50, posY=50, mu=20.0, rb=10.0, alpha=1.0, beta=0.5, gamma=0.7,
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -712,43 +712,43 @@ def genNuker(posX=50, posY=50, mu=20.0, rb=10.0, alpha=1.0, beta=0.5, gamma=0.7,
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "mu", "rb", "alpha", "beta", "gamma", "bOvera", "PA"], fixedParams)
+    isFixed  = createIsFixedDict(["x", "y", "mu", "rb", "alpha", "beta", "gamma", "bOvera", "PA"], fixedParams)
     comments = createCommentsDict(["object", "pos", "mu", "rb", "alpha", "beta", "gamma", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("nuker", 
                     [1, 3, 4, 5, 6, 7, 9, 10, 'Z'],
-                    [[posX, posY], mu, rb, alpha, beta, gamma, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["mu"], isFixed["rb"], isFixed["alpha"], isFixed["beta"], isFixed["gamma"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mu, rb, alpha, beta, gamma, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mu"], isFixed["rb"], isFixed["alpha"], isFixed["beta"], isFixed["gamma"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['muFormat'], formats['radiusFormat'], formats['powerlawFormat'], formats['powerlawFormat'], formats['powerlawFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
                     comments=[comments['object'], comments["pos"], comments["mu"], comments["rb"], comments["alpha"], comments["beta"], comments["gamma"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Nuker function')
 
 
-def genPSF(posX=50, posY=50, magTot=25.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genPSF(x=50, y=50, mag=25.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct PSF function configuration. This PSF is technically not a function, but uses the psf image provided in the header to fit a given point source.
     
     Main inputs
     -----------
-        magTot : float
+        mag : float
             total integrated magnitude of the profile. Default is 25.0 mag.
-        posX : int/float
+        x : int/float
             X position of the profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the profile center  (in px). Default is 50 px.
             
     Additioinal inputs
     ------------------
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude,  etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mag for total magnitude,  etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -756,7 +756,7 @@ def genPSF(posX=50, posY=50, magTot=25.0, skipComponentInResidual=False, fixedPa
             whether to not provide any comments or not
         fixedParams : list
             list of parameters names which must be fixed during galfit fitting routine. BY DEFAULT, ALL PARAMETERS ARE SET FREE.
-            For instance, if one wants to fix magTot and posX, one may provide fixedParams=["magTot", "posX"] in the function call.
+            For instance, if one wants to fix mag and x, one may provide fixedParams=["mag", "x"] in the function call.
         skipComponentInResidual : boolean
             whether to to not take into account this component when computing the residual or not. If False, the residual will be computed using the best fit model taking into account all the components and the input data. If False, the residual will skip this component in the best-fit model.
         
@@ -764,30 +764,30 @@ def genPSF(posX=50, posY=50, magTot=25.0, skipComponentInResidual=False, fixedPa
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "magTot"], fixedParams)
-    comments = createCommentsDict(["object", "pos", "magTot", "skipComponentInResidual"], comments)
+    isFixed  = createIsFixedDict(["x", "y", "mag"], fixedParams)
+    comments = createCommentsDict(["object", "pos", "mag", "skipComponentInResidual"], comments)
             
     return genModel("psf",
                     [1, 3, 'Z'],
-                    [[posX, posY], magTot, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["magTot"], ""],
+                    [[x, y], mag, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mag"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['magFormat'], "%d"],
-                    comments=[comments['object'], comments["pos"], comments["magTot"], comments['skipComponentInResidual']], 
+                    comments=[comments['object'], comments["pos"], comments["mag"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='PSF fit')
 
 
-def genSersic(posX=50, posY=50, magTot=25.0, re=10.0, n=4, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+def genSersic(x=50, y=50, mag=25.0, re=10.0, n=4, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
     """
     Construct a Sersic function configuration.
     
     Main inputs
     -----------
-        magTot : float
+        mag : float
             total integrated magnitude of the profile. Default is 25.0 mag.
-        posX : int/float
+        x : int/float
             X position of the Sersic profile center (in px). Default is 50 px.
-        poxY : int/float
+        y : int/float
             Y position of the Sersic profile center  (in px). Default is 50 px.
         re : float
             half-light (effective) radius of the profile (in px). Default is 10.0 px.
@@ -798,13 +798,13 @@ def genSersic(posX=50, posY=50, magTot=25.0, re=10.0, n=4, bOvera=1.0, PA=0.0, s
             axis ratio b/a of the minor over major axes
         comments : dict
             dictionnary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.
-            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, magTot for total magnitude, 'bOvera' for b/a ratio, etc.).
+            In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: 'pos' for position, mag for total magnitude, 'bOvera' for b/a ratio, etc.).
             The key value is the comment you want.
             
             You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.
             
             WARNINGS:
-                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'posX' or 'posY' as both values appear on the same line
+                - for the POSITION, USE THE KEY 'pos' INSTEAD OF 'x' or 'y' as both values appear on the same line
                 - you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name 'object'.
                 - to add a comment to the line with index Z, use the key name 'Zline'
             
@@ -824,15 +824,15 @@ def genSersic(posX=50, posY=50, magTot=25.0, re=10.0, n=4, bOvera=1.0, PA=0.0, s
     """
     
     # isFixed is a dictionnary with correct value for fixing parameters in galfit fit
-    isFixed  = createIsFixedDict(["posX", "posY", "magTot", "re", "n", "bOvera", "PA"], fixedParams)
-    comments = createCommentsDict(["object", "pos", "magTot", "re", "n", "bOvera", "PA", "skipComponentInResidual"], comments)
+    isFixed  = createIsFixedDict(["x", "y", "mag", "re", "n", "bOvera", "PA"], fixedParams)
+    comments = createCommentsDict(["object", "pos", "mag", "re", "n", "bOvera", "PA", "skipComponentInResidual"], comments)
             
     return genModel("sersic", 
                     [1, 3, 4, 5, 9, 10, 'Z'],
-                    [[posX, posY], magTot, re, n, bOvera, PA, skipComponentInResidual],
-                    [[isFixed["posX"], isFixed["posY"]], isFixed["magTot"], isFixed["re"], isFixed["n"], isFixed["bOvera"], isFixed["PA"], ""],
+                    [[x, y], mag, re, n, bOvera, PA, skipComponentInResidual],
+                    [[isFixed["x"], isFixed["y"]], isFixed["mag"], isFixed["re"], isFixed["n"], isFixed["bOvera"], isFixed["PA"], ""],
                     [[formats['posFormat'], formats['posFormat']], formats['magFormat'], formats['radiusFormat'], formats['nFormat'], formats['bOveraFormat'], formats['PAFormat'], "%d"],
-                    comments=[comments['object'], comments["pos"], comments["magTot"], comments["re"], comments["n"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
+                    comments=[comments['object'], comments["pos"], comments["mag"], comments["re"], comments["n"], comments["bOvera"], comments["PA"], comments['skipComponentInResidual']], 
                     noComments=noComments,
                     mainComment='Sersic function')
 
