@@ -11,8 +11,9 @@ Functions related to automating galfit modelling.
 from wilfried.galfit.models import gendeVaucouleur, genEdgeOnDisk, genExpDisk, genFerrer, genGaussian, genKing, genMoffat, genNuker, genPSF, genSersic, genSky, bendingModes, boxy_diskyness, fourierModes
 from wilfried.utilities.dictionaries import checkDictKeys, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
-from os.path import isdir
-from numpy import unique
+from os.path import isdir, isfile
+from subprocess import run
+from numpy import unique, array
 
 
 ##########################################
@@ -84,8 +85,123 @@ modelFunctions = {  'deVaucouleur': gendeVaucouleur,
 tags = ['fourier', 'bending', 'boxyness']
 
 
+def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[], constraints=None,
+                 pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/"):
+    """
+    Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
+    If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
+    See writeConfigs function for more information.
+    
+    Mandatory input
+    ----------------
+        feedmeFiles : list of str
+            name of the galfit .feedme files to run galfit onto
+                
+    Optional inputs
+    ---------------
+        constraints : dict
+        list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
+        
+        Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
+            
+            Dictionaries keys
+            -----------------
+            
+            'constraint' : dict with keys 'type' and 'value'
+                set the type of constraint one wants to use and potentially the related range. 
+                The possible 'type' of constraint are:
+                    - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
+                    - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
+                    - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
+                    - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
+                    - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
+                    - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
+                
+                And the corresponding values are:
+                    - 'offset' for an offset and 'ratio' for a ratio
+                    - a list of two float to define bounds for the other types
+            
+            'components' : int/list of int
+                number (of appearance in the listProfiles) of the galfit models one wants to constrain.:
+                    - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
+                    - for both relative and absolute ranges, a single profile number (int) must be given
+                    - for component wise ranges or ratios, a list of two numbers (int) must be provided
+                    
+            'parameter' : str
+                name of the parameter to contrain
+    
+        header : dict
+            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file.
+            You do not need to provide an input and an output image file name as this is given with the inputNames keyword.
+            
+        inputNames : list of str
+            list of galaxies .fits files input names in the header
+            
+        listProfiles : list of dict
+            list of dictionaries. Each dictionnary corresponds to a profile:
+                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
+                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
+                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
+                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
+            
+            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
+                'fourier', 'bending', 'boxyness'
+            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
+                    
+        outputNames: list of str
+            list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
+        pathFeedme : str
+            location of the feedme file names relative to the current folder or in absolute
+        pathIn : str
+            location of the input file names relative to the current folder or in absolute
+        pathOut : str
+            location of the output file names relative to the current folder or in absolute
+    """
+    
+    # Check input data type is okay
+    if type(feedmeFiles) is not list:
+        raise TypeError('Given feedmeFiles variable is not a list. Please provide a list of galfit .feedme file names. Cheers !')
+    
+    # Add path to files if provided
+    feedmeFiles = [pathFeedme + i for i in feedmeFiles]
+    
+    # Get where given .feedme files do not exist
+    notExists   = [not isfile(fname) for fname in feedmeFiles]
+            
+    # Make .feedme files if the user wants to
+    if any(notExists):
+        print('Some .feedme files do not exist yet. Do you want to generate automatically the files using the provided input parameters ? [N] or Y')
+        answer = input().lower()
+        if answer in ['y', 'yes']:
+            try:
+                # If empty lists are given, do not apply the mask
+                if len(outputNames)>0:
+                    out = list(array(outputNames)[notExists])
+                else:
+                    out = []
+                if len(constraintNames)>0:
+                    con = list(array(constraintNames)[notExists])
+                else:
+                    con = []
+        
+                print(inputNames, feedmeFiles)
+                writeConfigs(header, listProfiles, inputNames=list(array(inputNames)[notExists]), outputNames=out, constraintNames=con, feedmeNames=list(array(feedmeFiles)[notExists]),
+                             constraints=constraints, pathFeedme=pathFeedme, pathIn=pathIn, pathOut=pathOut, pathConstraints=pathConstraints)
+                    
+                notExists = [False]*len(notExists)
+            except Exception as e:
+                print("An Error occured during galfit configuration file creation.\n")
+                raise e
+    
+    # Run galfit
+    for fname in array(feedmeFiles)[[not i for i in notExists]]:
+        run('galfit', fname)
+            
+    
+
+
 def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], constraintNames=[], constraints=None,
-                 pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstaints="./constraints/"):
+                 pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/"):
     """
     Make galfit.feedme files using the same profiles.
     
@@ -200,9 +316,9 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathOut)
     if not isdir(pathFeedme):
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathFeedme)
-    if not isdir(pathConstaints):
-        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathConstaints)
-    
+    if not isdir(pathConstraints):
+        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathConstraints)
+
     #################################################################
     #                Writing feedme and constraint files            #
     #################################################################
@@ -211,7 +327,7 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
 
         # output .constraint file
         if constraints is not None:
-            fname = pathConstaints + con
+            fname = pathConstraints + con
             with open(fname, "w") as file:
                 # Get formatted text
                 tmp = genConstraint(constraints)
