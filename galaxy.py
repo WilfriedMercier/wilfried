@@ -162,7 +162,7 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD)
     Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB)
         
-    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)[0] / luminositySersic(r, 1, rd, bn=b1, Ie=Ied)[0]    
+    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersic(r, 1, rd, bn=b1, Ie=Ied)['value']    
 
 
 def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
@@ -209,7 +209,7 @@ def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD)
     Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB)
         
-    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)[0] / luminositySersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])[0]    
+    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']    
 
 
 def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
@@ -256,7 +256,7 @@ def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD)
     Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB)
         
-    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)[0] / luminositySersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])[0]   
+    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']   
 
     
 def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
