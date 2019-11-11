@@ -1200,10 +1200,10 @@ def asManyPlots2(numPlot, datax, datay,
     data.x, data.y         = gatherThingsUp(), gatherThingsUp()
     data.x.data            = datax
     data.y.data            = datay
-    data.x.min             = np.min(data.x.data)
-    data.x.max             = np.max(data.x.data)
-    data.y.min             = np.min(data.y.data)
-    data.y.max             = np.max(data.y.data)
+    data.x.min             = np.min([np.min(i) for i in data.x.data])
+    data.x.max             = np.max([np.max(i) for i in data.x.data])
+    data.y.min             = np.min([np.min(i) for i in data.y.data])
+    data.y.max             = np.max([np.max(i) for i in data.y.data])
     data.nplots            = len(data.x.data)
 
     if isType(dataProperties, dict, 'dataProperties'):
@@ -1245,28 +1245,37 @@ def asManyPlots2(numPlot, datax, datay,
         lmf = len(data.marker.fillstyle)
         llw = len(data.line.width)
         lls = len(data.line.style)
+        lc  = len(data.color)
         for pos, typ in enumerate(data.type):
             if typ == 'mix':
                 if pos >= lms:                
                     data.marker.size.append(0)
                 if pos >= lmf:
                     data.marker.fillstyle.append('none')
+                if pos >= lc:
+                    data.color.append('black')
             else:
                 if pos >= lms:
                     data.marker.size.append(layout.markersize)
                 if pos >= lmf:
                     data.marker.fillstyle.append('full')
+                if pos >= lc:
+                    data.color.append('black')
             
             if typ == 'scatter':
                 if pos >= llw:    
                     data.line.width.append(0)
                 if pos >= lls:
-                    data.line.style.append("None")    
+                    data.line.style.append("None")
+                if pos >= lc:
+                    data.color.append('black')
             else:
                 if pos >= llw:    
                     data.line.width.append(layout.line.width)
                 if pos >= lls:
                     data.line.style.append(layout.line.style)
+                else:
+                    data.line.style[pos] = str(data.line.style[pos])
             
         # If data.color is not provided, we set plot colors to 'black' and scatter plots points to the same value
         if data.color is None:
@@ -1288,7 +1297,7 @@ def asManyPlots2(numPlot, datax, datay,
         xaxis.label.text, xaxis.label.size, xaxis.scale = setListFromDict(axesProperties, keys=["xlabel", "xLabelTextSize", "xscale"], default=['', layout.ticks.labelSize, layout.scale])
         # y-axis
         yaxis.label.text, yaxis.label.size, yaxis.scale = setListFromDict(axesProperties, keys=["ylabel", "yLabelTextSize", "yscale"], default=['', layout.ticks.labelSize, layout.scale])
-        print(yaxis.label.size)
+
         # Ticks properties
         # x-axis
         xaxis.ticks.hideLabels, xaxis.ticks.size, xaxis.ticks.direction = setListFromDict(axesProperties, keys=["hideXticksLabels", "xTickSize", "xTickDirection"], default=[False, layout.ticks.size, layout.ticks.direction])
@@ -1404,6 +1413,12 @@ def asManyPlots2(numPlot, datax, datay,
             legend.marker.edgecolor[pos] = col
             legend.marker.facecolor[pos] = col
             legend.line.color[pos]       = col
+            
+        # If some text in legend is missing we add empty strings
+        llt = len(legend.labels.text)
+        if llt < data.nplots:
+            legend.labels.text += ['']*(data.nplots-llt)
+            
     
     
     ########################################
