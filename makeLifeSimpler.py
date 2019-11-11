@@ -16,15 +16,10 @@ from astropy.io.votable import is_votable, writeto
 import numpy as np
 import numpy.lib.recfunctions as rec
 
-#import own functions
-from wilfried.strings.strings import *
-from wilfried.plots.plotUtilities import *
-
 
 ################################################################################################
 #                                   VOtable functions                                          #
 ################################################################################################
-
 
 def is_VOtable(fullname):
     """
