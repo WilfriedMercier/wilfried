@@ -15,7 +15,7 @@ from wilfried.utilities.plotUtilities import genMeThatPDF
 
 from os import mkdir, listdir
 from os.path import isdir, isfile
-from subprocess import run
+from subprocess import run, check_output
 from numpy import unique, array
 
 
@@ -203,14 +203,19 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     # Run galfit
     for num, fname in enumerate(array(feedmeFiles)[[not i for i in notExists]]):
         print(fname)
-        run(['galfit', pathFeedme + fname])
+        text = check_output(['galfit', pathFeedme + fname, '> %d.tmp' %num])
             
+        print(type(text), text)
+        raise TypeError()
         if not isdir('log'):
             mkdir('log')
             
-        run(['mv', 'galfit.01', 'log/%s' %fname.replace('.feedme', '.01')])
-        run(['mv', 'fit.log', 'log/%s' %fname.replace('.feedme', '.log')])
+        text = text.split('Iteration')[-1].split('COUNTDOWN')[0].split('\n')[:-1]
         
+        run(['mv', 'galfit.01', 'log/%s' %fname.replace('.feedme', '.01')])
+        
+    
+    
     # Generate pdf recap file
     outputFiles = [pathOut + i for i in listdir(pathOut)]
     fname       = 'recap.pdf'
@@ -264,6 +269,8 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
                 
     Optional inputs
     ---------------
+        constraintNames : list of str
+            list of .constraints galfit configuration files. If not provided, the constraint files will have the same name as the input ones but with a .constraints extension at the end.
         feedmeNames : list of str
             list of .feedme galfit configuration files. If not provided, the feedme files will have the same name as the input ones but with .feedme extensions at the end.    
         outputNames: list of str
@@ -329,8 +336,11 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
     if len(inputNames) != len(outputNames) or len(inputNames) != len(feedmeNames) or len(inputNames) != len(constraintNames):
         raise ValueError("Lists intputNames, outputNames, feedmeNames and constraintNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
     
-    if not isdir(pathIn):
-        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathIn)
+    if pathIn is None:
+        pathIn = ""
+    else:
+        if not isdir(pathIn):
+            raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathIn)
     if not isdir(pathOut):
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathOut)
     if not isdir(pathFeedme):
