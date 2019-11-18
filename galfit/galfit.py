@@ -16,6 +16,8 @@ from wilfried.utilities.plotUtilities import genMeThatPDF
 from os import mkdir, listdir
 from os.path import isdir, isfile
 from subprocess import run, check_output
+import multiprocessing
+
 from numpy import unique, array
 
 
@@ -164,6 +166,26 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             location of the output file names relative to the current folder or in absolute
     """
     
+    def singleGalfit(name, num):
+        # Get galfit output into a variable
+        text = check_output(['galfit', pathFeedme + name])
+            
+        # Make log directory if it does not exist yet
+        if not isdir('log'):
+            mkdir('log')
+            
+        # Only keep the relevant part in the ouput
+        text = 'Iteration ' + text.decode('utf8').split('Iteration')[-1].split('COUNTDOWN')[0].rsplit('\n', maxsplit=1)[0]
+        
+        # Save content into a log file
+        log  = 'log/%s' %name.replace('.feedme', '.log')
+        with open(log, 'w') as f:
+            f.write(text)
+        
+        print('Galaxy %s done (~ %.2f%% yet to do)' %(fname.strip('.feedme'), (1-num/total_num)*100))
+        semaphore.release()
+        return 
+    
     # Check input data type is okay
     if type(feedmeFiles) is not list:
         raise TypeError('Given feedmeFiles variable is not a list. Please provide a list of galfit .feedme file names. Cheers !')
@@ -200,21 +222,22 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                 print("An Error occured during galfit configuration file creation.\n")
                 raise e
     
-    # Run galfit
-    for num, fname in enumerate(array(feedmeFiles)[[not i for i in notExists]]):
-        print(fname)
-        text = check_output(['galfit', pathFeedme + fname, '> %d.tmp' %num])
-            
-        print(type(text), text)
-        raise TypeError()
-        if not isdir('log'):
-            mkdir('log')
-            
-        text = text.split('Iteration')[-1].split('COUNTDOWN')[0].split('\n')[:-1]
+    # Run galfit using multi processes
+    total_feedmes = array(feedmeFiles)[[not i for i in notExists]]
+    total_num     = len(total_feedmes)
+    semaphore     = multiprocessing.Semaphore(8)
+    all_procs     = []
+    for num, fname in enumerate(total_feedmes):
+        semaphore.acquire()
+        proc      = multiprocessing.Process(name=fname, target=singleGalfit, args=(fname, num))
+        all_procs.append(proc)
+        proc.start()
         
-        run(['mv', 'galfit.01', 'log/%s' %fname.replace('.feedme', '.01')])
-        
+    for p in all_procs:
+        p.join()
     
+    # Move the galfit files to log directory as well
+    run(['mv galfit.[0-9]* log'], shell=True)
     
     # Generate pdf recap file
     outputFiles = [pathOut + i for i in listdir(pathOut)]
