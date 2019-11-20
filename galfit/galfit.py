@@ -261,7 +261,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             else:
                 maxi = i*maxImages
                 
-            genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False)
+            genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False, diverging=True)
             print("Recap file number %d made." %i)
             semaphore.release()
             return
