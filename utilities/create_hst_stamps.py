@@ -75,9 +75,9 @@ def extract_stamps_udf(image_file, gal_list, size=2., factor=1., pathout='./', g
         raise ValueError('A group number must be provided.')
     
     # Getting data
-    print(image_file)
     hdul         = fits.open(image_file)
     im           = hdul[0].data * factor
+    print("%s has max %.1f and min %.1f" %(image_file, np.max(im), np.min(im)))
     hdr          = hdul[0].header
     hdr['UZERO'] = -2.5 * np.log10(1. / factor)
     
