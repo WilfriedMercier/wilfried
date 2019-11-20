@@ -93,7 +93,7 @@ def display_hst_models(file1, fileout='test.pdf', title='title', cmap='spectral'
     plt.close()
 
 
-def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=True, cmap='bwr'):
+def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=True, diverging=False, zeroPoint=0.0, cmap='bwr'):
     """
     Generates a pdf file with all the galfit images (data, model and residual side by side) found in the given list.
     
@@ -109,6 +109,8 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
         
     Optional inputs
     ---------------
+        diverging : bool
+            whether to use a diverging norm or not. If true, a linear norm will be used (overriding any log norm)
         cmap : string
             color map to use when plotting
         groupNumbers : list of strings
@@ -117,6 +119,8 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
             whether to show images as log or not
         readFromFile : boolean
             whether to read the file names from a file or not. If True, the names must be listed as one per line only.
+        zeroPoint : float
+            value at which the diverging norm will split in two
     """
     
     #get file names from a file if necessary
@@ -156,7 +160,11 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
         #defining norm based on input parameter value
         norm       = None
         if log:
-            norm   = SymLogNorm(linthresh=1, vmin=mini, vmax=maxi)
+            norm   = SymLogNorm(linthresh=maxi/1e3, vmin=mini, vmax=maxi)
+        if diverging:
+            mini   = np.min([data, model])
+            maxi   = np.max([data, model])
+            norm   = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
         
         #Plotting the three plots side by side
         ax1        = plt.subplot(gs[num])
