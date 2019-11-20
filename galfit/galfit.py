@@ -13,7 +13,7 @@ from wilfried.utilities.dictionaries import checkDictKeys, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
 from wilfried.utilities.plotUtilities import genMeThatPDF
 
-from os import mkdir, listdir
+from os import mkdir
 from os.path import isdir, isfile
 from subprocess import run, check_output
 import multiprocessing
@@ -92,7 +92,7 @@ tags = ['fourier', 'bending', 'boxyness']
 
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
                pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/",
-               constraints=None, forceConfig=False):
+               constraints=None, forceConfig=False, noGalfit=False):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
     If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
@@ -156,6 +156,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                 'fourier', 'bending', 'boxyness'
             These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
                     
+        noGalfit : bool
+            whether to not run galfit or not
         outputNames: list of str
             list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
         pathFeedme : str
@@ -166,7 +168,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             location of the output file names relative to the current folder or in absolute
     """
     
-    def singleGalfit(name, num):
+    def singleGalfit(name, all_procs):
         # Get galfit output into a variable
         text = check_output(['galfit', pathFeedme + name])
             
@@ -182,7 +184,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         with open(log, 'w') as f:
             f.write(text)
         
-        print('Galaxy %s done (~ %.2f%% yet to do)' %(fname.strip('.feedme'), (1-num/total_num)*100))
+        print('Galaxy %s done (~ %.2f%% yet to do)' %(name.strip('.feedme'), (1-len(all_procs)/total_num)*100))
         semaphore.release()
         return 
     
@@ -195,6 +197,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             
     # Make .feedme files if the user wants to
     if forceConfig or any(notExists):
+        print("Making configuration files")
         
         if forceConfig:
             notExists     = [True]*len(feedmeFiles)
@@ -223,27 +226,58 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                 raise e
     
     # Run galfit using multi processes
-    total_feedmes = array(feedmeFiles)[[not i for i in notExists]]
-    total_num     = len(total_feedmes)
-    semaphore     = multiprocessing.Semaphore(8)
-    all_procs     = []
-    for num, fname in enumerate(total_feedmes):
+    print("Running galfit using multiprocesses")
+    if not noGalfit:
+        total_feedmes = array(feedmeFiles)[[not i for i in notExists]]
+        total_num     = len(total_feedmes)
+        semaphore     = multiprocessing.Semaphore(8)
+        all_procs     = []
+        for num, fname in enumerate(total_feedmes):
+            semaphore.acquire()
+            proc      = multiprocessing.Process(name=fname, target=singleGalfit, args=(fname, all_procs))
+            all_procs.append(proc)
+            proc.start()
+            
+        for p in all_procs:
+            p.join()
+    
+        # Move the galfit files to log directory as well
+        run(['mv galfit.[0-9]* log'], shell=True)
+    
+    # Generate pdf recap files with multi processes
+    outputFiles      = [pathOut + i for i in outputNames]
+    ll               = len(outputFiles)
+    maxImages        = 100
+    splt             = ll // maxImages
+    
+    semaphore        = multiprocessing.Semaphore(8)
+    all_procs        = []
+    print('Making pdf recap files')
+    for i in range(1, splt+2):
+        def pdf(i, maxImages, splt, ll):
+            mini     = (i-1)*maxImages
+            if i == splt or splt==0:
+                maxi = ll
+            else:
+                maxi = i*maxImages
+                
+            genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False)
+            print("Recap file number %d made." %i)
+            semaphore.release()
+            return
+                
         semaphore.acquire()
-        proc      = multiprocessing.Process(name=fname, target=singleGalfit, args=(fname, num))
+        proc         = multiprocessing.Process(name=i, target=pdf, args=(i, maxImages, splt, ll))
         all_procs.append(proc)
-        proc.start()
+        proc.start()        
         
-    for p in all_procs:
-        p.join()
-    
-    # Move the galfit files to log directory as well
-    run(['mv galfit.[0-9]* log'], shell=True)
-    
-    # Generate pdf recap file
-    outputFiles = [pathOut + i for i in listdir(pathOut)]
-    fname       = 'recap.pdf'
-    genMeThatPDF(outputFiles, fname)
-    run(['evince', fname])
+        for p in all_procs:
+            p.join()    
+        
+    # Open files
+    for i in range(1, splt+2):
+        print('Showing recap file recap%d.pdf' %i)
+        run(['okular', 'recap%d.pdf' %i])
     
 
 
@@ -427,7 +461,7 @@ def genConstraint(dicts):
                         - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
                         - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
                         - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
-                        - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
+                        - 'componentWiseRatio' to set a ranaxis ratio (b/a)ge of possible values for the ratio of the same parameter in two components
                     
                     And the corresponding values are:
                         - 'offset' for an offset and 'ratio' for a ratio
