@@ -168,6 +168,7 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
         
         #Plotting the three plots side by side
         ax1        = plt.subplot(gs[num])
+        plt.grid()
         ax1.title.set_text(name)
         plt.imshow(data, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
         plt.colorbar(fraction=0.05, shrink=1.)
@@ -179,6 +180,7 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
             plt.text(0, sz+30, "Group: %s" %(str(gr)), fontsize=20, fontweight='bold')
         
         ax2 = plt.subplot(gs[num+1])
+        plt.grid()
         ax2.title.set_text('model')
         plt.imshow(model, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
         plt.colorbar(fraction=0.05, shrink=1.)
@@ -189,7 +191,7 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
         mini = -maxi
         plt.imshow(res, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi)
         plt.colorbar(fraction=0.05, shrink=1.)
-        
+    
     plt.savefig(pdfOut, bbox_inches='tight')
     plt.close()
 
