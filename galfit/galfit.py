@@ -197,7 +197,6 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             
     # Make .feedme files if the user wants to
     if forceConfig or any(notExists):
-        print("Making configuration files")
         
         if forceConfig:
             notExists     = [True]*len(feedmeFiles)
@@ -206,6 +205,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             answer        = input().lower()
             
         if forceConfig or answer in ['y', 'yes']:
+            print("Making configuration files")
             try:
                 # If empty lists are given, do not apply the mask
                 if len(outputNames)>0:
@@ -226,8 +226,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                 raise e
     
     # Run galfit using multi processes
-    print("Running galfit using multiprocesses")
     if not noGalfit:
+        print("Running galfit using multiprocesses")
         total_feedmes = array(feedmeFiles)[[not i for i in notExists]]
         total_num     = len(total_feedmes)
         semaphore     = multiprocessing.Semaphore(8)
@@ -250,24 +250,25 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     maxImages        = 100
     splt             = ll // maxImages
     
+    def pdf(i, maxImages, splt, ll):
+        print("Making pdf file recap%d.pdf" %i)
+        mini         = (i-1)*maxImages
+        if i == splt or splt == 0:
+            maxi     = ll
+        else:
+            maxi     = i*maxImages
+            
+        genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False, diverging=True)
+        print("Recap file number %d made." %i)
+        semaphore.release()
+        return
+    
     semaphore        = multiprocessing.Semaphore(8)
     all_procs        = []
     print('Making pdf recap files')
-    for i in range(1, splt+2):
-        def pdf(i, maxImages, splt, ll):
-            mini     = (i-1)*maxImages
-            if i == splt or splt==0:
-                maxi = ll
-            else:
-                maxi = i*maxImages
-                
-            genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False, diverging=True)
-            print("Recap file number %d made." %i)
-            semaphore.release()
-            return
-                
+    for i in range(1, splt+2):                
         semaphore.acquire()
-        proc         = multiprocessing.Process(name=i, target=pdf, args=(i, maxImages, splt, ll))
+        proc         = multiprocessing.Process(name=i, target=pdf, args=(i, maxImages, splt+1, ll))
         all_procs.append(proc)
         proc.start()        
         
