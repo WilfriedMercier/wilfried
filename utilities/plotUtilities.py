@@ -187,9 +187,11 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
         
         ax3 = plt.subplot(gs[num+2])
         ax3.title.set_text('residual')
-        maxi = np.max([np.max(res), np.abs(np.max(res))])
-        mini = -maxi
-        plt.imshow(res, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi)
+        
+        maxi = np.max(res)
+        mini = np.min(res)
+        norm = DivergingNorm(vmin=mini, vmax=maxi, vcenter=zeroPoint)
+        plt.imshow(res, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
         plt.colorbar(fraction=0.05, shrink=1.)
     
     plt.savefig(pdfOut, bbox_inches='tight')
