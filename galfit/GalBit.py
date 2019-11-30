@@ -20,6 +20,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import astropy.io.fits as fits
 import numpy as np
 
+class container:
+    def __init__(self):
+        info = 'A simple container'
+
 class singlePlotFrame:
     def __init__(self, parent, root, data=None):
         self.parent   = parent
@@ -103,7 +107,7 @@ class topFrame:
         cmapNames       = list(matplotlib.cm.cmap_d.keys())
         self.cmap       = tk.StringVar(value='bwr')
         self.cmapList   = ttk.Combobox(self.parent, textvariable=self.cmap, values=cmapNames)
-        self.cmapList.bind("<<ComboboxSelected>>", self.loadFitsFiles)
+        self.cmapList.bind("<<ComboboxSelected>>", self.updateCmap)
         
         
         # Drawing elements
@@ -136,28 +140,33 @@ class topFrame:
             messagebox.showerror('Invalid input', 'The given file name %s is not a .fits file' %self.fname.get())
             return
         
+        self.image, self.model, self.res = container(), container(), container()
+        
         # Getting data
-        self.image       = hdul[1].data
-        self.model       = hdul[2].data
+        self.image.data    = hdul[1].data
+        self.model.data    = hdul[2].data
         
-        self.image.max   = np.max([self.model, self.image])
-        self.model.max   = self.image.max
+        self.image.cmapMax = np.max([self.model.data.max(), self.image.data.max()])
+        self.model.cmapMax = self.image.cmapMax
         
-        self.image.min   = np.min([self.model, self.image])
-        self.model.min   = self.image.min
+        self.image.cmapMin = np.min([self.model.data.min(), self.image.data.min()])
+        self.model.cmapMin = self.image.cmapMin
         
-        self.res         = hdul[3].data
+        self.res.data      = hdul[3].data
         
-        self.res.max     = np.max(self.res)
-        self.res.min     = np.min(self.res)
+        # Set flag to True if data was succesfully loaded
+        self.imLoaded      = True
         
     def updateFigures(self):
         '''Updates the main three figures'''
         
-        self.root.bottomPane.plot1.updateImage(self.image, maxi=self.image.max, mini=self.image.min, cmap=self.cmap.get())
-        self.root.bottomPane.plot2.updateImage(self.model, maxi=self.model.max, mini=self.model.min, cmap=self.cmap.get())
-        self.root.bottomPane.plot3.updateImage(self.res,   maxi=self.res.max,   mini=self.res.min,   cmap=self.cmap.get())
+        self.root.bottomPane.plot1.updateImage(self.image.data, maxi=self.image.cmapMax,  mini=self.image.cmapMin,  cmap=self.cmap.get())
+        self.root.bottomPane.plot2.updateImage(self.model.data, maxi=self.model.cmapMax,  mini=self.model.cmapMin,  cmap=self.cmap.get())
+        self.root.bottomPane.plot3.updateImage(self.res.data,   maxi=self.res.data.max(), mini=self.res.data.min(), cmap=self.cmap.get())
         
+    def updateCmap(self, event):
+        if self.imLoaded:
+            self.updateFigures()
         
 class rightFrame:
     '''
