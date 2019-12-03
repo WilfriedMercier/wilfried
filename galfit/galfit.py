@@ -92,11 +92,16 @@ tags = ['fourier', 'bending', 'boxyness']
 
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
                pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/",
-               constraints=None, forceConfig=False, noGalfit=False):
+               constraints=None, forceConfig=False, noGalfit=False, showRecapFiles=True):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
     If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
     See writeConfigs function for more information.
+    
+    It is possible to skip a few steps if it has already been done. Specifically one can skip
+            - .feedme and .constraint files creation (setting forceConfig keyword to False). This is done by default in order to avoid to destroy already existing input files
+            - galfit modelling (setting noGalfit to True). This can be useful if one only wants to make the pdf recap files when the modelling has already been done
+            - opening of the recap files at the end of the program (setting showRecapFiles to False)
     
     Mandatory input
     ----------------
@@ -166,6 +171,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             location of the input file names relative to the current folder or in absolute
         pathOut : str
             location of the output file names relative to the current folder or in absolute
+        showRecapFiles : bool
+            whether to show the recap files made at the end or not
     """
     
     def singleGalfit(name, all_procs):
@@ -192,7 +199,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     if type(feedmeFiles) is not list:
         raise TypeError('Given feedmeFiles variable is not a list. Please provide a list of galfit .feedme file names. Cheers !')
     
-    # Get where given .feedme files do not exist
+    # Find where given .feedme files do not exist
     notExists             = [not isfile(pathFeedme + fname) for fname in feedmeFiles]
             
     # Make .feedme files if the user wants to
@@ -276,9 +283,10 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             p.join()    
         
     # Open files
-    for i in range(1, splt+2):
-        print('Showing recap file recap%d.pdf' %i)
-        run(['okular', 'recap%d.pdf' %i])
+    if showRecapFiles:
+        for i in range(1, splt+2):
+            print('Showing recap file recap%d.pdf' %i)
+            run(['okular', 'recap%d.pdf' %i])
     
 
 
