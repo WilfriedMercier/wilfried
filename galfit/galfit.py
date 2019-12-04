@@ -293,7 +293,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
 def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], constraintNames=[], constraints=None,
                  pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/"):
     """
-    Make galfit.feedme files using the same profiles.
+    Make galfit .feedme and .constraints files using the same profiles.
     
     Mandatory inputs
     ----------------
@@ -714,7 +714,7 @@ def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", p
     
     psfSamplingFactor, zeroPointMag, option = toStr([psfSamplingFactor, zeroPointMag, option])
     
-    #define convolution box to full image and convolution center to image center if not given
+    # Define convolution box to full image and convolution center to image center if not given
     xmaxmin         = xmax-xmin
     ymaxmin         = ymax-ymin
     if sizeConvX is None:
@@ -722,18 +722,18 @@ def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", p
     if sizeConvY is None:
         sizeConvY = ymaxmin
     
-    #Image region to fit
+    # Image region to fit
     imageRegion     = "%d %d %d %d" %(xmin, xmax, ymin, ymax)
-    #convolution box X and Y size
+    # Convolution box X and Y size
     convBox         = "%d %d" %(sizeConvX, sizeConvY)
-    #angular size per pixel in X and Y directions
+    # Angular size per pixel in X and Y directions
     plateScale      = "%d %d" %tuple(arcsecPerPixel)
         
-    #compute max text length to align columns
+    # Compute max text length to align columns
     textLenMax      = maxStringsLen([outputImage, inputImage, sigmaImage, psfImage, psfSamplingFactor, maskImage, couplingFile, imageRegion, convBox, zeroPointMag, plateScale, displayType, option])
     formatText      = "%-" + "%d"%textLenMax + "s"
     
-    #generate items text 
+    # Generate items text 
     itemA = ("A) " + formatText)%inputImage + "   # Input data image (FITS file)"
     itemB = ("B) " + formatText)%outputImage + "   # Name for the output image"
     itemC = ("C) " + formatText)%sigmaImage + '   # Noise image name (made from data if blank or "none")'
