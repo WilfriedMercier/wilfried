@@ -33,7 +33,7 @@ class singlePlotFrame:
         self.bdOn           = 'black'
         self.bdOff          = bgColor
         
-        self.clicked        = False
+        self.selected       = False
         
         self.parent         = parent
         self.root           = root
@@ -43,7 +43,6 @@ class singlePlotFrame:
         self.paLine.posx    = [None, None]
         self.paLine.posy    = [None, None]
         self.paLine.drawing = False
-        self.paLine.line    = None
         
         # Making a figure
         self.bgColor        = bgColor
@@ -56,14 +55,13 @@ class singlePlotFrame:
         self.ax.tick_params(which='both', direction='in', labelsize=12)
         self.ax.grid()
         
+        # Plotting empty plots in order to update them later
+        self.paLine.line    = self.ax.plot([], [], 'k-')[0]
+        
         # Adding a title
         if title is not None and type(title) is str:
             self.title = title
             self.ax.set_title(self.title)
-        
-        # Plotting
-        if data is not None:
-            self.im = self.ax.imshow(data, origin='lower')
             
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.parent)
         self.canvas.draw()
@@ -73,7 +71,7 @@ class singlePlotFrame:
         # Linking to events
         self.canvas.mpl_connect('button_press_event',  self.onClick)
         self.canvas.mpl_connect('motion_notify_event', self.onMove)
-        self.canvas.mpl_connect('key_press_event',     self.keyPressed)
+        self.canvas.mpl_connect('key_release_event',     self.keyPressed)
         
     
     def updateImage(self, newData, mini=None, maxi=None, cmap='bwr'):
@@ -93,71 +91,120 @@ class singlePlotFrame:
         '''
         
         norm    = DivergingNorm(vcenter=0, vmin=mini, vmax=maxi)
-        self.im = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
+        
+        if not self.root.topPane.imLoaded:
+            print('tada')
+            self.im = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
+        else:
+            print('coucou')
+            self.im.set_data(newData)
+            self.im.set_cmap(cmap)
+            self.im.set_norm(norm)
+            
         self.canvas.draw()
         
         
-    def onClick(self, event):
-        '''Adds or remove a border around the figure canvas every time the figure is clicked on.'''
+    def changeBorder(self):
+        '''Adds or remove a border around the figure canvas.'''
         
-        if self.root.state == 'default':
-            if self.parent['bg'] == self.bdOn:
-                self.parent.config({'bg':self.bdOff})
-                self.clicked = False
-            else:
-                self.parent.config({'bg':self.bdOn})
-                self.clicked = True
+        # Case 1: the plot is selected, we change the border color back to the frame color
+        if self.parent['bg'] == self.bdOn:
+            self.parent.config({'bg':self.bdOff})
+            self.selected = False
+            self.root.bottomPane.numSelected -= 1
+        # Case 2: the plot is unselected and we change the border color to the 'On' color (default is black)
         else:
-            
+            self.parent.config({'bg':self.bdOn})
+            self.selected = True
+            self.root.bottomPane.numSelected += 1
+        
+        
+    def onClick(self, event):
+        
+        # If state is default, we draw a border (technically we change the color of the border) around a plot frame to indicate that it has been selected
+        if self.root.state == 'default':
+            self.changeBorder()
+        else:
             if not self.paLine.drawing:
                 self.paLine.posx[0] = event.xdata
                 self.paLine.posy[0] = event.ydata
                 self.paLine.drawing = True
             else:
                 self.paLine.drawing = False
-                self.paLine.line    = self.ax.plot(self.paLine.posx, self.paLine.posy, 'k-')
+                self.paLine.line.set_data([self.paLine.posx, self.paLine.posy])
                 self.canvas.draw()
             
             
     def onMove(self, event):
         '''Update the image name, x and y positions of the mouse cursor printed on the top pane.'''
         
+        # If image title in top Frame is different, set new name
         if self.root.topPane.hover.var.get() != self.title:
             self.root.topPane.hover.var.set( 'Current image: %s' %self.title)
             
+        # Update x and y pos in top Frame
         if event.xdata is not None:
             self.root.topPane.hover.xvar.set('x: %.2f' %event.xdata)
             
         if event.ydata is not None:
             self.root.topPane.hover.yvar.set('y: %.2f' %event.ydata)
             
+        # Draw PA line
         if self.paLine.drawing:
             self.paLine.posx[1] = event.xdata
             self.paLine.posy[1] = event.ydata
+            self.paLine.line.set_data([self.paLine.posx, self.paLine.posy])
+            self.canvas.draw()
+            
+        # Set active singlePlot frame for key press events which are not canvas dependent
+        if self.root.bottomPane.activeSingleFrame is not self:
+            self.root.bottomPane.activeSingleFrame = self
         
         
     def keyPressed(self, event):
-        print(self.ax.lines, self.paLine.line)
-        '''if event.key == 'ctrl+z':
-            if self.paLine.line is not None:
-                self.ax.lines.remove(self.paLine.line)
-                self.canvas.draw()'''
+        if event.key == 'ctrl+z':
+            print(self.root.bottomPane.activeSingleFrame.paLine.line)
+            if self.root.bottomPane.activeSingleFrame.paLine.line is not None:
+                self.root.bottomPane.activeSingleFrame.paLine.drawing = False
+                self.root.bottomPane.activeSingleFrame.paLine.line.set_data([[], []])
+                self.root.bottomPane.activeSingleFrame.canvas.draw()
         
 
 
 class graphFrame:
     def __init__(self, parent, root, bgColor='beige'):
-        self.parent = parent
-        self.root   = root
-        self.bdSize = 5
         
-        self.leftFrame  = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
-        self.midFrame   = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
-        self.rightFrame = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
+        ##########################################################
+        #                 Setting instance variables             #
+        ##########################################################
         
-        self.plot1      = singlePlotFrame(self.leftFrame,  self.root, title='data',     bgColor=bgColor)
-        self.plot2      = singlePlotFrame(self.midFrame,   self.root, title='model',    bgColor=bgColor)
-        self.plot3      = singlePlotFrame(self.rightFrame, self.root, title='residual', bgColor=bgColor)
+        self.parent            = parent
+        self.root              = root
+        self.bdSize            = 5
+        
+        self.numSelected       = 0
+        
+        # Because matplotlib key press event is not Tk canvas dependent (i.e it links it to the last draw Tk canvas), we define an active singleFrame instance
+        # which we use to update graphs when the focus is on them
+        self.activeSingleFrame = None
+        
+        
+        ##################################################
+        #              Making single plot frame          #
+        ##################################################
+        
+        self.leftFrame         = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
+        self.midFrame          = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
+        self.rightFrame        = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
+        
+        
+        #################################################################
+        #                Making singlePlotFrame instances               #
+        #################################################################
+        
+        self.plot1             = singlePlotFrame(self.leftFrame,  self.root, title='data',     bgColor=bgColor)
+        self.plot2             = singlePlotFrame(self.midFrame,   self.root, title='model',    bgColor=bgColor)
+        self.plot3             = singlePlotFrame(self.rightFrame, self.root, title='residual', bgColor=bgColor)
         
         self.leftFrame.grid(row=0, column=0, padx=5, pady=5)
         self.midFrame.grid(row=0, column=1, padx=5, pady=5)
@@ -167,7 +214,7 @@ class graphFrame:
 
 class topFrame:
     '''
-    Top frame with options used to import data.
+    Top frame with widgets used to import data.
     '''
     def __init__(self, parent, root, bgColor='grey'):
         '''
@@ -240,7 +287,7 @@ class topFrame:
         '''Opens a file using self.fname.get() value.'''
         
         tmp = askopenfilename(initialdir=self.fname.get().rsplit('/', 1)[0], title='Select file...', filetypes=(('Fits files', '.fits'), ))
-#        raise IOError(tmp)
+
         if tmp not in ['', ()]:
             # Update file name
             self.fname.set(tmp)
@@ -250,6 +297,12 @@ class topFrame:
             
             # Update figures accordingly
             self.updateFigures()
+            
+            # Set flag to True if data was succesfully loaded
+            self.imLoaded      = True
+            
+            # Set number of plots
+            self.root.numPlots = 3
             
     def loadFitsFiles(self):
         '''Loads a .fits file with 3 extensions and update the plots in the bottom window.'''
@@ -274,8 +327,6 @@ class topFrame:
         
         self.res.data      = hdul[3].data
         
-        # Set flag to True if data was succesfully loaded
-        self.imLoaded      = True
         
         # Enable invert axes checkboxes
         self.invert.x.config({'state':'normal'})
@@ -293,21 +344,28 @@ class topFrame:
 
         
     def updateCmap(self, event):
+        '''Update the cmap of the already plotted images.'''
+        
         if self.imLoaded:
-            self.updateFigures()
+            for plot in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
+                plot.im.set_cmap(self.cmap.var.get())
+                plot.canvas.draw()
             
     
     def invertxAxes(self):
-        for i in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
-            if i.clicked:
-                i.ax.set_xlim(i.ax.get_xlim()[::-1])
-                i.canvas.draw()
+        '''Invert the x axis of the selected graphs'''
+        
+        for plot in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
+            if plot.selected:
+                plot.ax.set_xlim(plot.ax.get_xlim()[::-1])
+                plot.canvas.draw()
             
+             
     def invertyAxes(self):
-        for i in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
-            if i.clicked:
-                i.ax.set_ylim(i.ax.get_ylim()[::-1])
-                i.canvas.draw()
+        for plot in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
+            if plot.selected:
+                plot.ax.set_ylim(plot.ax.get_ylim()[::-1])
+                plot.canvas.draw()
         
         
 class rightFrame:
@@ -344,6 +402,9 @@ class mainApplication:
         
         self.parent            = parent
         
+        # Set number of plots in bottom frame to None till files are opened
+        self.numPlots          = 3
+        
         # Set default cursor
         self.state             = 'default'
         self.parent.config(cursor='arrow')
@@ -369,6 +430,7 @@ class mainApplication:
         # Binding key events
         self.parent.bind('<Control-p>',  self.lineTracingState)
         self.parent.bind('<Escape>',     self.defaultState)
+        self.parent.bind('<Control-a>',  self.selectAll)
         
         # Setting grid geometry for main frames
         tk.Grid.rowconfigure(   self.parent, 0, weight=2)
@@ -382,15 +444,35 @@ class mainApplication:
         self.rightFrame.frame.grid( row=1, sticky=tk.N+tk.S+tk.W+tk.E, column=1)
         
     def defaultState(self, event):
+        '''Change the graphFrame instance back to default state (where the user can select plots)'''
+        
         if self.state != 'default':
             self.bottomFrame.frame.config(cursor='arrow')
             self.state = 'default'
         
         
     def lineTracingState(self, event):
+        '''Change the graphFrame instance to lineTracing state to enable the tracing of PA line.'''
+        
         if self.state != 'lineTracing':
             self.bottomFrame.frame.config(cursor='crosshair')
             self.state = 'lineTracing'
+            
+    
+    def selectAll(self, event):
+        '''Select or unselect all the plots.'''
+        
+        # Case 1: not all the plots are selected, so we select those that are not yet
+        if self.numPlots > self.bottomPane.numSelected:
+            for plot in [self.bottomPane.plot1, self.bottomPane.plot2, self.bottomPane.plot3]:
+                if not plot.selected:
+                    plot.changeBorder()
+            self.bottomPane.numSelected = self.numPlots
+        # Case 2: all the plots are selected, so we unselected them all
+        elif self.numPlots == self.bottomPane.numSelected:
+            for plot in [self.bottomPane.plot1, self.bottomPane.plot2, self.bottomPane.plot3]:
+                plot.changeBorder()
+            self.bottomPane.numSelected = 0
         
 
 def main(): 
@@ -399,8 +481,8 @@ def main():
         root.destroy()
     
     root = tk.Tk()
-    root.title('GalBite - Easily do stuff')
-    root.geometry("1400x1000")
+    root.title('GalBit - Easily do stuff')
+    root.geometry("1300x800")
     mainApplication(root)
     
     root.protocol("WM_DELETE_WINDOW", exitProgram)
