@@ -33,7 +33,7 @@ formats = {'posFormat':"%.1f",
 
 defaultComments = {'object':                    'Object type', 
                    'pos':                       'position x, y                         [pixel]',
-                   'mag':                    'total magnitude',
+                   'mag':                       'total magnitude',
                    're':                        'effective radius R_e                  [pixel]',
                    'n':                         'Sersic exponent (deVauc=4, expdisk=1)',
                    'bOvera':                    'axis ratio (b/a)',
@@ -212,11 +212,12 @@ def genModel(modelName, listLineIndex, params, fixedOrNot, paramsFormat, comment
     
     # Generate each (other) line separately
     for num, idx, pm, fx, pf in zip(range(startPoint, length+1) , listLineIndex, params, fixedOrNot, paramsFormat):
-        #First add the index value
+        
+        # First add the index value
         allLines.append(formatIndex %idx)
         
-        #Then check whether there are more than one parameter on the line (for instance a model center)
-        #If so, loop over them, otherwise just add the single parameter and its fixedOrNot corresponding flag
+        #T hen check whether there are more than one parameter on the line (for instance a model center)
+        # If so, loop over them, otherwise just add the single parameter and its fixedOrNot corresponding flag
         try:
             for valpm, valpf in zip(pm, pf):
                 allLines[num] += valpf %valpm + " "
