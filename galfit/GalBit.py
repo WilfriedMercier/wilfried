@@ -71,7 +71,7 @@ class singlePlotFrame:
         # Linking to events
         self.canvas.mpl_connect('button_press_event',  self.onClick)
         self.canvas.mpl_connect('motion_notify_event', self.onMove)
-        self.canvas.mpl_connect('key_release_event',     self.keyPressed)
+        self.canvas.mpl_connect('figure_enter_event',  self.onFigure)
         
     
     def updateImage(self, newData, mini=None, maxi=None, cmap='bwr'):
@@ -120,6 +120,7 @@ class singlePlotFrame:
         
         
     def onClick(self, event):
+        '''Actions taken when the user clicks on one of the figures.'''
         
         # If state is default, we draw a border (technically we change the color of the border) around a plot frame to indicate that it has been selected
         if self.root.state == 'default':
@@ -133,6 +134,12 @@ class singlePlotFrame:
                 self.paLine.drawing = False
                 self.paLine.line.set_data([self.paLine.posx, self.paLine.posy])
                 self.canvas.draw()
+                
+                
+    def onFigure(self, event):
+        '''Set focus onto the main window when the cursor enters it.'''
+        
+        self.root.parent.focus()
             
             
     def onMove(self, event):
@@ -159,15 +166,6 @@ class singlePlotFrame:
         # Set active singlePlot frame for key press events which are not canvas dependent
         if self.root.bottomPane.activeSingleFrame is not self:
             self.root.bottomPane.activeSingleFrame = self
-        
-        
-    def keyPressed(self, event):
-        if event.key == 'ctrl+z':
-            print(self.root.bottomPane.activeSingleFrame.paLine.line)
-            if self.root.bottomPane.activeSingleFrame.paLine.line is not None:
-                self.root.bottomPane.activeSingleFrame.paLine.drawing = False
-                self.root.bottomPane.activeSingleFrame.paLine.line.set_data([[], []])
-                self.root.bottomPane.activeSingleFrame.canvas.draw()
         
 
 
@@ -247,7 +245,7 @@ class topFrame:
         
         self.cmap        = container()
         self.cmap.var    = tk.StringVar(value='bwr')
-        self.cmap.list   = ttk.Combobox(self.parent, textvariable=self.cmap.var, values=cmapNames)
+        self.cmap.list   = ttk.Combobox(self.parent, textvariable=self.cmap.var, values=cmapNames, state='readonly')
         self.cmap.list.bind("<<ComboboxSelected>>", self.updateCmap)
         
         self.cmap.label  = tk.Label(self.parent, text='Colormap', bg=self.bgColor)
@@ -283,7 +281,7 @@ class topFrame:
         self.invert.x.grid(    row=0, column=5, padx=2*padx, pady=0)
         self.invert.y.grid(    row=0, column=6, padx=0,      pady=0)
         
-    def openFile(self):
+    def openFile(self, *args):
         '''Opens a file using self.fname.get() value.'''
         
         tmp = askopenfilename(initialdir=self.fname.get().rsplit('/', 1)[0], title='Select file...', filetypes=(('Fits files', '.fits'), ))
@@ -369,9 +367,7 @@ class topFrame:
         
         
 class rightFrame:
-    '''
-    Right frame window with different option to trigger.
-    '''
+    '''Right frame window with different option to trigger.'''
     
     def __init__(self, parent, root, bgColor='grey'):
         '''
@@ -385,6 +381,70 @@ class rightFrame:
         
         self.parent = parent
         self.root   = root
+        
+        
+class topMenu:
+    '''Application top menu'''
+    
+    def __init__(self, parent, root, color):
+        
+        self.parent   = parent
+        self.root     = root
+        self.color    = color
+        self.exists   = False
+        
+        # Top Menu widget
+        self.topMenu  = tk.Menu(bg=self.color)
+        
+        # File menu within top menu
+        self.fileMenu = tk.Menu(self.topMenu, tearoff=0)
+        self.fileMenu.add_command(label='Open (Ctrl+O)',      command=self.parent.topPane.openFile)
+        self.fileMenu.add_separator()
+        self.fileMenu.add_command(label='Close (Alt+F4)',     command=self.parent.exitProgram)
+        
+        # Help menu within top menu
+        self.helpMenu = tk.Menu(self.topMenu, tearoff=0)
+        self.helpMenu.add_command(label='Shortcuts (Ctrl+H)', command=self.showShortcuts)
+        self.helpMenu.add_command(label='Galfit website',     command=lambda:print('work in progress'))
+        
+        # Adding sections into top menu
+        self.topMenu.add_cascade( label="File", menu=self.fileMenu)
+        self.topMenu.add_cascade( label="Help", menu=self.helpMenu)
+       
+        
+    def exitProgram(self):
+        self.window.destroy()
+        self.exists    = False
+        
+        
+    def showShortcuts(self, *args):
+        if not self.exists:
+            self.window = tk.Toplevel(height=300, width=300)
+            self.window.maxsize(300, 300)
+            self.window.minsize(300, 300)
+            self.window.title('List of shortcuts')
+            self.exists    = True
+            
+            self.keyColor  = 'white'
+            self.keyRelief = tk.RAISED
+            self.bd        = 5
+            
+            self.window.protocol("WM_DELETE_WINDOW", self.exitProgram)
+            
+            # Set text labels
+            self.openFileLabel = tk.Label(self.window, text='Open file :')
+            self.plus          = tk.Label(self.window, text='+')
+            
+            # Set button-like labels
+            self.control       = tk.Label(self.window, text='Ctrl', bg=self.keyColor, bd=self.bd, relief=self.keyRelief)
+            self.o             = tk.Label(self.window, text='o',    bg=self.keyColor, bd=self.bd, relief=self.keyRelief)
+            
+            self.openFileLabel.grid(row=0, column=0, padx=10, pady=10)
+            self.control.grid(      row=0, column=1)
+            self.plus.grid(         row=0, column=2)
+            self.o.grid(            row=0, column=3)
+            
+        
 
 
 class mainApplication:
@@ -411,11 +471,13 @@ class mainApplication:
         
         # Set containers
         self.topFrame, self.rightFrame, self.bottomFrame = container(), container(), container()
+        self.topMenu                                     = container()
         
-        # Set frame colors
+        # Set colors
         self.topFrame.color    = 'grey'
         self.rightFrame.color  = 'grey'
         self.bottomFrame.color = 'beige'
+        self.topMenu.color     = 'grey'
         
         # Making main three frames
         self.topFrame.frame    = tk.Frame(self.parent, bg=self.topFrame.color)
@@ -427,10 +489,17 @@ class mainApplication:
         self.rightPane         = rightFrame(self.rightFrame.frame,  self, bgColor=self.rightFrame.color)
         self.bottomPane        = graphFrame(self.bottomFrame.frame, self, bgColor=self.bottomFrame.color)
         
+        # Creating window top menu
+        self.topMenu.window    = topMenu(self, self.parent, self.topMenu.color)
+        self.parent.config(menu=self.topMenu.window.topMenu)
+        
         # Binding key events
         self.parent.bind('<Control-p>',  self.lineTracingState)
         self.parent.bind('<Escape>',     self.defaultState)
         self.parent.bind('<Control-a>',  self.selectAll)
+        self.parent.bind('<Control-z>',  self.cancel)
+        self.parent.bind('<Control-o>',  self.topPane.openFile)
+        self.parent.bind('<Control-h>',  self.topMenu.window.showShortcuts)
         
         # Setting grid geometry for main frames
         tk.Grid.rowconfigure(   self.parent, 0, weight=2)
@@ -449,6 +518,15 @@ class mainApplication:
         if self.state != 'default':
             self.bottomFrame.frame.config(cursor='arrow')
             self.state = 'default'
+            
+            
+    def cancel(self, event):
+        '''Cancel PA line drawing if Ctrl-z is pressed'''
+        
+        if self.bottomPane.activeSingleFrame.paLine.line is not None:
+            self.bottomPane.activeSingleFrame.paLine.drawing = False
+            self.bottomPane.activeSingleFrame.paLine.line.set_data([[], []])
+            self.bottomPane.activeSingleFrame.canvas.draw()
         
         
     def lineTracingState(self, event):
@@ -457,6 +535,12 @@ class mainApplication:
         if self.state != 'lineTracing':
             self.bottomFrame.frame.config(cursor='crosshair')
             self.state = 'lineTracing'
+            
+            
+    def exitProgram(self):
+        '''Destroys main window.'''
+        
+        self.parent.destroy()
             
     
     def selectAll(self, event):
@@ -477,15 +561,12 @@ class mainApplication:
 
 def main(): 
     
-    def exitProgram():
-        root.destroy()
-    
     root = tk.Tk()
     root.title('GalBit - Easily do stuff')
     root.geometry("1300x800")
-    mainApplication(root)
+    app  = mainApplication(root)
     
-    root.protocol("WM_DELETE_WINDOW", exitProgram)
+    root.protocol("WM_DELETE_WINDOW", app.exitProgram)
     
     root.mainloop()
 
