@@ -234,10 +234,10 @@ class topFrame:
         padx            = 10
         pady            = 10
         
-        self.loadButton = tk.Button(self.parent, command=self.openFile, text='Browse')
-        self.loadInput  = tk.Entry( self.parent, cursor='xterm', textvariable=self.fname, width=50)
+        self.loadButton = ttk.Button(self.parent, command=self.openFile, text='Browse')
+        self.loadInput  = ttk.Entry( self.parent, cursor='xterm', textvariable=self.fname, width=50)
         
-        self.sendButton = tk.Button(self.parent, command=self.updateFigures, text='Load')
+        self.sendButton = ttk.Button(self.parent, command=self.updateFigures, text='Load')
         
         # Making the cmap list widget
         cmapNames        = list(matplotlib.cm.cmap_d.keys())
@@ -379,8 +379,49 @@ class rightFrame:
                 main application object
         '''
         
-        self.parent = parent
-        self.root   = root
+        self.parent     = parent
+        self.root       = root
+        
+        self.bgColor    = bgColor
+        self.bd         = 4
+        self.pad        = 5
+        
+        # Define label frame
+        self.labelFrame = tk.LabelFrame(self.parent, text='Configuration pane', bg=self.bgColor, relief=tk.RIDGE, bd=self.bd)
+        
+        # Define canvas within label frame to add a scrollbar
+        self.canvas     = tk.Canvas(self.labelFrame, bd=0, bg=self.bgColor)
+        self.scrollbar  = tk.Scrollbar(self.labelFrame, orient="vertical", command=self.canvas.yview, width=5, bg='black')
+        
+        # Bind resize event to updating the frame size
+        self.canvas.bind('<Configure>', self.updateFrameSize)
+        
+        # Define a frame within the canvas to hold widgets
+        self.frame      = tk.Frame(self.canvas, bg=self.bgColor)
+        
+        # Draw labels to test
+        ls = []
+        for i in range(20):
+            ls.append(      ttk.Label(self.frame, text='Models', background=self.bgColor))
+            ls[-1].grid(row=i, column=0, sticky=tk.N+tk.W+tk.S+tk.E, pady=30)
+            ls.append(      ttk.Label(self.frame, text='Models', background=self.bgColor))
+            ls[-1].grid(row=i, column=1, sticky=tk.N+tk.S)
+            
+        # Put the frame within the canvas
+        self.window = self.canvas.create_window(0, 0, anchor='nw', window=self.frame)
+        self.canvas.update_idletasks()
+        
+        # Configure scrollbar
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'), yscrollcommand=self.scrollbar.set)
+        
+        # Draw widgets
+        self.scrollbar.pack( fill='both', side='right')
+        self.canvas.pack(    fill='both', expand='yes')
+        self.labelFrame.pack(fill='both', expand='yes', padx=self.pad, pady=self.pad)
+       
+        
+    def updateFrameSize(self, event):
+        self.canvas.itemconfig(self.window, width = event.width) 
         
         
 class topMenu:
@@ -413,8 +454,32 @@ class topMenu:
        
         
     def exitProgram(self):
+        '''Exit top level window.'''
+        
         self.window.destroy()
         self.exists    = False
+        
+        
+    def makeLabelLine(self, tab, row, text, listButtonLabels, underline=-1):
+        '''Used to create a line of labels within the help window'''
+        
+        labels = [tk.Label(tab, text=text, underline=underline, anchor='w', justify='left', width=25)]
+        for i in listButtonLabels[:-1]:
+            labels.append(tk.Label(tab, text=i, bg=self.keyColor, bd=self.bd, relief=self.keyRelief, padx=self.pad, pady=self.pad))
+            labels.append(tk.Label(tab, text='+'))
+        labels.append(tk.Label(tab, text=listButtonLabels[-1], bg=self.keyColor, bd=self.bd, relief=self.keyRelief, padx=self.pad, pady=self.pad))
+        
+        for pos, i in enumerate(labels):
+            if pos==0:
+                padx, pady = 10, 10
+                sticky     = tk.W
+            else:
+                padx, pady = 0, 0
+                sticky     = ''
+                
+            i.grid(row=row, column=pos, padx=padx, pady=pady, sticky=sticky)
+        return labels
+            
         
         
     def showShortcuts(self, *args):
@@ -427,24 +492,34 @@ class topMenu:
             
             self.keyColor  = 'white'
             self.keyRelief = tk.RAISED
-            self.bd        = 5
+            self.bd        = 2
+            self.pad       = 3
             
             self.window.protocol("WM_DELETE_WINDOW", self.exitProgram)
             
-            # Set text labels
-            self.openFileLabel = tk.Label(self.window, text='Open file :')
-            self.plus          = tk.Label(self.window, text='+')
+            # Create notebook
+            self.notebook      = ttk.Notebook(self.window)
+            self.notebook.enable_traversal()
+            self.notebook.pack(expand=1, fill='both')
             
-            # Set button-like labels
-            self.control       = tk.Label(self.window, text='Ctrl', bg=self.keyColor, bd=self.bd, relief=self.keyRelief)
-            self.o             = tk.Label(self.window, text='o',    bg=self.keyColor, bd=self.bd, relief=self.keyRelief)
+            # Make first tab (edit tab)
+            self.tabEdit       = ttk.Frame(self.notebook)
+            self.notebook.add(self.tabEdit, text='Edit figure', underline=0)
+            self.editLines     = {'Select all'  :         ['Ctrl', 'A'], 
+                                  'Draw PA line':         ['Ctrl', 'P'],
+                                  'Back to default mode': ['ESC']}
             
-            self.openFileLabel.grid(row=0, column=0, padx=10, pady=10)
-            self.control.grid(      row=0, column=1)
-            self.plus.grid(         row=0, column=2)
-            self.o.grid(            row=0, column=3)
+            for pos, text in enumerate(self.editLines.keys()):
+                self.makeLabelLine(self.tabEdit, pos, text, self.editLines[text])
+                
+            # Make second tab (file tab)
+            self.tabFile       = ttk.Frame(self.notebook)
+            self.notebook.add(self.tabFile, text='File', underline=0)
+            self.fileLines     = {'Open file': ['Ctrl', 'O']}
             
-        
+            for pos, text in enumerate(self.fileLines.keys()):
+                self.makeLabelLine(self.tabFile, pos, text, self.fileLines[text])
+            
 
 
 class mainApplication:
@@ -465,23 +540,26 @@ class mainApplication:
         # Set number of plots in bottom frame to None till files are opened
         self.numPlots          = 3
         
-        # Set default cursor
+        # Set default cursor and state
         self.state             = 'default'
         self.parent.config(cursor='arrow')
+        
+        # Set active frame
+        self.activeFrame       = None
         
         # Set containers
         self.topFrame, self.rightFrame, self.bottomFrame = container(), container(), container()
         self.topMenu                                     = container()
         
         # Set colors
-        self.topFrame.color    = 'grey'
-        self.rightFrame.color  = 'grey'
+        self.topFrame.color    = 'lavender'
+        self.rightFrame.color  = 'beige'
         self.bottomFrame.color = 'beige'
-        self.topMenu.color     = 'grey'
+        self.topMenu.color     = 'slate gray'
         
         # Making main three frames
         self.topFrame.frame    = tk.Frame(self.parent, bg=self.topFrame.color)
-        self.rightFrame.frame  = tk.Frame(self.parent, bg=self.rightFrame.color)
+        self.rightFrame.frame  = tk.Frame(self.parent, bg=self.topFrame.color)
         self.bottomFrame.frame = tk.Frame(self.parent, bg=self.bottomFrame.color)
         
         # Creating widgets within frames
@@ -501,16 +579,20 @@ class mainApplication:
         self.parent.bind('<Control-o>',  self.topPane.openFile)
         self.parent.bind('<Control-h>',  self.topMenu.window.showShortcuts)
         
-        # Setting grid geometry for main frames
-        tk.Grid.rowconfigure(   self.parent, 0, weight=2)
-        tk.Grid.columnconfigure(self.parent, 0, weight=7)
-        tk.Grid.rowconfigure(   self.parent, 1, weight=7)
-        tk.Grid.columnconfigure(self.parent, 1, weight=3)
+        # Bind enter and leave frames to know where the cursor lies
+        self.parent.bind()
         
         # Drawing frames
-        self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=2)
-        self.bottomFrame.frame.grid(row=1, sticky=tk.N+tk.S+tk.W+tk.E)
-        self.rightFrame.frame.grid( row=1, sticky=tk.N+tk.S+tk.W+tk.E, column=1)
+        self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=3)
+        self.bottomFrame.frame.grid(row=1, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=2)
+        self.rightFrame.frame.grid( row=1, sticky=tk.N+tk.S+tk.W+tk.E, column=2)
+        
+        # Setting grid geometry for main frames
+        tk.Grid.rowconfigure(   self.parent, 0, weight=0, minsize=130)
+        tk.Grid.rowconfigure(   self.parent, 1, weight=1)
+        tk.Grid.columnconfigure(self.parent, 2, weight=1, minsize=100)
+        tk.Grid.columnconfigure(self.parent, 1, weight=0, minsize=1300)
+        
         
     def defaultState(self, event):
         '''Change the graphFrame instance back to default state (where the user can select plots)'''
@@ -563,7 +645,7 @@ def main():
     
     root = tk.Tk()
     root.title('GalBit - Easily do stuff')
-    root.geometry("1300x800")
+    root.geometry("1500x800")
     app  = mainApplication(root)
     
     root.protocol("WM_DELETE_WINDOW", app.exitProgram)
