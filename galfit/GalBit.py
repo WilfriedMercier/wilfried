@@ -21,6 +21,19 @@ import astropy.io.fits as fits
 import numpy as np
 
 
+# Global variables
+DICT_MODELS = {'deVaucouleur' : 'de Vaucouleur', 
+               'edgeOnDisk'   : 'Edge on disk', 
+               'expDisk'      : 'Exponential disk',
+               'ferrer'       : 'Ferrer', 
+               'gaussian'     : 'Gaussian', 
+               'king'         : 'King', 
+               'moffat'       : 'Moffat', 
+               'nuker'        : 'Nuker', 
+               'psf'          : 'PSF', 
+               'sersic'       : 'Sersic', 
+               'sky'          : 'Sky'}
+
 class container:
     def __init__(self):
         info = 'A simple container'
@@ -281,6 +294,7 @@ class topFrame:
         self.invert.x.grid(    row=0, column=5, padx=2*padx, pady=0)
         self.invert.y.grid(    row=0, column=6, padx=0,      pady=0)
         
+        
     def openFile(self, *args):
         '''Opens a file using self.fname.get() value.'''
         
@@ -301,6 +315,7 @@ class topFrame:
             
             # Set number of plots
             self.root.numPlots = 3
+            
             
     def loadFitsFiles(self):
         '''Loads a .fits file with 3 extensions and update the plots in the bottom window.'''
@@ -329,6 +344,7 @@ class topFrame:
         # Enable invert axes checkboxes
         self.invert.x.config({'state':'normal'})
         self.invert.y.config({'state':'normal'})
+        
         
     def updateFigures(self):
         '''Updates the main three figures'''
@@ -364,10 +380,33 @@ class topFrame:
             if plot.selected:
                 plot.ax.set_ylim(plot.ax.get_ylim()[::-1])
                 plot.canvas.draw()
+                
+                
+class modelFrame:
+    def __init__(self, parent, root, row=0, column=0, bgColor='grey'):
+        global DICT_MODELS
         
+        self.parent     = parent
+        self.root       = root
+        self.bgColor    = bgColor
+        self.pad        = 4
+        
+        self.frame      = tk.Frame(self.parent, bg='grey')
+        
+        self.modelLabel = tk.Label(self.frame, text='Model', bg=self.bgColor, anchor='w', justify='left')
+        
+        self.model      = tk.StringVar(value='Exponential disk')
+        self.modelList  = ttk.Combobox(self.frame, textvariable=self.model, values=list(DICT_MODELS.values()), state='readonly')
+        #self.cmap.list.bind("<<ComboboxSelected>>", self.changeModel)
+        
+        self.modelLabel.grid(row=row, column=0,  sticky=tk.W, pady=self.pad, padx=self.pad)
+        self.modelList.grid( row=row, column=1,  sticky=tk.W)
+        self.frame.grid(     row=row, column=0,  sticky=tk.N+tk.E+tk.W, padx=self.pad)
+
+                          
         
 class rightFrame:
-    '''Right frame window with different option to trigger.'''
+    '''Right frame window with different options to trigger.'''
     
     def __init__(self, parent, root, bgColor='grey'):
         '''
@@ -379,42 +418,44 @@ class rightFrame:
                 main application object
         '''
         
-        self.parent     = parent
-        self.root       = root
+        self.parent       = parent
+        self.root         = root
         
-        self.bgColor    = bgColor
-        self.bd         = 4
-        self.pad        = 5
+        # Number of models used and drawn on screen
+        self.nbModels     = 0
+        self.modelsFrames = []
+        self.scrollFrac   = 0.0
+        
+        self.bgColor      = bgColor
+        self.bd           = 4
+        self.pad          = 5
         
         # Define label frame
-        self.labelFrame = tk.LabelFrame(self.parent, text='Configuration pane', bg=self.bgColor, relief=tk.RIDGE, bd=self.bd)
+        self.labelFrame   = tk.LabelFrame(self.parent, text='Configuration pane', bg=self.root.topFrame.color, relief=tk.RIDGE, bd=self.bd)
         
         # Define canvas within label frame to add a scrollbar
-        self.canvas     = tk.Canvas(self.labelFrame, bd=0, bg=self.bgColor)
-        self.scrollbar  = tk.Scrollbar(self.labelFrame, orient="vertical", command=self.canvas.yview, width=5, bg='black')
-        
-        # Bind resize event to updating the frame size
-        self.canvas.bind('<Configure>', self.updateFrameSize)
+        self.canvas       = tk.Canvas(self.labelFrame, bd=0, bg=self.bgColor)
+        self.scrollbar    = tk.Scrollbar(self.labelFrame, orient="vertical", command=self.canvas.yview, width=5, bg='black')
         
         # Define a frame within the canvas to hold widgets
-        self.frame      = tk.Frame(self.canvas, bg=self.bgColor)
+        self.frame        = tk.Frame(self.canvas, bg=self.bgColor)
         
-        # Draw labels to test
-        ls = []
-        for i in range(20):
-            ls.append(      ttk.Label(self.frame, text='Models', background=self.bgColor))
-            ls[-1].grid(row=i, column=0, sticky=tk.N+tk.W+tk.S+tk.E, pady=30)
-            ls.append(      ttk.Label(self.frame, text='Models', background=self.bgColor))
-            ls[-1].grid(row=i, column=1, sticky=tk.N+tk.S)
+        # Button used to add a new model
+        self.addModel     = tk.Button(self.frame, text='+ add new model', relief=tk.FLAT, bg=self.bgColor, bd=0, highlightthickness=0, 
+                                    activebackground='black', activeforeground=self.bgColor, command=self.addNewModel)
             
         # Put the frame within the canvas
-        self.window = self.canvas.create_window(0, 0, anchor='nw', window=self.frame)
+        self.window       = self.canvas.create_window(0, 0, anchor='nw', window=self.frame)
         self.canvas.update_idletasks()
         
-        # Configure scrollbar
+        # Configure scrollbar on the right
         self.canvas.configure(scrollregion=self.canvas.bbox('all'), yscrollcommand=self.scrollbar.set)
         
+        # Bind resize event to updating the frame size
+        self.canvas.bind('<Configure>', self.updateFrameSize) 
+  
         # Draw widgets
+        self.addModel.grid(  row=0, column=0, padx=4, pady=4, stick=tk.W)
         self.scrollbar.pack( fill='both', side='right')
         self.canvas.pack(    fill='both', expand='yes')
         self.labelFrame.pack(fill='both', expand='yes', padx=self.pad, pady=self.pad)
@@ -422,6 +463,16 @@ class rightFrame:
         
     def updateFrameSize(self, event):
         self.canvas.itemconfig(self.window, width = event.width) 
+        for mframe in self.modelsFrames: # Does not work
+            print(event.width)
+            mframe.frame['width'] = event.width
+        
+    
+    def addNewModel(self):
+        self.nbModels += 1
+        self.modelsFrames.append(modelFrame(self.frame, self.root, row=self.nbModels, bgColor=self.bgColor))
+        print(self.canvas.bbox('all'))
+        
         
         
 class topMenu:
@@ -484,16 +535,16 @@ class topMenu:
         
     def showShortcuts(self, *args):
         if not self.exists:
-            self.window = tk.Toplevel(height=300, width=300)
+            self.window        = tk.Toplevel(height=300, width=300)
             self.window.maxsize(300, 300)
             self.window.minsize(300, 300)
             self.window.title('List of shortcuts')
-            self.exists    = True
+            self.exists        = True
             
-            self.keyColor  = 'white'
-            self.keyRelief = tk.RAISED
-            self.bd        = 2
-            self.pad       = 3
+            self.keyColor      = 'white'
+            self.keyRelief     = tk.RAISED
+            self.bd            = 2
+            self.pad           = 3
             
             self.window.protocol("WM_DELETE_WINDOW", self.exitProgram)
             
@@ -560,7 +611,7 @@ class mainApplication:
         # Making main three frames
         self.topFrame.frame    = tk.Frame(self.parent, bg=self.topFrame.color)
         self.rightFrame.frame  = tk.Frame(self.parent, bg=self.topFrame.color)
-        self.bottomFrame.frame = tk.Frame(self.parent, bg=self.bottomFrame.color)
+        self.bottomFrame.frame = tk.Frame(self.parent, bg=self.bottomFrame.color, bd=2, relief=tk.GROOVE)
         
         # Creating widgets within frames
         self.topPane           = topFrame(  self.topFrame.frame,    self, bgColor=self.topFrame.color)
@@ -580,7 +631,8 @@ class mainApplication:
         self.parent.bind('<Control-h>',  self.topMenu.window.showShortcuts)
         
         # Bind enter and leave frames to know where the cursor lies
-        self.parent.bind()
+        self.rightFrame.frame.bind('<Enter>', self.setScrollable)
+        self.rightFrame.frame.bind('<Leave>', self.unsetScrollable)
         
         # Drawing frames
         self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=3)
@@ -592,6 +644,27 @@ class mainApplication:
         tk.Grid.rowconfigure(   self.parent, 1, weight=1)
         tk.Grid.columnconfigure(self.parent, 2, weight=1, minsize=100)
         tk.Grid.columnconfigure(self.parent, 1, weight=0, minsize=1300)
+        
+        
+    def setScrollable(self, event):
+        self.parent.bind('<MouseWheel>', self.setMouseWheel)
+        self.parent.bind("<Button-4>",   self.setMouseWheel)
+        self.parent.bind("<Button-5>",   self.setMouseWheel)
+        
+        
+    def unsetScrollable(self, event):
+        self.parent.unbind('<MouseWheel>')
+        self.parent.unbind("<Button-4>")
+        self.parent.unbind("<Button-5>")
+            
+        
+    def setMouseWheel(self, event):
+        if event.num==5 or event.delta<0:
+            self.rightPane.scrollFrac += 0.01
+        else:
+            self.rightPane.scrollFrac -= 0.01
+        print(self.rightPane.scrollFrac)
+        self.rightPane.canvas.yview_moveto(self.rightPane.scrollFrac)
         
         
     def defaultState(self, event):
