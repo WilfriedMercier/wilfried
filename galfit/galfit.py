@@ -92,7 +92,7 @@ tags = ['fourier', 'bending', 'boxyness']
 
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
                pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/",
-               constraints=None, forceConfig=False, noGalfit=False, showRecapFiles=True):
+               constraints=None, forceConfig=False, noGalfit=False, showRecapFiles=True, showLog=False):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
     If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
@@ -171,6 +171,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             location of the input file names relative to the current folder or in absolute
         pathOut : str
             location of the output file names relative to the current folder or in absolute
+        showLog : bool
+            whether to show log files or not
         showRecapFiles : bool
             whether to show the recap files made at the end or not
     """
@@ -281,6 +283,16 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         
         for p in all_procs:
             p.join()    
+     
+    # Show log file
+    if showLog:
+        print("Showing log files")
+        
+        logFiles = ['log/%s' %name.replace('.feedme', '.log') for name in feedmeFiles]
+        for log in logFiles:
+            print(log)
+            with open(log, 'r') as f:
+                print(f.read(), '\n')   
         
     # Open files
     if showRecapFiles:
@@ -477,7 +489,7 @@ def genConstraint(dicts):
                         - a list of two float to define bounds for the other types
                 
                 'components' : int/list of int
-                    number (of appearance in the .feedme file) of the galfit models one wants to constrain.:
+                    number (of appearance in the .feedme file) of the galfit models one wants to constrain:
                         - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
                         - for both relative and absolute ranges, a single profile number (int) must be given
                         - for component wise ranges or ratios, a list of two numbers (int) must be provided
