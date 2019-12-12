@@ -34,6 +34,8 @@ DICT_MODELS = {'deVaucouleur' : 'de Vaucouleur',
                'sersic'       : 'Sersic', 
                'sky'          : 'Sky'}
 
+FONT        = 'Arial'
+
 class container:
     def __init__(self):
         info = 'A simple container'
@@ -383,25 +385,55 @@ class topFrame:
                 
                 
 class modelFrame:
-    def __init__(self, parent, root, row=0, column=0, bgColor='grey'):
+    '''Frame-like object drawn in canvas which holds widgets relative to configuring models'''
+    
+    def __init__(self, canvas, root, num, posx=0, posy=0, bgColor='grey', padx=4, pady=4, width=100, height=100):
         global DICT_MODELS
         
-        self.parent     = parent
+        self.canvas     = canvas
         self.root       = root
         self.bgColor    = bgColor
-        self.pad        = 4
         
-        self.frame      = tk.Frame(self.parent, bg='grey')
+        self.width      = width-posx
+        self.height     = height
         
-        self.modelLabel = tk.Label(self.frame, text='Model', bg=self.bgColor, anchor='w', justify='left')
+        self.posx       = [posx, self.width]
+        self.posy       = [posy, posy+self.height]
         
-        self.model      = tk.StringVar(value='Exponential disk')
-        self.modelList  = ttk.Combobox(self.frame, textvariable=self.model, values=list(DICT_MODELS.values()), state='readonly')
+        self.padx       = padx
+        self.pady       = pady
+        
+        # Container objects
+        self.frame, self.modelLabel = container(), container()
+        
+        
+        self.frame.id       = self.canvas.create_rectangle(self.posx[0], self.posy[0], self.posx[1], self.posy[1], dash=10, tag='modelFrame%d' %num)
+        
+        self.modelLabel.obj = tk.Label(self.canvas, text='Model', bg=self.bgColor)
+        self.modelLabel.id  = self.canvas.create_window(self.padx+self.posx[0], self.pady+self.posy[0], window=self.modelLabel.obj, anchor='nw')
+        
+        
+        #self.model      = tk.StringVar(value='Exponential disk')
+        #self.modelList  = ttk.Combobox(self.frame, textvariable=self.model, values=list(DICT_MODELS.values()), state='readonly')
         #self.cmap.list.bind("<<ComboboxSelected>>", self.changeModel)
         
-        self.modelLabel.grid(row=row, column=0,  sticky=tk.W, pady=self.pad, padx=self.pad)
-        self.modelList.grid( row=row, column=1,  sticky=tk.W)
-        self.frame.grid(     row=row, column=0,  sticky=tk.N+tk.E+tk.W, padx=self.pad)
+        #self.modelList.grid( row=row, column=1,  sticky=tk.W)
+        #self.frame.grid(     row=row, column=0,  sticky=tk.N+tk.E+tk.W, padx=self.padx)
+        
+        self.canvas.update_idletasks()
+        
+        
+    def updateDimension(self, newWidth, newHeight):
+        '''Update the dimensions of the rectangle around'''
+        
+        # Update width, height and pos x and y of main rectangle
+        self.width   = newWidth
+        self.height  = newHeight
+        self.posx[1] = self.posx[0] + self.width
+        self.posy[1] = self.posy[0] + self.height
+        
+        # Update rectangle coordinates
+        self.canvas.coords(self.frame.id, (self.posx[0], self.posy[0], self.posx[1], self.posy[1]))
 
                           
         
@@ -418,6 +450,8 @@ class rightFrame:
                 main application object
         '''
         
+        global FONT
+        
         self.parent       = parent
         self.root         = root
         
@@ -428,7 +462,12 @@ class rightFrame:
         
         self.bgColor      = bgColor
         self.bd           = 4
-        self.pad          = 5
+        self.padx         = 5
+        self.pady         = 5
+        self.padyModels   = 10
+        
+        # Container objects
+        self.frame, self.addModel = container(), container()
         
         # Define label frame
         self.labelFrame   = tk.LabelFrame(self.parent, text='Configuration pane', bg=self.root.topFrame.color, relief=tk.RIDGE, bd=self.bd)
@@ -438,14 +477,14 @@ class rightFrame:
         self.scrollbar    = tk.Scrollbar(self.labelFrame, orient="vertical", command=self.canvas.yview, width=5, bg='black')
         
         # Define a frame within the canvas to hold widgets
-        self.frame        = tk.Frame(self.canvas, bg=self.bgColor)
+        self.frame.obj    = tk.Frame(self.canvas, bg=self.bgColor)
+        self.frame.id     = self.canvas.create_window(0, 0, anchor='nw', window=self.frame.obj)
         
         # Button used to add a new model
-        self.addModel     = tk.Button(self.frame, text='+ add new model', relief=tk.FLAT, bg=self.bgColor, bd=0, highlightthickness=0, 
-                                    activebackground='black', activeforeground=self.bgColor, command=self.addNewModel)
+        self.addModel.obj = tk.Button(self.canvas, text='+ add new model', relief=tk.FLAT, bg=self.bgColor, bd=0, highlightthickness=0, 
+                                      activebackground='black', activeforeground=self.bgColor, command=self.addNewModel, font=(FONT, '9', 'bold'))
+        self.addModel.id  = self.canvas.create_window(4, 4, anchor='nw', window=self.addModel.obj)
             
-        # Put the frame within the canvas
-        self.window       = self.canvas.create_window(0, 0, anchor='nw', window=self.frame)
         self.canvas.update_idletasks()
         
         # Configure scrollbar on the right
@@ -455,23 +494,35 @@ class rightFrame:
         self.canvas.bind('<Configure>', self.updateFrameSize) 
   
         # Draw widgets
-        self.addModel.grid(  row=0, column=0, padx=4, pady=4, stick=tk.W)
         self.scrollbar.pack( fill='both', side='right')
         self.canvas.pack(    fill='both', expand='yes')
-        self.labelFrame.pack(fill='both', expand='yes', padx=self.pad, pady=self.pad)
+        self.labelFrame.pack(fill='both', expand='yes', padx=self.padx, pady=self.pady)
        
         
     def updateFrameSize(self, event):
-        self.canvas.itemconfig(self.window, width = event.width) 
-        for mframe in self.modelsFrames: # Does not work
-            print(event.width)
-            mframe.frame['width'] = event.width
+        
+        # Update main window frame element first
+        self.canvas.itemconfig(self.frame.id, width = event.width) 
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+        
+        # Update each model frame
+        for mframe in self.modelsFrames:
+            mframe.updateDimension(event.width-2*mframe.posx[0], mframe.height)
+        
+        self.canvas.update_idletasks()
         
     
     def addNewModel(self):
+        
+        #Set initial y position and then place model frame objects below the latter one
+        posy = self.padyModels + self.canvas.bbox('all')[3]
+        
         self.nbModels += 1
-        self.modelsFrames.append(modelFrame(self.frame, self.root, row=self.nbModels, bgColor=self.bgColor))
-        print(self.canvas.bbox('all'))
+        self.modelsFrames.append(modelFrame(self.canvas, self.root, num=self.nbModels, posx=10, posy=posy, width=self.canvas.bbox('all')[2], height=100,
+                                            pady=self.padyModels, padx=10, bgColor=self.bgColor))   
+        
+        # Always update canvas scrollregions otherwise it does weird stuff
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
         
         
         
@@ -659,12 +710,13 @@ class mainApplication:
             
         
     def setMouseWheel(self, event):
-        if event.num==5 or event.delta<0:
-            self.rightPane.scrollFrac += 0.01
-        else:
-            self.rightPane.scrollFrac -= 0.01
-        print(self.rightPane.scrollFrac)
-        self.rightPane.canvas.yview_moveto(self.rightPane.scrollFrac)
+        print('oui')
+        if self.rightPane.canvas.bbox('all')[3] > self.rightPane.labelFrame.winfo_height():
+            if event.num==5 or event.delta<0:
+                step = -1
+            else:
+                step = 1            
+            self.rightPane.canvas.yview_scroll(step, 'units')
         
         
     def defaultState(self, event):
