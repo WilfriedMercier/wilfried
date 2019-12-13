@@ -390,21 +390,21 @@ class modelFrame:
     def __init__(self, canvas, root, num, posx=0, posy=0, bgColor='grey', padx=4, pady=4, width=100, height=100):
         global DICT_MODELS
         
-        self.canvas     = canvas
-        self.root       = root
-        self.bgColor    = bgColor
+        self.canvas         = canvas
+        self.root           = root
+        self.bgColor        = bgColor
         
-        self.width      = width-posx
-        self.height     = height
+        self.width          = width-posx
+        self.height         = height
         
-        self.posx       = [posx, self.width]
-        self.posy       = [posy, posy+self.height]
+        self.posx           = [posx, self.width]
+        self.posy           = [posy, posy+self.height]
         
-        self.padx       = padx
-        self.pady       = pady
+        self.padx           = padx
+        self.pady           = pady
         
         # Container objects
-        self.frame, self.modelLabel = container(), container()
+        self.frame, self.modelLabel, self.modelList = container(), container(), container()
         
         
         self.frame.id       = self.canvas.create_rectangle(self.posx[0], self.posy[0], self.posx[1], self.posy[1], dash=10, tag='modelFrame%d' %num)
@@ -413,12 +413,17 @@ class modelFrame:
         self.modelLabel.id  = self.canvas.create_window(self.padx+self.posx[0], self.pady+self.posy[0], window=self.modelLabel.obj, anchor='nw')
         
         
-        #self.model      = tk.StringVar(value='Exponential disk')
-        #self.modelList  = ttk.Combobox(self.frame, textvariable=self.model, values=list(DICT_MODELS.values()), state='readonly')
-        #self.cmap.list.bind("<<ComboboxSelected>>", self.changeModel)
+        # Making a combobox to select the model
+        self.modelName         = tk.StringVar(value='Exponential disk')
         
-        #self.modelList.grid( row=row, column=1,  sticky=tk.W)
-        #self.frame.grid(     row=row, column=0,  sticky=tk.N+tk.E+tk.W, padx=self.padx)
+        self.modelList.obj     = ttk.Combobox(self.canvas, textvariable=self.modelName, values=list(DICT_MODELS.values()), state='readonly')
+        self.modelList.id      = self.canvas.create_window(self.padx+self.canvas.bbox(self.modelLabel.id)[2], self.pady+self.posy[0], window=self.modelList.obj, anchor='nw')
+        self.modelList.bbox    = list(self.canvas.bbox(self.modelList.id))
+        self.modelList.bbox[2] = self.posx[1]-self.padx
+        self.modelList.width   = 1 + ((self.modelList.bbox[2])-91)//7 # Why this equation ? no one knows... but it works
+        
+        self.modelList.obj.configure(width=self.modelList.width)
+        #self.cmap.list.bind("<<ComboboxSelected>>", self.changeModel)
         
         self.canvas.update_idletasks()
         
@@ -427,13 +432,24 @@ class modelFrame:
         '''Update the dimensions of the rectangle around'''
         
         # Update width, height and pos x and y of main rectangle
-        self.width   = newWidth
-        self.height  = newHeight
-        self.posx[1] = self.posx[0] + self.width
-        self.posy[1] = self.posy[0] + self.height
+        self.width             = newWidth
+        self.height            = newHeight
+        self.posx[1]           = self.posx[0] + self.width
+        self.posy[1]           = self.posy[0] + self.height
         
         # Update rectangle coordinates
         self.canvas.coords(self.frame.id, (self.posx[0], self.posy[0], self.posx[1], self.posy[1]))
+        
+        # Update combobox width
+        self.modelList.bbox    = self.modelList.bbox[0:2] + [self.posx[1]-self.padx, self.modelList.bbox[3]]
+        self.modelList.width   = 1 + ((self.modelList.bbox[2])-91)//7
+        if self.modelList.width < 0:
+            self.modelList.width = 0
+            self.canvas.itemconfigure(self.modelList.id, state='hidden')
+        else:
+            if self.canvas.itemcget(self.modelList.id, 'state') == 'hidden':
+                self.canvas.itemconfigure(self.modelList.id, state='normal')
+            self.modelList.obj.configure(width=self.modelList.width)
 
                           
         
