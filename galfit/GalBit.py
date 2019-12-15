@@ -20,6 +20,11 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import astropy.io.fits as fits
 import numpy as np
 
+class container:
+    '''Similar to a simple C struct'''
+    
+    def __init__(self):
+        info = 'A simple container'
 
 # Global variables
 DICT_MODELS = {'deVaucouleur' : 'de Vaucouleur', 
@@ -31,14 +36,29 @@ DICT_MODELS = {'deVaucouleur' : 'de Vaucouleur',
                'moffat'       : 'Moffat', 
                'nuker'        : 'Nuker', 
                'psf'          : 'PSF', 
-               'sersic'       : 'Sersic', 
+               'model'       : 'model', 
                'sky'          : 'Sky'}
 
 FONT        = 'Arial'
 
-class container:
-    def __init__(self):
-        info = 'A simple container'
+CIRCLE      = """
+#define circle_width 13
+#define circle_height 13
+static unsigned char circle_bits[] = {
+   0xf0, 0x01, 0x08, 0x02, 0x04, 0x04, 0x02, 0x08, 0x01, 0x10, 0x01, 0x10,
+   0x01, 0x10, 0x01, 0x10, 0x01, 0x10, 0x02, 0x08, 0x04, 0x04, 0x08, 0x02,
+   0xf0, 0x01};"""
+
+CIRCLE_INV  = """
+#define circle_inv_width 13
+#define circle_inv_height 13
+static unsigned char circle_inv_bits[] = {
+   0xf0, 0x01, 0xf8, 0x03, 0xfc, 0x07, 0xfe, 0x0f, 0xff, 0x1f, 0xff, 0x1f,
+   0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xfe, 0x0f, 0xfc, 0x07, 0xf8, 0x03,
+   0xf0, 0x01};"""
+
+
+
 
 
 class singlePlotFrame:
@@ -390,59 +410,88 @@ class modelFrame:
     def __init__(self, canvas, root, num, posx=0, posy=0, bgColor='grey', padx=4, pady=4, width=100, height=100):
         global DICT_MODELS
         
-        self.canvas         = canvas
-        self.root           = root
-        self.bgColor        = bgColor
+        self.canvas              = canvas
+        self.root                = root
+        self.bgColor             = bgColor
         
-        self.width          = width-posx
-        self.height         = height
+        self.width               = width-posx
+        self.height              = height
         
-        self.posx           = [posx, self.width]
-        self.posy           = [posy, posy+self.height]
+        self.posx                = [posx, self.width]
+        self.posy                = [posy, posy+self.height]
         
-        self.padx           = padx
-        self.pady           = pady
+        self.padx                = padx
+        self.pady                = pady
         
         # Container objects
-        self.frame, self.modelLabel, self.modelList = container(), container(), container()
+        self.frame, self.modelLabel, self.modelList     = container(), container(), container()
+        self.topLine, self.leftLine, self.plusMinButton = container(), container(), container()
+        self.circleBitmap                               = container()
+
+        # Draw an extensible line on top of each model sub part
+        self.topLine.pad         = 3*self.padx
+        self.topLine.id          = self.canvas.create_line(self.posx[0]+self.topLine.pad, self.posy[0], self.posx[1]-self.topLine.pad, self.posy[0])
         
-        
-        self.frame.id       = self.canvas.create_rectangle(self.posx[0], self.posy[0], self.posx[1], self.posy[1], dash=10, tag='modelFrame%d' %num)
-        
-        self.modelLabel.obj = tk.Label(self.canvas, text='Model', bg=self.bgColor)
-        self.modelLabel.id  = self.canvas.create_window(self.padx+self.posx[0], self.pady+self.posy[0], window=self.modelLabel.obj, anchor='nw')
-        
+        self.modelLabel.obj      = tk.Label(self.canvas, text='Model:', bg=self.bgColor)
+        self.modelLabel.id       = self.canvas.create_window(self.padx+self.posx[0], self.pady+self.posy[0], window=self.modelLabel.obj, anchor='nw')
         
         # Making a combobox to select the model
-        self.modelName         = tk.StringVar(value='Exponential disk')
+        self.modelName           = tk.StringVar(value='Exponential disk')
         
-        self.modelList.obj     = ttk.Combobox(self.canvas, textvariable=self.modelName, values=list(DICT_MODELS.values()), state='readonly')
-        self.modelList.id      = self.canvas.create_window(self.padx+self.canvas.bbox(self.modelLabel.id)[2], self.pady+self.posy[0], window=self.modelList.obj, anchor='nw')
-        self.modelList.bbox    = list(self.canvas.bbox(self.modelList.id))
-        self.modelList.bbox[2] = self.posx[1]-self.padx
-        self.modelList.width   = 1 + ((self.modelList.bbox[2])-91)//7 # Why this equation ? no one knows... but it works
+        self.modelList.obj       = ttk.Combobox(self.canvas, textvariable=self.modelName, values=list(DICT_MODELS.values()), state='readonly')
+        self.modelList.id        = self.canvas.create_window(self.padx+self.canvas.bbox(self.modelLabel.id)[2], self.pady+self.posy[0], window=self.modelList.obj, anchor='nw')
+        self.modelList.bbox      = list(self.canvas.bbox(self.modelList.id))
+        self.modelList.bbox[2]   = self.posx[1]-self.padx
+        self.modelList.width     = 1 + ((self.modelList.bbox[2])-91)//7 # Why this equation ? no one knows... but it works        
+        self.modelList.obj.configure(width=self.modelList.width)        
         
-        self.modelList.obj.configure(width=self.modelList.width)
-        #self.cmap.list.bind("<<ComboboxSelected>>", self.changeModel)
+        # Make widgets relative to Sersic model
+        self.SersicWidgets(self.posx[0]+self.padx, self.modelList.bbox[3]+self.pady)
+        
+        # Update maximum y pos in bbox
+        self.computeMaxY()
+        
+        # Draw a line on the left side of each model sub part
+        self.leftLine.pad        = 2*self.pady-10
+        self.leftLine.id         = self.canvas.create_line(self.posx[0], self.posy[0]+self.leftLine.pad, self.posx[0], self.posy[1], dash=3)
+        
+        # Add a button on top of the left line with a bitmap
+        self.circleBitmap.normal = tk.BitmapImage(data=CIRCLE)
+        self.circleBitmap.inv    = tk.BitmapImage(data=CIRCLE_INV)
+        
+        self.plusMinButton.obj   = tk.Button(self.canvas, image=self.circleBitmap.normal, text='-', compound='center', bd=0, highlightthickness=0, width=1, 
+                                             bg=self.bgColor, activebackground=self.bgColor, activeforeground='white')
+        self.plusMinButton.id    = self.canvas.create_window(self.posx[0]-12, self.posy[0]-10, window=self.plusMinButton.obj, anchor='nw')
+        
+        #Binding events to this object
+        self.plusMinButton.obj.bind('<Enter>',    self.invertCircleBitmap)
+        self.plusMinButton.obj.bind('<Leave>',    self.invertCircleBitmap)
+        self.plusMinButton.obj.bind('<Button-1>', self.hideWidgets)
         
         self.canvas.update_idletasks()
+       
+    
+    def computeMaxY(self):
+        for widget in self.model.widgetList:
+            if self.posy[1] != self.canvas.bbox(widget.id)[3]:
+                self.posy[1] = self.canvas.bbox(widget.id)[1] + widget.obj['height']
         
         
     def updateDimension(self, newWidth, newHeight):
         '''Update the dimensions of the rectangle around'''
         
         # Update width, height and pos x and y of main rectangle
-        self.width             = newWidth
-        self.height            = newHeight
-        self.posx[1]           = self.posx[0] + self.width
-        self.posy[1]           = self.posy[0] + self.height
+        self.width               = newWidth
+        self.height              = newHeight
+        self.posx[1]             = self.posx[0] + self.width
+        self.posy[1]             = self.posy[0] + self.height
         
         # Update rectangle coordinates
-        self.canvas.coords(self.frame.id, (self.posx[0], self.posy[0], self.posx[1], self.posy[1]))
+        self.canvas.coords(self.topLine.id, (self.posx[0]+self.topLine.pad, self.posy[0], self.posx[1]-self.topLine.pad, self.posy[0]))
         
         # Update combobox width
-        self.modelList.bbox    = self.modelList.bbox[0:2] + [self.posx[1]-self.padx, self.modelList.bbox[3]]
-        self.modelList.width   = 1 + ((self.modelList.bbox[2])-91)//7
+        self.modelList.bbox      = self.modelList.bbox[0:2] + [self.posx[1]-self.padx, self.modelList.bbox[3]]
+        self.modelList.width     = 1 + ((self.modelList.bbox[2])-91)//7
         if self.modelList.width < 0:
             self.modelList.width = 0
             self.canvas.itemconfigure(self.modelList.id, state='hidden')
@@ -450,7 +499,86 @@ class modelFrame:
             if self.canvas.itemcget(self.modelList.id, 'state') == 'hidden':
                 self.canvas.itemconfigure(self.modelList.id, state='normal')
             self.modelList.obj.configure(width=self.modelList.width)
+            
+        # Update frame width as well
+        '''
+        self.frame.bbox          = self.frame.bbox[0:2] + [self.posx[1], self.posy[1]]
+        self.frame.width         = self.frame.bbox[2] - self.frame.bbox[0]
+        if self.frame.width < 0:
+            self.frame.width     = 0
+            self.canvas.itemconfigure(self.frame.id, state='hidden')
+        else:
+            if self.canvas.itemcget(self.modelList.id, 'state') == 'hidden':
+                self.canvas.itemconfigure(self.frame.id, state='normal')
+            self.frame.obj.configure(width=self.frame.width)
+        '''
+            
+            
+    def invertCircleBitmap(self, event):
+        '''Invert the plus-minus colors when getting/losing mouse focus'''
+        
+        if event.type == tk.EventType.Enter:
+            self.plusMinButton.obj['image'] = self.circleBitmap.inv
+        elif event.type == tk.EventType.Leave:
+            self.plusMinButton.obj['image'] = self.circleBitmap.normal
+            
+    
+    def hideWidgets(self, event):
+        '''Hide the frame containing the model dependent widgets'''
 
+        if self.plusMinButton.obj['text'] == '-':
+            for widget in self.model.widgetList:
+                self.canvas.itemconfigure(widget.id, state='hidden')
+            self.plusMinButton.obj['text'] = '+'
+            self.posy[1] = self.modelList.bbox[3]
+            self.canvas.coords(self.leftLine.id, list(self.canvas.coords(self.leftLine.id)[0:3]) + [self.posy[1]])
+            
+        elif self.plusMinButton.obj['text'] == '+':
+            for widget in self.model.widgetList:
+                self.canvas.itemconfigure(widget.id, state='normal')
+            self.plusMinButton.obj['text'] = '-'
+            self.posy[1] = self.model.lframe.obj['height'] + self.canvas.bbox(self.model.lframe.id)[1]
+            self.canvas.coords(self.leftLine.id, list(self.canvas.coords(self.leftLine.id)[0:3]) + [self.posy[1]])
+            
+            
+    def SersicWidgets(self, xpos, ypos, pady=5, padx=5):
+        '''Draw widgets when selecting a model profile'''
+        
+        self.model, self.model.lframe = container(), container()
+        self.model.x, self.model.y    = container(), container()
+        
+        # Label frame around center widgets
+        self.model.lframe.obj = tk.LabelFrame(self.canvas, text='Center position', bg=self.bgColor, padx=padx, pady=pady, bd=1, relief=tk.RIDGE)
+        self.model.lframe.id  = self.canvas.create_window(xpos, ypos, window=self.model.lframe.obj, anchor='nw')
+        
+        # x pos widgets
+        self.model.x.var      = tk.DoubleVar()
+        self.model.x.var.set(70)
+        self.model.x.label    = tk.Label(self.model.lframe.obj, text='x:', bg=self.bgColor)
+        self.model.x.entry    = tk.Entry(self.model.lframe.obj, textvariable=self.model.x.var)
+        self.model.x.padx     = padx
+        
+        # y pos widgets
+        self.model.y.var      = tk.DoubleVar()
+        self.model.y.var.set(70)
+        self.model.y.label    = tk.Label(self.model.lframe.obj, text='y:', bg=self.bgColor)
+        self.model.y.entry    = tk.Entry(self.model.lframe.obj, textvariable=self.model.y.var)
+        self.model.y.padx     = padx
+        
+        self.model.x.label.grid(row=0, column=0, sticky=tk.W+tk.N)
+        self.model.x.entry.grid(row=0, column=1, sticky=tk.W+tk.N, padx=self.model.x.padx)
+        self.model.y.label.grid(row=1, column=0, sticky=tk.W+tk.N)
+        self.model.y.entry.grid(row=1, column=1, sticky=tk.W+tk.N, padx=self.model.y.padx)
+        
+        #list of model widgets
+        self.model.widgetList = [self.model.lframe]
+        
+        #Update label frame width and height
+        self.model.lframe.obj['width']  = 2*padx + self.model.x.padx + self.model.x.label['width'] + self.model.x.entry['width']
+        self.model.lframe.obj['height'] = 2*pady + 2*20 + pady #Temporary solution till I find a way to get the label frame true size on cavas
+        
+        
+        
                           
         
 class rightFrame:
@@ -465,8 +593,6 @@ class rightFrame:
             root : tk.Tk instance
                 main application object
         '''
-        
-        global FONT
         
         self.parent       = parent
         self.root         = root
