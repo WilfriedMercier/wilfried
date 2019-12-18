@@ -19,6 +19,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import astropy.io.fits as fits
 import numpy as np
+import copy
+
 
 class container:
     '''Similar to a simple C struct'''
@@ -407,12 +409,15 @@ class topFrame:
 class modelFrame:
     '''Frame-like object drawn in canvas which holds widgets relative to configuring models'''
     
-    def __init__(self, canvas, root, num, posx=0, posy=0, bgColor='grey', padx=4, pady=4, width=100, height=100):
+    def __init__(self, parent, canvas, root, num, posx=0, posy=0, bgColor='grey', padx=4, pady=4, width=100, height=100):
         global DICT_MODELS
         
+        self.parent              = parent
         self.canvas              = canvas
         self.root                = root
         self.bgColor             = bgColor
+        
+        self.num                 = num
         
         self.width               = width-posx
         self.height              = height
@@ -442,11 +447,12 @@ class modelFrame:
         self.modelList.id        = self.canvas.create_window(self.padx+self.canvas.bbox(self.modelLabel.id)[2], self.pady+self.posy[0], window=self.modelList.obj, anchor='nw')
         self.modelList.bbox      = list(self.canvas.bbox(self.modelList.id))
         self.modelList.bbox[2]   = self.posx[1]-self.padx
-        self.modelList.width     = 1 + ((self.modelList.bbox[2])-91)//7 # Why this equation ? no one knows... but it works        
+        self.modelList.width     = 1 + ((self.modelList.bbox[2])-91)//7 # Why this equation ? no one knows... but it works    
+        print(self.modelList.bbox, self.posx, width)
         self.modelList.obj.configure(width=self.modelList.width)        
         
         # Make widgets relative to Sersic model
-        self.SersicWidgets(self.posx[0]+self.padx, self.modelList.bbox[3]+self.pady)
+        self.CanvasWidgets       = self.SersicWidgets(self.posx[0]+self.padx, self.modelList.bbox[3]+self.pady)
         
         # Update maximum y pos in bbox
         self.computeMaxY()
@@ -468,25 +474,33 @@ class modelFrame:
         self.plusMinButton.obj.bind('<Leave>',    self.invertCircleBitmap)
         self.plusMinButton.obj.bind('<Button-1>', self.hideWidgets)
         
+        # Complete the list of widgets handled by the canvas
+        self.CanvasWidgets += [self.topLine, self.modelLabel, self.modelList, self.leftLine, self.plusMinButton]
+        
         self.canvas.update_idletasks()
        
     
     def computeMaxY(self):
+        '''Update the pos y value according to widgets' pos '''
+        
         for widget in self.model.widgetList:
             if self.posy[1] != self.canvas.bbox(widget.id)[3]:
                 self.posy[1] = self.canvas.bbox(widget.id)[1] + widget.obj['height']
         
         
-    def updateDimension(self, newWidth, newHeight):
+    def updateDimension(self, newWidth=None, newHeight=None):
         '''Update the dimensions of the rectangle around'''
         
         # Update width, height and pos x and y of main rectangle
-        self.width               = newWidth
-        self.height              = newHeight
-        self.posx[1]             = self.posx[0] + self.width
-        self.posy[1]             = self.posy[0] + self.height
+        if newWidth is not None:
+            self.width               = newWidth
+            self.posx[1]             = self.posx[0] + self.width
         
-        # Update rectangle coordinates
+        if newHeight is not None:
+            self.height              = newHeight           
+            self.posy[1]             = self.posy[0] + self.height
+            
+        # Update top line coordinates
         self.canvas.coords(self.topLine.id, (self.posx[0]+self.topLine.pad, self.posy[0], self.posx[1]-self.topLine.pad, self.posy[0]))
         
         # Update combobox width
@@ -499,19 +513,6 @@ class modelFrame:
             if self.canvas.itemcget(self.modelList.id, 'state') == 'hidden':
                 self.canvas.itemconfigure(self.modelList.id, state='normal')
             self.modelList.obj.configure(width=self.modelList.width)
-            
-        # Update frame width as well
-        '''
-        self.frame.bbox          = self.frame.bbox[0:2] + [self.posx[1], self.posy[1]]
-        self.frame.width         = self.frame.bbox[2] - self.frame.bbox[0]
-        if self.frame.width < 0:
-            self.frame.width     = 0
-            self.canvas.itemconfigure(self.frame.id, state='hidden')
-        else:
-            if self.canvas.itemcget(self.modelList.id, 'state') == 'hidden':
-                self.canvas.itemconfigure(self.frame.id, state='normal')
-            self.frame.obj.configure(width=self.frame.width)
-        '''
             
             
     def invertCircleBitmap(self, event):
@@ -530,15 +531,28 @@ class modelFrame:
             for widget in self.model.widgetList:
                 self.canvas.itemconfigure(widget.id, state='hidden')
             self.plusMinButton.obj['text'] = '+'
+            
+            offset       = self.modelList.bbox[3]-self.posy[1]
+            
             self.posy[1] = self.modelList.bbox[3]
             self.canvas.coords(self.leftLine.id, list(self.canvas.coords(self.leftLine.id)[0:3]) + [self.posy[1]])
+            
+            # Update position of all widgets below
+            self.parent.verticalOffset(nb=self.num, where='below', offset=offset)
+            
             
         elif self.plusMinButton.obj['text'] == '+':
             for widget in self.model.widgetList:
                 self.canvas.itemconfigure(widget.id, state='normal')
             self.plusMinButton.obj['text'] = '-'
+            
+            offset       = self.model.lframe.obj['height'] + self.canvas.bbox(self.model.lframe.id)[1] - self.posy[1]
+            
             self.posy[1] = self.model.lframe.obj['height'] + self.canvas.bbox(self.model.lframe.id)[1]
             self.canvas.coords(self.leftLine.id, list(self.canvas.coords(self.leftLine.id)[0:3]) + [self.posy[1]])
+            
+            # Update position of all widgets below
+            self.parent.verticalOffset(nb=self.num, where='below', offset=offset)
             
             
     def SersicWidgets(self, xpos, ypos, pady=5, padx=5):
@@ -577,7 +591,35 @@ class modelFrame:
         self.model.lframe.obj['width']  = 2*padx + self.model.x.padx + self.model.x.label['width'] + self.model.x.entry['width']
         self.model.lframe.obj['height'] = 2*pady + 2*20 + pady #Temporary solution till I find a way to get the label frame true size on cavas
         
+        return copy.copy((self.model.widgetList))
+    
+    
+    def moveWidgetsVert(self, offset, direction='vertical'):
+        '''Move all the widget either up/down or left/right by some offset value'''
         
+        # Update vertical coordinates
+        if direction == 'vertical':
+            self.posy               = [i+offset for i in self.posy]
+            self.modelList.bbox[1] += offset
+            self.modelList.bbox[3] += offset
+        elif direction == 'horizontal':
+            self.posx = [i+offset for i in self.posx]
+            self.modelList.bbox[0] += offset
+            self.modelList.bbox[2] += offset
+            
+        for widget in self.CanvasWidgets:
+            coords = list(self.canvas.coords(widget.id))
+            if direction == 'vertical':
+                coords[1]     += offset
+                if len(coords) == 4:
+                    coords[3] += offset
+                self.canvas.coords(widget.id, coords)
+                
+            elif direction == 'horizontal':
+                coords[0]     += offset
+                if len(coords) == 4:
+                    coords[2] += offset
+                self.canvas.coords(widget.id, coords)
         
                           
         
@@ -642,31 +684,50 @@ class rightFrame:
        
         
     def updateFrameSize(self, event):
+        '''Update the frame size of every model frame'''
         
         # Update main window frame element first
         self.canvas.itemconfig(self.frame.id, width = event.width) 
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
         
+        self.width = event.width
+        
         # Update each model frame
         for mframe in self.modelsFrames:
-            mframe.updateDimension(event.width-2*mframe.posx[0], mframe.height)
+            mframe.updateDimension(newWidth=event.width-2*mframe.posx[0])
+            
+        
         
         self.canvas.update_idletasks()
         
     
     def addNewModel(self):
+        '''Add a new model frame'''
         
         #Set initial y position and then place model frame objects below the latter one
         posy = self.padyModels + self.canvas.bbox('all')[3]
         
+        if self.nbModels == 0:
+            self.width = self.canvas.bbox('all')[2] - self.canvas.bbox('all')[0]
+        
         self.nbModels += 1
-        self.modelsFrames.append(modelFrame(self.canvas, self.root, num=self.nbModels, posx=10, posy=posy, width=self.canvas.bbox('all')[2], height=100,
+        self.modelsFrames.append(modelFrame(self, self.canvas, self.root, num=self.nbModels, posx=10, posy=posy, width=self.width, height=100,
                                             pady=self.padyModels, padx=10, bgColor=self.bgColor))   
         
         # Always update canvas scrollregions otherwise it does weird stuff
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
         
         
+    def verticalOffset(self, nb=1, where='below', offset=0):
+        '''Apply a vertical offset to all the widgets in model frame either above or below some widget'''
+        
+        if   where == 'below':
+            mframes = self.modelsFrames[nb:]
+        elif where == 'above':
+            mframes = self.modelsFrames[0:nb]
+            
+        for mframe in mframes:
+            mframe.moveWidgetsVert(offset)
         
 class topMenu:
     '''Application top menu'''
