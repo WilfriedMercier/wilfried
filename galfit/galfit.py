@@ -89,10 +89,13 @@ modelFunctions = {  'deVaucouleur': gendeVaucouleur,
 # Additional tag functions
 tags = ['fourier', 'bending', 'boxyness']
 
+# Default pdf viewer
+myPDFViewer = 'okular'
+
 
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
                pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/",
-               constraints=None, forceConfig=False, noGalfit=False, showRecapFiles=True, showLog=False):
+               constraints=None, forceConfig=False, noGalfit=False, noPDF=False, showRecapFiles=True, showLog=False):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
     If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
@@ -111,7 +114,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     Optional inputs
     ---------------
         constraints : dict
-            list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
+            list of dictionaries used to generate the constraints. See below for an explanation on how to use it. Default is None (no constraint file shall be made).
         
             Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
                 
@@ -142,7 +145,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                     name of the parameter to contrain
         
         forceConfig : bool
-            whether to make all the configuration files no matter if they exist or not
+            whether to make all the configuration files no matter if they exist or not. Default is False (configuration files shall not be modified).
         header : dict
             dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file.
             You do not need to provide an input and an output image file name as this is given with the inputNames keyword.
@@ -162,7 +165,9 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
                     
         noGalfit : bool
-            whether to not run galfit or not
+            whether to not run galfit or not. Default is False (galfit shall be run).
+        noPDF : bool
+            whether to make the pdf recap files or not. Default is False (recap file shall be made).
         outputNames: list of str
             list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
         pathFeedme : str
@@ -172,10 +177,14 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         pathOut : str
             location of the output file names relative to the current folder or in absolute
         showLog : bool
-            whether to show log files or not
+            whether to show log files or not. Default is False.
         showRecapFiles : bool
-            whether to show the recap files made at the end or not
+            whether to show the recap files made at the end or not. Default is True.
     """
+    
+    #################################################
+    #                Local functions                #
+    #################################################
     
     def singleGalfit(name, all_procs):
         # Get galfit output into a variable
@@ -197,6 +206,24 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         semaphore.release()
         return 
     
+    def pdf(i, maxImages, splt, ll):
+        print("Making pdf file recap%d.pdf" %i)
+        mini         = (i-1)*maxImages
+        if i == splt or splt == 0:
+            maxi     = ll
+        else:
+            maxi     = i*maxImages
+            
+        genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False, diverging=True)
+        print("Recap file number %d made." %i)
+        semaphore.release()
+        return
+    
+    
+    ##########################################
+    #            Checking section            #
+    ##########################################
+    
     # Check input data type is okay
     if type(feedmeFiles) is not list:
         raise TypeError('Given feedmeFiles variable is not a list. Please provide a list of galfit .feedme file names. Cheers !')
@@ -204,7 +231,11 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     # Find where given .feedme files do not exist
     notExists             = [not isfile(pathFeedme + fname) for fname in feedmeFiles]
             
-    # Make .feedme files if the user wants to
+    
+    ##################################################
+    #          Configuration files creation          #
+    ##################################################
+    
     if forceConfig or any(notExists):
         
         if forceConfig:
@@ -233,8 +264,12 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             except Exception as e:
                 print("An Error occured during galfit configuration file creation.\n")
                 raise e
+                
+                
+    ##########################################################################
+    #                      Run galfit using multi processes                  #
+    ##########################################################################
     
-    # Run galfit using multi processes
     if not noGalfit:
         print("Running galfit using multiprocesses")
         total_feedmes = array(feedmeFiles)[[not i for i in notExists]]
@@ -253,38 +288,34 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         # Move the galfit files to log directory as well
         run(['mv galfit.[0-9]* log'], shell=True)
     
-    # Generate pdf recap files with multi processes
+    #############################################################
+    #                 Generate pdf recap files                  #
+    #############################################################
+    
+    # Matplotlib forces pdf images to have a maximum size. This corresponds to ~100 lines of plots given the plot size taken
     outputFiles      = [pathOut + i for i in outputNames]
     ll               = len(outputFiles)
     maxImages        = 100
     splt             = ll // maxImages
     
-    def pdf(i, maxImages, splt, ll):
-        print("Making pdf file recap%d.pdf" %i)
-        mini         = (i-1)*maxImages
-        if i == splt or splt == 0:
-            maxi     = ll
-        else:
-            maxi     = i*maxImages
+    if not noPDF:
+        semaphore        = multiprocessing.Semaphore(8)
+        all_procs        = []
+        print('Making pdf recap files')
+        for i in range(1, splt+2):                
+            semaphore.acquire()
+            proc         = multiprocessing.Process(name=i, target=pdf, args=(i, maxImages, splt+1, ll))
+            all_procs.append(proc)
+            proc.start()        
             
-        genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False, diverging=True)
-        print("Recap file number %d made." %i)
-        semaphore.release()
-        return
+            for p in all_procs:
+                p.join()    
     
-    semaphore        = multiprocessing.Semaphore(8)
-    all_procs        = []
-    print('Making pdf recap files')
-    for i in range(1, splt+2):                
-        semaphore.acquire()
-        proc         = multiprocessing.Process(name=i, target=pdf, args=(i, maxImages, splt+1, ll))
-        all_procs.append(proc)
-        proc.start()        
-        
-        for p in all_procs:
-            p.join()    
-     
-    # Show log file
+    
+    #############################################
+    #               Show log file               #
+    #############################################
+    
     if showLog:
         print("Showing log files")
         
@@ -294,11 +325,28 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             with open(log, 'r') as f:
                 print(f.read(), '\n')   
         
-    # Open files
+        
+    #######################################################
+    #                   Show recap files                  # 
+    #######################################################
+    
     if showRecapFiles:
+        global myPDFViewer
+        
         for i in range(1, splt+2):
             print('Showing recap file recap%d.pdf' %i)
-            run(['okular', 'recap%d.pdf' %i])
+            try:
+                run([myPDFViewer, 'recap%d.pdf' %i])
+            except FileNotFoundError:
+                print('Cannot find given pdf viewer %s. Please provide a correct software name.' %myPDFViewer)
+                myPDFViewer = input()
+                print('Tips: for next uses, you can change the myPDFViewer global variable in the Global Variable section of galfit.py and set it to your favourite pdf viewer to not have to provide it every time.')
+                try:
+                    run([myPDFViewer, 'recap%d.pdf' %i])
+                except FileNotFoundError:
+                    raise OSError('Given pdf viewer %s could not be found. Please, provide a correct software next time. Cheers !'  %myPDFViewer)
+                    
+                
     
 
 
