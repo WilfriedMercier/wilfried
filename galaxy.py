@@ -473,7 +473,7 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
         Rd : float/list of floats
             half-light radius of the disk components of the galaxies
         stretch : float
-            dilatation factor used to multiply re in order to smooth out the sharp transition around the 0 of the function
+            dilatation factor used to multiply re in order to smooth out the sharp slope around the 0 of the function
         
     Return the value of the left-hand side of the equation. If re is correct, the returned value should be close to 0.
     """
@@ -481,7 +481,7 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
     b1, b4 = check_bns([1, 4], [b1, b4])
     magD, magB, Rd, Rb = fromStructuredArrayOrNot(gal, magD, magB, Rd, Rb, noStructuredArray)
     
-    #convert dilate to float to avoid numpy casting operation errors
+    # Convert strecth factor to float to avoid numpy casting operation errors
     re = re*float(stretch)
     
     try:
@@ -501,7 +501,8 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
     How to use
     ----------
         There are two ways to use this function. Either using numerical integration of the light profiles, or by finding the zero of a specific equation. 
-        In both cases, the parameter gal is mandatory. This corresponds to a numpy structured array with the following fields: 'Mag_d_GF', 'Mag_b_GF', 'R_d_GF' and 'R_b_GF'. HOWEVER, if the flag noStructuredArray is True, this array will not be used (so just cast whatever into this parameter) and instead, the optional parameters magD, magB, Rd and Rb must be given.
+        In both cases, the parameter gal is mandatory. This corresponds to a numpy structured array with the following fields: 'Mag_d_GF', 'Mag_b_GF', 'R_d_GF' and 'R_b_GF'. 
+        HOWEVER, if the flag noStructuredArray is True, this array will not be used (so just cast anything into this parameter, it will not matter) but instead, the optional parameters magD, magB, Rd and Rb must be provided.
         
         The guess can be ignored, though the result may not converge.
         b1 and b4 values do not necessarily need to be provided if you only call this function very few times. If not, they will be computed once at the beginning and propagated in subsequent function calls.
@@ -514,9 +515,9 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
                 The Ie parameter can be given or can be ignored. In the latter case, it will be computed using the magnitudes and magnitude offset, so this last parameter should be provided as well in this case.
             
             b) re equation
-                This still an experimental feature. It basically follows from analytically computing the equation for re using its definition as well as the sum of an exponential disc and a bulge.
+                This is an experimental feature (which seems to work fine though). It follows from analytically computing the equation for re using its definition as well as the sum of an exponential disc and a bulge.
                 
-                In this case, the integration parameter must be False.
+                In this case, the integration parameter must be set False.
                 THE FOLLOWING PARAMETERS ARE NOT REQUIRED FOR THIS METHOD: Ltot, Ie, offset
                 
                 Basically, the simplest way to solve re is to call the function the following way:
@@ -527,7 +528,7 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
                 
     Additional information
     ----------------------
-        For only one galaxy, only a scalar value may be provided for each parameter you would like to pass. However, for more than one galaxy, a list must be given instead. The parameters which require a list when solving for more than one galaxy are represented by type/list of type where type can be int, float, bool, etc. after the parameter name in the list below.
+        For only one galaxy, only a scalar value may be provided for each parameter you would like to pass. However, for more than one galaxy, a list must be given instead. The parameters which require a list when solving for more than one galaxy are represented by 'type/list', where type can be int, float, bool, etc. (given after the parameter name in the list below).
     
     Mandatory inputs
     ----------------
@@ -586,10 +587,20 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
     def integral_to_solve(r, listn, listRe, listbn, listIe, listMag, listOffset, Ltot):
         res, err     = luminositySersics(r, listn, listRe, listbn=listbn, listIe=listIe, listMag=listMag, listOffset=listOffset)
         return res-Ltot/2.0
+     
         
+    # ##########################################################
+    #            Compute bn, mag and radii values              #
+    ############################################################
+    
     b1, b4 = check_bns([1, 4], [b1, b4])
     magD, magB, Rd, Rb = fromStructuredArrayOrNot(gal, magD, magB, Rd, Rb, noStructuredArray)
         
+    
+    #########################################
+    #            Define a guess             #
+    #########################################
+    
     #use the zero order solution as a guess if the flag if trigerred
     if useZeroOrder:
         md10         = 10**(-magD/2.5)
@@ -601,6 +612,11 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
         #if no guess given, set default to 10px
         if guess is None:
             guess    = np.copy(Rd)*0+10
+    
+    
+    #################################################
+    #            Declare output arrays              #
+    #################################################
     
     #set ouput arrays empty
     solution         = np.array([])
@@ -629,7 +645,7 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
                            method=method, options={'xtol':xtol, 'maxfev':200})
             
             # solution tested in the_re_equation is multiplied by the stretch factor, so that the best-solution*stretch gives the_re_equation \approx 0
-            # thus the best-solution needs to be multiplied by the stretch factor at the end to recover the true valueS
+            # thus the best-solution needs to be multiplied by the stretch factor at the end to recover the true values
             solution = np.append(solution, sol['x']*stretch)
             convFlag = np.append(convFlag, sol['status']==1.0)
             debug    = np.append(debug, sol['message'])
@@ -734,7 +750,7 @@ def intensity_at_re(n, mag, re, offset, bn=None):
 
 def checkAndComputeIe(Ie, n, bn, re, mag, offset):
     """
-    Just check if Ie is not given but the magnitude and magnitude offset are, and if so compute it.
+    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
     
     Mandatory inputs
     ---------------- 
