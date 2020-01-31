@@ -759,10 +759,13 @@ def asManyPlots2(numPlot, datax, datay,
                 'fillstyle' : list of str
                     marker fillstyle to use on the plot. Default is 'full' for 'plot' and 'scatter' plots and 'none' for 'mix' plots. Possible values are 'full', 'left', 'right', 'bottom', 'top', 'none'.
                 
-                'marker' : list of str/char/matplotlib markers
+                'marker' : list of str/matplotlib markers
                     list of markers used for the data. Default is 'o'.
                         - if one does not want to have a marker (for instance for line plots), one can provide None for the given plot
                         - by default, markers will not appear on 'mix' plots
+                        
+                'markerEdgeColor' : list of str
+                    color of the marker edges. Default is None for each plot so that marker edges have the same color as the data color. If the marker is unfilled, this value will be overidden and the marker will recover the data color instead.
                     
                 'markerSize' : list of int
                     list of marker sizes for each plot
@@ -771,7 +774,7 @@ def asManyPlots2(numPlot, datax, datay,
                         - for 'mix' plots, a single value can be provided if you want to have markers on your colored line plots
                     
                 'unfillMarker' : list of bool
-                    whether to unfill the markers or not. Default is False for every plot.
+                    whether to unfill the markers or not. This keyword is different from 'fillstyle'. 'unfillMarker' will remove the facecolor from the markers, whereas 'fillstyle' will modify the shape of the markers (by removing the top part for instance). Default is False for every plot.
                     
                 'transparency' : float, list of floats between 0 and 1
                     transparency of the data points (1 is plain, 0 is invisible). Default is 1 for any kind of plot.
@@ -1238,7 +1241,7 @@ def asManyPlots2(numPlot, datax, datay,
         data.zorder, data.color, data.type, data.transparency = setListFromDict(dataProperties, keys=['order', 'color', 'type', 'transparency'], default=[range(data.nplots), None, ['plot']*data.nplots, [1]*data.nplots])
         
         # Set properties of the markers on the plots
-        data.marker.type, data.marker.size, data.marker.fillstyle, data.marker.unfill = setListFromDict(dataProperties, keys=['marker', 'markerSize', 'markerFillstyle', 'unfillMarker'], default=[['o']*data.nplots, None, None, [False]*data.nplots])
+        data.marker.type, data.marker.size, data.marker.fillstyle, data.marker.unfill, data.marker.edgeColor = setListFromDict(dataProperties, keys=['marker', 'markerSize', 'markerFillstyle', 'unfillMarker', 'markerEdgeColor'], default=[['o']*data.nplots, None, None, [False]*data.nplots, [None]*data.nplots])
         
         # Set properties of the lines on the plots
         data.line.width, data.line.style = setListFromDict(dataProperties, keys=['linewdith', 'linestyle'], default=[None, None])
@@ -1308,6 +1311,11 @@ def asManyPlots2(numPlot, datax, datay,
             data.color = ['black']*data.nplots
         else:
             setDefault(data.color, default='black')
+            
+        # Check that marker edge colors are not set if the data points are supposed to be unfilled
+        for pos, nfllMrkr in enumerate(data.marker.unfill):
+            if nfllMrkr:
+                data.marker.edgeColor[pos] = 'face'
 
 
     ########################################
@@ -1511,10 +1519,7 @@ def asManyPlots2(numPlot, datax, datay,
     # List of handles for the legend
     handles = []
     
-    for dtx, dty, typ, clr, zrdr, mrkr, mrkrSz, fllstl, trnsprnc, nfll, lnstl, lnwdth, lbl in zip(data.x.data, data.y.data, data.type, data.color, data.zorder, data.marker.type, data.marker.size, data.marker.fillstyle, data.transparency, data.marker.unfill, data.line.style, data.line.width, legend.labels.text):
-        
-        # Set marker edgecolor in plot as the given color
-        edgecolor     = clr
+    for dtx, dty, typ, clr, zrdr, mrkr, mrkrSz, mrkrDgClr, fllstl, trnsprnc, nfll, lnstl, lnwdth, lbl in zip(data.x.data, data.y.data, data.type, data.color, data.zorder, data.marker.type, data.marker.size, data.marker.edgeColor, data.marker.fillstyle, data.transparency, data.marker.unfill, data.line.style, data.line.width, legend.labels.text):
         
         # Set marker facecelor to "none" if marker must be unfilled
         if nfll:
@@ -1529,7 +1534,7 @@ def asManyPlots2(numPlot, datax, datay,
         if typ == 'plot':
             print('coucou', clr,mrkrSz, lnwdth)
             listPlots.append( plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=trnsprnc,
-                                       linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=edgecolor,
+                                       linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=mrkrDgClr,
                                        markersize=mrkrSz, linewidth=lnwdth)
                             )
             handles.append(copy(listPlots[-1][0]))
@@ -1546,7 +1551,7 @@ def asManyPlots2(numPlot, datax, datay,
             
             sct          = plt.scatter(dtx, dty, label=lbl, marker=markerObject, zorder=zrdr, 
                                        cmap=colorbar.cmap.name, norm=colorbar.norm, vmin=colorbar.cmap.min, 
-                                       vmax=colorbar.cmap.max, alpha=trnsprnc, c=clr, s=mrkrSz)
+                                       vmax=colorbar.cmap.max, alpha=trnsprnc, c=clr, s=mrkrSz, edgecolors=mrkrDgClr)
             
             if nfll:
                 sct.set_facecolor('none')
@@ -1628,12 +1633,12 @@ def asManyPlots2(numPlot, datax, datay,
         if not output.overwrite and isfile(output.name):
             print("File %s already exists but overwritting was disabled, thus writing was stopped. Please either provide a new file name, or set 'overwriting' key in outputProperties dictionary as True to overwrite the already existing file. Cheers !" %output.name)
         else:
-            if tightLayout:
+            if output.tight:
                 bbox_inches = 'tight'
             else:
                 bbox_inches = None
             
-            plt.savefig(outputName, bbox_inches=bbox_inches)
+            plt.savefig(output.name, bbox_inches=bbox_inches)
     
     #plt.show()
     return ax1, listPlots
