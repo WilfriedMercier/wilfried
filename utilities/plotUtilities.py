@@ -706,7 +706,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
 def asManyPlots2(numPlot, datax, datay, 
                  dataProperties={}, generalProperties={}, axesProperties={}, titleProperties={}, 
                  colorbarProperties={}, legendProperties={}, outputProperties={},
-                outputName=None, overwrite=False, tightLayout=True):
+                 outputName=None, overwrite=False, tightLayout=True):
     
     """
     Function which plots on a highly configurable subplot grid either with pyplot.plot or pyplot.scatter. A list of X and Y arrays can be given to have multiple plots on the same subplot.
@@ -753,7 +753,7 @@ def asManyPlots2(numPlot, datax, datay,
             ----------------------
                 'color' : list of str and/or arrays
                     list of colors for each plot. Each given color is mapped to the corresponding plot assuming 'color' and datax and datay are sorted in the same order. Default is 'black' for any kind of plot.
-                        - for simple aand 'mix' plots, color names must be provided
+                        - for simple and 'mix' plots, color names must be provided
                         - for scatter plots, a list/array of values must be provided. This is because scatter plots actually map values to a color range and will apply a color to each point separately using this range. 
                 
                 'fillstyle' : list of str
@@ -1371,9 +1371,9 @@ def asManyPlots2(numPlot, datax, datay,
                     tmp.append(col)
             if len(tmp) > 0:
                 if colorbar.cmap.min is None:
-                    colorbar.cmap.min = np.min(tmp)
+                    colorbar.cmap.min = np.min([np.min(i) for i in tmp])
                 if colorbar.cmap.max is None:
-                    colorbar.cmap.max = np.max(tmp)
+                    colorbar.cmap.max = np.max([np.max(i) for i in tmp])
         else:
             if colorbar.cmap.min > colorbar.cmap.max:
                 raise ValueError("Given minimum cmap value with key 'min' in colorbarProperties dict is larger than given maximum cmap value with key 'max'. Please provide value such that min <= max. Cheers !")
@@ -1613,5 +1613,5 @@ def asManyPlots2(numPlot, datax, datay,
             
             plt.savefig(outputName, bbox_inches=bbox_inches)
     
-    plt.show()
+    #plt.show()
     return ax1, listPlots
