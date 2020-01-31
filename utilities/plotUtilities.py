@@ -1013,6 +1013,20 @@ def asManyPlots2(numPlot, datax, datay,
                     list of marker face colors (main area) shown in the legend. Default is None so that the line color in the plot is used for plots markers and black is used for scatter plots markers.
                     If provided, this list must contain as many colors as there are data plotted. For instance, if one plots a plot and a scatter plot, one may write legendProperties={'markerFaceColor':['red', 'blue']} to draw the plot marker face color in red and the scatter plot marker face color in blue within the legend.
     
+                'markerPosition' : 'left' or 'right'
+                    whether to place the marker in the legend before the text ('left') or after it ('right'). Default is 'left'.
+                    
+                'markerScale' : int/float
+                    scale factor to apply to the markers in the legend to increase or decrease their size relative to the plot (size_in_legend = markerScale*size_in_plot). Default is 1.0 so that they have the same size as in the plot.
+    
+            Style related keys
+            ------------------
+                'background' : str
+                    color of the legend background. Default is None so that the default value in your rcParams file will be used (usually white).
+                'fancy' : bool
+                    whether to have a fancy legend box (round edges) or not. Default is True.
+                'shadow' : bool
+                    whether to draw a shadow around the legend or not. Default is True.
     
         outputProperties : dict
             dictionary gathering all tunable ouput properties. See the list below for the comple list of dictionary keys.
@@ -1198,7 +1212,7 @@ def asManyPlots2(numPlot, datax, datay,
     shpX = np.shape(datax)
     shpY = np.shape(datay)
     if shpX != shpY:
-        raise ValueError("Shape inconsistency: datax has shape %s but datay has shape %s. Both datax and datay should be lists with the same shape. Please provide data with similar shape. Cheers !" %(str(shpX), str(shpY)))
+        raise ValueError("Shape inconsistency: datax has shape %s but datay has shape %s. Please provide data with similar shape. Cheers !" %(str(shpX), str(shpY)))
     
     
     ################################################################################################
@@ -1401,7 +1415,7 @@ def asManyPlots2(numPlot, datax, datay,
     #            Legend properties            #
     ###########################################
     
-    legend, legend.marker, legend.line, legend.labels = gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
+    legend, legend.marker, legend.line, legend.labels, legend.style = gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(legendProperties, dict, 'legendProperties'):
         
         # Hide legend if no key is provided
@@ -1409,9 +1423,11 @@ def asManyPlots2(numPlot, datax, datay,
             legend.hide = True
         else:
             legend.hide = False
-            
-        legend.loc, legend.ncols, legend.labels.size, legend.labels.text, legend.line.color, legend.marker.edgecolor, legend.marker.facecolor = setListFromDict(legendProperties, keys=['loc', 'ncols', 'labelSize', 'labels', 'lineColor', 'markerEdgeColor', 'markerFaceColor'], default=['best', 1, layout.textsize, ['']*data.nplots, None, None, None]) 
-    
+     
+        legend.style.shadow, legend.style.fancy, legend.style.bg = setListFromDict(legendProperties, keys=['shadow', 'fancy', 'background'], default=[True, True, None])
+        legend.loc, legend.ncols, legend.labels.size, legend.labels.text = setListFromDict(legendProperties, keys=['loc', 'ncols', 'labelSize', 'labels'], default=['best', 1, layout.textsize, ['']*data.nplots]) 
+        legend.line.color, legend.marker.edgecolor, legend.marker.facecolor, legend.marker.position , legend.marker.scale = setListFromDict(legendProperties, keys=['lineColor', 'markerEdgeColor', 'markerFaceColor', 'markerPosition', 'markerScale'], default=[None, None, None, 'left', 1.0])
+     
         # Checking that given parameters have the correct type
         legend.labels.text               = checkTypeAndChangeValueToList(legend.labels.text, list, data.nplots)
         legend.line.color                = checkTypeAndChangeValueToList(legend.line.color, list, data.nplots)
@@ -1571,8 +1587,14 @@ def asManyPlots2(numPlot, datax, datay,
     
     if not legend.hide:
         
+        # Define a markerfirst argument to position the markers in the legend accordingly
+        if legend.marker.position == 'right':
+            markerfirst = False
+        else:
+            markerfirst = True
+        
         # Plot legend before making changes and get legend handles
-        leg = plt.legend(loc=legend.loc, prop={'size': legend.labels.size}, shadow=True, fancybox=True, ncol=legend.ncols)
+        leg = plt.legend(loc=legend.loc, prop={'size': legend.labels.size}, shadow=True, fancybox=True, ncol=legend.ncols, markerfirst=markerfirst, markerscale=legend.marker.scale)
         
         for h, mkfclr, mkeclr, lc, typ in zip(leg.legendHandles, legend.marker.facecolor, legend.marker.edgecolor, legend.line.color, data.type):
             if typ in ['plot', 'mix']:
