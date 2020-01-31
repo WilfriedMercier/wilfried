@@ -57,9 +57,9 @@ def extract_stamps_udf(image_file, gal_list, size=2., factor=1., pathout='./', g
     
     Parameters
     ----------
-        image_file: string
+        image_file: str
             name of the input image (fits format)
-        gal_list: string
+        gal_list: str or numpy structured array
             name of the galaxy list (columns: ID, z, Flag, RA, DEC, I_AB)
         groupNumber : int
             group number of the galaxies
