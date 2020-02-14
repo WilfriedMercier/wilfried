@@ -8,7 +8,8 @@ Created on Thu Oct 24 10:26:30 2019
 Functions acting on dictionnaries.
 """
 
-import numpy as np
+import numpy         as     np
+from   astropy.table import Table, vstack
 
 def checkDictKeys(dictionnary, keys=[], dictName='NOT PROVIDED'):
     """
@@ -61,44 +62,65 @@ def checkInDict(dictionnary, keys=[], dictName='NOT PROVIDED'):
     return None
 
 
-def concatenateDictValues(myDicts):
+def concatenateDictValues(myDicts, astropyTable=True):
     '''
-    Take a dictionnary containing lists/numpy array as values and concatenate them.
+    IMPORTANT : NOT WORKING PROPERLY !
     
-    Inputs
+    Take a dictionnary containing either numpy arrays or numpy structured arrays as values and concatenate them.
+    
+    Notes:
     ------
+        - If working with structured arrays/astropy tables, be careful to have the same column names/fields, otherwise the concatenation shall still produce a result which may be different from what would be expected.
+        - When combining a standard array with a masked one, a new mask (with False values everywhere) will be concatenated to the previous one so that the masks will be preserved.
+    
+    Mandatory inputs
+    ----------------
         myDicts : dict or list of dicts
-            either a single input dictionnary containing lists or numpy arrays or a list of dictionnaries (with lists/numpy arrays as values as well)
+            either a single input dictionnary containing numpy arrays or a list of dictionnaries (numpy arrays as values as well)
             
-    Return either a single numpy array where each list/numpy array in the dictionnary has been concatenated to the others, or a list of numpy arrays where each element contains the concatenation of the lists/numpy arrays in the corresponding dictionnary.
+    Optional inputs
+    ---------------
+        astropyTable : bool
+            whether to return an astropy table or not. If False, it will return a numpy masked array.
+            
+    Return either a single (masked) numpy array/astropy Table where each numpy array in the dictionnary has been concatenated to the others, or a list of (masked) numpy arrays/astropy tables.
     '''
     
     def doItForOneDict(myDict):
         '''Just do the concatenation for a single dictionnary.'''
         
-        for pos, key in enumerate(myDict.keys()):
-            if len(myDict) == 1:
-                myArray     = myDict[key]
+        for pos, value in enumerate(myDict.values()):
+            # If we have an array of int/floats instead of an array of tuples (as for structured arrays), astropy will not be able to correctly transform it into an astropy table.
+            # Thus we must embed it into a list
+            try:
+                iter(value[0])
+            except TypeError:
+                print('coucou')
+                value = [value]
+                
+            if pos == 0:
+                myArray = Table(value)
             else:
-                if pos == 0:
-                    myArray = np.array(myDict[key])
-                else:
-                    myArray = np.concatenate([myArray, np.array(myDict[key])])
+                myArray = vstack([myArray, Table(value)])
+                    
+        if not astropyTable:
+            myArray         = myArray.as_array()
+            
         return myArray
         
-    def checkaList(element, pos):
-        ''''Check whether the given element is a list or a numpy array'''
+    def checkanArray(element, pos):
+        ''''Check whether the given element is a a numpy array'''
         
-        if not isinstance(element, list) and not isinstance(element, np.ndarray):
+        if not isinstance(element, np.ndarray):
             if str(pos+1)[-1] == '1':
                 text = 'st'
             elif str(pos+1)[-1] == '2':
                 text = 'nd'
             else:
                 text = 'th'
-            raise TypeError('One of the elements of the %d%s dictionnary is neither a list nor a numpy array. Please only provide lists or numpy arrays within the given dictionnaries. Cheers !' %(pos+1, text))
-
+            raise TypeError('One of the elements of the %d%s dictionnary is not a numpy array (or a derived class). Please only provide numpy arrays/astropy tables within the given dictionnaries. Cheers !' %(pos+1, text))
         return
+    
 
     if isinstance(myDicts, list):
         
@@ -114,14 +136,14 @@ def concatenateDictValues(myDicts):
         # If we deal with dictionnaries, check that each element value is either a list or a numpy array
         for aDict in myDicts:
             for pos, element in enumerate(aDict.values()):
-                checkaList(element, pos)
+                checkanArray(element, pos)
                 
         # If it went fine, concatenate for every dictionnary
         return [doItForOneDict(i) for i in myDicts]
     
     elif isinstance(myDicts, dict):
         for pos, element in enumerate(aDict.values()):
-            checkaList(element, pos)
+            checkanArray(element, pos)
             
         return doItForOneDict(myDicts)
     else:
