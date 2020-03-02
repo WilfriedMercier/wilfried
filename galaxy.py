@@ -315,11 +315,70 @@ def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.
         integral[pos],  error[pos] = quad(the_integral, start, r[pos], args=(n, re, Ie, bn, mag, offset))
         
     return {'value':integral, 'error':error}
+
+
+def analyticLuminosityFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
+    """
+    Analytically compute the integrated luminosity from 0 up to radius r for a Sersic profile of index n.
+    
+    How to use
+    ----------
+        If no Ie is given, values for mag and offset must be given instead for the corresponding component(s). 
+    
+    Mandatory inputs
+    ----------------
+        n : float/int
+            Sersic index of the profile
+        r : float
+            radius up to the integral will be computed.
+        re : float
+            half-light radius
+                
+    Optional inputs
+    ---------------
+        bn : float
+            b1nfactor appearing in the Sersic profile defined as $2 \gamma(2, bn) = \Gamma(2n). By default, bn is None, and its value will be computed. To skip this computation, please give a value to bn when callling the function.
+        Ie : float
+            intensity at half-light radius
+        mag : float
+            component total integrated magnitude used to compute Ie if not given
+        offset : float
+            magnitude offset in the magnitude system used
+            
+    Return the analytically derived luminosity from 0 to r.
+    """
+    
+    def realGammainc(a, x):
+        ''''Unnormalised incomplete gamma function'''
+        
+        return gamma(a) * gammainc(a, x)
+    
+    #compute b1 and b4 if not given
+    bn,       = check_bns([n], [bn])
+    Ie        = checkAndComputeIe(Ie, n, bn, re, mag, offset)
+    if Ie is None:
+        return None
+    
+    #if r has no length (not a list), simply return the integral and its error
+    try:
+        lr    = len(r)
+    except TypeError:
+        value = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r/re)**(1.0/n)) / (bn**(2*n))
+        return {'value':value, 'error':0}
+    
+    #else compute for each radius in the list
+    value     = np.zeros(lr)
+    error     = [0]*lr
+    for pos in range(lr):
+        value[pos] = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r[pos]/re)**(1.0/n)) / (bn**(2*n))
+        
+    return {'value':np.asarray(value), 'error':np.asarray(error)}
     
 
-def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None):
+
+def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=False):
     """
-    Compute the luminosity of a sum of Sersic profiles up to radius r.
+    Compute the luminosity of a sum of Sersic profiles up to radius r (starting from 0).
     
     Mandatory inputs
     ----------------
@@ -332,6 +391,8 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
         
     Optional inputs
     ---------------
+        analytical : bool
+            whether to use the analytical solution or integrate the profile. Default is to integrate. 
         listbn : list of floats/None
             list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
         listIe : list of floats
@@ -341,29 +402,32 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
         listOffset : list of floats
              list of magnitude offsets used in the magnitude system for each profile
          
-    Returns the integrated luminosity of the sum of all the given Sersic profiles and an estimation of the error
+    Return the integrated luminosity of the sum of all the given Sersic profiles and an estimation of the error
     """
     
     #if no list of bn values is given, compute them all
     if listbn is None:
-        listbn         = [compute_bn(n) for n in listn]
-    listbn             = check_bns(listn, listbn)
+        listbn        = [compute_bn(n) for n in listn]
+    listbn            = check_bns(listn, listbn)
     
     if listIe is None:
         if listMag is not None and listOffset is not None:
-            listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
+            listIe    = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
         else:
             print("ValueError: listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.")
             return None 
     
-    res               = 0
-    err               = 0
+    res         = 0
+    err         = 0
     for n, re, ie, bn in zip(listn, listRe, listIe, listbn):
-        lum           = luminositySersic(r, n, re, bn=bn, Ie=ie)
-        res          += lum['value']
-        err          += lum['error']
+        if not analytical:
+            lum = luminositySersic(r, n, re, bn=bn, Ie=ie)
+        else:
+            lum = analyticLuminosityFrom0(r, n, re, bn=bn, Ie=ie)
+        res    += lum['value']
+        err    += lum['error']
         
-    return {'value':res, 'error':err}
+    return {'value':np.asarray(res), 'error':np.asarray(err)}
 
 
 def total_luminosity(mag, offset, factor=1.0):
