@@ -196,14 +196,88 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
     
     plt.savefig(pdfOut, bbox_inches='tight')
     plt.close()
+    
+    
+def singleContour(X, Y, Z, nContours=None, sizeFig=(12, 12), aspect='equal', hideAllTicks=False, cmap='plasma', colorbar=True,
+                  norm='log', cut=None):
+    '''
+    Draw a (filled) contour plot of some data.
+    
+    Mandatory inputs
+    ----------------
+        X : numpy array from meshgrid
+            grid containing the x-axis values for each pixel
+        Y : numpy array from meshgrid
+            grid containing the y-axis values for each pixel
+        Z : numpy array from meshgrid
+            grid containing the z-axis values for each pixel. This will correspond to the image values.
+            
+    Optional inputs
+    ---------------
+        aspect : str
+            which aspect we want the plot to have. Default is 'equal'.
+        cmap : str
+            colormap to use. Defualt is 'plasma'.
+        colorbar : bool
+            whether to draw a colorbar or not. Default is True.
+        cut : float
+            cut below which values in the Z data are put to np.nan. This is particularly useful with a log norm to have a 'finite' model since values below a certain threshold generally have no physical meaning. Default is None so that no cut is applied.
+        hideAllTicks : bool
+            whether to hide ticks or not. Default is False.
+        nContours : int
+            number of contours to draw. If None, its value will be determined from numpy contour or contourf functions. Default is None.
+        norm : 'log' or 'linear'
+            whether to use a log or a linear scale. Default is 'log'.
+        sizeFig : tuple of two int
+            width and height of the figure respectively. Default is (12, 12).
+    
+    Return the current axis and the plot.
+    '''
+    
+    plt.rcParams["figure.figsize"] = sizeFig
+    f             = plt.figure()
+    ax            = plt.subplot(111)
+    ax.set_aspect(aspect)
+    
+    Intensity     = Z.copy()
+    if cut is not None:
+        Intensity[Intensity<=cut] = np.nan
+    
+    
+    if hideAllTicks:
+        plt.tick_params(axis='both', which='both', left=False, right=False, bottom=False, top=False, labelbottom=False, labeltop=False, labelleft=False, labelright=False)
+    
+    if norm == 'log':
+        theNorm   = LogNorm()
+        nContours = np.logspace(np.log10(np.nanmin(Z)), np.log10(np.nanmax(Z)), num=nContours)
+        levels    = nContours
+    elif norm == 'linear':
+        levels    = None
+        theNorm   = Normalize()
+    else:
+        raise ValueError('Given norm is neither log nor linear. Please provide one of these options. Cheers !')
 
+    ret       = plt.contourf(X, Y, Intensity, cmap=cmap, levels=nContours, norm=theNorm)
+    plt.contour(X, Y, Intensity, colors='k', levels=nContours, norm=theNorm)
+    
+    if colorbar:
+        plt.colorbar(ret, ticks=levels)
+        
+    plt.show()
+    
+    return ax, ret
+
+
+######################################################################################################
+#                    asMany utilities: including histograms, plots and scatter                       #
+######################################################################################################
 
 def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYlabel=False, hideYticks=False, hideXticks=False,
                 placeYaxisOnRight=False, xlabel="", ylabel='', color='black',
                 label='', zorder=0, textsize=24, showLegend=False, legendTextSize=24,
                 xlim=[None, None], locLegend='best', tickSize=24, title='', titlesize=24,
                 outputName=None, overwrite=False, tightLayout=True, integralIsOne=None,
-                align='mid', histtype='stepfilled', alpha=1.0, cumulative=False, legendNcols=1, hatch=None, orientation='vertical', log=False, stacked=False):
+                align='mid', histtype='stepfilled', alpha=1.0, cumulative=False, legendNcols=1, hatch=None, orientation='vertical', log=False, stacked=False, grid=True):
 
     """
     Function which plots on a highly configurable subplot grid 1D histograms. A list of data can be given to have multiple histograms on the same subplot.
@@ -222,6 +296,8 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
         whether to plot the cumulative distribution (where each bin equals the sum of the values in the previous bins up to this one) or the histogram
     data: numpy array, list of numpy arrays
         the data
+    grid : bool
+        whether to show the grid or not
     hatch : char
         the hatching pattern
     hideXlabel : boolean
@@ -283,7 +359,9 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
     ax1.xaxis.set_ticks_position('both')
     ax1.set_title(title, size=titlesize)
     ax1.tick_params(which='both', direction='in', labelsize=tickSize)
-    plt.grid()
+    
+    if grid:
+        plt.grid()
         
     #hiding labels if required
     if hideXlabel:
