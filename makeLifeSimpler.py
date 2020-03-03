@@ -8,157 +8,8 @@ Created on Tue Apr  2 09:32:44 2019
 A set of useful functions to make life simpler when analysing data.
 """
 
-#astropy imports
-from astropy.table import Table
-from astropy.io.votable import is_votable, writeto
-
-#numpy imports
 import numpy as np
-import numpy.lib.recfunctions as rec
 
-
-################################################################################################
-#                                   VOtable functions                                          #
-################################################################################################
-
-def is_VOtable(fullname):
-    """
-    Check whether a file is a VOtable.
-    
-    Mandatory inputs
-    ----------------
-    fullname : str
-        path+name of the file to test
-    
-    Returns True if it is a VOtable. False otherwise.
-    """
-    tag = is_votable(fullname)
-    print("The file", fullname, "is a VOtable, right ?", tag)
-    return tag
-
-def write_array_to_vot(array, outputFile, isTable=False):
-    """
-    Writes an array or an astropy table into a .vot file.
-    
-    Mandatory inputs
-    ----------------
-    array : numpy array, astropy table
-        The array to write into the file
-    outputFile : str
-        The file to write the array into
-        
-    Optional inputs
-    ---------------
-    isTable : boolean
-        Whether the array is an astropy table or not.
-    """
-    
-    #If it is an array it creates an astropy table
-    if not isTable:
-        array = Table(data=array)
-        
-    writeto(array, outputFile)
-    return
-
-def move_bad_fields_to_bottom(oldArray, orderedFieldList, orderedTypeList):
-    """
-    Move the given fields in a structured array to the bottom and change their type
-    
-    Input
-    -----                                                           
-    oldArray : numpy structured array
-        previous array to modify               
-    orderFieldList : list
-        list of fields to move and change type 
-    orderedTypeList : list
-        list of new types for the fields
-                           
-    Returns an array with some fields moved to the bottom and with a different type
-    """
-    
-    outArray = oldArray.copy()
-    for name, typ in zip(orderedFieldList, orderedTypeList):
-        #Remove field of interest from the array
-        tmpArray = rec.rec_drop_fields(outArray, name)
-        
-        #Append the same field at the end of the array with the right data type
-        outArray = rec.rec_append_fields(tmpArray, name, oldArray[name].copy(), dtypes=typ)
-    return outArray
-
-def add_new_array_to_previous(oldArray, newArray, fullFileName, fields, firstArray=False, fieldsToDrop=None, typesToDrop=None):
-    """
-    Append a new structured array from a catalog to another one, only keep the given fields and apply their corresponding data types onto the new columns
-    
-    Mandatory input
-    -----
-    fields : list of strings
-        list containing the fields names as they should appear in every catalogue if they all had the same column names (it is never the case)
-    fieldsToDrop : list of string
-        the name of the fields to move to the bottom and change their type. If not None, typesToDrop must be a list of the same size.
-    firstArray : 
-        True if first array to build
-    fullfilename : string
-        filename (relative to the current directory) of the new array to append to the previous one
-    newArray : numpy structured array
-        new array to append to the previous one
-    oldArray : numpy structured array
-        previous array whereto append new data
-    typesToDrop : list of data types
-        data types corresponding to the specified fields which must be dropped
-          
-    Returns a new structured array where all the content of the previous ones has been correctly appended          
-    """
-    
-    print(fullFileName)
-    
-    #Try to keep all the required fields (common to every catalogue if they all had the same name)
-    try:
-        array = newArray[fields].copy()
-    #Dealing with exceptions because of variations in fields names between catalogues
-    except ValueError:
-        if "CGR34-32_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_nov18_withFOF_withGALFIT_withGALKIN_jan19.vot" in fullFileName:            
-            newArray = rec.rename_fields(newArray, {'groupe_secure_z':'group_secure_z', 
-                                           'groupe_unsecure_z':'group_unsecure_z'})
-        if ("CGR79-77_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_nov18_withFOF_withGALFIT_withGALKIN_jan19.vot" in fullFileName or 
-            "CGR32-32-M123_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_withnewz_jan19_withFOF_withGALFIT_withGALKIN_jan19_COSMOSGroupNumberOldCorrected.vot" in fullFileName):
-            newArray = rec.rename_fields(newArray, {'TYPE_2':'TYPE', 'secure_z_ss':'secure_z', 
-                                      'unsecure_z_ss':'unsecure_z', 'no_z_ss':'no_z', 
-                                      'group_secure_z_ss':'group_secure_z', 
-                                      'group_unsecure_z_ss':'group_unsecure_z'})
-        if "CGR32-32-M123_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_withnewz_jan19_withFOF_withGALFIT_withGALKIN_jan19_COSMOSGroupNumberOldCorrected.vot" in fullFileName:
-            newArray = rec.rename_fields(newArray, {'TYPE_2':'TYPE'})
-            #print(sorted(list(newArray.dtype.names)))
-        if "CGR114_116_zcatalog_withLaigle+16_withFAST_withPLATEFIT_weightedflux_oct18_withFOF_withGALFIT_withGALKIN_jan19.vot" in fullFileName:
-            newArray = rec.rename_fields(newArray, {'TYPE_2':'TYPE', 'COSMOS_Group_number':'COSMOS_Group_Number',
-                                      'COSMOS_Group_number__old_':'COSMOS_Group_Number__old_',
-                                      'FLAG_COSMOS_1':'FLAG_COSMOS'})
-        if "CGR30-28_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_nov18_withFOF_withGALFIT_withGALKIN_jan19.vot" in fullFileName:
-            newArray = rec.rename_fields(newArray, {'TYPE_2':'TYPE', 'ID_Laigle_16_or_ORIGIN':'ID_Laigle_16'})
-
-        array = newArray[fields].copy()
-        
-    #Moving to the bottom the fields of interest and changing their type accordingly to those specified
-    if fieldsToDrop is not None and typesToDrop is not None and len(fieldsToDrop)==len(typesToDrop):
-        array = move_bad_fields_to_bottom(array, fieldsToDrop, typesToDrop)
-
-    #Checking that field management went fine
-    if not firstArray:
-        typeOld = oldArray.dtype
-        typeNew = array.dtype
-        sz      = len(typeOld)
-        if sz != len(typeNew):
-            print("ERROR: old and new arrays do not have the same number of fields. Exiting.")
-            return None
-        
-        for i in range(sz):
-            if typeOld[i] != typeNew[i]:
-                print(typeOld.names[i], typeNew.names[i])
-            
-        outArray = np.append(oldArray, array)
-    else:
-        outArray = array
-    
-    return outArray
 
 def linear_fit(x, A, offset):
     """
@@ -317,7 +168,8 @@ def printSimpleStat(catalog, unit=None):
         print("1st quantile is", str(np.quantile(cat, 0.25)) + ".")
         print("3rd quantile is", str(np.quantile(cat, 0.75)) + ".")
         
-    return      
+    return   
+   
 
 def uniqueArr(tables, arraysToBeUnique):
     """
@@ -348,6 +200,7 @@ def uniqueArr(tables, arraysToBeUnique):
         tables[num]  = tables[num][indices]
         
     return tables
+
 
 def maskToRemoveVal(listOfArrays, val=None, keep=True, astroTableMask=False):
     """
@@ -438,6 +291,7 @@ def applyMask(listOfArrays, mask):
             listOfArrays[num] = array[mask]
     return listOfArrays
 
+
 def findWhereIsValue(listOfArrays, val=None):
     """
     Find and print the first position where a value is found within a list of arrays.
@@ -471,6 +325,7 @@ def findWhereIsValue(listOfArrays, val=None):
                 print("Value", val, "found at position", np.where((array==val))[0], "within array number", num)
     return returnArr
                 
+
 def checkDupplicates(master, names=None):
     """
     Check if galaxies are found multiple times in an array by looking for duplicates of (RA, DEC) pairs.
@@ -510,11 +365,3 @@ def checkDupplicates(master, names=None):
         if cnt:
             print("All the galaxies are only listed once in the catalog", nameCat)     
     return
-
-
-
-        
-        
-
-
-
