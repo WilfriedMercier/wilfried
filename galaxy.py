@@ -116,6 +116,63 @@ def sersic_profile(r, n, re, Ie=None, bn=None, mag=None, offset=None):
 #################################################################################################################
 #                                           Sersic luminosities                                                 #
 #################################################################################################################
+
+def analyticLuminosityFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
+    """
+    Analytically compute the integrated luminosity from 0 up to radius r for a Sersic profile of index n.
+    
+    How to use
+    ----------
+        If no Ie is given, values for mag and offset must be given instead for the corresponding component(s). 
+    
+    Mandatory inputs
+    ----------------
+        n : float/int
+            Sersic index of the profile
+        r : float
+            radius up to the integral will be computed.
+        re : float
+            half-light radius
+                
+    Optional inputs
+    ---------------
+        bn : float
+            b1nfactor appearing in the Sersic profile defined as $2 \gamma(2, bn) = \Gamma(2n). By default, bn is None, and its value will be computed. To skip this computation, please give a value to bn when callling the function.
+        Ie : float
+            intensity at half-light radius
+        mag : float
+            component total integrated magnitude used to compute Ie if not given
+        offset : float
+            magnitude offset in the magnitude system used
+            
+    Return the analytically derived luminosity from 0 to r.
+    """
+    
+    def realGammainc(a, x):
+        ''''Unnormalised incomplete gamma function'''
+        
+        return gamma(a) * gammainc(a, x)
+    
+    #compute b1 and b4 if not given
+    bn,       = check_bns([n], [bn])
+    Ie        = checkAndComputeIe(Ie, n, bn, re, mag, offset)
+    if Ie is None:
+        return None
+    
+    #if r has no length (not a list), simply return the integral and its error
+    try:
+        lr    = len(r)
+    except TypeError:
+        value = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r/re)**(1.0/n)) / (bn**(2*n))
+        return {'value':value, 'error':0}
+    
+    #else compute for each radius in the list
+    value     = np.zeros(lr)
+    error     = [0]*lr
+    for pos in range(lr):
+        value[pos] = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r[pos]/re)**(1.0/n)) / (bn**(2*n))
+        
+    return {'value':np.asarray(value), 'error':np.asarray(error)}
     
 
 def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
@@ -317,65 +374,6 @@ def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.
     return {'value':integral, 'error':error}
 
 
-def analyticLuminosityFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
-    """
-    Analytically compute the integrated luminosity from 0 up to radius r for a Sersic profile of index n.
-    
-    How to use
-    ----------
-        If no Ie is given, values for mag and offset must be given instead for the corresponding component(s). 
-    
-    Mandatory inputs
-    ----------------
-        n : float/int
-            Sersic index of the profile
-        r : float
-            radius up to the integral will be computed.
-        re : float
-            half-light radius
-                
-    Optional inputs
-    ---------------
-        bn : float
-            b1nfactor appearing in the Sersic profile defined as $2 \gamma(2, bn) = \Gamma(2n). By default, bn is None, and its value will be computed. To skip this computation, please give a value to bn when callling the function.
-        Ie : float
-            intensity at half-light radius
-        mag : float
-            component total integrated magnitude used to compute Ie if not given
-        offset : float
-            magnitude offset in the magnitude system used
-            
-    Return the analytically derived luminosity from 0 to r.
-    """
-    
-    def realGammainc(a, x):
-        ''''Unnormalised incomplete gamma function'''
-        
-        return gamma(a) * gammainc(a, x)
-    
-    #compute b1 and b4 if not given
-    bn,       = check_bns([n], [bn])
-    Ie        = checkAndComputeIe(Ie, n, bn, re, mag, offset)
-    if Ie is None:
-        return None
-    
-    #if r has no length (not a list), simply return the integral and its error
-    try:
-        lr    = len(r)
-    except TypeError:
-        value = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r/re)**(1.0/n)) / (bn**(2*n))
-        return {'value':value, 'error':0}
-    
-    #else compute for each radius in the list
-    value     = np.zeros(lr)
-    error     = [0]*lr
-    for pos in range(lr):
-        value[pos] = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r[pos]/re)**(1.0/n)) / (bn**(2*n))
-        
-    return {'value':np.asarray(value), 'error':np.asarray(error)}
-    
-
-
 def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=False):
     """
     Compute the luminosity of a sum of Sersic profiles up to radius r (starting from 0).
@@ -429,6 +427,67 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
         
     return {'value':np.asarray(res), 'error':np.asarray(err)}
 
+
+def ratioLuminosities(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=True):
+    """
+    Compute the ratio of the luminosity of the sum of different Sersic profiles for a single galaxy at two different positions.
+    
+    How to use
+    ----------
+    
+        Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. For instance, a ratio at radii 1" and 3" for a disk (n=1) + bulge (n=4) decomposition would give something like
+            >> ratioLuminosities(1, 3, [1, 4], [10, 20], listMag=[25, 30], listOffset=[30, 30])
+        
+        If you already have computed Ie for all the components, you can provide it with listIe, whereas if you haven't you will need to provide magnitudes and magnitude offsets as in the example above.
+        
+    
+    Mandatory inputs
+    ----------------
+        listn : list of float/int
+            list of Sersic index for each profile
+        r1 : float
+            first radius where the luminosity will be computed
+        r2 : float
+            second radius where the luminoisty will be computed
+        listRe : list of float
+            list of half-light radii for each profile
+        
+    Optional inputs
+    ---------------
+        analytical : bool
+            whether to use the analytical solution or integrate the profile. Default is True. 
+        listbn : list of floats/None
+            list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
+        listIe : list of floats
+            list of intensities at re for each profile
+        listMag : list of floats
+            list of total integrated magnitudes for each profile
+        listOffset : list of floats
+             list of magnitude offsets used in the magnitude system for each profile
+         
+    Return the integrated luminosity of the sum of all the given Sersic profiles and an estimation of the error
+    """
+    
+    #if no list of bn values is given, compute them all
+    if listbn is None:
+        listbn     = [compute_bn(n) for n in listn]
+    listbn         = check_bns(listn, listbn)
+    
+    if listIe is None:
+        if listMag is not None and listOffset is not None:
+            listIe = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
+        else:
+            print("ValueError: listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.")
+            return None 
+    
+    lum1           = luminositySersics(r1, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)
+    lum2           = luminositySersics(r2, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)
+    
+    if lum2 == 0:
+        raise ValueError("The luminosity computed at radius %f is 0. This is unlikely and the ratio cannot be computed." %lum2)
+    
+    return lum1/lum2
+    
 
 def total_luminosity(mag, offset, factor=1.0):
     """
@@ -842,6 +901,72 @@ def checkAndComputeIe(Ie, n, bn, re, mag, offset):
             return None
     else:
         return Ie
+    
+    
+####################################################################################################
+#                                      2D modelling                                                #
+####################################################################################################
+
+def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None):
+    """
+    Generate a 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.
+    
+    How to use
+    ----------
+        Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (listIe), or if not known, a total magnitude value for each profile (listMag) and their corresponding magnitude offset (to convert from magnitudes to intensities).
+    
+    Mandatory inputs
+    ----------------
+        listn : list of float/int
+            list of Sersic index for each profile
+        listRe : list of float
+            list of half-light radii for each profile
+        nx : int
+            size of the model for the x-axis
+        ny : int
+            size of the model for the y-axis
+        
+    Optional inputs
+    ---------------
+        listbn : list of floats/None
+            list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
+        listIe : list of floats
+            list of intensities at re for each profile
+        listMag : list of floats
+            list of total integrated magnitudes for each profile
+        listOffset : list of floats
+             list of magnitude offsets used in the magnitude system for each profile
+         
+    Return the X, Y grids and the flux map
+    """
+    
+    #if no list of bn values is given, compute them all
+    if listbn is None:
+        listbn         = [compute_bn(n) for n in listn]
+    listbn             = check_bns(listn, listbn)
+    
+    if listIe is None:
+        if listMag is not None and listOffset is not None:
+            listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
+        else:
+            print("ValueError: listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
+            return None     
+
+    # Generate X and Y grids
+    midX               = nx//2
+    midY               = ny//2
+    listX              = np.linspace(-midX, midX, nx)
+    listY              = np.linspace(-midY, midY, ny)
+    X, Y               = np.meshgrid(listX, listY)
+    RAD                = X**2 + Y**2
+    
+    for pos, n, re, bn, ie in zip(range(len(listn)), listn, listRe, listbn, listIe):
+        if pos == 0:
+            intensity  = sersic_profile(RAD, n, re, Ie=ie, bn=bn)
+        else:
+            intensity += sersic_profile(RAD, n, re, Ie=ie, bn=bn)
+    
+    return X, Y, intensity
 
 
 ####################################################################################################
