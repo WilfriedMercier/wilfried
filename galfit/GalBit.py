@@ -3,7 +3,7 @@
 """
 Created on Wed Nov 27 17:18:55 2019
 
-@author: wilfried
+@author: Wilfried - IRAP
 """
 
 import tkinter            as     tk
@@ -172,6 +172,14 @@ class singlePlotFrame:
                 self.paLine.line.set_data([self.paLine.posx, self.paLine.posy])
                 self.canvas.draw()
                 
+        # if at least one graph is selected, we enable the x and y invert widgets
+        if self.root.bottomPane.numSelected == 1:
+            self.root.topPane.invert.x.config({'state':'normal'})
+            self.root.topPane.invert.y.config({'state':'normal'})
+        elif self.root.bottomPane.numSelected == 0:
+            self.root.topPane.invert.x.config({'state':'disabled'})
+            self.root.topPane.invert.y.config({'state':'disabled'})
+                
                 
     def onFigure(self, event):
         '''Set focus onto the main window when the cursor enters it.'''
@@ -219,7 +227,7 @@ class graphFrame:
         
         self.numSelected       = 0
         
-        # Because matplotlib key press event is not Tk canvas dependent (i.e it links it to the last draw Tk canvas), we define an active singleFrame instance
+        # Because matplotlib key press event is not Tk canvas dependent (i.e it links it to the last drawn Tk canvas), we define an active singleFrame instance
         # which we use to update graphs when the focus is on them
         self.activeSingleFrame = None
         
@@ -241,9 +249,14 @@ class graphFrame:
         self.plot2             = singlePlotFrame(self.midFrame,   self.root, title='model',    bgColor=bgColor)
         self.plot3             = singlePlotFrame(self.rightFrame, self.root, title='residual', bgColor=bgColor)
         
-        self.leftFrame.grid(row=0, column=0, padx=5, pady=5)
-        self.midFrame.grid(row=0, column=1, padx=5, pady=5)
-        self.rightFrame.grid(row=0, column=3, padx=5, pady=5)
+        self.leftFrame.grid(row=0, column=0, padx=5, pady=5,  sticky=tk.N+tk.E+tk.W)
+        self.midFrame.grid(row=0, column=1, padx=5, pady=5,   sticky=tk.N+tk.E+tk.W)
+        self.rightFrame.grid(row=0, column=3, padx=5, pady=5, sticky=tk.N+tk.E+tk.W)
+        """
+        self.leftFrame.pack( fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N)
+        self.midFrame.pack(  fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N)
+        self.rightFrame.pack(fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N)
+        """
         
 
 
@@ -363,11 +376,6 @@ class topFrame:
         self.model.cmapMin = self.image.cmapMin
         
         self.res.data      = hdul[3].data
-        
-        
-        # Enable invert axes checkboxes
-        self.invert.x.config({'state':'normal'})
-        self.invert.y.config({'state':'normal'})
         
         
     def updateFigures(self):
@@ -896,8 +904,10 @@ class mainApplication:
         # Setting grid geometry for main frames
         tk.Grid.rowconfigure(   self.parent, 0, weight=0, minsize=130)
         tk.Grid.rowconfigure(   self.parent, 1, weight=1)
-        tk.Grid.columnconfigure(self.parent, 2, weight=1, minsize=100)
-        tk.Grid.columnconfigure(self.parent, 1, weight=0, minsize=1300)
+        tk.Grid.columnconfigure(self.parent, 2, weight=0, minsize=100)
+        tk.Grid.columnconfigure(self.parent, 1, weight=1)
+        
+        print(self.bottomFrame.frame['width'], self.bottomFrame.frame['height'])
         
         
     def setScrollable(self, event):
