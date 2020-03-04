@@ -909,6 +909,9 @@ def checkAndComputeIe(Ie, n, bn, re, mag, offset):
 ####################################################################################################
 #                                      2D modelling                                                #
 ####################################################################################################
+        
+#def convolution2D(data, model={'name':'PSF', 'mu':0, 'sigma':0.8, 'unit':'arcsec'}):
+
 
 def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None):
     """
@@ -970,6 +973,56 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
             intensity += sersic_profile(RAD, n, re, Ie=ie, bn=bn)
     
     return X, Y, intensity
+
+
+def projectModel2D(X, Y, inclination=0, PA=0):
+    '''
+    Project onto the sky a 2D model of a galaxy viewed face-on.
+    
+    How to use
+    ----------
+    
+    When talking about sky projection, on may have in mind changing the position of pixel values inside the 2D array to match the rotation and stretching induced by inclination and PA.
+    This would be True if the X and Y coordinates arrays were fixed, that is that data[0, 0] would always be the pixel value of the top-left corner of the image.
+    
+    However, numpy creates X and Y coordinate arrays using meshgrid. These arrays contain the X and Y coordinates of the corresponding pixels in the data array. This means that the pixel at position (0, 0) in the data array will have coordinates x = X[0, 0] and y = Y[0, 0].
+    Using this scheme, sky projection only requires to modify the values of the X and Y spatial coordinate arrays, rather than moving around pixels in the data array.
+    
+    This explains why the data array is not required to perform the sky projection here.
+    
+    Mandatory inputs
+    ----------------
+        X : numpy 2-dimensional array
+            grid with x-axis values for each pixel
+        Y : numpy 2-dimensional array
+            grid with y-axis values for each pixel
+        
+    Optional inputs
+    ---------------
+        inclination : float/int
+            inclination of the galaxy on the sky in degrees. Default is 0°.
+        PA : float/int
+            position angle of the galaxy on the sky in degrees. Generally, this number is given between -90° and +90°. Default is 0
+
+    Return X, Y arrays projected onto the sky. Default values should leave the galaxy unchanged (no inclination and no PA rotation).
+    '''
+    
+    # Convert from degrees to rad
+    inclination         *= np.pi/180
+    PA                  *= np.pi/180
+    
+    # Projection using inclination
+    XEllips              = X.copy()
+    YEllips              = Y.copy()
+    XEllips[XEllips>0]  *= np.sin(np.pi/2 + inclination)
+    XEllips[XEllips<=0] *= -np.sin(3*np.pi/2 + inclination)
+    
+    # PA rotation (positive PA means rotating clock-wise)
+    theta                = np.arctan2(YEllips, XEllips)
+    XEllips             *= np.cos(theta-PA)/np.cos(theta)
+    YEllips             *= np.sin(theta-PA)/np.sin(theta)
+          
+    return XEllips, YEllips
 
 
 ####################################################################################################
