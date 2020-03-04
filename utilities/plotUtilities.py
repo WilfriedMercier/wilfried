@@ -199,7 +199,7 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
     
     
 def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hideAllTicks=False, cmap='plasma', colorbar=True,
-                  norm='log', cut=None, xlim=None, ylim=None):
+                  norm='log', cut=None, xlim=None, ylim=None, title=None, filled='both'):
     '''
     Draw a (filled) contour plot of some data.
     
@@ -224,6 +224,8 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
             number of contours to draw. (if int) or list of contour values (if list). If None, its value will be determined from numpy contour or contourf functions. Default is None.
         cut : float
             cut below which values in the Z data are put to np.nan. This is particularly useful with a log norm to have a 'finite' model since values below a certain threshold generally have no physical meaning. Default is None so that no cut is applied.
+        filled : bool or 'both'
+            whether to draw a filled contour only, or just contours, or both. Default is both
         hideAllTicks : bool
             whether to hide ticks or not. Default is False.
         norm : 'log' or 'linear'
@@ -242,6 +244,9 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
     f             = plt.figure()
     ax            = plt.subplot(111)
     ax.set_aspect(aspect)
+    
+    if title is not None:
+        plt.title(title)
     
     Intensity     = Z.copy()
     if cut is not None:
@@ -264,8 +269,10 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
     else:
         raise ValueError('Given norm is neither log nor linear. Please provide one of these options. Cheers !')
 
-    ret       = plt.contourf(X, Y, Intensity, cmap=cmap, levels=contours, norm=theNorm)
-    plt.contour(X, Y, Intensity, colors='k', levels=contours, norm=theNorm)
+    if filled == 'both' or filled is True:
+        ret       = plt.contourf(X, Y, Intensity, cmap=cmap, levels=contours, norm=theNorm)
+    if filled == 'both' or filled is False:
+        plt.contour(X, Y, Intensity, linestyles='dashed', levels=contours, norm=theNorm, cmap='gist_yarg') #colors='k'
     
     if colorbar:
         plt.colorbar(ret, ticks=levels)
@@ -275,7 +282,7 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
     if ylim is not None:
         ax.set_ylim(ylim[0], ylim[1])
         
-    plt.show()
+    #plt.show()
     
     return ax, ret
 
@@ -1252,7 +1259,7 @@ def asManyPlots2(numPlot, datax, datay,
         
         Optional inputs
         ---------------
-            defaultVals : list
+            default : list
                 list of default values if given key is not in dictionary
             keys : list of str
                 list of key names whose values will be appended into the list
