@@ -11,11 +11,17 @@ Created on Mon Sep 30 22:09:08 2019
 Useful functions for galaxy modelling and other related computation
 """
 
-import numpy as np
-from scipy.special import gammaincinv, gammainc, gamma
-from scipy.optimize import root
-from scipy.integrate import quad
-from math import factorial
+import numpy           as     np
+from   numpy.fft       import fft2, ifft2
+
+import astropy.units   as     u
+
+from   scipy.special   import gammaincinv, gammainc, gamma
+from   scipy.optimize  import root
+from   scipy.integrate import quad
+from   scipy.ndimage   import fourier_gaussian
+
+from   math            import factorial
 
 #################################################################################################################
 #                                           Sersic profiles                                                     #
@@ -910,7 +916,86 @@ def checkAndComputeIe(Ie, n, bn, re, mag, offset):
 #                                      2D modelling                                                #
 ####################################################################################################
         
-#def convolution2D(data, model={'name':'PSF', 'mu':0, 'sigma':0.8, 'unit':'arcsec'}):
+def PSFconvolution2D(data, arcsecToPixel=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}):
+    '''
+    Convolve using fast FFT a 2D array with a pre-defined (2D) PSF.
+    
+    How to use
+    ----------
+    
+    Best practice is to provide the PSF model FWHM or sigma in arcsec, and the image pixel element resolution (arcsecToPixel), so that the fonction can convert correctly the PSF width in pixels.
+    You can provide either the FWHM or sigma. If both are given, sigma is used.
+
+    Mandatory inputs
+    ----------------
+        data : numpy 2D array
+            data to be convolved with the PSF
+            
+    Optional inputs
+    ---------------
+        arcsecToPixel : float
+            the angular size of one pixel. This value is used to convert  Default is 0.03 arcsec/px which corresponds to the spatial sampling of HST ACS images.
+        model : dict
+            Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
+            For now, only 2D Gaussians are accepted as PSF.                                                                                                                                                                                             
+            
+    Return a new image where the convolution has been performed.                                                                                                                                                                                       
+    '''
+    
+    
+    def setListFromDict(dictionary, keys=None, default=None):
+        """
+        Fill a list with values from a dictionary or from default ones if the key is not in the dictionary.
+        
+        Mandatory inputs
+        ----------------
+            dictionary : dict
+                dictionary to get the keys values from
+        
+        Optional inputs
+        ---------------
+            default : list
+                list of default values if given key is not in dictionary
+            keys : list of str
+                list of key names whose values will be appended into the list
+                
+        Return a list with values retrived from a dictionary keys or from a list of default values.
+        """
+        
+        out = []
+        for k, df in zip(keys, default):
+            if k in dictionary:
+                out.append(dictionary[k])
+            else:
+                out.append(df)
+        return out
+    
+    # Retrieve PSF parameters and set default values if not provided
+    if model['name'].lower() == 'gaussian2d':
+        sigmaX, sigmaY, FWHMX, FWHMY, unit = setListFromDict(model, keys=['sigmaX', 'sigmaY', 'FWHMX', 'FWHMY', 'unit'], default=[None, None, 0.8, 0.8, "arcsec"])
+        
+        # Compute FWHM from sigma if sigma is provided
+        if sigmaX is None:
+            sigmaX = FWHMX / (2*np.sqrt(2*np.log(2)))
+        if sigmaY is None:
+            sigmaY = FWHMY / (2*np.sqrt(2*np.log(2)))
+            
+        # Convert sigma to arcsec and then go in pixels values
+        try:
+            sigmaX     = u.Quantity(sigmaX, unit).to('arcsec').value / arcsecToPixel
+            sigmaY     = u.Quantity(sigmaY, unit).to('arcsec').value / arcsecToPixel
+        except ValueError:
+            raise ValueError('Given unit %s is not valid. Angles may generally be given in units of deg, arcmin, arcsec, hourangle, or rad.')
+        
+        # Perform convolution
+        image      = data.copy()
+        image      = fft2(image)
+        image      = fourier_gaussian(image, sigma=[sigmaX, sigmaY])
+        image      = ifft2(image).real
+    else:
+        raise ValueError('Given model %s is not recognised or implemented yet. Only gaussian2d model is accepted.' %model['name'])
+        
+    return image
 
 
 def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None):
