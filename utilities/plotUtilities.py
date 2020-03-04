@@ -198,8 +198,8 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
     plt.close()
     
     
-def singleContour(X, Y, Z, nContours=None, sizeFig=(12, 12), aspect='equal', hideAllTicks=False, cmap='plasma', colorbar=True,
-                  norm='log', cut=None):
+def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hideAllTicks=False, cmap='plasma', colorbar=True,
+                  norm='log', cut=None, xlim=None, ylim=None):
     '''
     Draw a (filled) contour plot of some data.
     
@@ -220,16 +220,20 @@ def singleContour(X, Y, Z, nContours=None, sizeFig=(12, 12), aspect='equal', hid
             colormap to use. Defualt is 'plasma'.
         colorbar : bool
             whether to draw a colorbar or not. Default is True.
+        contours : int or list of int/float
+            number of contours to draw. (if int) or list of contour values (if list). If None, its value will be determined from numpy contour or contourf functions. Default is None.
         cut : float
             cut below which values in the Z data are put to np.nan. This is particularly useful with a log norm to have a 'finite' model since values below a certain threshold generally have no physical meaning. Default is None so that no cut is applied.
         hideAllTicks : bool
             whether to hide ticks or not. Default is False.
-        nContours : int
-            number of contours to draw. If None, its value will be determined from numpy contour or contourf functions. Default is None.
         norm : 'log' or 'linear'
             whether to use a log or a linear scale. Default is 'log'.
         sizeFig : tuple of two int
             width and height of the figure respectively. Default is (12, 12).
+        xlim : tuple of two float
+            x-axis bounds. Default is None so that the min and max of X are used.
+        ylim : tuple of two float
+            y-axis bounds. Default is None so that the min and max of Y are used.
     
     Return the current axis and the plot.
     '''
@@ -249,19 +253,27 @@ def singleContour(X, Y, Z, nContours=None, sizeFig=(12, 12), aspect='equal', hid
     
     if norm == 'log':
         theNorm   = LogNorm()
-        nContours = np.logspace(np.log10(np.nanmin(Z)), np.log10(np.nanmax(Z)), num=nContours)
-        levels    = nContours
+        
+        if type(contours) is int:
+            contours = np.logspace(np.log10(np.nanmin(Z)), np.log10(np.nanmax(Z)), num=contours)
+            
+        levels    = contours
     elif norm == 'linear':
         levels    = None
         theNorm   = Normalize()
     else:
         raise ValueError('Given norm is neither log nor linear. Please provide one of these options. Cheers !')
 
-    ret       = plt.contourf(X, Y, Intensity, cmap=cmap, levels=nContours, norm=theNorm)
-    plt.contour(X, Y, Intensity, colors='k', levels=nContours, norm=theNorm)
+    ret       = plt.contourf(X, Y, Intensity, cmap=cmap, levels=contours, norm=theNorm)
+    plt.contour(X, Y, Intensity, colors='k', levels=contours, norm=theNorm)
     
     if colorbar:
         plt.colorbar(ret, ticks=levels)
+        
+    if xlim is not None:
+        ax.set_xlim(xlim[0], xlim[1])
+    if ylim is not None:
+        ax.set_ylim(ylim[0], ylim[1])
         
     plt.show()
     
