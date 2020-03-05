@@ -1024,12 +1024,31 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
         pixHeight : float
             height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Nx.
 
-    Returns
-    -------
-    None.
-
+    Return a new X grid, a new Y grid and a new model intensity map with the contribution of every model summed. 
     '''
-
+    
+    # Generate the new X and Y grid
+    maxX = np.max([np.amax(listX), -np.amin(listX)])
+    minX = -maxX
+    maxY = np.max([np.amax(listY), -np.amin(listY)])
+    minY = -maxY
+    
+    x    = np.arange(minX, maxX+pixWidth, step=pixWidth)
+    y    = np.arange(minY, maxY+pixHeight, step=pixHeight)
+    X, Y = np.meshgrid(x, y)
+    
+    # Combine data (3 loops, not very efficient...)
+    Z    = X.copy()*0.0
+    shp  = np.shape(X)
+    for xpos in range(shp[0]):
+        for ypos in range(shp[1]):
+            for Xmodel, Ymodel, model in zip(listX, listY, listModels):
+                Xmask          = np.logical_and(Xmodel>=X[xpos, ypos], Xmodel<X[xpos, ypos] + pixWidth)
+                Ymask          = np.logical_and(Ymodel>=Y[xpos, ypos], Ymodel<Y[xpos, ypos] + pixHeight)
+                mask           = np.logical_and(Xmask, Ymask)
+                Z[xpos, ypos] += np.sum(model[mask])
+    
+    return X, Y, Z
 
 def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, combine=True):
     """
