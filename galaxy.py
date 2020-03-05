@@ -998,13 +998,47 @@ def PSFconvolution2D(data, arcsecToPixel=0.03, model={'name':'Gaussian2D', 'FWHM
     return image
 
 
-def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None):
+def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
+    '''
+    Sum the contribution of different models with deformed X and Y grids into a single image with a regular grid.
+    
+    How to use
+    ----------
+    
+    Provide the X and Y grids for each model as well as the intensity maps.
+    
+    Warning:
+        pixWidth and pixHeight parameters are quite important as they will be used to define the pixel scale of the new regular grid. Additonally, all data points of every model falling inside a given pixel will be added to this pixel contribution.
+        In principle, one should give the pixel scale of the original array before any sky projection.
+
+    Mandatory inputs
+    ----------------
+        listX : list of numpy 2D arrays
+            list of X arrays for each model
+        listY : list of numpy 2D arrays
+            list of Y arrays for each model
+        listModels : list of numpy 2D arrays
+            list of intensity maps for each model
+        pixWidth : float
+            width (x-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Nx pixels between xmin and xmax values, so that each pixel would have a width of (xmax-xmin)/Nx.
+        pixHeight : float
+            height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Nx.
+
+    Returns
+    -------
+    None.
+
+    '''
+
+
+def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, combine=True):
     """
     Generate a 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.
     
     How to use
     ----------
         Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (listIe), or if not known, a total magnitude value for each profile (listMag) and their corresponding magnitude offset (to convert from magnitudes to intensities).
+        The 'combine' keywork can be set to False to recover the model of each component separately. This can be useful if one wants to compute a 2D model for many components, but has to apply later sky projections only for a few of them.
     
     Mandatory inputs
     ----------------
@@ -1019,6 +1053,8 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
         
     Optional inputs
     ---------------
+        combine : bool
+            whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists. Default is to combine all the components into a single image.
         listbn : list of floats/None
             list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
         listIe : list of floats
@@ -1028,7 +1064,9 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
         listOffset : list of floats
              list of magnitude offsets used in the magnitude system for each profile
          
-    Return the X, Y grids and the flux map
+    Return:
+        - if combine is True: X, Y grids and the intensity map
+        - if combine is False: X, Y grids and a list of intensity maps for each component
     """
     
     #if no list of bn values is given, compute them all
@@ -1040,8 +1078,7 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
         if listMag is not None and listOffset is not None:
             listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
         else:
-            print("ValueError: listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
-            return None     
+            raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
 
     # Generate X and Y grids
     midX               = nx//2
@@ -1051,13 +1088,92 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
     X, Y               = np.meshgrid(listX, listY)
     RAD                = X**2 + Y**2
     
+    # If we combine models, we add them, if we do not combine them, we place them into a list
     for pos, n, re, bn, ie in zip(range(len(listn)), listn, listRe, listbn, listIe):
         if pos == 0:
-            intensity  = sersic_profile(RAD, n, re, Ie=ie, bn=bn)
+            if combine:
+                intensity  = sersic_profile(RAD, n, re, Ie=ie, bn=bn)
+            else:
+                intensity  = [sersic_profile(RAD, n, re, Ie=ie, bn=bn)]
         else:
-            intensity += sersic_profile(RAD, n, re, Ie=ie, bn=bn)
+            if combine:
+                intensity += sersic_profile(RAD, n, re, Ie=ie, bn=bn)
+            else:
+                intensity += [sersic_profile(RAD, n, re, Ie=ie, bn=bn)]
     
     return X, Y, intensity
+
+
+def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None):
+    '''
+    Generate a 2D model of a combination of Sersic profiles after projecting those on the sky.
+    
+    How to use
+    ----------
+    
+    Provide model parameters as lists. If you already know Ie for every model, you do not have to provide magnitude and magnitude offsets values.
+    
+    Warning ! 
+    
+    Inclination is defined as the rotation of the model around the vertical axis (in the galaxy plane). Given that 2D (and not 3D) models are generated, if an inclination for a spherically symmetric component is given (such as a bulge), this component will be squeezed along the x-axis (and rotated if a PA is provided as well).
+    Such behaviour may not be wanted, so one should be careful when dealing with spherically symmetric components to provide a 0° inclination.
+
+    Mandatory inputs
+    ----------------
+        listn : list of float/int
+            list of Sersic index for each profile
+        listRe : list of float
+            list of half-light radii for each profile
+        nx : int
+            size of the model for the x-axis
+        ny : int
+            size of the model for the y-axis
+        
+    Optional inputs
+    ---------------
+    
+        listbn : list of floats/None
+            list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
+        listIe : list of floats
+            list of intensities at re for each profile
+        listInclination : list of float/int
+            lsit of inclination of each Sersic component on the sky in degrees. Default is None so that each profile is viewed face-on.
+        listMag : list of floats
+            list of total integrated magnitudes for each profile
+        listOffset : list of floats
+             list of magnitude offsets used in the magnitude system for each profile
+        listPA : list of float/int
+            list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°. Default is None, so that no rotation is applied to any component.
+
+    Return three lists (in that order):
+        - list of X grid for each component
+        - list of Y grid for each component
+        - list of flux maps for each components
+    '''
+    
+    #if no list of bn values is given, compute them all
+    if listbn is None:
+        listbn         = [compute_bn(n) for n in listn]
+    listbn             = check_bns(listn, listbn)
+    
+    if listIe is None:
+        if listMag is not None and listOffset is not None:
+            listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
+        else:
+            raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
+
+    # Generate 2D models before sky projection
+    X, Y, listModel    = model2D(nx, ny, listn, listRe, listbn, listIe, combine=False)
+    
+    # Perform sky projection model-wise
+    listX              = []
+    listY              = []
+    for inc, pa in zip(listInclination, listPA):
+        newX, newY     = projectModel2D(X, Y, inclination=inc, PA=pa) 
+        listX.append(newX)
+        listY.append(newY)
+    
+    return listX, listY, listModel
 
 
 def projectModel2D(X, Y, inclination=0, PA=0):
