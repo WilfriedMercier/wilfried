@@ -915,89 +915,80 @@ def checkAndComputeIe(Ie, n, bn, re, mag, offset):
 ####################################################################################################
 #                                      2D modelling                                                #
 ####################################################################################################
-        
-def PSFconvolution2D(data, arcsecToPixel=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}):
+    
+def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0, PA=0, noPSF=False,
+                   PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, arcsecToGrid=0.03, combine=True):
     '''
-    Convolve using fast FFT a 2D array with a pre-defined (2D) PSF.
+    Generate a bulge + (sky projected) disk 2D model with PSF convolution.
     
     How to use
     ----------
-    
-    Best practice is to provide the PSF model FWHM or sigma in arcsec, and the image pixel element resolution (arcsecToPixel), so that the fonction can convert correctly the PSF width in pixels.
-    You can provide either the FWHM or sigma. If both are given, sigma is used.
-
+        Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (Id, Ib), or if not known, a total magnitude value for each profile (magD, magB) and their corresponding magnitude offset (to convert from magnitudes to intensities).
+       
     Mandatory inputs
     ----------------
-        data : numpy 2D array
-            data to be convolved with the PSF
-            
+        nx : int
+            size of the model for the x-axis
+        ny : int
+            size of the model for the y-axis
+        Rb : float
+            bulge half-light radius
+        Rd : float
+            disk half-light radius
+        
     Optional inputs
     ---------------
-        arcsecToPixel : float
-            the angular size of one pixel. This value is used to convert  Default is 0.03 arcsec/px which corresponds to the spatial sampling of HST ACS images.
-        model : dict
+        arcsecToGrid : float
+            pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel. Default is HST-ACS resolution of 0.03"/px.
+        Ib : float
+            bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.
+        Id : float
+            disk intensity at (disk) half-light radius. If not provided, magnitude and magnitude offset must be given instead.
+        inclination : int/float
+            disk inclination on sky. Generally given between -90° and +90°. Value must be given in degrees. Default is 0° so that no projection is performed.
+        magB : float
+            bulge total magnitude
+        magD: float
+            disk total magnitude
+        offsetB : float
+            bulge magnitude offset
+        offsetD : float
+            disk magnitude offset
+        noPSF : bool
+            whether to not perform PSF convolution or not. Default is to do convolution.
+        PA : int/float
+            disk position angle (in degrees). Default is 0° so that no rotation if performed.
+        PSF : dict
             Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
-            For now, only 2D Gaussians are accepted as PSF.                                                                                                                                                                                             
-            
-    Return a new image where the convolution has been performed.                                                                                                                                                                                       
+            For now, only 2D Gaussians are accepted as PSF. 
+        
+    Return X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition.
     '''
-    
-    
-    def setListFromDict(dictionary, keys=None, default=None):
-        """
-        Fill a list with values from a dictionary or from default ones if the key is not in the dictionary.
-        
-        Mandatory inputs
-        ----------------
-            dictionary : dict
-                dictionary to get the keys values from
-        
-        Optional inputs
-        ---------------
-            default : list
-                list of default values if given key is not in dictionary
-            keys : list of str
-                list of key names whose values will be appended into the list
-                
-        Return a list with values retrived from a dictionary keys or from a list of default values.
-        """
-        
-        out = []
-        for k, df in zip(keys, default):
-            if k in dictionary:
-                out.append(dictionary[k])
-            else:
-                out.append(df)
-        return out
-    
-    # Retrieve PSF parameters and set default values if not provided
-    if model['name'].lower() == 'gaussian2d':
-        sigmaX, sigmaY, FWHMX, FWHMY, unit = setListFromDict(model, keys=['sigmaX', 'sigmaY', 'FWHMX', 'FWHMY', 'unit'], default=[None, None, 0.8, 0.8, "arcsec"])
-        
-        # Compute FWHM from sigma if sigma is provided
-        if sigmaX is None:
-            sigmaX = FWHMX / (2*np.sqrt(2*np.log(2)))
-        if sigmaY is None:
-            sigmaY = FWHMY / (2*np.sqrt(2*np.log(2)))
-            
-        # Convert sigma to arcsec and then go in pixels values
-        try:
-            sigmaX     = u.Quantity(sigmaX, unit).to('arcsec').value / arcsecToPixel
-            sigmaY     = u.Quantity(sigmaY, unit).to('arcsec').value / arcsecToPixel
-        except ValueError:
-            raise ValueError('Given unit %s is not valid. Angles may generally be given in units of deg, arcmin, arcsec, hourangle, or rad.')
-        
-        # Perform convolution
-        image      = data.copy()
-        image      = fft2(image)
-        image      = fourier_gaussian(image, sigma=[sigmaX, sigmaY])
-        image      = ifft2(image).real
-    else:
-        raise ValueError('Given model %s is not recognised or implemented yet. Only gaussian2d model is accepted.' %model['name'])
-        
-    return image
 
+    listn       = [1, 4]
+    listbn      = [compute_bn(n) for n in listn]
 
+    # Checking that we have the correct information to model correctly our data    
+    if Id is None:
+        if magD is not None and offsetD is not None:
+            Id  = intensity_at_re(listn[0], magD, Rd, offsetD, bn=listbn[0])
+        else:
+            raise ValueError("Id is None, but magD or offsetD is also None. If no Id is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !")
+    
+    if Ib is None:
+        if magB is not None and offsetB is not None:
+            Ib  = intensity_at_re(listn[0], magB, Rb, offsetB, bn=listbn[0])
+        else:
+            raise ValueError("Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !")
+
+    X, Y, model = model2DOnSky(nx, ny, listn, [Rd, Rb], listbn=listbn, listIe=[Id, Ib], listInclination=[inclination, 0], listPA=[PA, 0], combine=combine)
+    
+    if not noPSF and combine:
+        model       = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid)
+        
+    return X, Y, model
+    
+    
 def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
     '''
     Sum the contribution of different models with deformed X and Y grids into a single image with a regular grid.
@@ -1009,7 +1000,7 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
     
     Warning:
         pixWidth and pixHeight parameters are quite important as they will be used to define the pixel scale of the new regular grid. Additonally, all data points of every model falling inside a given pixel will be added to this pixel contribution.
-        In principle, one should give the pixel scale of the original array before any sky projection.
+        In principle, one should give the pixel scale of the original array (before sky projection was applied).
 
     Mandatory inputs
     ----------------
@@ -1022,15 +1013,15 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
         pixWidth : float
             width (x-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Nx pixels between xmin and xmax values, so that each pixel would have a width of (xmax-xmin)/Nx.
         pixHeight : float
-            height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Nx.
+            height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Ny.
 
     Return a new X grid, a new Y grid and a new model intensity map with the contribution of every model summed. 
     '''
     
     # Generate the new X and Y grid
-    maxX = np.max([np.amax(listX), -np.amin(listX)])
+    maxX = np.max([np.nanmax(listX), -np.nanmin(listX)])
     minX = -maxX
-    maxY = np.max([np.amax(listY), -np.amin(listY)])
+    maxY = np.max([np.nanmax(listY), -np.nanmin(listY)])
     minY = -maxY
     
     x    = np.arange(minX, maxX+pixWidth, step=pixWidth)
@@ -1049,6 +1040,7 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
                 Z[xpos, ypos] += np.sum(model[mask])
     
     return X, Y, Z
+
 
 def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, combine=True):
     """
@@ -1102,7 +1094,7 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
     # Generate X and Y grids
     midX               = nx//2
     midY               = ny//2
-    listX              = np.linspace(-midX, midX, nx)
+    listX              = np.linspace(-midX, midX, nx)   
     listY              = np.linspace(-midY, midY, ny)
     X, Y               = np.meshgrid(listX, listY)
     RAD                = X**2 + Y**2
@@ -1123,14 +1115,21 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
     return X, Y, intensity
 
 
-def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None):
+def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=False):
     '''
-    Generate a 2D model of a combination of Sersic profiles after projecting those on the sky.
+    Generate either a single, or a set of 2D models (Sersic profiles) after projecting those on the sky.
     
     How to use
     ----------
     
     Provide model parameters as lists. If you already know Ie for every model, you do not have to provide magnitude and magnitude offsets values.
+    
+    This function can be used in two ways:
+        - Either you want to generate multiple Sersic models at once and retrieve them separately. In this case, use combine=False (by default).
+        - Or you want to generate a single 2D model which is a combination of different Sersic profiles projected differently on the sky. E.g. unprojected bulge (because of spherical symmetry) + projected disk. In this case, use combine=True.
+    Note that in the latter case, because X and Y grids are distorted when applying a projection, a new regular grid will be generated to combine models in a consistent way. 
+
+    If listInclination and listPA are not provided, no projection will be applied on any model.
     
     Warning ! 
     
@@ -1150,7 +1149,8 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
         
     Optional inputs
     ---------------
-    
+        combine : bool
+            whether to combine each projected model into a single 2D array, or to return each component separately. Default is not to combine them into a single array.
         listbn : list of floats/None
             list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
         listIe : list of floats
@@ -1164,35 +1164,51 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
         listPA : list of float/int
             list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°. Default is None, so that no rotation is applied to any component.
 
-    Return three lists (in that order):
-        - list of X grid for each component
-        - list of Y grid for each component
-        - list of flux maps for each components
+    Depending on combine parameter, return:
+        - if combine is False: list of X grid for each component, list of Y grid for each component, list of flux maps for each components
+        - if combine is True: X, Y new regular grids and a single flux map of all the combined models
     '''
+    
+    nbModels            = len(listn)
     
     #if no list of bn values is given, compute them all
     if listbn is None:
-        listbn         = [compute_bn(n) for n in listn]
-    listbn             = check_bns(listn, listbn)
+        listbn          = [compute_bn(n) for n in listn]
+    listbn              = check_bns(listn, listbn)
     
     if listIe is None:
         if listMag is not None and listOffset is not None:
-            listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
+            listIe      = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
         else:
             raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
 
     # Generate 2D models before sky projection
-    X, Y, listModel    = model2D(nx, ny, listn, listRe, listbn, listIe, combine=False)
+    X, Y, listModels    = model2D(nx, ny, listn, listRe, listbn, listIe, combine=False)
+    pixWidth            = (X.max() - X.min())/(nx-1)
+    pixHeight           = (Y.max() - Y.min())/(ny-1)
     
+    if listInclination is None:
+        listInclination = [0]*nbModels
+    if listPA          is None:
+        listPA          = [0]*nbModels
+
     # Perform sky projection model-wise
-    listX              = []
-    listY              = []
+    listX               = []
+    listY               = []
     for inc, pa in zip(listInclination, listPA):
-        newX, newY     = projectModel2D(X, Y, inclination=inc, PA=pa) 
+        newX, newY      = projectModel2D(X, Y, inclination=inc, PA=pa)
         listX.append(newX)
         listY.append(newY)
+        
+    # Combine into a single array if required
+    if combine:
+        print('tada')
+        return listX, listY, listModels[0] + listModels[1]
     
-    return listX, listY, listModel
+        print('coucou')
+        listX, listY, listModels = mergeModelsIntoOne(listX, listY, listModels, pixWidth=pixWidth, pixHeight=pixHeight)
+    
+    return listX, listY, listModels
 
 
 def projectModel2D(X, Y, inclination=0, PA=0):
@@ -1227,22 +1243,122 @@ def projectModel2D(X, Y, inclination=0, PA=0):
     Return X, Y arrays projected onto the sky. Default values should leave the galaxy unchanged (no inclination and no PA rotation).
     '''
     
+    shpXY = [X.shape, Y.shape]
+    if shpXY[0] != shpXY[1]:
+        raise ValueError('X and Y arrays have shape %s and %s respectively. Please provide X and Y grids with the same shape. Cheers !' %(shpXY[0], shpXY[1]))
+    
     # Convert from degrees to rad
-    inclination         *= np.pi/180
-    PA                  *= np.pi/180
+    inclination             *= np.pi/180
+    PA                      *= np.pi/180
     
     # Projection using inclination
-    XEllips              = X.copy()
-    YEllips              = Y.copy()
-    XEllips[XEllips>0]  *= np.sin(np.pi/2 + inclination)
-    XEllips[XEllips<=0] *= -np.sin(3*np.pi/2 + inclination)
+    XEllips                  = X.copy()
+    YEllips                  = Y.copy()
+    
+    if inclination != 0:
+        XEllips[XEllips>0]  *= np.sin(np.pi/2 + inclination)
+        XEllips[XEllips<=0] *= -np.sin(3*np.pi/2 + inclination)
     
     # PA rotation (positive PA means rotating clock-wise)
-    theta                = np.arctan2(YEllips, XEllips)
-    XEllips             *= np.cos(theta-PA)/np.cos(theta)
-    YEllips             *= np.sin(theta-PA)/np.sin(theta)
-          
+    if PA != 0:
+        theta                = np.arctan2(YEllips, XEllips)
+        
+        # We define two masks, where cos(theta) == 0and where sin(theta) == 0, since the formula does not apply for these special cases
+        maskCos              = np.cos(theta) == 0
+        maskSin              = np.sin(theta) == 0
+        
+        # General cases
+        XEllips[~maskCos]   *= np.cos(theta[~maskCos]+PA)/np.cos(theta[~maskCos])
+        YEllips[~maskSin]   *= np.sin(theta[~maskSin]+PA)/np.sin(theta[~maskSin])
+        
+        # Special cases: when a point is on the X-axis, it has sin(theta)=0 so that the formula above does not apply (same is True for the Y-axis with cos(theta)=0)
+        # When on the X-axis, X=+-R (with R the distance to centre), so we can just rotate the point with the usual formula y=Rsin(theta) (or x=Rcos(theta) if the point is on the Y-axis)
+        XEllips[maskCos]     = Y[maskCos]*np.cos(PA)
+        YEllips[maskSin]     = X[maskSin]*np.sin(PA)
+        
     return XEllips, YEllips
+
+
+def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}):
+    '''
+    Convolve using fast FFT a 2D array with a pre-defined (2D) PSF.
+    
+    How to use
+    ----------
+    
+    Best practice is to provide the PSF model FWHM or sigma in arcsec, and the image pixel element resolution (arcsecToPixel), so that the fonction can convert correctly the PSF width in pixels.
+    You can provide either the FWHM or sigma. If both are given, sigma is used.
+
+    Mandatory inputs
+    ----------------
+        data : numpy 2D array
+            data to be convolved with the PSF
+            
+    Optional inputs
+    ---------------
+        arcsecToGrid : float
+            conversion factor from arcsec to the grid pixel size, that is the width and height of a single pixel in the X and Y grids. Default is the pixel size of HST-ACS images (0.03"/px).
+        model : dict
+            Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
+            For now, only 2D Gaussians are accepted as PSF.
+
+    Return a new image where the convolution has been performed.                                                                                                                                                                                       
+    '''
+    
+    
+    def setListFromDict(dictionary, keys=None, default=None):
+        """
+        Fill a list with values from a dictionary or from default ones if the given key is not in the dictionary.
+        
+        Mandatory inputs
+        ----------------
+            dictionary : dict
+                dictionary to get the keys values from
+        
+        Optional inputs
+        ---------------
+            default : list
+                list of default values if given key is not in dictionary
+            keys : list of str
+                list of key names whose values will be appended into the list
+                
+        Return a list with values retrived from a dictionary keys or from a list of default values.
+        """
+        
+        out = []
+        for k, df in zip(keys, default):
+            if k in dictionary:
+                out.append(dictionary[k])
+            else:
+                out.append(df)
+        return out
+    
+    # Retrieve PSF parameters and set default values if not provided
+    if model['name'].lower() == 'gaussian2d':
+        sigmaX, sigmaY, FWHMX, FWHMY, unit = setListFromDict(model, keys=['sigmaX', 'sigmaY', 'FWHMX', 'FWHMY', 'unit'], default=[None, None, 0.8, 0.8, "arcsec"])
+        
+        # Compute FWHM from sigma if sigma is provided
+        if sigmaX is None:
+            sigmaX = FWHMX / (2*np.sqrt(2*np.log(2)))
+        if sigmaY is None:
+            sigmaY = FWHMY / (2*np.sqrt(2*np.log(2)))
+            
+        # Convert sigma to arcsec and then go in grid pixel values
+        try:
+            sigmaX = u.Quantity(sigmaX, unit).to('arcsec').value / arcsecToGrid
+            sigmaY = u.Quantity(sigmaY, unit).to('arcsec').value / arcsecToGrid
+        except ValueError:
+            raise ValueError('Given unit %s is not valid. Angles may generally be given in units of deg, arcmin, arcsec, hourangle, or rad.')
+        
+        # Perform convolution
+        image     = data.copy()
+        image     = fft2(image)
+        image     = fourier_gaussian(image, sigma=[sigmaX, sigmaY])
+        image     = ifft2(image).real
+    else:
+        raise ValueError('Given model %s is not recognised or implemented yet. Only gaussian2d model is accepted.' %model['name'])
+        
+    return image
 
 
 ####################################################################################################
