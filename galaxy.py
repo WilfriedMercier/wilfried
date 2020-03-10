@@ -977,7 +977,7 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
     
     if Ib is None:
         if magB is not None and offsetB is not None:
-            Ib  = intensity_at_re(listn[0], magB, Rb, offsetB, bn=listbn[0])
+            Ib  = intensity_at_re(listn[1], magB, Rb, offsetB, bn=listbn[1])
         else:
             raise ValueError("Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !")
 
@@ -1202,10 +1202,6 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
         
     # Combine into a single array if required
     if combine:
-        print('tada')
-        return listX, listY, listModels[0] + listModels[1]
-    
-        print('coucou')
         listX, listY, listModels = mergeModelsIntoOne(listX, listY, listModels, pixWidth=pixWidth, pixHeight=pixHeight)
     
     return listX, listY, listModels
@@ -1248,33 +1244,31 @@ def projectModel2D(X, Y, inclination=0, PA=0):
         raise ValueError('X and Y arrays have shape %s and %s respectively. Please provide X and Y grids with the same shape. Cheers !' %(shpXY[0], shpXY[1]))
     
     # Convert from degrees to rad
-    inclination             *= np.pi/180
-    PA                      *= np.pi/180
+    inclination            *= np.pi/180
+    PA                     *= np.pi/180
     
     # Projection using inclination
-    XEllips                  = X.copy()
-    YEllips                  = Y.copy()
+    XEllips                 = X.copy()
+    YEllips                 = Y.copy()
     
+    # We do not use the notation X *= something for the arrays because of cast issues when having X and Y gris with numpy int values instead of numpy floats
     if inclination != 0:
-        XEllips[XEllips>0]  *= np.sin(np.pi/2 + inclination)
-        XEllips[XEllips<=0] *= -np.sin(3*np.pi/2 + inclination)
+        XEllips[XEllips>0]  = XEllips[XEllips>0]*np.sin(np.pi/2 + inclination)
+        XEllips[XEllips<=0] = -XEllips[XEllips<=0]*np.sin(3*np.pi/2 + inclination)
     
-    # PA rotation (positive PA means rotating clock-wise)
+    # PA rotation (positive PA means rotating anti clock-wise)
     if PA != 0:
-        theta                = np.arctan2(YEllips, XEllips)
         
-        # We define two masks, where cos(theta) == 0and where sin(theta) == 0, since the formula does not apply for these special cases
-        maskCos              = np.cos(theta) == 0
-        maskSin              = np.sin(theta) == 0
+        # Radial distance
+        R                   = np.sqrt(X**2+Y**2)
         
-        # General cases
-        XEllips[~maskCos]   *= np.cos(theta[~maskCos]+PA)/np.cos(theta[~maskCos])
-        YEllips[~maskSin]   *= np.sin(theta[~maskSin]+PA)/np.sin(theta[~maskSin])
+        # Angle
+        theta               = np.arctan2(YEllips, XEllips)
+        newTheta            = theta+PA
         
-        # Special cases: when a point is on the X-axis, it has sin(theta)=0 so that the formula above does not apply (same is True for the Y-axis with cos(theta)=0)
-        # When on the X-axis, X=+-R (with R the distance to centre), so we can just rotate the point with the usual formula y=Rsin(theta) (or x=Rcos(theta) if the point is on the Y-axis)
-        XEllips[maskCos]     = Y[maskCos]*np.cos(PA)
-        YEllips[maskSin]     = X[maskSin]*np.sin(PA)
+        # PA rotation
+        XEllips             = R*np.cos(newTheta)
+        YEllips             = R*np.sin(newTheta)
         
     return XEllips, YEllips
 
