@@ -991,7 +991,7 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
     
 def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
     '''
-    Sum the contribution of different models with deformed X and Y grids into a single image with a regular grid.
+    Sum the contribution of different models with distorted X and Y grids into a single image with a regular grid.
     
     How to use
     ----------
@@ -1024,19 +1024,33 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
     maxY = np.max([np.nanmax(listY), -np.nanmin(listY)])
     minY = -maxY
     
-    x    = np.arange(minX, maxX+pixWidth, step=pixWidth)
-    y    = np.arange(minY, maxY+pixHeight, step=pixHeight)
+    nx   = 1 + int((maxX-minX)/pixWidth)
+    ny   = 1 + int((maxY-minY)/pixHeight)
+    x    = np.linspace(minX, maxX, nx)
+    y    = np.linspace(minY, maxY, ny)
     X, Y = np.meshgrid(x, y)
+    
+    # We have roundoff errors in our X and Y grids, so we need to round off to the precision of pixWidth or pixHeight
+    rnd  = np.min([-int(("%e" %pixWidth).split('e')[-1]), -int(("%e" %pixHeight).split('e')[-1])])
+    X    = np.round(X, rnd)
+    Y    = np.round(Y, rnd)
     
     # Combine data (3 loops, not very efficient...)
     Z    = X.copy()*0.0
     shp  = np.shape(X)
-    for xpos in range(shp[0]):
-        for ypos in range(shp[1]):
-            for Xmodel, Ymodel, model in zip(listX, listY, listModels):
+    for Xmodel, Ymodel, model in zip(listX, listY, listModels):
+        Xmodel         = np.round(Xmodel, rnd)
+        Ymodel         = np.round(Ymodel, rnd)
+        
+        for xpos in range(shp[0]):
+            for ypos in range(shp[1]):
                 Xmask          = np.logical_and(Xmodel>=X[xpos, ypos], Xmodel<X[xpos, ypos] + pixWidth)
                 Ymask          = np.logical_and(Ymodel>=Y[xpos, ypos], Ymodel<Y[xpos, ypos] + pixHeight)
                 mask           = np.logical_and(Xmask, Ymask)
+                if len(model[mask]) > 1:
+                    print(repr(X[xpos, ypos]), repr(Y[xpos, ypos]), [repr(i) for i in Xmodel[mask]], repr(Ymodel[mask]), pixWidth, pixHeight)
+                    raise ValueEror
+                    #print('test', Xmodel[mask], Ymodel[mask], model[mask])
                 Z[xpos, ypos] += np.sum(model[mask])
     
     return X, Y, Z
@@ -1269,7 +1283,7 @@ def projectModel2D(X, Y, inclination=0, PA=0):
         # PA rotation
         XEllips             = R*np.cos(newTheta)
         YEllips             = R*np.sin(newTheta)
-        
+    
     return XEllips, YEllips
 
 
