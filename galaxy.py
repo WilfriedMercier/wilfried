@@ -19,7 +19,7 @@ import astropy.units   as     u
 from   scipy.special   import gammaincinv, gammainc, gamma
 from   scipy.optimize  import root
 from   scipy.integrate import quad
-from   scipy.ndimage   import fourier_gaussian
+import scipy.ndimage   as     nd
 
 from   math            import factorial
 
@@ -989,7 +989,7 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
     return X, Y, model
     
     
-def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
+def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=None, ylim=None):
     '''
     Sum the contribution of different models with distorted X and Y grids into a single image with a regular grid.
     
@@ -1015,15 +1015,35 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
         pixHeight : float
             height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Ny.
 
+    Optional inputs
+    ---------------
+        xlim : tuple of two floats
+            lower and upper bounds (in that order) for the x-axis. Default is None, so that a symmetric grid in X is done, using the maximum absolute X value found.
+        ylim : tuple of two floats
+            lower and upper bounds (in that order) for the y-axis. Default is None, so that a symmetric grid in Y is done, using the maximum absolute Y value found.
+
     Return a new X grid, a new Y grid and a new model intensity map with the contribution of every model summed. 
     '''
     
     # Generate the new X and Y grid
-    maxX = np.max([np.nanmax(listX), -np.nanmin(listX)])
-    minX = -maxX
-    maxY = np.max([np.nanmax(listY), -np.nanmin(listY)])
-    minY = -maxY
-    
+    if xlim is None:
+        maxX = np.max([np.nanmax(listX), -np.nanmin(listX)])
+        minX = -maxX
+    elif type(xlim) in [tuple, list]:
+        minX = min(xlim)
+        maxX = max(xlim)
+    else:
+        raise TypeError('Unvalid type (%s) for xlim. If you provide values for xlim, please give it as a list or a tuple only. Cheers !' %type(xlim))
+        
+    if ylim is None:
+        maxY = np.max([np.nanmax(listY), -np.nanmin(listY)])
+        minY = -maxY
+    elif type(ylim) in [tuple, list]:
+        minY = min(ylim)
+        maxY = max(ylim)
+    else:
+        raise TypeError('Unvalid type (%s) for ylim. If you provide values for ylim, please give it as a list or a tuple only. Cheers !' %type(ylim))
+
     nx   = 1 + int((maxX-minX)/pixWidth)
     ny   = 1 + int((maxY-minY)/pixHeight)
     x    = np.linspace(minX, maxX, nx)
@@ -1038,19 +1058,19 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight):
     # Combine data (3 loops, not very efficient...)
     Z    = X.copy()*0.0
     shp  = np.shape(X)
+    
+    rg0  = range(shp[0])
+    rg1  = range(shp[1])
+    
     for Xmodel, Ymodel, model in zip(listX, listY, listModels):
         Xmodel         = np.round(Xmodel, rnd)
         Ymodel         = np.round(Ymodel, rnd)
         
-        for xpos in range(shp[0]):
-            for ypos in range(shp[1]):
+        for xpos in rg0:
+            for ypos in rg1:
                 Xmask          = np.logical_and(Xmodel>=X[xpos, ypos], Xmodel<X[xpos, ypos] + pixWidth)
                 Ymask          = np.logical_and(Ymodel>=Y[xpos, ypos], Ymodel<Y[xpos, ypos] + pixHeight)
                 mask           = np.logical_and(Xmask, Ymask)
-                if len(model[mask]) > 1:
-                    print(repr(X[xpos, ypos]), repr(Y[xpos, ypos]), [repr(i) for i in Xmodel[mask]], repr(Ymodel[mask]), pixWidth, pixHeight)
-                    raise ValueEror
-                    #print('test', Xmodel[mask], Ymodel[mask], model[mask])
                 Z[xpos, ypos] += np.sum(model[mask])
     
     return X, Y, Z
@@ -1216,75 +1236,57 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
         
     # Combine into a single array if required
     if combine:
-        listX, listY, listModels = mergeModelsIntoOne(listX, listY, listModels, pixWidth=pixWidth, pixHeight=pixHeight)
+        listX, listY, listModels = mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=(X.min(), X.max()), ylim=(Y.min(), Y.max()))
     
     return listX, listY, listModels
 
 
-def projectModel2D(X, Y, inclination=0, PA=0):
+def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=np.nan):
     '''
     Project onto the sky a 2D model of a galaxy viewed face-on.
     
-    How to use
-    ----------
+    Info
+    ----
     
-    When talking about sky projection, on may have in mind changing the position of pixel values inside the 2D array to match the rotation and stretching induced by inclination and PA.
-    This would be True if the X and Y coordinates arrays were fixed, that is that data[0, 0] would always be the pixel value of the top-left corner of the image.
+    Sky projection is used with scipy ndimage functions. Two projections are applied (in this order):
+        - inclination: the 2D model is rotated along the vertical axis passing through the centre of the image
+        - PA rotation: the (inclined) model is rotated clock-wise in the sky plane
     
-    However, numpy creates X and Y coordinate arrays using meshgrid. These arrays contain the X and Y coordinates of the corresponding pixels in the data array. This means that the pixel at position (0, 0) in the data array will have coordinates x = X[0, 0] and y = Y[0, 0].
-    Using this scheme, sky projection only requires to modify the values of the X and Y spatial coordinate arrays, rather than moving around pixels in the data array.
-    
-    This explains why the data array is not required to perform the sky projection here.
+    If you do not desire to apply one of the following coordinate transform, either do not provide it, or let it be 0.
+    By default, no transform whatsoever is applied.
     
     Mandatory inputs
     ----------------
-        X : numpy 2-dimensional array
-            grid with x-axis values for each pixel
-        Y : numpy 2-dimensional array
-            grid with y-axis values for each pixel
+        model : numpy 2D array
+            intensity map of the model
         
     Optional inputs
     ---------------
         inclination : float/int
             inclination of the galaxy on the sky in degrees. Default is 0°.
+        fillVal : float/int
+            value used to filled pixels with missing data. Default is np.nan.
         PA : float/int
-            position angle of the galaxy on the sky in degrees. Generally, this number is given between -90° and +90°. Default is 0
+            position angle of the galaxy on the sky in degrees. Generally, this number is given between -90° and +90°. Default is 0°.
+        splineOrder : int
+            order of the spline used to interpolate values at new sky coordinates. Default is 3.
 
-    Return X, Y arrays projected onto the sky. Default values should leave the galaxy unchanged (no inclination and no PA rotation).
+    Return a new image (intensity map) projected onto the sky with interpolated values at new coordinate location.
     '''
     
-    shpXY = [X.shape, Y.shape]
-    if shpXY[0] != shpXY[1]:
-        raise ValueError('X and Y arrays have shape %s and %s respectively. Please provide X and Y grids with the same shape. Cheers !' %(shpXY[0], shpXY[1]))
+    if model.ndim != 2:
+        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
     
-    # Convert from degrees to rad
-    inclination            *= np.pi/180
-    PA                     *= np.pi/180
-    
-    # Projection using inclination
-    XEllips                 = X.copy()
-    YEllips                 = Y.copy()
-    
+    newModel     = model.copy()
     # We do not use the notation X *= something for the arrays because of cast issues when having X and Y gris with numpy int values instead of numpy floats
     if inclination != 0:
-        XEllips[XEllips>0]  = XEllips[XEllips>0]*np.sin(np.pi/2 + inclination)
-        XEllips[XEllips<=0] = -XEllips[XEllips<=0]*np.sin(3*np.pi/2 + inclination)
+        newModel = tiltGalaxy(newModel, inclination=inclination, splineOrder=splineOrder, fillVal=fillVal)
     
     # PA rotation (positive PA means rotating anti clock-wise)
     if PA != 0:
-        
-        # Radial distance
-        R                   = np.sqrt(X**2+Y**2)
-        
-        # Angle
-        theta               = np.arctan2(YEllips, XEllips)
-        newTheta            = theta+PA
-        
-        # PA rotation
-        XEllips             = R*np.cos(newTheta)
-        YEllips             = R*np.sin(newTheta)
+        newModel = rotateGalaxy(newModel, PA=PA, splineOrder=splineOrder, fillVal=fillVal)
     
-    return XEllips, YEllips
+    return newModel
 
 
 def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}):
@@ -1361,12 +1363,81 @@ def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX
         # Perform convolution
         image     = data.copy()
         image     = fft2(image)
-        image     = fourier_gaussian(image, sigma=[sigmaX, sigmaY])
+        image     = nd.fourier_gaussian(image, sigma=[sigmaX, sigmaY])
         image     = ifft2(image).real
     else:
         raise ValueError('Given model %s is not recognised or implemented yet. Only gaussian2d model is accepted.' %model['name'])
         
     return image
+
+
+def rotateGalaxy(model, PA=0, splineOrder=3, fitIn=False, fillVal=np.nan):
+    '''
+    Apply PA rotation to a galaxy image.
+    
+    Madatory inputs
+    ---------------
+        model : numpy 2D array
+            intensity map of the galaxy model
+    
+    Optional inputs
+    ---------------
+        fillVal : float/int
+            value to fill pixels which may become empty
+        fitIn : bool
+            whether to resize the image to fit it in or not. Default False so that a new image is generated with the same dimensions.
+        PA : float/int
+            rotation angle to apply (counted clock-wise in degrees). Default is 0 so that no rotation is applied.
+        splineOrder : int
+            order of the spline used to compute the intensity value at new pixel location. Default is 3.
+            
+    Return a new image of a galaxy rotated by a certain angle.
+    '''
+    
+    if model.ndim != 2:
+        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
+    
+    # We count angles anti clock-wise so we need to inverte the value for rotate which counts clock-wise
+    return nd.rotate(model, -PA, reshape=fitIn, order=splineOrder, cval=fillVal)
+
+
+def tiltGalaxy(model, inclination=0, splineOrder=3, fillVal=np.nan):
+    '''
+    Tilt a galaxy image around the South-North axis (assumed vertical) passing through the image centre.
+    
+    Madatory inputs
+    ---------------
+        model : numpy 2D array
+            intensity map of the galaxy model
+    
+    Optional inputs
+    ---------------
+        fillVal : float/int
+            value to fill pixels which may become empty
+        fitIn : bool
+            whether to resize the image to fit it in or not. Default False so that a new image is generated with the same dimensions.
+        inclination : float/int
+            rotation angle to apply (counted clock-wise in degrees). Default is 0 so that no rotation is applied.
+        splineOrder : int
+            order of the spline used to compute the intensity value at new pixel location. Default is 3.
+            
+    Return a new image of a galaxy tilted by some angle around the vertical axis passing through the image centre.
+    '''
+    
+    if model.ndim != 2:
+        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
+    
+    # Apply coordinate transform on grid
+    inclination   *= np.pi/180
+    X, Y           = np.indices(model.shape)
+    midX           = (np.nanmax(X) + np.nanmin(X))/2.0
+    
+    if inclination != 0:
+        X[X>midX]  = midX + (X[X>midX]-midX)*np.sin(np.pi/2 + inclination)
+        X[X<=midX] = midX - (X[X<=midX]-midX)*np.sin(3*np.pi/2 + inclination)
+    
+    # Apply coordinate transform on image then using the grid
+    return nd.map_coordinates(model, [X, Y], order=splineOrder, cval=fillVal)
 
 
 ####################################################################################################
