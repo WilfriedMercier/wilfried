@@ -814,6 +814,67 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
 #################################################################################################################
 #                                Other related Sersic functions                                                 #
 #################################################################################################################
+    
+def centralIntensity(n, re, Ie=None, mag=None, offset=None):
+    '''
+    Compute the central intensity of a given Sersic profile.
+    
+    Mandatory inputs
+    ----------------
+        n : int/float
+            Sersic index of the profile
+        re : float
+            half-light radius
+        Ie : float
+            intensity at Re. If None, values for mag and offset must be given instead.
+        mag : float
+            total magnitude. If None, Ie must be given instead.
+        offset : float
+            magnitude offset. If None, Ie must be given instead
+
+    Return the central intensity of the Sersic profile.
+    '''
+    
+    bn = compute_bn(n)
+    
+    if Ie is None:
+        if mag is not None and offset is not None:
+            Ie = intensity_at_re(n, mag, re, offset, bn=bn)
+        else:
+            raise ValueError("Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one. Cheers !")
+    
+    return Ie*np.exp(bn)
+
+def checkAndComputeIe(Ie, n, bn, re, mag, offset):
+    """
+    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
+    
+    Mandatory inputs
+    ---------------- 
+        bn : float
+            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$ 
+        Ie : float
+            intensity at effective radius
+        mag : float
+            total integrated magnitude
+        n : float/int
+            Sersic index
+        offset : float
+            magnitude offset
+        re : float
+            half-light/effective radius
+    
+    Return Ie if it could be computed or already existed.
+    """
+    
+    if Ie is None:
+        if mag is not None and offset is not None:
+            return intensity_at_re(n, mag, re, offset, bn=bn)
+        else:
+            raise("Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one. Cheers !")
+    else:
+        return Ie
+
 
 def check_bns(listn, listbn):
     """
@@ -878,40 +939,43 @@ def intensity_at_re(n, mag, re, offset, bn=None):
         bn = compute_bn(n)
     
     return 10**((offset - mag)/2.5 - 2.0*np.log10(re) + 2.0*n*np.log10(bn) - bn/np.log(10)) / (2.0*np.pi*n*gamma(2.0*n))
-
-
-def checkAndComputeIe(Ie, n, bn, re, mag, offset):
-    """
-    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
     
+
+def ratioIntensitiesAtRe(listn, listRe, listMag, listOffset, simplify=False):
+    '''
+    Compute the ratio of intensities between two sersic profiles et their respective half-light radii.
+    
+    Info
+    ----
+        If the bulge and disk components have the same effective radii, total magnitudes and magnitude offsets, a simplified equation can be used instead with simplify keyword.
+        
     Mandatory inputs
-    ---------------- 
-        bn : float
-            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$ 
-        Ie : float
-            intensity at effective radius
-        mag : float
-            total integrated magnitude
-        n : float/int
-            Sersic index
-        offset : float
-            magnitude offset
-        re : float
-            half-light/effective radius
+    ----------------
+        listMag : list/tuple of two floats
+            total magnitudes of the two profiles
+        listOffset : float
+            magnitude offset of the two profiles
+        listRe : float
+            half-light radius of the two profiles
     
-    Return Ie if it could be computed or already existed, or None if a value was missing.
-    """
+    Optional inputs
+    ---------------
+        simplify : bool
+            whether to use a simplified equation to compute the ratio (only if magD===magB and Rd==Rb and offsetD==offsetB). Default is False.
+            
+    Return the ratio of the two profiles intensities at their respective half-light radii (first profile/second profile).
+    '''
     
-    if Ie is None:
-        if mag is not None and offset is not None:
-            return intensity_at_re(n, mag, re, offset, bn=bn)
-        else:
-            print("ValueError: Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one.")
-            return None
+    listbn = check_bns(listn, [None, None])
+    
+    if not simplify:
+        ratio = intensity_at_re(listn[0], listMag[0], listRe[0], listOffset[0], bn=listbn[0])/intensity_at_re(listn[1], listMag[1], listRe[1], listOffset[1], bn=listbn[1])
     else:
-        return Ie
-    
-    
+        ratio = (listn[1]*gamma(2.0*listn[1]))/(listn[0]*gamma(2.0*listn[0])) * (listbn[0]**listn[0] / listbn[1]**listn[1])**2 * (np.exp(listbn[1]) / np.exp(listbn[0]))
+        
+    return ratio
+
+
 ####################################################################################################
 #                                      2D modelling                                                #
 ####################################################################################################
@@ -964,6 +1028,13 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
         
     Return X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition.
     '''
+    
+    if any([i<0 for i in [nx, ny, Rd, Rb, arcsecToGrid]]):
+        raise ValueError('At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rd, Rb, arcsecToGrid.')
+    
+    # Checking PA
+    if PA<-90 or PA>90:
+        raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
 
     listn       = [1, 4]
     listbn      = [compute_bn(n) for n in listn]
@@ -987,93 +1058,6 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
         model       = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid)
         
     return X, Y, model
-    
-    
-def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=None, ylim=None):
-    '''
-    Sum the contribution of different models with distorted X and Y grids into a single image with a regular grid.
-    
-    How to use
-    ----------
-    
-    Provide the X and Y grids for each model as well as the intensity maps.
-    
-    Warning:
-        pixWidth and pixHeight parameters are quite important as they will be used to define the pixel scale of the new regular grid. Additonally, all data points of every model falling inside a given pixel will be added to this pixel contribution.
-        In principle, one should give the pixel scale of the original array (before sky projection was applied).
-
-    Mandatory inputs
-    ----------------
-        listX : list of numpy 2D arrays
-            list of X arrays for each model
-        listY : list of numpy 2D arrays
-            list of Y arrays for each model
-        listModels : list of numpy 2D arrays
-            list of intensity maps for each model
-        pixWidth : float
-            width (x-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Nx pixels between xmin and xmax values, so that each pixel would have a width of (xmax-xmin)/Nx.
-        pixHeight : float
-            height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Ny.
-
-    Optional inputs
-    ---------------
-        xlim : tuple of two floats
-            lower and upper bounds (in that order) for the x-axis. Default is None, so that a symmetric grid in X is done, using the maximum absolute X value found.
-        ylim : tuple of two floats
-            lower and upper bounds (in that order) for the y-axis. Default is None, so that a symmetric grid in Y is done, using the maximum absolute Y value found.
-
-    Return a new X grid, a new Y grid and a new model intensity map with the contribution of every model summed. 
-    '''
-    
-    # Generate the new X and Y grid
-    if xlim is None:
-        maxX = np.max([np.nanmax(listX), -np.nanmin(listX)])
-        minX = -maxX
-    elif type(xlim) in [tuple, list]:
-        minX = min(xlim)
-        maxX = max(xlim)
-    else:
-        raise TypeError('Unvalid type (%s) for xlim. If you provide values for xlim, please give it as a list or a tuple only. Cheers !' %type(xlim))
-        
-    if ylim is None:
-        maxY = np.max([np.nanmax(listY), -np.nanmin(listY)])
-        minY = -maxY
-    elif type(ylim) in [tuple, list]:
-        minY = min(ylim)
-        maxY = max(ylim)
-    else:
-        raise TypeError('Unvalid type (%s) for ylim. If you provide values for ylim, please give it as a list or a tuple only. Cheers !' %type(ylim))
-
-    nx   = 1 + int((maxX-minX)/pixWidth)
-    ny   = 1 + int((maxY-minY)/pixHeight)
-    x    = np.linspace(minX, maxX, nx)
-    y    = np.linspace(minY, maxY, ny)
-    X, Y = np.meshgrid(x, y)
-    
-    # We have roundoff errors in our X and Y grids, so we need to round off to the precision of pixWidth or pixHeight
-    rnd  = np.min([-int(("%e" %pixWidth).split('e')[-1]), -int(("%e" %pixHeight).split('e')[-1])])
-    X    = np.round(X, rnd)
-    Y    = np.round(Y, rnd)
-    
-    # Combine data (3 loops, not very efficient...)
-    Z    = X.copy()*0.0
-    shp  = np.shape(X)
-    
-    rg0  = range(shp[0])
-    rg1  = range(shp[1])
-    
-    for Xmodel, Ymodel, model in zip(listX, listY, listModels):
-        Xmodel         = np.round(Xmodel, rnd)
-        Ymodel         = np.round(Ymodel, rnd)
-        
-        for xpos in rg0:
-            for ypos in rg1:
-                Xmask          = np.logical_and(Xmodel>=X[xpos, ypos], Xmodel<X[xpos, ypos] + pixWidth)
-                Ymask          = np.logical_and(Ymodel>=Y[xpos, ypos], Ymodel<Y[xpos, ypos] + pixHeight)
-                mask           = np.logical_and(Xmask, Ymask)
-                Z[xpos, ypos] += np.sum(model[mask])
-    
-    return X, Y, Z
 
 
 def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, combine=True):
@@ -1156,12 +1140,11 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
     How to use
     ----------
     
-    Provide model parameters as lists. If you already know Ie for every model, you do not have to provide magnitude and magnitude offsets values.
+    Provide model parameters as lists. If you already know Ie for every model, you do not have to provide magnitude and magnitude offset values.
     
     This function can be used in two ways:
         - Either you want to generate multiple Sersic models at once and retrieve them separately. In this case, use combine=False (by default).
-        - Or you want to generate a single 2D model which is a combination of different Sersic profiles projected differently on the sky. E.g. unprojected bulge (because of spherical symmetry) + projected disk. In this case, use combine=True.
-    Note that in the latter case, because X and Y grids are distorted when applying a projection, a new regular grid will be generated to combine models in a consistent way. 
+        - Or you want to generate a single 2D model which is a combination of different Sersic profiles with different projections on the sky. E.g. unprojected bulge (because of spherical symmetry) + projected disk. In this case, use combine=True.
 
     If listInclination and listPA are not provided, no projection will be applied on any model.
     
@@ -1198,10 +1181,14 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
         listPA : list of float/int
             list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°. Default is None, so that no rotation is applied to any component.
 
-    Depending on combine parameter, return:
-        - if combine is False: list of X grid for each component, list of Y grid for each component, list of flux maps for each components
-        - if combine is True: X, Y new regular grids and a single flux map of all the combined models
+    Return (depending on combine parameter):
+        - if combine is False: X, Y grids and a list of intensity maps for each component
+        - if combine is True: X, Y grids and a single intensity map for all the combined models
     '''
+    
+    # Checking PA
+    if any([pa<-90 for pa in listPA]) or any([pa>90 for pa in listPA]):
+        raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
     
     nbModels            = len(listn)
     
@@ -1218,8 +1205,9 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
 
     # Generate 2D models before sky projection
     X, Y, listModels    = model2D(nx, ny, listn, listRe, listbn, listIe, combine=False)
-    pixWidth            = (X.max() - X.min())/(nx-1)
-    pixHeight           = (Y.max() - Y.min())/(ny-1)
+    
+    #pixWidth            = (X.max() - X.min())/(nx-1)
+    #pixHeight           = (Y.max() - Y.min())/(ny-1)
     
     if listInclination is None:
         listInclination = [0]*nbModels
@@ -1227,18 +1215,14 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
         listPA          = [0]*nbModels
 
     # Perform sky projection model-wise
-    listX               = []
-    listY               = []
-    for inc, pa in zip(listInclination, listPA):
-        newX, newY      = projectModel2D(X, Y, inclination=inc, PA=pa)
-        listX.append(newX)
-        listY.append(newY)
+    for num, inc, pa in zip(range(nbModels), listInclination, listPA):
+        listModels[num] = projectModel2D(listModels[num], inclination=inc, PA=pa)
         
     # Combine into a single array if required
     if combine:
-        listX, listY, listModels = mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=(X.min(), X.max()), ylim=(Y.min(), Y.max()))
-    
-    return listX, listY, listModels
+       listModels       = np.sum(listModels, axis=0)
+        
+    return X, Y, listModels
 
 
 def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=np.nan):
@@ -1274,6 +1258,10 @@ def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=np.nan):
     Return a new image (intensity map) projected onto the sky with interpolated values at new coordinate location.
     '''
     
+    # Checking PA
+    if PA<-90 or PA>90:
+        raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
+
     if model.ndim != 2:
         raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
     
@@ -1483,3 +1471,94 @@ def fromStructuredArrayOrNot(gal, magD, magB, Rd, Rb, noStructuredArray):
         Rb           = gal['R_b_GF']
         
     return magD, magB, Rd, Rb
+
+
+####################################################################################################
+#                                            Trash                                                 #
+####################################################################################################
+
+def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=None, ylim=None):
+    '''
+    Sum the contribution of different models with distorted X and Y grids into a single image with a regular grid.
+    
+    How to use
+    ----------
+    
+    Provide the X and Y grids for each model as well as the intensity maps.
+    
+    Warning:
+        pixWidth and pixHeight parameters are quite important as they will be used to define the pixel scale of the new regular grid. Additonally, all data points of every model falling inside a given pixel will be added to this pixel contribution.
+        In principle, one should give the pixel scale of the original array (before sky projection was applied).
+
+    Mandatory inputs
+    ----------------
+        listX : list of numpy 2D arrays
+            list of X arrays for each model
+        listY : list of numpy 2D arrays
+            list of Y arrays for each model
+        listModels : list of numpy 2D arrays
+            list of intensity maps for each model
+        pixWidth : float
+            width (x-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Nx pixels between xmin and xmax values, so that each pixel would have a width of (xmax-xmin)/Nx.
+        pixHeight : float
+            height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Ny.
+
+    Optional inputs
+    ---------------
+        xlim : tuple of two floats
+            lower and upper bounds (in that order) for the x-axis. Default is None, so that a symmetric grid in X is done, using the maximum absolute X value found.
+        ylim : tuple of two floats
+            lower and upper bounds (in that order) for the y-axis. Default is None, so that a symmetric grid in Y is done, using the maximum absolute Y value found.
+
+    Return a new X grid, a new Y grid and a new model intensity map with the contribution of every model summed. 
+    '''
+    
+    # Generate the new X and Y grid
+    if xlim is None:
+        maxX = np.max([np.nanmax(listX), -np.nanmin(listX)])
+        minX = -maxX
+    elif type(xlim) in [tuple, list]:
+        minX = min(xlim)
+        maxX = max(xlim)
+    else:
+        raise TypeError('Unvalid type (%s) for xlim. If you provide values for xlim, please give it as a list or a tuple only. Cheers !' %type(xlim))
+        
+    if ylim is None:
+        maxY = np.max([np.nanmax(listY), -np.nanmin(listY)])
+        minY = -maxY
+    elif type(ylim) in [tuple, list]:
+        minY = min(ylim)
+        maxY = max(ylim)
+    else:
+        raise TypeError('Unvalid type (%s) for ylim. If you provide values for ylim, please give it as a list or a tuple only. Cheers !' %type(ylim))
+
+    nx   = 1 + int((maxX-minX)/pixWidth)
+    ny   = 1 + int((maxY-minY)/pixHeight)
+    x    = np.linspace(minX, maxX, nx)
+    y    = np.linspace(minY, maxY, ny)
+    X, Y = np.meshgrid(x, y)
+    
+    # We have roundoff errors in our X and Y grids, so we need to round off to the precision of pixWidth or pixHeight
+    rnd  = np.min([-int(("%e" %pixWidth).split('e')[-1]), -int(("%e" %pixHeight).split('e')[-1])])
+    X    = np.round(X, rnd)
+    Y    = np.round(Y, rnd)
+    
+    # Combine data (3 loops, not very efficient...)
+    Z    = X.copy()*0.0
+    shp  = np.shape(X)
+    
+    rg0  = range(shp[0])
+    rg1  = range(shp[1])
+    
+    for Xmodel, Ymodel, model in zip(listX, listY, listModels):
+        Xmodel         = np.round(Xmodel, rnd)
+        Ymodel         = np.round(Ymodel, rnd)
+        
+        for xpos in rg0:
+            for ypos in rg1:
+                Xmask          = np.logical_and(Xmodel>=X[xpos, ypos], Xmodel<X[xpos, ypos] + pixWidth)
+                Ymask          = np.logical_and(Ymodel>=Y[xpos, ypos], Ymodel<Y[xpos, ypos] + pixHeight)
+                mask           = np.logical_and(Xmask, Ymask)
+                Z[xpos, ypos] += np.sum(model[mask])
+    
+    return X, Y, Z
