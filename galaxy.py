@@ -11,21 +11,22 @@ Created on Mon Sep 30 22:09:08 2019
 Useful functions for galaxy modelling and other related computation
 """
 
-import numpy           as     np
-from   numpy.fft       import fft2, ifft2
+import numpy                            as     np
+from   numpy.fft                        import fft2, ifft2
 
-import astropy.units   as     u
+import astropy.units                    as     u
+from astropy.modeling.functional_models import Sersic2D
 
-from   scipy.special   import gammaincinv, gammainc, gamma
-from   scipy.optimize  import root
-from   scipy.integrate import quad
-import scipy.ndimage   as     nd
+from   scipy.special                    import gammaincinv, gammainc, gamma
+from   scipy.optimize                   import root
+from   scipy.integrate                  import quad
+import scipy.ndimage                    as     nd
 
-from   math            import factorial
+from   math                             import factorial
 
-#################################################################################################################
-#                                           Sersic profiles                                                     #
-#################################################################################################################
+####################################################################################################################
+#                                           1D Sersic profiles                                                     #
+####################################################################################################################
 
 def bulge(r, re, b4=None, Ie=None, mag=None, offset=None):
     """
@@ -931,7 +932,7 @@ def intensity_at_re(n, mag, re, offset, bn=None):
     ---------------
         bn : float
             bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. By default, bn is None, and its value will be computed by the function using the value of n. To skip this computation, please give a value to bn when callling the function.
-    
+        
     Return the intensity at re
     """
  
@@ -976,14 +977,42 @@ def ratioIntensitiesAtRe(listn, listRe, listMag, listOffset, simplify=False):
     return ratio
 
 
+def whereCentralIntensityDrops(n, Re, factor=1.0, bn=None):
+    '''
+    Compute the distance from a Sersic profile centre where the intensity has dropped by some factor relative to the central intensity.
+
+    Mandatory inputs
+    ----------------
+        n : int/float
+            Sersic index
+        Re : float
+            Half-light (effective) radius. The distance will have the same unit as Re.
+    
+    Optional inputs
+    ---------------
+        bn : float
+            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. By default, bn is None, and its value will be computed by the function using the value of n. To skip this computation, please give a value to bn when callling the function.
+        factor : float
+            factor dividing I0. The distance is such that I(distance) = I0 / factor. Default is 1.0.
+
+    Return the distance where I(distance) = I0/factor.
+    '''
+    
+    bn = compute_bn(n)
+    
+    return Re*(np.log(factor)/bn)**n
+    
+
+
 ####################################################################################################
 #                                      2D modelling                                                #
 ####################################################################################################
     
 def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0, PA=0, noPSF=False,
-                   PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, arcsecToGrid=0.03, combine=True):
+                   PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, 
+                   arcsecToGrid=0.03, pixScale=1.0, combine=True):
     '''
-    Generate a bulge + (sky projected) disk 2D model with PSF convolution.
+    Generate a bulge + (sky projected) disk 2D model (with PSF convolution).
     
     How to use
     ----------
@@ -1022,6 +1051,8 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
             whether to not perform PSF convolution or not. Default is to do convolution.
         PA : int/float
             disk position angle (in degrees). Default is 0° so that no rotation if performed.
+        pixScale : positive float
+            relative size of a pixel. By default each pixel has a size of 1, that is X (Y) grids will have steps of 1 between -nx//2 (-ny//2) and nx//2 (ny//2). This can be changed by providing a pixel size (this is not an arcsec to pixel conversion size, but rather a way to oversample your data to have a finer pixel grid).
         PSF : dict
             Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
             For now, only 2D Gaussians are accepted as PSF. 
@@ -1029,12 +1060,23 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
     Return X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition.
     '''
     
+    ##############################################
+    #          Checking input parameters         #
+    ##############################################
+    
+    if pixScale <= 0:
+        raise ValueError('pixel resolution cannot be neither infinite nor negative. Please provide a non-zero pixel scale. Cheers !')
+    
     if any([i<0 for i in [nx, ny, Rd, Rb, arcsecToGrid]]):
         raise ValueError('At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rd, Rb, arcsecToGrid.')
     
     # Checking PA
     if PA<-90 or PA>90:
         raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
+
+    ##################################
+    #         Compute models         #
+    ##################################
 
     listn       = [1, 4]
     listbn      = [compute_bn(n) for n in listn]
@@ -1052,22 +1094,22 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
         else:
             raise ValueError("Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !")
 
-    X, Y, model = model2DOnSky(nx, ny, listn, [Rd, Rb], listbn=listbn, listIe=[Id, Ib], listInclination=[inclination, 0], listPA=[PA, 0], combine=combine)
+    X, Y, model = model2D(nx, ny, listn, [Rd, Rb], listIe=[Id, Ib], listInclination=[inclination, 0], listPA=[PA, 0], pixScale=pixScale, combine=combine)
     
     if not noPSF and combine:
-        model       = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid)
+        model   = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid)
         
     return X, Y, model
 
 
-def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, combine=True):
+def model2D(nx, ny, listn, listRe, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=True, pixScale=1.0):
     """
-    Generate a 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.
+    Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.
     
     How to use
     ----------
         Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (listIe), or if not known, a total magnitude value for each profile (listMag) and their corresponding magnitude offset (to convert from magnitudes to intensities).
-        The 'combine' keywork can be set to False to recover the model of each component separately. This can be useful if one wants to compute a 2D model for many components, but has to apply later sky projections only for a few of them.
+        The 'combine' keywork can be set to False to recover the model of each component separately.
     
     Mandatory inputs
     ----------------
@@ -1084,92 +1126,6 @@ def model2D(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listO
     ---------------
         combine : bool
             whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists. Default is to combine all the components into a single image.
-        listbn : list of floats/None
-            list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
-        listIe : list of floats
-            list of intensities at re for each profile
-        listMag : list of floats
-            list of total integrated magnitudes for each profile
-        listOffset : list of floats
-             list of magnitude offsets used in the magnitude system for each profile
-         
-    Return:
-        - if combine is True: X, Y grids and the intensity map
-        - if combine is False: X, Y grids and a list of intensity maps for each component
-    """
-    
-    #if no list of bn values is given, compute them all
-    if listbn is None:
-        listbn         = [compute_bn(n) for n in listn]
-    listbn             = check_bns(listn, listbn)
-    
-    if listIe is None:
-        if listMag is not None and listOffset is not None:
-            listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
-        else:
-            raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
-
-    # Generate X and Y grids
-    midX               = nx//2
-    midY               = ny//2
-    listX              = np.linspace(-midX, midX, nx)   
-    listY              = np.linspace(-midY, midY, ny)
-    X, Y               = np.meshgrid(listX, listY)
-    RAD                = X**2 + Y**2
-    
-    # If we combine models, we add them, if we do not combine them, we place them into a list
-    for pos, n, re, bn, ie in zip(range(len(listn)), listn, listRe, listbn, listIe):
-        if pos == 0:
-            if combine:
-                intensity  = sersic_profile(RAD, n, re, Ie=ie, bn=bn)
-            else:
-                intensity  = [sersic_profile(RAD, n, re, Ie=ie, bn=bn)]
-        else:
-            if combine:
-                intensity += sersic_profile(RAD, n, re, Ie=ie, bn=bn)
-            else:
-                intensity += [sersic_profile(RAD, n, re, Ie=ie, bn=bn)]
-    
-    return X, Y, intensity
-
-
-def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=False):
-    '''
-    Generate either a single, or a set of 2D models (Sersic profiles) after projecting those on the sky.
-    
-    How to use
-    ----------
-    
-    Provide model parameters as lists. If you already know Ie for every model, you do not have to provide magnitude and magnitude offset values.
-    
-    This function can be used in two ways:
-        - Either you want to generate multiple Sersic models at once and retrieve them separately. In this case, use combine=False (by default).
-        - Or you want to generate a single 2D model which is a combination of different Sersic profiles with different projections on the sky. E.g. unprojected bulge (because of spherical symmetry) + projected disk. In this case, use combine=True.
-
-    If listInclination and listPA are not provided, no projection will be applied on any model.
-    
-    Warning ! 
-    
-    Inclination is defined as the rotation of the model around the vertical axis (in the galaxy plane). Given that 2D (and not 3D) models are generated, if an inclination for a spherically symmetric component is given (such as a bulge), this component will be squeezed along the x-axis (and rotated if a PA is provided as well).
-    Such behaviour may not be wanted, so one should be careful when dealing with spherically symmetric components to provide a 0° inclination.
-
-    Mandatory inputs
-    ----------------
-        listn : list of float/int
-            list of Sersic index for each profile
-        listRe : list of float
-            list of half-light radii for each profile
-        nx : int
-            size of the model for the x-axis
-        ny : int
-            size of the model for the y-axis
-        
-    Optional inputs
-    ---------------
-        combine : bool
-            whether to combine each projected model into a single 2D array, or to return each component separately. Default is not to combine them into a single array.
-        listbn : list of floats/None
-            list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
         listIe : list of floats
             list of intensities at re for each profile
         listInclination : list of float/int
@@ -1180,101 +1136,64 @@ def model2DOnSky(nx, ny, listn, listRe, listbn=None, listIe=None, listMag=None, 
              list of magnitude offsets used in the magnitude system for each profile
         listPA : list of float/int
             list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°. Default is None, so that no rotation is applied to any component.
+        pixScale : positive float
+            relative size of a pixel. By default each pixel has a size of 1, that is X (Y) grids will have steps of 1 between -nx//2 (-ny//2) and nx//2 (ny//2). This can be changed by providing a pixel size (this is not an arcsec to pixel conversion size, but rather a way to oversample your data to have a finer pixel grid).
 
-    Return (depending on combine parameter):
+    Return:
+        - if combine is True: X, Y grids and the intensity map
         - if combine is False: X, Y grids and a list of intensity maps for each component
-        - if combine is True: X, Y grids and a single intensity map for all the combined models
-    '''
+    """
+    
+    if pixScale <= 0:
+        raise ValueError('Pixel resolution cannot be neither infinite nor negative. Please provide a non-zero pixel scale. Cheers !')
     
     # Checking PA
     if any([pa<-90 for pa in listPA]) or any([pa>90 for pa in listPA]):
-        raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
-    
-    nbModels            = len(listn)
-    
-    #if no list of bn values is given, compute them all
-    if listbn is None:
-        listbn          = [compute_bn(n) for n in listn]
-    listbn              = check_bns(listn, listbn)
-    
+        raise ValueError('PA should be given in the range -90° <= PA <= +90°, counting angles anti clock-wise. Cheers !')  
+
     if listIe is None:
         if listMag is not None and listOffset is not None:
-            listIe      = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
+            listIe         = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset))
         else:
             raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
 
-    # Generate 2D models before sky projection
-    X, Y, listModels    = model2D(nx, ny, listn, listRe, listbn, listIe, combine=False)
-    
-    #pixWidth            = (X.max() - X.min())/(nx-1)
-    #pixHeight           = (Y.max() - Y.min())/(ny-1)
+    nbModels               = len(listn)
+
+    # Generate X and Y grids
+    midX                   = nx//2
+    midY                   = ny//2
+    pixWidth               = 2*midX/nx*pixScale
+    pixHeight              = 2*midY/ny*pixScale
+    listX                  = np.arange(-midX, midX+pixWidth, pixWidth)   
+    listY                  = np.arange(-midY, midY+pixWidth, pixHeight)
+    X, Y                   = np.meshgrid(listX, listY)
     
     if listInclination is None:
-        listInclination = [0]*nbModels
+        listInclination    = [0]*nbModels
     if listPA          is None:
-        listPA          = [0]*nbModels
-
-    # Perform sky projection model-wise
-    for num, inc, pa in zip(range(nbModels), listInclination, listPA):
-        listModels[num] = projectModel2D(listModels[num], inclination=inc, PA=pa)
+        listPA             = [0]*nbModels
+    
+    # If we combine models, we add them, if we do not combine them, we place them into a list
+    for pos, n, re, ie, inc, pa in zip(range(len(listn)), listn, listRe, listIe, listInclination, listPA):
         
-    # Combine into a single array if required
-    if combine:
-       listModels       = np.sum(listModels, axis=0)
+        # We add 90 to PA because we want a PA=0° galaxy to be aligned with the vertical axis
+        ell                = 1-np.cos(inc*np.pi/180)
+        pa                *= np.pi/180
+        print(ell, np.cos(inc*np.pi/180))
+        theModel           = Sersic2D(amplitude=ie, r_eff=re, n=n, x_0=0, y_0=0, ellip=ell, theta=np.pi/2+pa)
         
-    return X, Y, listModels
-
-
-def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=np.nan):
-    '''
-    Project onto the sky a 2D model of a galaxy viewed face-on.
+        if pos == 0:
+            if combine:
+                intensity  = theModel(X, Y)/(1-ell)
+            else:
+                intensity  = [theModel(X, Y)/(1-ell)]
+        else:
+            if combine:
+                intensity += theModel(X, Y)/(1-ell)
+            else:
+                intensity += [theModel(X, Y)/(1-ell)]
     
-    Info
-    ----
-    
-    Sky projection is used with scipy ndimage functions. Two projections are applied (in this order):
-        - inclination: the 2D model is rotated along the vertical axis passing through the centre of the image
-        - PA rotation: the (inclined) model is rotated clock-wise in the sky plane
-    
-    If you do not desire to apply one of the following coordinate transform, either do not provide it, or let it be 0.
-    By default, no transform whatsoever is applied.
-    
-    Mandatory inputs
-    ----------------
-        model : numpy 2D array
-            intensity map of the model
-        
-    Optional inputs
-    ---------------
-        inclination : float/int
-            inclination of the galaxy on the sky in degrees. Default is 0°.
-        fillVal : float/int
-            value used to filled pixels with missing data. Default is np.nan.
-        PA : float/int
-            position angle of the galaxy on the sky in degrees. Generally, this number is given between -90° and +90°. Default is 0°.
-        splineOrder : int
-            order of the spline used to interpolate values at new sky coordinates. Default is 3.
-
-    Return a new image (intensity map) projected onto the sky with interpolated values at new coordinate location.
-    '''
-    
-    # Checking PA
-    if PA<-90 or PA>90:
-        raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
-
-    if model.ndim != 2:
-        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
-    
-    newModel     = model.copy()
-    # We do not use the notation X *= something for the arrays because of cast issues when having X and Y gris with numpy int values instead of numpy floats
-    if inclination != 0:
-        newModel = tiltGalaxy(newModel, inclination=inclination, splineOrder=splineOrder, fillVal=fillVal)
-    
-    # PA rotation (positive PA means rotating anti clock-wise)
-    if PA != 0:
-        newModel = rotateGalaxy(newModel, PA=PA, splineOrder=splineOrder, fillVal=fillVal)
-    
-    return newModel
+    return X, Y, intensity
 
 
 def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}):
@@ -1357,75 +1276,6 @@ def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX
         raise ValueError('Given model %s is not recognised or implemented yet. Only gaussian2d model is accepted.' %model['name'])
         
     return image
-
-
-def rotateGalaxy(model, PA=0, splineOrder=3, fitIn=False, fillVal=np.nan):
-    '''
-    Apply PA rotation to a galaxy image.
-    
-    Madatory inputs
-    ---------------
-        model : numpy 2D array
-            intensity map of the galaxy model
-    
-    Optional inputs
-    ---------------
-        fillVal : float/int
-            value to fill pixels which may become empty
-        fitIn : bool
-            whether to resize the image to fit it in or not. Default False so that a new image is generated with the same dimensions.
-        PA : float/int
-            rotation angle to apply (counted clock-wise in degrees). Default is 0 so that no rotation is applied.
-        splineOrder : int
-            order of the spline used to compute the intensity value at new pixel location. Default is 3.
-            
-    Return a new image of a galaxy rotated by a certain angle.
-    '''
-    
-    if model.ndim != 2:
-        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
-    
-    # We count angles anti clock-wise so we need to inverte the value for rotate which counts clock-wise
-    return nd.rotate(model, -PA, reshape=fitIn, order=splineOrder, cval=fillVal)
-
-
-def tiltGalaxy(model, inclination=0, splineOrder=3, fillVal=np.nan):
-    '''
-    Tilt a galaxy image around the South-North axis (assumed vertical) passing through the image centre.
-    
-    Madatory inputs
-    ---------------
-        model : numpy 2D array
-            intensity map of the galaxy model
-    
-    Optional inputs
-    ---------------
-        fillVal : float/int
-            value to fill pixels which may become empty
-        fitIn : bool
-            whether to resize the image to fit it in or not. Default False so that a new image is generated with the same dimensions.
-        inclination : float/int
-            rotation angle to apply (counted clock-wise in degrees). Default is 0 so that no rotation is applied.
-        splineOrder : int
-            order of the spline used to compute the intensity value at new pixel location. Default is 3.
-            
-    Return a new image of a galaxy tilted by some angle around the vertical axis passing through the image centre.
-    '''
-    
-    if model.ndim != 2:
-        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
-    
-    # Apply coordinate transform on grid
-    inclination   *= np.pi/180
-    X, Y           = np.indices(model.shape)
-    midX           = (np.nanmax(X) + np.nanmin(X))/2.0
-    
-    if inclination != 0:
-        X[X>midX]  = midX + (X[X>midX]-midX)*np.sin(np.pi/2 + inclination)
-        X[X<=midX] = midX - (X[X<=midX]-midX)*np.sin(3*np.pi/2 + inclination)
-    
-    # Apply coordinate transform on image then using the grid
-    return nd.map_coordinates(model, [X, Y], order=splineOrder, cval=fillVal)
 
 
 ####################################################################################################
@@ -1562,3 +1412,124 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=None,
                 Z[xpos, ypos] += np.sum(model[mask])
     
     return X, Y, Z
+
+
+def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=0):
+    '''
+    Project onto the sky a 2D model of a galaxy viewed face-on.
+    
+    Info
+    ----
+    
+    Sky projection is used with scipy ndimage functions. Two projections are applied (in this order):
+        - inclination: the 2D model is rotated along the vertical axis passing through the centre of the image
+        - PA rotation: the (inclined) model is rotated clock-wise in the sky plane
+    
+    If you do not desire to apply one of the following coordinate transform, either do not provide it, or let it be 0.
+    By default, no transform whatsoever is applied.
+    
+    Mandatory inputs
+    ----------------
+        model : numpy 2D array
+            intensity map of the model
+        
+    Optional inputs
+    ---------------
+        inclination : float/int
+            inclination of the galaxy on the sky in degrees. Default is 0°.
+        fillVal : float/int
+            value used to filled pixels with missing data. Default is np.nan.
+        PA : float/int
+            position angle of the galaxy on the sky in degrees. Generally, this number is given between -90° and +90°. Default is 0°.
+        splineOrder : int
+            order of the spline used to interpolate values at new sky coordinates. Default is 3.
+
+    Return a new image (intensity map) projected onto the sky with interpolated values at new coordinate location.
+    '''
+    
+    # Checking PA
+    if PA<-90 or PA>90:
+        raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
+
+    if model.ndim != 2:
+        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
+    
+    newModel     = model.copy()
+    # We do not use the notation X *= something for the arrays because of cast issues when having X and Y gris with numpy int values instead of numpy floats
+    if inclination != 0:
+        newModel = tiltGalaxy(newModel, inclination=inclination, splineOrder=splineOrder, fillVal=fillVal)
+    
+    # PA rotation (positive PA means rotating anti clock-wise)
+    if PA != 0:
+        newModel = rotateGalaxy(newModel, PA=PA, splineOrder=splineOrder, fillVal=fillVal)
+    
+    return newModel
+
+
+def tiltGalaxy(model, inclination=0, splineOrder=3, fillVal=np.nan):
+    '''
+    Tilt a galaxy image around the South-North axis (assumed vertical) passing through the image centre.
+    
+    Madatory inputs
+    ---------------
+        model : numpy 2D array
+            intensity map of the galaxy model
+    
+    Optional inputs
+    ---------------
+        fillVal : float/int
+            value to fill pixels which may become empty
+        fitIn : bool
+            whether to resize the image to fit it in or not. Default False so that a new image is generated with the same dimensions.
+        inclination : float/int
+            rotation angle to apply (counted clock-wise in degrees). Default is 0 so that no rotation is applied.
+        splineOrder : int
+            order of the spline used to compute the intensity value at new pixel location. Default is 3.
+            
+    Return a new image of a galaxy tilted by some angle around the vertical axis passing through the image centre.
+    '''
+    
+    if model.ndim != 2:
+        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
+    
+    # Apply coordinate transform on grid
+    inclination   *= np.pi/180
+    X, Y           = np.indices(model.shape)
+    midX           = (np.nanmax(X) + np.nanmin(X))/2.0
+    
+    if inclination != 0:
+        X[X>midX]  = midX + (X[X>midX]-midX)*np.sin(np.pi/2 + inclination)
+        X[X<=midX] = midX - (X[X<=midX]-midX)*np.sin(3*np.pi/2 + inclination)
+    
+    # Apply coordinate transform on image then using the grid
+    return nd.map_coordinates(model, [X, Y], order=splineOrder, cval=fillVal)
+
+
+def rotateGalaxy(model, PA=0, splineOrder=3, fitIn=False, fillVal=np.nan):
+    '''
+    Apply PA rotation to a galaxy image.
+    
+    Madatory inputs
+    ---------------
+        model : numpy 2D array
+            intensity map of the galaxy model
+    
+    Optional inputs
+    ---------------
+        fillVal : float/int
+            value to fill pixels which may become empty
+        fitIn : bool
+            whether to resize the image to fit it in or not. Default False so that a new image is generated with the same dimensions.
+        PA : float/int
+            rotation angle to apply (counted clock-wise in degrees). Default is 0 so that no rotation is applied.
+        splineOrder : int
+            order of the spline used to compute the intensity value at new pixel location. Default is 3.
+            
+    Return a new image of a galaxy rotated by a certain angle.
+    '''
+    
+    if model.ndim != 2:
+        raise ValueError('Model should be 2-dimensional only. Current number of dimensions is %d. Cheers !' %model.ndim)
+    
+    # We count angles anti clock-wise so we need to inverte the value for rotate which counts clock-wise
+    return nd.rotate(model, -PA, reshape=fitIn, order=splineOrder, cval=fillVal)
