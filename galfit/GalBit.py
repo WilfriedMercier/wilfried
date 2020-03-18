@@ -8,7 +8,7 @@ Created on Wed Nov 27 17:18:55 2019
 
 import tkinter            as     tk
 from   tkinter            import messagebox
-from   tkinter.filedialog import askopenfilename
+from   tkinter.filedialog import askopenfilenames
 from   tkinter            import ttk
 
 import matplotlib
@@ -64,7 +64,10 @@ static unsigned char circle_inv_bits[] = {
 
 
 class singlePlotFrame:
-    def __init__(self, parent, root, data=None, title=None, bgColor='beige'):
+    '''A frame for a single plot, with all its properties and methods.'''
+    
+    
+    def __init__(self, parent, root, data=None, title=None, figsize=(3, 3), bgColor='beige'):
         
         # General properties
         self.bdOn           = 'black'
@@ -83,7 +86,7 @@ class singlePlotFrame:
         
         # Making a figure
         self.bgColor        = bgColor
-        self.figure         = Figure(figsize=(4,4), tight_layout=True, facecolor=self.bgColor)
+        self.figure         = Figure(figsize=figsize, tight_layout=True, facecolor=self.bgColor)
             
         # Creating an axis
         self.ax             = self.figure.add_subplot(111)
@@ -128,17 +131,9 @@ class singlePlotFrame:
         '''
         
         norm    = DivergingNorm(vcenter=0, vmin=mini, vmax=maxi)
-        
-        if not self.root.topPane.imLoaded:
-            print('tada')
-            self.im = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
-        else:
-            print('coucou')
-            self.im.set_data(newData)
-            self.im.set_cmap(cmap)
-            self.im.set_norm(norm)
-            
+        self.im = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
         self.canvas.draw()
+        return
         
         
     def changeBorder(self):
@@ -154,6 +149,7 @@ class singlePlotFrame:
             self.parent.config({'bg':self.bdOn})
             self.selected = True
             self.root.bottomPane.numSelected += 1
+        return
         
         
     def onClick(self, event):
@@ -174,17 +170,17 @@ class singlePlotFrame:
                 
         # if at least one graph is selected, we enable the x and y invert widgets
         if self.root.bottomPane.numSelected == 1:
-            self.root.topPane.invert.x.config({'state':'normal'})
-            self.root.topPane.invert.y.config({'state':'normal'})
+            self.root.topPane.updateInvertWidgets(state='normal')
         elif self.root.bottomPane.numSelected == 0:
-            self.root.topPane.invert.x.config({'state':'disabled'})
-            self.root.topPane.invert.y.config({'state':'disabled'})
+            self.root.topPane.updateInvertWidgets(state='disabled')
+        return
                 
                 
     def onFigure(self, event):
         '''Set focus onto the main window when the cursor enters it.'''
         
         self.root.parent.focus()
+        return
             
             
     def onMove(self, event):
@@ -211,7 +207,8 @@ class singlePlotFrame:
         # Set active singlePlot frame for key press events which are not canvas dependent
         if self.root.bottomPane.activeSingleFrame is not self:
             self.root.bottomPane.activeSingleFrame = self
-        
+        return
+    
 
 
 class graphFrame:
@@ -224,45 +221,111 @@ class graphFrame:
         self.parent            = parent
         self.root              = root
         self.bdSize            = 5
+        self.bgColor           = bgColor
         
-        self.numSelected       = 0
+        self.nbFrames          = 0
+        self.nbFramesLine      = 4
+        self.equivWinSize      = 1700
+        self.scaleFactor       = self.nbFramesLine/self.equivWinSize
+        
+        # Updated number of frames per line when the window is resized
+        self.realNbFramesLine  = self.nbFramesLine
         
         # Because matplotlib key press event is not Tk canvas dependent (i.e it links it to the last drawn Tk canvas), we define an active singleFrame instance
-        # which we use to update graphs when the focus is on them
+        # which we use to update graphs when the focus is on them (CQFD ;))
         self.activeSingleFrame = None
+        self.numSelected       = 0
+        
+        self.frameList         = []
+        self.plotList          = []
+        
+        #############################################
+        #       Generating frames and canvas        #
+        #############################################
+        
+        # Container objects
+        self.frame        = container()
+        
+        # We need to draw a canvas to place widgets within
+        self.canvas       = tk.Canvas(self.parent, bd=0, bg=self.bgColor)
+        self.scrollbar    = tk.Scrollbar(self.parent, orient="vertical", command=self.canvas.yview, width=5, bg='black')
+        
+        # Configure scrollbar on the right
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'), yscrollcommand=self.scrollbar.set, bg='black')
+        
+        # Define a frame within the canvas to hold widgets
+        self.frame.obj    = tk.Frame(self.canvas, bg=self.bgColor)
+        self.frame.id     = self.canvas.create_window(0, 0, anchor='nw', window=self.frame.obj)
+        self.canvas.bind("<Configure>", self.resizeFrame)
+  
+        # Draw widgets
+        self.scrollbar.pack( fill='both', side='left')
+        self.canvas.pack(    fill='both', expand='yes')
         
         
-        ##################################################
-        #              Making single plot frame          #
-        ##################################################
         
-        self.leftFrame         = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
-        self.midFrame          = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
-        self.rightFrame        = tk.Frame(self.parent, bd=self.bdSize, bg=bgColor)
+    def makeFrames(self, nb=0, titles=[]):
+        ''''Create the frames when uploading images'''
         
+        self.nbFrames = nb
+        self.updateFramesPerLine(self.root.parent.winfo_width())
         
-        #################################################################
-        #                Making singlePlotFrame instances               #
-        #################################################################
+        if nb != len(titles):
+            raise Exception('Given number of frame titles does not match number of loaded frames.')
+
+        for i, title in zip(range(nb), titles):
+            self.frameList.append(tk.Frame(self.frame.obj, bd=self.bdSize, bg=self.bgColor))
+            self.plotList.append(singlePlotFrame(self.frameList[i], self.root, title=title, bgColor=self.bgColor))
+        return
+    
+    
+    def placeFrames(self, fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N):
+        '''Place the created frames into the main frame'''
         
-        self.plot1             = singlePlotFrame(self.leftFrame,  self.root, title='data',     bgColor=bgColor)
-        self.plot2             = singlePlotFrame(self.midFrame,   self.root, title='model',    bgColor=bgColor)
-        self.plot3             = singlePlotFrame(self.rightFrame, self.root, title='residual', bgColor=bgColor)
+        for pos, frame in enumerate(self.frameList):
+            colPos  = pos%self.realNbFramesLine
+            linePos = pos//self.realNbFramesLine
+            frame.grid(row=linePos, column=colPos, padx=5, pady=5,  sticky=tk.N+tk.E+tk.W)
+            
+        # Always update canvas scrollregions otherwise it does weird stuff
+        self.canvas.update_idletasks()
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+        return
+           
+    
+    def updateFramesPerLine(self, winSize):
+        '''Update the number of allowed frames per each line'''
         
-        self.leftFrame.grid(row=0, column=0, padx=5, pady=5,  sticky=tk.N+tk.E+tk.W)
-        self.midFrame.grid(row=0, column=1, padx=5, pady=5,   sticky=tk.N+tk.E+tk.W)
-        self.rightFrame.grid(row=0, column=3, padx=5, pady=5, sticky=tk.N+tk.E+tk.W)
-        """
-        self.leftFrame.pack( fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N)
-        self.midFrame.pack(  fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N)
-        self.rightFrame.pack(fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N)
-        """
+        self.realNbFramesLine = int(self.scaleFactor*winSize)
+        return
+    
+    
+    def resetFrames(self):
+        '''Destroy plots and frames, and reset their corresponding lists'''
+        
+        self.nbFrames         = 0
+        self.realNbFramesLine = self.nbFrames
+        
+        for frame in self.frameList:
+            frame.grid_forget()
+            frame.destroy()
+        
+        self.frameList        = []
+        self.plotList         = []
+        return
+    
+    
+    def resizeFrame(self, event):
+        '''Resize the main frame when the canvas is resised'''
+        
+        self.canvas.itemconfig(self.frame.id, width=event.width)
+        return
         
 
 
 class topFrame:
     '''
-    Top frame with widgets used to import data.
+    Top frame with widgets used to import data and get additional information.
     '''
     def __init__(self, parent, root, bgColor='grey'):
         '''
@@ -274,20 +337,22 @@ class topFrame:
                 main application object
         '''
         
-        self.parent     = parent
-        self.root       = root
-        self.bgColor    = bgColor
-        self.imLoaded   = False
-        self.fname      = tk.StringVar()
-        self.fname.set('/home/wilfried/Thesis/galfit/modelling/outputs/')
+        self.parent      = parent
+        self.root        = root
+        self.bgColor     = bgColor
         
-        padx            = 10
-        pady            = 10
+        # Visible (in input) and list of opened file names
+        self.initDir     = tk.StringVar()
+        self.fnames      = []
+        self.initDir.set('/home/wilfried/Thesis/hst/all_stamps/')
         
-        self.loadButton = ttk.Button(self.parent, command=self.openFile, text='Browse')
-        self.loadInput  = ttk.Entry( self.parent, cursor='xterm', textvariable=self.fname, width=50)
+        # Data stored in a dictionnary with file names as keys
+        self.data        = {}
         
-        self.sendButton = ttk.Button(self.parent, command=self.updateFigures, text='Load')
+        padx             = 10
+        pady             = 10
+        
+        self.loadButton  = ttk.Button(self.parent, command=self.openFile, text='Browse')
         
         # Making the cmap list widget
         cmapNames        = list(matplotlib.cm.cmap_d.keys())
@@ -316,102 +381,136 @@ class topFrame:
         self.invert.x    = tk.Checkbutton(self.parent, text='Invert x', bg=self.bgColor, command=self.invertxAxes, state=tk.DISABLED)
         self.invert.y    = tk.Checkbutton(self.parent, text='Invert y', bg=self.bgColor, command=self.invertyAxes, state=tk.DISABLED)
         
+        # Zoom widget in top right corner
+        self.zoom        = container()
+        self.zoom.frame  = tk.Frame(self.parent, bg='black')
+        self.zoom.fig    = Figure(figsize=(1.5, 1.5), tight_layout=True, facecolor='red')
+        self.zoom.ax     = self.zoom.fig.add_subplot(111)
+        self.zoom.ax.yaxis.set_ticks_position('both')
+        self.zoom.ax.xaxis.set_ticks_position('both')
+        self.zoom.ax.tick_params(which='both', direction='in', labelsize=0)
+        self.zoom.ax.set_title('Zoom (x3)')
+        self.zoom.canvas = FigureCanvasTkAgg(self.zoom.fig, master=self.zoom.frame)
+        self.zoom.canvas.draw()
+        
         # Drawing elements
-        self.loadInput.grid(   row=0, column=1, padx=0,      pady=pady)
-        self.loadButton.grid(  row=0, column=0, padx=padx,   pady=pady, sticky=tk.W)
-        self.sendButton.grid(  row=0, column=2, padx=padx,   pady=pady)
+        self.loadButton.grid(  row=0, column=0, padx=padx,   pady=pady, sticky=tk.W+tk.N)
         
-        self.cmap.label.grid(  row=0, column=3, padx=2*padx, pady=pady)
-        self.cmap.list.grid(   row=0, column=4, padx=0,      pady=pady)
+        self.cmap.label.grid(  row=0, column=3, padx=2*padx, pady=pady, sticky=tk.W+tk.N)
+        self.cmap.list.grid(   row=0, column=4, padx=0,      pady=pady, sticky=tk.W+tk.N)
         
-        self.hover.label.grid( row=2, column=0, padx=padx,   pady=pady, sticky=tk.W, columnspan=2)
-        self.hover.xpos.grid(  row=3, column=0, padx=padx,   pady=0,    sticky=tk.W, columnspan=2)
-        self.hover.ypos.grid(  row=4, column=0, padx=padx,   pady=0,    sticky=tk.W, columnspan=2)
+        self.hover.label.grid( row=1, column=0, padx=padx,   pady=0, sticky=tk.W+tk.N, columnspan=2)
+        self.hover.xpos.grid(  row=2, column=0, padx=padx,   pady=0, sticky=tk.W+tk.N, columnspan=2)
+        self.hover.ypos.grid(  row=3, column=0, padx=padx,   pady=0, sticky=tk.W+tk.N, columnspan=2)
         
-        self.invert.x.grid(    row=0, column=5, padx=2*padx, pady=0)
-        self.invert.y.grid(    row=0, column=6, padx=0,      pady=0)
+        self.invert.x.grid(    row=0, column=5, padx=2*padx, pady=pady, sticky=tk.W+tk.N)
+        self.invert.y.grid(    row=0, column=6, padx=0,      pady=pady, sticky=tk.W+tk.N)
         
+        self.zoom.frame.grid(  row=0, column=7, sticky=tk.E, padx=padx, pady=pady, rowspan=4)
+        self.zoom.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.zoom.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        
+        self.parent.grid_rowconfigure(0, weight=1)
+        
+        self.parent.grid_columnconfigure(7, weight=1)
+
+
+    def genFigures(self):
+        '''Generate figures which have been loaded'''
+        
+        # First we generate the frames
+        self.root.bottomPane.makeFrames(nb=len(self.data), titles=[i.split('/')[-1] for i in self.data.keys()])
+        
+        # Second we place them in our widget
+        self.root.bottomPane.placeFrames()
+            
+        # Then we update each frame with the corresponding data
+        for name, galaxy in self.data.items():
+            self.root.bottomPane.plotList[galaxy['loc']].updateImage(galaxy['image'], maxi=galaxy['max'], mini=galaxy['min'], cmap=self.cmap.var.get())
+        return
+    
+
+    def invertxAxes(self):
+        '''Invert the x axis of the selected graphs'''
+        
+        for plot in self.root.bottomPane.plotList:
+            if plot.selected:
+                plot.ax.set_xlim(plot.ax.get_xlim()[::-1])
+                plot.canvas.draw()
+        return
+            
+             
+    def invertyAxes(self):
+        for plot in self.root.bottomPane.plotList:
+            if plot.selected:
+                plot.ax.set_ylim(plot.ax.get_ylim()[::-1])
+                plot.canvas.draw()
+        return
+    
+    
+    def loadFitsFile(self, file, num):
+        '''
+        Loads a .fits file and data into self.data dict.
+        
+        Mandatory inputs
+        ----------------
+            file : str
+                file name to open
+            num : int
+                position number of the plot (counted from left to right, top to bottom)
+        '''
+        
+        try:
+            hdul            = fits.open(file)
+            self.data[file] = {'loc':num, 'image':hdul[0].data, 'min':hdul[0].data.min(), 'max':hdul[0].data.max()}
+        except IOError:
+            messagebox.showerror('Invalid input', 'The given file name %s is not a FITS file' %self.fname.get())
+        return
+    
         
     def openFile(self, *args):
-        '''Opens a file using self.fname.get() value.'''
+        '''Open a file using self.fname.get() value.'''
         
-        tmp = askopenfilename(initialdir=self.fname.get().rsplit('/', 1)[0], title='Select file...', filetypes=(('Fits files', '.fits'), ))
-
-        if tmp not in ['', ()]:
-            # Update file name
-            self.fname.set(tmp)
+        self.fnames = list(askopenfilenames(initialdir=self.initDir.get().rsplit('/', 1)[0], title='Select file(s)...', filetypes=(('Fits files', '.fits'), )))
+        
+        if self.fnames not in ['', []]:
             
-            # Load data
-            self.loadFitsFiles()
+            # Empty data dict first
+            self.data = {}
             
-            # Update figures accordingly
-            self.updateFigures()
+            for pos, name in enumerate(self.fnames):
+                # Load data
+                self.loadFitsFile(name, pos)
             
+            # Reset frames before loading new figures
+            self.root.bottomPane.resetFrames()
+            
+            # Generate frames and figures
+            self.genFigures()
+        
             # Set flag to True if data was succesfully loaded
-            self.imLoaded      = True
-            
-            # Set number of plots
-            self.root.numPlots = 3
-            
-            
-    def loadFitsFiles(self):
-        '''Loads a .fits file with 3 extensions and update the plots in the bottom window.'''
-        
-        try:
-            hdul = fits.open(self.fname.get())
-        except IOError:
-            messagebox.showerror('Invalid input', 'The given file name %s is not a .fits file' %self.fname.get())
-            return
-        
-        self.image, self.model, self.res = container(), container(), container()
-        
-        # Getting data
-        self.image.data    = hdul[1].data
-        self.model.data    = hdul[2].data
-        
-        self.image.cmapMax = np.max([self.model.data.max(), self.image.data.max()])
-        self.model.cmapMax = self.image.cmapMax
-        
-        self.image.cmapMin = np.min([self.model.data.min(), self.image.data.min()])
-        self.model.cmapMin = self.image.cmapMin
-        
-        self.res.data      = hdul[3].data
-        
-        
-    def updateFigures(self):
-        '''Updates the main three figures'''
-        
-        try:
-            self.root.bottomPane.plot1.updateImage(self.image.data, maxi=self.image.cmapMax,  mini=self.image.cmapMin,  cmap=self.cmap.var.get())
-            self.root.bottomPane.plot2.updateImage(self.model.data, maxi=self.model.cmapMax,  mini=self.model.cmapMin,  cmap=self.cmap.var.get())
-            self.root.bottomPane.plot3.updateImage(self.res.data,   maxi=self.res.data.max(), mini=self.res.data.min(), cmap=self.cmap.var.get())
-        except AttributeError:
-            messagebox.showerror('Invalid input', 'The given file name %s is not a .fits file' %self.fname.get())
+            self.imLoaded = True
+        return
 
         
     def updateCmap(self, event):
         '''Update the cmap of the already plotted images.'''
         
-        if self.imLoaded:
-            for plot in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
-                plot.im.set_cmap(self.cmap.var.get())
-                plot.canvas.draw()
-            
+        for plot in self.root.bottomPane.plotList:
+            plot.im.set_cmap(self.cmap.var.get())
+            plot.canvas.draw()
+        return
     
-    def invertxAxes(self):
-        '''Invert the x axis of the selected graphs'''
+    
+    def updateInvertWidgets(self, state):
+        '''Change the invert widgets into some state (normal, disabled, etc.)'''
         
-        for plot in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
-            if plot.selected:
-                plot.ax.set_xlim(plot.ax.get_xlim()[::-1])
-                plot.canvas.draw()
-            
-             
-    def invertyAxes(self):
-        for plot in [self.root.bottomPane.plot1, self.root.bottomPane.plot2, self.root.bottomPane.plot3]:
-            if plot.selected:
-                plot.ax.set_ylim(plot.ax.get_ylim()[::-1])
-                plot.canvas.draw()
+        if self.invert.x['state'] != state:
+            self.invert.x.config({'state':state})
+        
+        if self.invert.y['state'] != state:
+            self.invert.y.config({'state':state})
+        return
                 
                 
 class modelFrame:
@@ -850,9 +949,6 @@ class mainApplication:
         
         self.parent            = parent
         
-        # Set number of plots in bottom frame to None till files are opened
-        self.numPlots          = 3
-        
         # Set default cursor and state
         self.state             = 'default'
         self.parent.config(cursor='arrow')
@@ -893,8 +989,11 @@ class mainApplication:
         self.parent.bind('<Control-h>',  self.topMenu.window.showShortcuts)
         
         # Bind enter and leave frames to know where the cursor lies
-        self.rightFrame.frame.bind('<Enter>', self.setScrollable)
-        self.rightFrame.frame.bind('<Leave>', self.unsetScrollable)
+        self.rightFrame.frame.bind('<Enter>', lambda event, frame='right': self.setScrollable(event, frame))
+        self.rightFrame.frame.bind('<Leave>', lambda event, frame='right': self.unsetScrollable(event, frame))
+        
+        self.bottomFrame.frame.bind('<Enter>', lambda event, frame='bottom': self.setScrollable(event, frame))
+        self.bottomFrame.frame.bind('<Leave>', lambda event, frame='bottom': self.unsetScrollable(event, frame))
         
         # Drawing frames
         self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=3)
@@ -907,38 +1006,45 @@ class mainApplication:
         tk.Grid.columnconfigure(self.parent, 2, weight=0, minsize=100)
         tk.Grid.columnconfigure(self.parent, 1, weight=1)
         
-        print(self.bottomFrame.frame['width'], self.bottomFrame.frame['height'])
+        
+    def setScrollable(self, event, frame='right'):
+        self.parent.bind('<MouseWheel>', lambda event, frame=frame: self.setMouseWheel(event, frame))
+        self.parent.bind("<Button-4>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
+        self.parent.bind("<Button-5>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
+        return
         
         
-    def setScrollable(self, event):
-        self.parent.bind('<MouseWheel>', self.setMouseWheel)
-        self.parent.bind("<Button-4>",   self.setMouseWheel)
-        self.parent.bind("<Button-5>",   self.setMouseWheel)
-        
-        
-    def unsetScrollable(self, event):
+    def unsetScrollable(self, event, frame='right'):
         self.parent.unbind('<MouseWheel>')
         self.parent.unbind("<Button-4>")
         self.parent.unbind("<Button-5>")
+        return
             
         
-    def setMouseWheel(self, event):
-        print('oui')
-        if self.rightPane.canvas.bbox('all')[3] > self.rightPane.labelFrame.winfo_height():
+    def setMouseWheel(self, event, frame='right'):
+        if frame == 'right':
+            if self.rightPane.canvas.bbox('all')[3] > self.rightPane.labelFrame.winfo_height():
+                if event.num==5 or event.delta<0:
+                    step = -1
+                else:
+                    step = 1            
+                self.rightPane.canvas.yview_scroll(step, 'units')
+        elif frame == 'bottom':
             if event.num==5 or event.delta<0:
                 step = -1
             else:
                 step = 1            
-            self.rightPane.canvas.yview_scroll(step, 'units')
+            self.bottomPane.canvas.yview_scroll(step, 'units')
+        return
         
-        
+    
     def defaultState(self, event):
         '''Change the graphFrame instance back to default state (where the user can select plots)'''
         
         if self.state != 'default':
             self.bottomFrame.frame.config(cursor='arrow')
             self.state = 'default'
-            
+        return
             
     def cancel(self, event):
         '''Cancel PA line drawing if Ctrl-z is pressed'''
@@ -967,15 +1073,18 @@ class mainApplication:
         '''Select or unselect all the plots.'''
         
         # Case 1: not all the plots are selected, so we select those that are not yet
-        if self.numPlots > self.bottomPane.numSelected:
-            for plot in [self.bottomPane.plot1, self.bottomPane.plot2, self.bottomPane.plot3]:
+        if self.bottomPane.nbFrames > self.bottomPane.numSelected:
+            for plot in self.bottomPane.plotList:
                 if not plot.selected:
                     plot.changeBorder()
-            self.bottomPane.numSelected = self.numPlots
-        # Case 2: all the plots are selected, so we unselected them all
-        elif self.numPlots == self.bottomPane.numSelected:
-            for plot in [self.bottomPane.plot1, self.bottomPane.plot2, self.bottomPane.plot3]:
+            self.topPane.updateInvertWidgets(state='normal')
+            self.bottomPane.numSelected = self.bottomPane.nbFrames
+            
+        # Case 2: all the plots are selected, so we unselect them all
+        elif self.bottomPane.nbFrames == self.bottomPane.numSelected:
+            for plot in self.bottomPane.plotList:
                 plot.changeBorder()
+            self.topPane.updateInvertWidgets(state='disabled')
             self.bottomPane.numSelected = 0
         
 
