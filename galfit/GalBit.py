@@ -74,6 +74,7 @@ class singlePlotFrame:
         self.bdOff          = bgColor
         
         self.selected       = False
+        self.data           = data
         
         self.parent         = parent
         self.root           = root
@@ -130,8 +131,9 @@ class singlePlotFrame:
                 name of the colormap to use
         '''
         
-        norm    = DivergingNorm(vcenter=0, vmin=mini, vmax=maxi)
-        self.im = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
+        norm      = DivergingNorm(vcenter=0, vmin=mini, vmax=maxi)
+        self.data = newData
+        self.im   = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
         self.canvas.draw()
         return
         
@@ -207,6 +209,9 @@ class singlePlotFrame:
         # Set active singlePlot frame for key press events which are not canvas dependent
         if self.root.bottomPane.activeSingleFrame is not self:
             self.root.bottomPane.activeSingleFrame = self
+            
+        # Update the magnifier on the top right corner
+        self.root.topPane.updateMagnifier(self.data, xpos=event.xdata, ypos=event.ydata)
         return
     
 
@@ -251,7 +256,7 @@ class graphFrame:
         self.scrollbar    = tk.Scrollbar(self.parent, orient="vertical", command=self.canvas.yview, width=5, bg='black')
         
         # Configure scrollbar on the right
-        self.canvas.configure(scrollregion=self.canvas.bbox('all'), yscrollcommand=self.scrollbar.set, bg='black')
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'), yscrollcommand=self.scrollbar.set, bg=self.bgColor)
         
         # Define a frame within the canvas to hold widgets
         self.frame.obj    = tk.Frame(self.canvas, bg=self.bgColor)
@@ -367,29 +372,39 @@ class topFrame:
         
         # Making the position and value label when moving through the graphs
         self.hover       = container()
-        
+        self.hover.frame = tk.Frame(self.parent, bg=self.bgColor)
         self.hover.var   = tk.StringVar(value='Current image:')
         self.hover.xvar  = tk.StringVar(value='x:')
         self.hover.yvar  = tk.StringVar(value='y:')
         
-        self.hover.label = tk.Label(self.parent, textvariable=self.hover.var,  bg=self.bgColor)
-        self.hover.xpos  = tk.Label(self.parent, textvariable=self.hover.xvar, bg=self.bgColor)
-        self.hover.ypos  = tk.Label(self.parent, textvariable=self.hover.yvar, bg=self.bgColor)
+        self.hover.label = tk.Label(self.hover.frame, textvariable=self.hover.var,  bg=self.bgColor)
+        self.hover.xpos  = tk.Label(self.hover.frame, textvariable=self.hover.xvar, bg=self.bgColor)
+        self.hover.ypos  = tk.Label(self.hover.frame, textvariable=self.hover.yvar, bg=self.bgColor)
         
         # Adding checkboxes to invert axes
         self.invert      = container()
         self.invert.x    = tk.Checkbutton(self.parent, text='Invert x', bg=self.bgColor, command=self.invertxAxes, state=tk.DISABLED)
         self.invert.y    = tk.Checkbutton(self.parent, text='Invert y', bg=self.bgColor, command=self.invertyAxes, state=tk.DISABLED)
         
-        # Zoom widget in top right corner
+        ###################################################
+        #                    Zoom widget                  #
+        ###################################################
+        
+        # Variables
         self.zoom        = container()
-        self.zoom.frame  = tk.Frame(self.parent, bg='black')
-        self.zoom.fig    = Figure(figsize=(1.5, 1.5), tight_layout=True, facecolor='red')
+        self.zoom.name   = ''
+        self.zoom.xpos   = None
+        self.zoom.ypos   = None
+        self.zoom.im     = None
+        self.zoom.zoom   = 10
+        
+        self.zoom.frame  = tk.Frame(self.parent, bg=self.bgColor)
+        self.zoom.fig    = Figure(figsize=(1.5, 1.5), tight_layout=True, facecolor=self.bgColor)
         self.zoom.ax     = self.zoom.fig.add_subplot(111)
         self.zoom.ax.yaxis.set_ticks_position('both')
         self.zoom.ax.xaxis.set_ticks_position('both')
         self.zoom.ax.tick_params(which='both', direction='in', labelsize=0)
-        self.zoom.ax.set_title('Zoom (x3)')
+        self.zoom.ax.set_title('Zoom (x10)')
         self.zoom.canvas = FigureCanvasTkAgg(self.zoom.fig, master=self.zoom.frame)
         self.zoom.canvas.draw()
         
@@ -399,19 +414,19 @@ class topFrame:
         self.cmap.label.grid(  row=0, column=3, padx=2*padx, pady=pady, sticky=tk.W+tk.N)
         self.cmap.list.grid(   row=0, column=4, padx=0,      pady=pady, sticky=tk.W+tk.N)
         
-        self.hover.label.grid( row=1, column=0, padx=padx,   pady=0, sticky=tk.W+tk.N, columnspan=2)
-        self.hover.xpos.grid(  row=2, column=0, padx=padx,   pady=0, sticky=tk.W+tk.N, columnspan=2)
-        self.hover.ypos.grid(  row=3, column=0, padx=padx,   pady=0, sticky=tk.W+tk.N, columnspan=2)
+        self.hover.label.grid( row=0, column=0, sticky=tk.W+tk.N)
+        self.hover.xpos.grid(  row=1, column=0, sticky=tk.W+tk.N)
+        self.hover.ypos.grid(  row=2, column=0, sticky=tk.W+tk.N)
+        self.hover.frame.grid( row=1, column=0, padx=padx,   pady=pady, sticky=tk.W+tk.N+tk.E, columnspan=7)
         
         self.invert.x.grid(    row=0, column=5, padx=2*padx, pady=pady, sticky=tk.W+tk.N)
         self.invert.y.grid(    row=0, column=6, padx=0,      pady=pady, sticky=tk.W+tk.N)
         
-        self.zoom.frame.grid(  row=0, column=7, sticky=tk.E, padx=padx, pady=pady, rowspan=4)
+        self.zoom.frame.grid(  row=0, column=7, sticky=tk.E, padx=2*padx, pady=pady, rowspan=4)
         self.zoom.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         self.zoom.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
-        self.parent.grid_rowconfigure(0, weight=1)
-        
+        self.parent.grid_rowconfigure(1, weight=1)
         self.parent.grid_columnconfigure(7, weight=1)
 
 
@@ -511,6 +526,58 @@ class topFrame:
         if self.invert.y['state'] != state:
             self.invert.y.config({'state':state})
         return
+    
+    
+    def updateMagnifier(self, data, xpos=None, ypos=None, cmap='bwr'):
+        '''
+        Update the mangifier in the top right corner.
+        
+        Mandatory inputs
+        ----------------
+            data : 2D numpy array
+                full array used to update the magnifier
+        
+        Optional inputs
+        ---------------
+            xpos : int
+                x-axis mouse position (in the array). Default is None, so that the image centre is used.
+            ypos : int
+                y-axis mouse position (in the array). Default is None, so that the image centre is used.
+        '''
+        
+        if xpos is not None and ypos is not None:
+            xpos               = int(xpos)
+            ypos               = int(ypos)
+            if xpos != self.zoom.xpos or ypos != self.zoom.ypos:
+                
+                # How much the cursor moved on the x-axis and/or y-axis
+                xDelta         = xpos - self.zoom.xpos
+                yDelta         = ypos - self.zoom.ypos
+                
+                # Update centre position
+                self.zoom.xpos = xpos
+                self.zoom.ypos = ypos
+                
+                # Derive new shape
+                dimX, dimY     = np.shape(data)
+                newDimX        = dimX//self.zoom.zoom
+                newDimY        = dimY//self.zoom.zoom
+                
+                # We make the new shape odd so that we have the center (xpos, ypos) falls into a pixel
+                if newDimX%2 != 0:
+                    newDimX   += 1
+                if newDimY%2 != 0:
+                    newDimY   += 1
+                
+                xLen           = (newDimX-1)//2
+                yLen           = (newDimY-1)//2
+                
+                newData        = data[ypos-yLen:ypos+yLen, xpos-xLen:xpos+xLen]
+                norm           = DivergingNorm(vcenter=0, vmin=np.nanmin(data), vmax=np.nanmax(data))
+                self.zoom.im   = self.zoom.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
+                self.zoom.canvas.draw()
+        return
+        
                 
                 
 class modelFrame:
