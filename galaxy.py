@@ -1008,9 +1008,9 @@ def whereCentralIntensityDrops(n, Re, factor=1.0, bn=None):
 #                                      2D modelling                                                #
 ####################################################################################################
     
-def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0, PA=0, noPSF=False,
+def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0, PA=0, noPSF=False,
                    PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, 
-                   arcsecToGrid=0.03, pixScale=1.0, combine=True):
+                   arcsecToGrid=0.03, fineSampling=1, combine=True):
     '''
     Generate a bulge + (sky projected) disk 2D model (with PSF convolution).
     
@@ -1051,11 +1051,15 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
             whether to not perform PSF convolution or not. Default is to do convolution.
         PA : int/float
             disk position angle (in degrees). Default is 0° so that no rotation if performed.
-        pixScale : positive float
-            relative size of a pixel. By default each pixel has a size of 1, that is X (Y) grids will have steps of 1 between -nx//2 (-ny//2) and nx//2 (ny//2). This can be changed by providing a pixel size (this is not an arcsec to pixel conversion size, but rather a way to oversample your data to have a finer pixel grid).
+        fineSampling : positive int
+            fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels. Default is 1.
         PSF : dict
             Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
             For now, only 2D Gaussians are accepted as PSF. 
+        x0 : float/int
+            x-axis centre position. Default is None so that nx//2 will be used.
+        y0 : float/int
+            y-axis centre position. Default is None so that ny//2 will be used.
         
     Return X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition.
     '''
@@ -1064,8 +1068,11 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
     #          Checking input parameters         #
     ##############################################
     
-    if pixScale <= 0:
-        raise ValueError('pixel resolution cannot be neither infinite nor negative. Please provide a non-zero pixel scale. Cheers !')
+    if type(fineSampling) is not int:
+        raise TypeError('Fine sampling parameter should be a non negative integer only.')
+    
+    if fineSampling < 1:
+        raise ValueError('Fine sampling cannot be less than 1.')
     
     if any([i<0 for i in [nx, ny, Rd, Rb, arcsecToGrid]]):
         raise ValueError('At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rd, Rb, arcsecToGrid.')
@@ -1094,15 +1101,15 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, Id=None, Ib=None, magD=None, magB=None, offse
         else:
             raise ValueError("Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !")
 
-    X, Y, model = model2D(nx, ny, listn, [Rd, Rb], listIe=[Id, Ib], listInclination=[inclination, 0], listPA=[PA, 0], pixScale=pixScale, combine=combine)
+    X, Y, model = model2D(nx, ny, listn, [Rd, Rb], x0=x0, y0=y0, listIe=[Id, Ib], listInclination=[inclination, 0], listPA=[PA, 0], fineSampling=fineSampling, combine=combine)
     
     if not noPSF and combine:
-        model   = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid)
+        model   = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling)
         
     return X, Y, model
 
 
-def model2D(nx, ny, listn, listRe, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=True, pixScale=1.0):
+def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=True, fineSampling=1):
     """
     Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.
     
@@ -1136,16 +1143,23 @@ def model2D(nx, ny, listn, listRe, listIe=None, listMag=None, listOffset=None, l
              list of magnitude offsets used in the magnitude system for each profile
         listPA : list of float/int
             list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°. Default is None, so that no rotation is applied to any component.
-        pixScale : positive float
-            relative size of a pixel. By default each pixel has a size of 1, that is X (Y) grids will have steps of 1 between -nx//2 (-ny//2) and nx//2 (ny//2). This can be changed by providing a pixel size (this is not an arcsec to pixel conversion size, but rather a way to oversample your data to have a finer pixel grid).
-
+        fineSampling : positive int
+            fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels. Default is 1.
+        x0 : float/int
+            x-axis centre position. Default is None so that nx//2 will be used.
+        y0 : float/int
+            y-axis centre position. Default is None so that ny//2 will be used.
+        
     Return:
         - if combine is True: X, Y grids and the intensity map
         - if combine is False: X, Y grids and a list of intensity maps for each component
     """
     
-    if pixScale <= 0:
-        raise ValueError('Pixel resolution cannot be neither infinite nor negative. Please provide a non-zero pixel scale. Cheers !')
+    if int not in [type(fineSampling), type(nx), type(ny)]:
+        raise TypeError('One of the following parameter is not an integer, which is not valid: fineSampling, nx, ny.')
+    
+    if fineSampling < 1:
+        raise ValueError('Fine sampling cannot be less than 1.')
     
     # Checking PA
     if any([pa<-90 for pa in listPA]) or any([pa>90 for pa in listPA]):
@@ -1162,10 +1176,20 @@ def model2D(nx, ny, listn, listRe, listIe=None, listMag=None, listOffset=None, l
     # Generate X and Y grids
     midX                   = nx//2
     midY                   = ny//2
-    pixWidth               = 2*midX/nx*pixScale
-    pixHeight              = 2*midY/ny*pixScale
-    listX                  = np.arange(-midX, midX+pixWidth, pixWidth)   
-    listY                  = np.arange(-midY, midY+pixWidth, pixHeight)
+    pixWidth               = 1.0/fineSampling
+    pixHeight              = 1.0/fineSampling
+    
+    if x0 is None:
+        x0                 = midX
+    if y0 is None:
+        y0                 = midY
+
+    # We centre the coordinate X and Y grids to the given centre coordinates
+    # The centre is recentred inside an 'original' pixel because of fine sampling (to not break any symmetry when rebinning)
+    newX0                  = x0 + (1-pixWidth)/2
+    newY0                  = y0 + (1-pixHeight)/2
+    listX                  = np.arange(0, nx, pixWidth) - newX0
+    listY                  = np.arange(0, ny, pixHeight) - newY0
     X, Y                   = np.meshgrid(listX, listY)
     
     if listInclination is None:
@@ -1174,12 +1198,11 @@ def model2D(nx, ny, listn, listRe, listIe=None, listMag=None, listOffset=None, l
         listPA             = [0]*nbModels
     
     # If we combine models, we add them, if we do not combine them, we place them into a list
-    for pos, n, re, ie, inc, pa in zip(range(len(listn)), listn, listRe, listIe, listInclination, listPA):
+    for pos, n, re, ie, inc, pa in zip(range(nbModels), listn, listRe, listIe, listInclination, listPA):
         
         # We add 90 to PA because we want a PA=0° galaxy to be aligned with the vertical axis
         ell                = 1-np.cos(inc*np.pi/180)
         pa                *= np.pi/180
-        print(ell, np.cos(inc*np.pi/180))
         theModel           = Sersic2D(amplitude=ie, r_eff=re, n=n, x_0=0, y_0=0, ellip=ell, theta=np.pi/2+pa)
         
         if pos == 0:
