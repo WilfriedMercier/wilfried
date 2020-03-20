@@ -1,3 +1,5 @@
+# Mercier Wilfried - IRAP
+
 import matplotlib.pyplot as     plt
 import numpy             as     np
 import astropy.io.fits   as     fits
@@ -115,11 +117,11 @@ pxScl  = 1
 
 #X, Y, model = bulgeDiskOnSky(nx, ny, Rd=Rd, Rb=Rb, magD=magD, magB=magB, offsetD=offset, offsetB=offset, inclination=inc, PA=PA, noPSF=True, combine=True)
 FWHM        = 3*0.03
-fSampling   = 9
+fSampling   = 41
 X, Y, model = bulgeDiskOnSky(nx, ny, x0=99, y0=99,
-                             Rd=Rd, Rb=Rb, magD=magD, magB=magB, offsetD=offset, offsetB=offset, inclination=inc, PA=PA, 
-                             combine=True, fineSampling=fSampling, noPSF=True,
-                             PSF={'name':'Gaussian2D', 'FWHMX':FWHM, 'FWHMY':FWHM, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'})
+                             Rd=Rd, Rb=Rb, magD=magD, magB=magB, offsetD=offset, offsetB=offset, inclination=inc, PA=PA, combine=True,
+                             fineSampling=fSampling, samplingZone={'where':'all'}, #samplingZone={'where':'centre', 'dx':100, 'dy':100},
+                             PSF={'name':'Gaussian2D', 'FWHMX':FWHM, 'FWHMY':FWHM, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, noPSF=True)
 
 f       = plt.figure(figsize=(12, 12))
 ax1     = plt.subplot(231, title='Galfit 2D model')
@@ -140,8 +142,8 @@ tmp2    = ax2.imshow(model, origin='lower', cmap=cmap, norm=norm)
 plt.colorbar(tmp2, ax=ax2, fraction=frac, orientation='horizontal')
 
 # We rebin out data because we oversampled it
-model   = model.reshape(int(model.shape[0] / fSampling), fSampling, int(model.shape[1] / fSampling), fSampling)  # Note that data is the high resolution image and that its size has to be a multiple of the oversampling factor.
-model   = model.mean(1).mean(2)  # note that it could also be sum instead of mean, depending on what we want.
+#model   = model.reshape(int(model.shape[0] / fSampling), fSampling, int(model.shape[1] / fSampling), fSampling)  # Note that data is the high resolution image and that its size has to be a multiple of the oversampling factor.
+#model   = model.mean(1).mean(2)  # note that it could also be sum instead of mean, depending on what we want.
 
 tmp5    = ax5.imshow(model, origin='lower', cmap=cmap, norm=norm)
 plt.colorbar(tmp5, ax=ax5, fraction=frac, orientation='horizontal')
@@ -149,10 +151,10 @@ plt.colorbar(tmp5, ax=ax5, fraction=frac, orientation='horizontal')
 tmp3    = ax3.imshow(model/galfitData, origin='lower', cmap='bwr', norm=DivergingNorm(vcenter=1.0, vmax=np.nanmax(model/galfitData)))
 plt.colorbar(tmp3, ax=ax3, fraction=frac, orientation='horizontal')
 
-tmp4    = ax4.imshow(model-galfitData, origin='lower', cmap='bwr', norm=Normalize())
+tmp4    = ax4.imshow(model-galfitData, origin='lower', cmap='bwr', norm=DivergingNorm(vcenter=0.0))
 plt.colorbar(tmp4, ax=ax4, fraction=frac, orientation='horizontal')
 
-tmp6    = ax6.imshow((model-galfitData)/galfitData, origin='lower', cmap='bwr', norm=Normalize())
+tmp6    = ax6.imshow((model-galfitData)/galfitData, origin='lower', cmap='bwr', norm=DivergingNorm(vcenter=0.0))
 plt.colorbar(tmp6, ax=ax6, fraction=frac, orientation='horizontal')
 
 plt.show()
