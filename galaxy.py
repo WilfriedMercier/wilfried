@@ -1007,10 +1007,10 @@ def whereCentralIntensityDrops(n, Re, factor=1.0, bn=None):
 ####################################################################################################
 #                                      2D modelling                                                #
 ####################################################################################################
-    
-def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0, PA=0, noPSF=False,
-                   PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, 
-                   arcsecToGrid=0.03, fineSampling=1, combine=True):
+
+def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0, PA=0, combine=True,
+                   PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, noPSF=False, arcsecToGrid=0.03,
+                   fineSampling=1, samplingZone={'where':'centre', 'dx':2, 'dy':2}, skipCheck=False):
     '''
     Generate a bulge + (sky projected) disk 2D model (with PSF convolution).
     
@@ -1018,6 +1018,12 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
     ----------
         Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (Id, Ib), or if not known, a total magnitude value for each profile (magD, magB) and their corresponding magnitude offset (to convert from magnitudes to intensities).
        
+    Infos about sampling
+    --------------------
+        fineSampling parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:
+            - if the sampling is performed everywhere ('where' keyword in samplingZone equal to 'all'), the final image will have dimensions (nx*fineSampling, ny*fineSampling)
+            - if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (nx, ny).        
+
     Mandatory inputs
     ----------------
         nx : int
@@ -1032,7 +1038,7 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
     Optional inputs
     ---------------
         arcsecToGrid : float
-            pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel. Default is HST-ACS resolution of 0.03"/px.
+            pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel. Default is HST-ACS resolution of 0.03"/px.         
         Ib : float
             bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.
         Id : float
@@ -1056,6 +1062,14 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
         PSF : dict
             Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
             For now, only 2D Gaussians are accepted as PSF. 
+        samplingZone : dict
+            where to perform the over sampling. Default is everywhere. Dictionnaries should have the following keys:
+                - 'where' : str; either 'all' to perform everywhere or 'centre' to perform around the centre
+                - 'dx'    : int; x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.
+                - 'dy'    : int; y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.
+               
+        skipCheck : bool
+            whether to skip the checking part or not. Default is False.
         x0 : float/int
             x-axis centre position. Default is None so that nx//2 will be used.
         y0 : float/int
@@ -1068,18 +1082,33 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
     #          Checking input parameters         #
     ##############################################
     
-    if type(fineSampling) is not int:
-        raise TypeError('Fine sampling parameter should be a non negative integer only.')
+    if not skipCheck:
+        if not isinstance(samplingZone, dict) or 'where' not in samplingZone:
+            print('sampling zone was not provided or syntax was incorrect. Thus, performing sampling (if relevant) on the full array.')
+            samplingZone = {'where':'all'}
+            
+        if samplingZone['where'] not in ['all', 'centre']:
+            raise ValueError("'where' keyword in samplingZone dictionnary should be either 'all' or 'centre'. Cheers !")
+            
+        if samplingZone['where']=='centre':
+            if 'dx' not in samplingZone or 'dy' not in samplingZone:
+                raise KeyError("'dx' and 'dy' keywords were missing in samplingZone dictionnary with 'where' keyword equal to 'centre'. Please provide values for the sampling box size around the centre. Cheers !")
+            else:
+                if not isinstance(samplingZone['dx'], (int, np.integer)) or not isinstance(samplingZone['dy'], (int, np.integer)):
+                    raise TypeError("At least one of the following keys in samplingZone dictionnary was not given as an integer: 'dx' or 'dy'. Please provide these as int. Cheers !")
+        
+        if not isinstance(fineSampling, (int, np.integer)):
+            raise TypeError('Given fine sampling parameter does not have the following type: int. Please provide integer only fineSampling values. Cheers !')
     
-    if fineSampling < 1:
-        raise ValueError('Fine sampling cannot be less than 1.')
-    
-    if any([i<0 for i in [nx, ny, Rd, Rb, arcsecToGrid]]):
-        raise ValueError('At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rd, Rb, arcsecToGrid.')
-    
-    # Checking PA
-    if PA<-90 or PA>90:
-        raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise. Cheers !')
+        if fineSampling < 1:
+            raise ValueError('Fine sampling cannot be less than 1.')
+        
+        if any([i<0 for i in [nx, ny, Rd, Rb, arcsecToGrid]]):
+            raise ValueError('At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rd, Rb, arcsecToGrid.')
+        
+        # Checking PA
+        if PA<-90 or PA>90:
+            raise ValueError('PA should be given in the range -90° <= PA <= 90°, counting angles anti clock-wise (0° means major axis is vetically aligned). Cheers !')
 
     ##################################
     #         Compute models         #
@@ -1101,15 +1130,25 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
         else:
             raise ValueError("Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !")
 
-    X, Y, model = model2D(nx, ny, listn, [Rd, Rb], x0=x0, y0=y0, listIe=[Id, Ib], listInclination=[inclination, 0], listPA=[PA, 0], fineSampling=fineSampling, combine=combine)
+    X, Y, model = model2D(nx, ny, listn, [Rd, Rb], x0=x0, y0=y0, listIe=[Id, Ib], listInclination=[inclination, 0], listPA=[PA, 0], fineSampling=fineSampling, samplingZone=samplingZone, combine=combine)
     
-    if not noPSF and combine:
-        model   = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling)
+    if not noPSF:
         
+        # If we perform fine sampling only in the central part, model2D function rebins the data in the end, so the arcsec to pixel conversion factor does not need to be updated since we do not have a finer pixel scale
+        if samplingZone['where'] == 'centre':
+            fineSampling   = 1.0
+        
+        if combine:
+            model          = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling)
+        else:
+            for pos, mod in enumerate(model):
+                model[pos] = PSFconvolution2D(mod, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling)
+                
     return X, Y, model
 
 
-def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=True, fineSampling=1):
+def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=True, 
+            fineSampling=1, samplingZone={'where':'centre', 'dx':5, 'dy':5}, skipCheck=False):
     """
     Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.
     
@@ -1117,6 +1156,12 @@ def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, 
     ----------
         Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (listIe), or if not known, a total magnitude value for each profile (listMag) and their corresponding magnitude offset (to convert from magnitudes to intensities).
         The 'combine' keywork can be set to False to recover the model of each component separately.
+    
+    Infos about sampling
+    --------------------
+        fineSampling parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:
+            - if the sampling is performed everywhere ('where' keyword in samplingZone equal to 'all'), the final image will have dimensions (nx*fineSampling, ny*fineSampling)
+            - if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (nx, ny).
     
     Mandatory inputs
     ----------------
@@ -1130,7 +1175,7 @@ def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, 
             size of the model for the y-axis
         
     Optional inputs
-    ---------------
+    ---------------v      
         combine : bool
             whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists. Default is to combine all the components into a single image.
         listIe : list of floats
@@ -1145,6 +1190,14 @@ def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, 
             list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°. Default is None, so that no rotation is applied to any component.
         fineSampling : positive int
             fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels. Default is 1.
+        samplingZone : dict
+            where to perform the sampling. Default is everywhere. Dictionnaries should have the following keys:
+                - 'where' : either 'all' to perform everywhere or 'centre' to perform around the centre
+                - 'dx' : int, x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.
+                - 'dy' : int, y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.
+          
+        skipCheck : bool
+            whether to skip the checking part or not. Default is False.
         x0 : float/int
             x-axis centre position. Default is None so that nx//2 will be used.
         y0 : float/int
@@ -1155,15 +1208,55 @@ def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, 
         - if combine is False: X, Y grids and a list of intensity maps for each component
     """
     
-    if int not in [type(fineSampling), type(nx), type(ny)]:
-        raise TypeError('One of the following parameter is not an integer, which is not valid: fineSampling, nx, ny.')
+    def computeSersic(X, Y, nbModels, listn, listRe, listIe, listInclination, listPA):
+        # If we combine models, we add them, if we do not combine them, we place them into a list
+        for pos, n, re, ie, inc, pa in zip(range(nbModels), listn, listRe, listIe, listInclination, listPA):
+            
+            # We add 90 to PA because we want a PA=0° galaxy to be aligned with the vertical axis
+            ell                = 1-np.cos(inc*np.pi/180)
+            pa                *= np.pi/180
+            theModel           = Sersic2D(amplitude=ie, r_eff=re, n=n, x_0=0, y_0=0, ellip=ell, theta=np.pi/2+pa)
+            
+            if pos == 0:
+                if combine:
+                    intensity  = theModel(X, Y)/(1-ell)
+                else:
+                    intensity  = [theModel(X, Y)/(1-ell)]
+            else:
+                if combine:
+                    intensity += theModel(X, Y)/(1-ell)
+                else:
+                    intensity += [theModel(X, Y)/(1-ell)]
+        return intensity
     
-    if fineSampling < 1:
-        raise ValueError('Fine sampling cannot be less than 1.')
+    ##############################################
+    #          Checking input parameters         #
+    ############################################## 
     
-    # Checking PA
-    if any([pa<-90 for pa in listPA]) or any([pa>90 for pa in listPA]):
-        raise ValueError('PA should be given in the range -90° <= PA <= +90°, counting angles anti clock-wise. Cheers !')  
+    if not skipCheck:
+        if not isinstance(samplingZone, dict) or 'where' not in samplingZone:
+            print('sampling zone was not provided or syntax was incorrect. Thus, performing sampling (if relevant) on the full array.')
+            samplingZone = {'where':'all'}
+            
+        if samplingZone['where'] not in ['all', 'centre']:
+            raise ValueError("'where' keyword in samplingZone dictionnary should be either 'all' or 'centre'. Cheers !")
+            
+        if samplingZone['where']=='centre':
+            if 'dx' not in samplingZone or 'dy' not in samplingZone:
+                raise KeyError("'dx' and 'dy' keywords were missing in samplingZone dictionnary with 'where' keyword equal to 'centre'. Please provide values for the sampling box size around the centre. Cheers !")
+            else:
+                if not isinstance(samplingZone['dx'], (int, np.integer)) or not isinstance(samplingZone['dy'], (int, np.integer)):
+                    raise TypeError("At least one of the following keys in samplingZone dictionnary was not given as an integer: 'dx' or 'dy'. Please provide these as int. Cheers !")
+        
+        if not isinstance(fineSampling, (int, np.integer)) or not isinstance(nx, (int, np.integer)) or not isinstance(ny, (int, np.integer)):
+            raise TypeError('One of the following parameter is not an integer, which is not valid: fineSampling (%s), nx (%s), ny (%s).' %(type(fineSampling), type(nx), type(ny)))
+        
+        if fineSampling < 1:
+            raise ValueError('Fine sampling cannot be less than 1.')
+        
+        # Checking PA
+        if any([pa<-90 for pa in listPA]) or any([pa>90 for pa in listPA]):
+            raise ValueError('PA should be given in the range -90° <= PA <= +90°, counting angles anti clock-wise. Cheers !')  
 
     if listIe is None:
         if listMag is not None and listOffset is not None:
@@ -1172,50 +1265,69 @@ def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, 
             raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !")
 
     nbModels               = len(listn)
-
-    # Generate X and Y grids
-    midX                   = nx//2
-    midY                   = ny//2
-    pixWidth               = 1.0/fineSampling
-    pixHeight              = 1.0/fineSampling
-    
-    if x0 is None:
-        x0                 = midX
-    if y0 is None:
-        y0                 = midY
-
-    # We centre the coordinate X and Y grids to the given centre coordinates
-    # The centre is recentred inside an 'original' pixel because of fine sampling (to not break any symmetry when rebinning)
-    newX0                  = x0 + (1-pixWidth)/2
-    newY0                  = y0 + (1-pixHeight)/2
-    listX                  = np.arange(0, nx, pixWidth) - newX0
-    listY                  = np.arange(0, ny, pixHeight) - newY0
-    X, Y                   = np.meshgrid(listX, listY)
-    
     if listInclination is None:
         listInclination    = [0]*nbModels
     if listPA          is None:
         listPA             = [0]*nbModels
     
-    # If we combine models, we add them, if we do not combine them, we place them into a list
-    for pos, n, re, ie, inc, pa in zip(range(nbModels), listn, listRe, listIe, listInclination, listPA):
-        
-        # We add 90 to PA because we want a PA=0° galaxy to be aligned with the vertical axis
-        ell                = 1-np.cos(inc*np.pi/180)
-        pa                *= np.pi/180
-        theModel           = Sersic2D(amplitude=ie, r_eff=re, n=n, x_0=0, y_0=0, ellip=ell, theta=np.pi/2+pa)
-        
-        if pos == 0:
-            if combine:
-                intensity  = theModel(X, Y)/(1-ell)
-            else:
-                intensity  = [theModel(X, Y)/(1-ell)]
-        else:
-            if combine:
-                intensity += theModel(X, Y)/(1-ell)
-            else:
-                intensity += [theModel(X, Y)/(1-ell)]
+    ##################################
+    #         Compute models         #
+    ##################################
+
+    # Define image centre
+    midX                   = nx//2
+    midY                   = ny//2
     
+    if x0 is None:
+        x0                 = midX
+    if y0 is None:
+        y0                 = midY
+        
+    # Pixel width is not 1 if we use fineSampling
+    pixWidth               = 1.0/fineSampling
+    pixHeight              = 1.0/fineSampling
+    
+    # We centre the coordinate X and Y grids to the given centre coordinates
+    # The centre is recentred inside an 'original' pixel because of fine sampling (to not break any symmetry when rebinning)
+    if samplingZone['where'] == 'all':
+        newX0              = x0 + (1-pixWidth)/2
+        newY0              = y0 + (1-pixHeight)/2
+        listX              = np.arange(0, nx, pixWidth) - newX0
+        listY              = np.arange(0, ny, pixHeight) - newY0
+        X, Y               = np.meshgrid(listX, listY)
+        intensity          = computeSersic(X, Y, nbModels, listn, listRe, listIe, listInclination, listPA)
+        
+        # Rebinning intensity map in the central part
+        intensity   = intensity.reshape(int(intensity.shape[0] / fineSampling), fineSampling, int(intensity.shape[1] / fineSampling), fineSampling)
+        intensity   = intensity.mean(1).mean(2)
+        
+        listX              = np.arange(0, nx, 1) - x0
+        listY              = np.arange(0, ny, 1) - y0
+        X, Y               = np.meshgrid(listX, listY)
+        
+    else:
+        # We generate grids with pixel size of 1x1 (and we centre it on the galaxy centre)
+        listX              = np.arange(0, nx, 1) - x0
+        listY              = np.arange(0, ny, 1) - y0
+        X, Y               = np.meshgrid(listX, listY)
+        intensity          = computeSersic(X, Y, nbModels, listn, listRe, listIe, listInclination, listPA)
+        
+        # We generate a subarray around the centre in the given box, using the given over-sampling factor
+        maxX               = samplingZone['dx'] + 0.5 -1.0/(2*fineSampling) # Weird but that's what comes out of a few diagrams
+        maxY               = samplingZone['dy'] + 0.5 -1.0/(2*fineSampling)
+        listXcenPart       = np.arange(-maxX, maxX+pixWidth, pixWidth)
+        listYcenPart       = np.arange(-maxY, maxY+pixHeight, pixHeight)
+        
+        XcenPart, YcenPart = np.meshgrid(listXcenPart, listYcenPart)
+        intensityCenPart   = computeSersic(XcenPart, YcenPart, nbModels, listn, listRe, listIe, listInclination, listPA)
+
+        # Rebinning intensity map in the central part
+        intensityCenPart   = intensityCenPart.reshape(int(intensityCenPart.shape[0] / fineSampling), fineSampling, int(intensityCenPart.shape[1] / fineSampling), fineSampling)
+        intensityCenPart   = intensityCenPart.mean(1).mean(2)
+        
+        # Combining back the central part into the original array
+        intensity[x0-samplingZone['dx']:x0+samplingZone['dx']+1, x0-samplingZone['dy']:x0+samplingZone['dy']+1] = intensityCenPart
+        
     return X, Y, intensity
 
 
