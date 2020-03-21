@@ -75,6 +75,7 @@ class singlePlotFrame:
         
         self.selected       = False
         self.data           = data
+        self.shape          = (0, 0)
         
         self.parent         = parent
         self.root           = root
@@ -90,14 +91,11 @@ class singlePlotFrame:
         self.figure         = Figure(figsize=figsize, tight_layout=True, facecolor=self.bgColor)
             
         # Creating an axis
+        self.invertAx       = {'x':False, 'y':False}
         self.ax             = self.figure.add_subplot(111)
         self.ax.yaxis.set_ticks_position('both')
         self.ax.xaxis.set_ticks_position('both')
         self.ax.tick_params(which='both', direction='in', labelsize=12)
-        self.ax.grid()
-        
-        # Plotting empty plots in order to update them later
-        self.paLine.line    = self.ax.plot([], [], 'k-')[0]
         
         # Adding a title
         if title is not None and type(title) is str:
@@ -114,30 +112,7 @@ class singlePlotFrame:
         self.canvas.mpl_connect('motion_notify_event', self.onMove)
         self.canvas.mpl_connect('figure_enter_event',  self.onFigure)
         
-    
-    def updateImage(self, newData, mini=None, maxi=None, cmap='bwr'):
-        '''
-        Update the image.
-        
-        Inputs
-        ------
-            newData : list/numpy array
-                new data to plot
-            mini : float
-                minimum value for the color mapping
-            maxi : float
-                maximum value for the color mapping
-            cmap : str
-                name of the colormap to use
-        '''
-        
-        norm      = DivergingNorm(vcenter=0, vmin=mini, vmax=maxi)
-        self.data = newData
-        self.im   = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
-        self.canvas.draw()
-        return
-        
-        
+
     def changeBorder(self):
         '''Adds or remove a border around the figure canvas.'''
         
@@ -151,6 +126,28 @@ class singlePlotFrame:
             self.parent.config({'bg':self.bdOn})
             self.selected = True
             self.root.bottomPane.numSelected += 1
+        return
+    
+    
+    def invertAxis(self, axis='x'):
+        '''
+        Invert one of the axes.
+
+        Optional inputs
+        ---------------
+            axis : 'x' or 'y'
+                which axis to invert. Default is x-axis.
+        '''
+        
+        if self.selected:
+            self.invertAx[axis] = not self.invertAx[axis]
+            
+            if axis == 'x':
+                self.ax.set_xlim(self.ax.get_xlim()[::-1])
+            elif axis == 'y':
+                self.ax.set_ylim(self.ax.get_ylim()[::-1])
+                
+            self.canvas.draw()
         return
         
         
@@ -211,7 +208,34 @@ class singlePlotFrame:
             self.root.bottomPane.activeSingleFrame = self
             
         # Update the magnifier on the top right corner
-        self.root.topPane.updateMagnifier(self.data, xpos=event.xdata, ypos=event.ydata)
+        self.root.topPane.updateMagnifier(self.data, shape=self.shape, xpos=event.xdata, ypos=event.ydata, invertAxes=self.invertAx)
+        return
+    
+    
+    def updateImage(self, newData, mini=None, maxi=None, cmap='bwr'):
+        '''
+        Update the image.
+        
+        Inputs
+        ------
+            newData : list/numpy array
+                new data to plot
+            mini : float
+                minimum value for the color mapping
+            maxi : float
+                maximum value for the color mapping
+            cmap : str
+                name of the colormap to use
+        '''
+        
+        norm             = DivergingNorm(vcenter=0, vmin=mini, vmax=maxi)
+        self.data        = newData
+        self.shape       = newData.shape
+        self.ax.clear()
+        self.ax.set_title(self.title)
+        self.im          = self.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
+        self.paLine.line = self.ax.plot([], [], 'k-')[0]
+        self.canvas.draw()
         return
     
 
@@ -266,7 +290,6 @@ class graphFrame:
         # Draw widgets
         self.scrollbar.pack( fill='both', side='left')
         self.canvas.pack(    fill='both', expand='yes')
-        
         
         
     def makeFrames(self, nb=0, titles=[]):
@@ -396,17 +419,22 @@ class topFrame:
         self.zoom.xpos   = None
         self.zoom.ypos   = None
         self.zoom.im     = None
+        self.zoom.xline  = None
+        self.zoom.yline  = None
         self.zoom.zoom   = 10
+        self.zoom.title  = 'Zoom (x10)'
         
         self.zoom.frame  = tk.Frame(self.parent, bg=self.bgColor)
         self.zoom.fig    = Figure(figsize=(1.5, 1.5), tight_layout=True, facecolor=self.bgColor)
         self.zoom.ax     = self.zoom.fig.add_subplot(111)
         self.zoom.ax.yaxis.set_ticks_position('both')
         self.zoom.ax.xaxis.set_ticks_position('both')
-        self.zoom.ax.tick_params(which='both', direction='in', labelsize=0)
-        self.zoom.ax.set_title('Zoom (x10)')
+        self.zoom.ax.tick_params(which='both', direction='in', labelsize=1)
+        self.zoom.ax.set_title(self.zoom.title)
         self.zoom.canvas = FigureCanvasTkAgg(self.zoom.fig, master=self.zoom.frame)
         self.zoom.canvas.draw()
+        
+        self.zoom.buttonP = ttk.Button(self.parent, command=self.changeZoom, text='+')
         
         # Drawing elements
         self.loadButton.grid(  row=0, column=0, padx=padx,   pady=pady, sticky=tk.W+tk.N)
@@ -449,17 +477,13 @@ class topFrame:
         '''Invert the x axis of the selected graphs'''
         
         for plot in self.root.bottomPane.plotList:
-            if plot.selected:
-                plot.ax.set_xlim(plot.ax.get_xlim()[::-1])
-                plot.canvas.draw()
+            plot.invertAxis(axis='x')
         return
             
              
     def invertyAxes(self):
         for plot in self.root.bottomPane.plotList:
-            if plot.selected:
-                plot.ax.set_ylim(plot.ax.get_ylim()[::-1])
-                plot.canvas.draw()
+            plot.invertAxis(axis='y')
         return
     
     
@@ -514,6 +538,10 @@ class topFrame:
         for plot in self.root.bottomPane.plotList:
             plot.im.set_cmap(self.cmap.var.get())
             plot.canvas.draw()
+            
+        # Update zoom widget as well
+        self.zoom.im.set_cmap(self.cmap.var.get())
+        self.zoom.canvas.draw()
         return
     
     
@@ -528,7 +556,7 @@ class topFrame:
         return
     
     
-    def updateMagnifier(self, data, xpos=None, ypos=None, cmap='bwr'):
+    def updateMagnifier(self, data, shape=(0, 0), xpos=None, ypos=None, cmap='bwr', invertAxes={'x':False, 'y':False}):
         '''
         Update the mangifier in the top right corner.
         
@@ -546,36 +574,68 @@ class topFrame:
         '''
         
         if xpos is not None and ypos is not None:
-            xpos               = int(xpos)
-            ypos               = int(ypos)
-            if xpos != self.zoom.xpos or ypos != self.zoom.ypos:
-                
-                # How much the cursor moved on the x-axis and/or y-axis
-                xDelta         = xpos - self.zoom.xpos
-                yDelta         = ypos - self.zoom.ypos
-                
-                # Update centre position
-                self.zoom.xpos = xpos
-                self.zoom.ypos = ypos
+            if (xpos != self.zoom.xpos or ypos != self.zoom.ypos):
+                xpos           = int(xpos)
+                ypos           = int(ypos)
                 
                 # Derive new shape
                 dimX, dimY     = np.shape(data)
                 newDimX        = dimX//self.zoom.zoom
                 newDimY        = dimY//self.zoom.zoom
                 
-                # We make the new shape odd so that we have the center (xpos, ypos) falls into a pixel
-                if newDimX%2 != 0:
+                # We make the new shape odd so that we have the center (xpos, ypos) fall into a pixel
+                if newDimX%2 == 0:
                     newDimX   += 1
-                if newDimY%2 != 0:
+                if newDimY%2 == 0:
                     newDimY   += 1
-                
+                    
                 xLen           = (newDimX-1)//2
                 yLen           = (newDimY-1)//2
                 
-                newData        = data[ypos-yLen:ypos+yLen, xpos-xLen:xpos+xLen]
-                norm           = DivergingNorm(vcenter=0, vmin=np.nanmin(data), vmax=np.nanmax(data))
-                self.zoom.im   = self.zoom.ax.imshow(newData, cmap=cmap, norm=norm, origin='lower')
-                self.zoom.canvas.draw()
+                # We do not have to update anything if we are out of x-axis AND y-axis bounds
+                if (xpos >= xLen and xpos < shape[0]) or (ypos >= yLen or ypos < shape[1]):
+                    
+                    # We define the coordinates of the cursor in the zoomed array (by default centred)
+                    xNewPos       = xLen
+                    yNewPos       = yLen
+                    
+                    # We set either x or y pos if we are getting near enough to the x or y edges
+                    if xpos < xLen:
+                        xNewPos   += xpos-xLen
+                        xpos       = xLen
+                    elif xpos >= shape[0]-xLen-1:
+                        xNewPos   += xpos-(shape[0]-1-xLen)
+                        xpos       = shape[0]-xLen-1
+                        
+                    if ypos < yLen:
+                        yNewPos   += ypos-yLen
+                        ypos       = yLen
+                    elif ypos >= shape[1]-yLen-1:
+                        yNewPos   += ypos-(shape[1]-1-yLen)
+                        ypos       = shape[1]-yLen-1
+                        
+                    xmin           = xpos-xLen
+                    xmax           = xpos+xLen
+                    ymin           = ypos-yLen
+                    ymax           = ypos+yLen
+                    
+                    # Update centre position
+                    self.zoom.xpos = xpos
+                    self.zoom.ypos = ypos
+                    newData        = data[ymin:ymax+1, xmin:xmax+1]
+                    norm           = DivergingNorm(vcenter=0, vmin=np.nanmin(data), vmax=np.nanmax(data))
+                    
+                    self.zoom.ax.clear()
+                    self.zoom.ax.set_title(self.zoom.title)
+                    self.zoom.xline = self.zoom.ax.plot([-1, newDimX], [yNewPos, yNewPos], 'k--', linewidth=1)
+                    self.zoom.yline = self.zoom.ax.plot([xNewPos, xNewPos], [-1, newDimY], 'k--', linewidth=1)
+                    self.zoom.im    = self.zoom.ax.imshow(newData, cmap=self.cmap.var.get(), norm=norm, origin='lower')
+                    
+                    if invertAxes['x']:
+                        self.zoom.ax.set_xlim(self.zoom.ax.get_xlim()[::-1])
+                    if invertAxes['y']:
+                        self.zoom.ax.set_ylim(self.zoom.ax.get_ylim()[::-1])
+                    self.zoom.canvas.draw()
         return
         
                 
