@@ -932,6 +932,8 @@ def asManyPlots2(numPlot, datax, datay,
             -----------------------
                 'hideGrid' : bool
                     whether to hide the grid or not. Default is False.
+                'gridZorder' : int
+                    z order of the grid. Default is 1000 (generally enough to be plotted in last).
     
     
         axesProperties : dict
@@ -1286,7 +1288,7 @@ def asManyPlots2(numPlot, datax, datay,
     #                  General layout                #
     ##################################################
     
-    layout, layout.ticks, layout.line = gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
+    layout, layout.ticks, layout.line, layout.grid = gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(generalProperties, dict, 'generalProperties'):
         
         layout.textsize, = setListFromDict(generalProperties, keys=['textsize'], default=[24])
@@ -1295,7 +1297,10 @@ def asManyPlots2(numPlot, datax, datay,
         layout.ticks.labelSize, layout.ticks.size, layout.ticks.direction = setListFromDict(generalProperties, keys=['ticksLabelsSize', 'ticksSize', 'tickDirection'], default=[layout.textsize-2, 7, 'in'])
         
         # General properties
-        layout.markersize, layout.ticks.hideLabels, layout.scale, layout.grid = setListFromDict(generalProperties, keys=['markersize', 'hideTicksLabels', 'scale', 'hideGrid'], default=[16, False, 'linear', False])
+        layout.markersize, layout.ticks.hideLabels, layout.scale = setListFromDict(generalProperties, keys=['markersize', 'hideTicksLabels', 'scale'], default=[16, False, 'linear'])
+
+        # General grid properties
+        layout.grid.hide, layout.grid.zorder = setListFromDict(generalProperties, keys=['hideGrid', 'gridZorder'], default=[False, 1000])
 
         # General line properties
         layout.line.width, layout.line.style = setListFromDict(generalProperties, keys=['linewidth', 'linestyle'], default=[2, '-'])
@@ -1409,13 +1414,13 @@ def asManyPlots2(numPlot, datax, datay,
         else:
             setDefault(data.color, default='black')
             
-        # Check that marker edge colors are not set if the data points are supposed to be unfilled
-        for pos, nfllMrkr in enumerate(data.marker.unfill):
-            if nfllMrkr:
+        # Set marker edge colors to face corlor (with 'face') if data points are supposed to be unfilled only for scatter plots
+        for pos, nfllMrkr, typ in zip(range(data.nplots), data.marker.unfill, data.type):
+            if nfllMrkr and typ == 'scatter':
                 data.marker.edgeColor[pos] = 'face'
 
 
-    ########################################
+    ########################################data.marker.edgeColor
     #            Axes properties           #
     ########################################
     
@@ -1606,8 +1611,8 @@ def asManyPlots2(numPlot, datax, datay,
     else:
         raise ValueError("ValueError: given key 'xAxisPos' from dictionary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
 
-    if not layout.grid:
-        plt.grid(zorder=1000)
+    if not layout.grid.hide:
+        plt.grid(zorder=layout.grid.zorder)
 
     # Setting a list of plots to provide to the user in the end
     listPlots = []
@@ -1629,13 +1634,12 @@ def asManyPlots2(numPlot, datax, datay,
         #######################################################
         
         if typ == 'plot':
-            print('coucou', clr,mrkrSz, lnwdth)
+            print('coucou', clr,mrkrSz, lnwdth, nfll, mrkrDgClr)
             listPlots.append( plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=trnsprnc,
                                        linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=mrkrDgClr,
                                        markersize=mrkrSz, linewidth=lnwdth)
                             )
             handles.append(copy(listPlots[-1][0]))
-         
             
         #####################################################
         #           Deal with 'scatter' type then           #
@@ -1682,12 +1686,12 @@ def asManyPlots2(numPlot, datax, datay,
             elif colorbar.orientation == 'horizontal':
                 col.ax.set_xticklabels(colorbar.ticks.label.text, size=colorbar.ticks.label.size)
        
-    
     #######################################
     #           Deal with legend          #
     #######################################
     
     if not legend.hide:
+        print("haha")
         
         # Define a markerfirst argument to position the markers in the legend accordingly
         if legend.marker.position == 'right':
@@ -1705,7 +1709,7 @@ def asManyPlots2(numPlot, datax, datay,
                 h.set_markeredgecolor(mkeclr)
             elif typ == 'scatter':
                 h.set_color(mkfclr)
-        
+                
     # Set x and y scales        
     plt.yscale(yaxis.scale)
     plt.xscale(xaxis.scale)
