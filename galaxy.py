@@ -438,19 +438,18 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
     return {'value':np.asarray(res), 'error':np.asarray(err)}
 
 
-def ratioLuminosities(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=True):
+def ratioLuminosities1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=True):
     """
-    Compute the ratio of the luminosity of the sum of different Sersic profiles for a single galaxy at two different positions.
+    Compute the ratio of the luminosity of the sum of different Sersic profiles for a single galaxy at two different positions in the galaxy plane only.
+    This function computes the ratio from the 1D profiles, either integrating (analytical=False) or via an analytical solution (analytical=True).ds
     
     How to use
     ----------
     
-        Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. For instance, a ratio at radii 1" and 3" for a disk (n=1) + bulge (n=4) decomposition would give something like
+        Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. For instance, a ratio at radii 1" and 3" for a disk (n=1, Re=10") + bulge (n=4, Re=20") decomposition would give something like
             >> ratioLuminosities(1, 3, [1, 4], [10, 20], listMag=[25, 30], listOffset=[30, 30])
-        
-        If you already have computed Ie for all the components, you can provide it with listIe, whereas if you haven't you will need to provide magnitudes and magnitude offsets as in the example above.
-        
-    
+        Radii should be given with the same unit as the effective radii.
+
     Mandatory inputs
     ----------------
         listn : list of float/int
@@ -465,7 +464,7 @@ def ratioLuminosities(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=N
     Optional inputs
     ---------------
         analytical : bool
-            whether to use the analytical solution or integrate the profile. Default is True. 
+            whether to use the analytical solution or integrate the profile. Default is True.
         listbn : list of floats/None
             list of bn factors appearing in Sersic profiles defined as $2\gamma(2n, bn) = \Gamma(2n)$. If no value is given, each bn will be computed according to their respective Sersic index. If you do not want this function to compute the value of one of the bn, provide its value in the list, otherwise put it to None.
         listIe : list of floats
@@ -475,23 +474,150 @@ def ratioLuminosities(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=N
         listOffset : list of floats
              list of magnitude offsets used in the magnitude system for each profile
          
-    Return the integrated luminosity of the sum of all the given Sersic profiles and an estimation of the error
-    """
-    
+    Return the integrated luminosity of the sum of all the given Sersic profiles and an estimation of the error.
+    """    
     #if no list of bn values is given, compute them all
     if listbn is None:
-        listbn     = [compute_bn(n) for n in listn]
-    listbn         = check_bns(listn, listbn)
+        listbn         = [compute_bn(n) for n in listn]
+    listbn             = check_bns(listn, listbn)
     
     if listIe is None:
         if listMag is not None and listOffset is not None:
-            listIe = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
+            listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
         else:
             print("ValueError: listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.")
             return None 
     
     lum1           = luminositySersics(r1, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)
     lum2           = luminositySersics(r2, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)
+
+    if lum2 == 0:
+        raise ValueError("The luminosity computed at radius %f is 0. This is unlikely and the ratio cannot be computed." %lum2)
+    
+    return lum1/lum2
+
+
+def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0.0, PA=0.0,
+                        nx=200, ny=200, arcsecToGrid=0.03, fineSampling=41,
+                        PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, noPSF=False):
+    """
+    Compute the ratio of the luminosity of a bulge+disk model at two radii either in the galaxy plane or in the sky plane.
+    This function computes the ratio from 2D models (projected on the sky plane or not) with or without PSF convolution.
+    
+    How to use
+    ----------
+    
+        Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. 
+        For instance, a ratio at radii 1" (in galaxy plane) and 3" (in sky plane) for a disk (n=1, Re=10", inclination=23°, PA=40°) + bulge (n=4, Re=20") decomposition would give something like
+            >> ratioLuminosities(1, 3, 10, 20, magD=25, magB=30, offsetD=30, offsetB=30, inclination=23, PA=40, where=['galaxy', 'sky']})
+    
+   Caution
+    -------
+        Radii should be given in pixel units. If you provide them in arcsec, you must update the arcsecToGrid value to 1 (since 1 pixel before oversampling will be equal to 1 arcsec). 
+        
+    
+    Mandatory inputs
+    ----------------
+        listn : list of float/int
+            list of Sersic index for each profile
+        r1 : float
+            first radius where the luminosity will be computed
+        r2 : float
+            second radius where the luminoisty will be computed
+        Rb : float
+            disk half-light radius
+        Rd : float
+            bulge half-light radius
+        
+    Optional inputs
+    ---------------
+        arcsecToGrid : float
+            pixel size conversion in arcsec/pixel, used to convert the PSF FWHM (or sigma) from arcsec to pixel. Default is HST-ACS resolution of 0.03"/px.        
+        fineSampling : positive int
+            fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels. Default is 1.
+        Ib : float
+            bulge intensity at Rb. Default is None so that it is computed from the bulge magnitude and magnitude offset.
+        Id : float
+            disk intensity at Rd. Default is None so that it is computed from the bulge magnitude and magnitude offset.
+        inclination : float/int
+            inclination of the galaxy. Only useful if the 2D method is used. Default is 0.0.
+        magB : float
+            bulge total magnitude. If Ib is not provided, it must be given instead.
+        magD : float
+            disk total magnitude. If Id is not provided, it must be given instead.
+        noPSF : bool
+            whether to not perform PSF convolution or not. Default is to do convolution.
+        nx : int
+            size of the model for the x-axis
+        ny : int
+            size of the model for the y-axis
+        offsetB : float
+            bulge magnitude offset. If Ib is not provided, it must be given instead.
+        offsetD : float
+            disk magnitude offset. If Id is not provided, it must be given instead.
+        PA : float/int
+            position angle on sky. Only useful if the 2D method is used. Default is 0.0.
+        PSF : dict
+            Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
+            For now, only 2D Gaussians are accepted as PSF.
+        where : list of 2 str
+            where the luminosity is computed. For each radius two values are possible: either 'galaxy' if the luminosity is to be computed in the galaxy plane or 'sky' if it is to be computed in the sky plane. Default is 'galaxy' for both radius.
+         
+    Return the ratio of the two luminosities.
+    """
+    
+    #########################################
+    #       Checking input parameters       #
+    #########################################
+    
+    if not isinstance(where, (list, tuple)):
+        raise TypeError('where parameter should be either a list of a tuple.')
+        
+    if len(where) != 2:
+        raise ValueError('where list should be of lenght 2.')
+    
+    for value in where:
+        if value.lower() not in ['galaxy', 'sky']:
+            raise ValueError("At least one of the input parameters is neither 'galaxy' nor 'sky'.")
+    
+    ##################################
+    #       Compute the ratio        #
+    ##################################
+    
+    if Ib is None:
+        if magB is not None and offsetB is not None:
+            Ib     = intensity_at_re(4, magB, Rb, offsetB)
+        else:
+            print("ValueError: Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.")
+            return None 
+
+    if Id is None:
+        if magD is not None and offsetD is not None:
+            Id     = intensity_at_re(1, magD, Rd, offsetD)
+        else:
+            print("ValueError: Id is None, but magD or offsetD is also None. If no Id is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.")
+            return None 
+    
+    # Set inclination and PA according to where we compute the luminosity
+    inc            = [0, 0]
+    pa             = [0, 0]        
+    for i in [0, 1]:
+        if where[i].lower() == 'sky':
+            inc[i] = inclination
+            pa[i]  = PA
+    
+    # We compute both models
+    X1, Y1, mod1   = bulgeDiskOnSky(nx, ny, Rd, Rb, Id=Id, Ib=Ib, inclination=inc[0], PA=pa[0],
+                                    fineSampling=fineSampling, PSF=PSF, noPSF=noPSF, arcsecToGrid=arcsecToGrid)
+    X2, Y2, mod2   = bulgeDiskOnSky(nx, ny, Rd, Rb, Id=Id, Ib=Ib, inclination=inc[1], PA=pa[1],
+                                    fineSampling=fineSampling, PSF=PSF, noPSF=noPSF, arcsecToGrid=arcsecToGrid)
+    
+    # We compute the luminosities then
+    where1         = X1**2+Y1**2 <= r1**2
+    where2         = X2**2+Y2**2 <= r2**2
+    
+    lum1           = np.nansum(mod1[where1])
+    lum2           = np.nansum(mod2[where2])
     
     if lum2 == 0:
         raise ValueError("The luminosity computed at radius %f is 0. This is unlikely and the ratio cannot be computed." %lum2)
@@ -962,7 +1088,7 @@ def ratioIntensitiesAtRe(listn, listRe, listMag, listOffset, simplify=False):
     Optional inputs
     ---------------
         simplify : bool
-            whether to use a simplified equation to compute the ratio (only if magD===magB and Rd==Rb and offsetD==offsetB). Default is False.
+            whether to use a simplified equation to compute the ratio (only if magD===magB and Rd==Rb and offsetD==offsetB) or not. Default is False.
             
     Return the ratio of the two profiles intensities at their respective half-light radii (first profile/second profile).
     '''
@@ -1018,6 +1144,10 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
     ----------
         Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (Id, Ib), or if not known, a total magnitude value for each profile (magD, magB) and their corresponding magnitude offset (to convert from magnitudes to intensities).
        
+    Caution
+    -------
+        Rd and Rb should be given in pixel units. If you provide them in arcsec, you must update the arcsecToGrid value to 1 (since 1 pixel will be equal to 1 arcsec). 
+        
     Infos about sampling
     --------------------
         fineSampling parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:
@@ -1031,9 +1161,9 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
         ny : int
             size of the model for the y-axis
         Rb : float
-            bulge half-light radius
+            bulge half-light radius. Best practice is to provide it in pixels (see Caution section).
         Rd : float
-            disk half-light radius
+            disk half-light radius. Best practice is to provide it in pixels (see Caution section).
         
     Optional inputs
     ---------------
@@ -1136,7 +1266,7 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
         
         # If we perform fine sampling only in the central part, model2D function rebins the data in the end, so the arcsec to pixel conversion factor does not need to be updated since we do not have a finer pixel scale
         if samplingZone['where'] == 'centre':
-            fineSampling   = 1.0
+            fineSampling   = 1
         
         if combine:
             model          = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling)
@@ -1298,12 +1428,14 @@ def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, 
         intensity          = computeSersic(X, Y, nbModels, listn, listRe, listIe, listInclination, listPA)
         
         # Rebinning intensity map in the central part
+        """
         intensity   = intensity.reshape(int(intensity.shape[0] / fineSampling), fineSampling, int(intensity.shape[1] / fineSampling), fineSampling)
         intensity   = intensity.mean(1).mean(2)
         
         listX              = np.arange(0, nx, 1) - x0
         listY              = np.arange(0, ny, 1) - y0
         X, Y               = np.meshgrid(listX, listY)
+        """
         
     else:
         # We generate grids with pixel size of 1x1 (and we centre it on the galaxy centre)
