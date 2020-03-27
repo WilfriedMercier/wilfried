@@ -13,7 +13,7 @@ from   tkinter            import ttk
 
 import matplotlib
 matplotlib.use('TkAgg')
-from matplotlib.figure import Figure
+from matplotlib.figure import Figure, Axes
 from matplotlib.colors import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -38,7 +38,7 @@ DICT_MODELS = {'deVaucouleur' : 'de Vaucouleur',
                'moffat'       : 'Moffat', 
                'nuker'        : 'Nuker', 
                'psf'          : 'PSF', 
-               'model'       : 'model', 
+               'sersic'       : 'Sersic', 
                'sky'          : 'Sky'}
 
 FONT        = 'Arial'
@@ -67,7 +67,7 @@ class singlePlotFrame:
     '''A frame for a single plot, with all its properties and methods.'''
     
     
-    def __init__(self, parent, root, data=None, title=None, figsize=(3, 3), bgColor='beige'):
+    def __init__(self, parent, root, data=None, title=None, figsize=(3.4, 3.4), bgColor='beige'):
         
         # General properties
         self.bdOn           = 'black'
@@ -103,9 +103,8 @@ class singlePlotFrame:
             self.ax.set_title(self.title)
             
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.parent)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.canvas.draw()
         
         # Linking to events
         self.canvas.mpl_connect('button_press_event',  self.onClick)
@@ -253,12 +252,11 @@ class graphFrame:
         self.bgColor           = bgColor
         
         self.nbFrames          = 0
-        self.nbFramesLine      = 4
-        self.equivWinSize      = 1700
-        self.scaleFactor       = self.nbFramesLine/self.equivWinSize
+        self.nbFramesLine      = 0
+        self.scaleFactor       = 3/1084
         
         # Updated number of frames per line when the window is resized
-        self.realNbFramesLine  = self.nbFramesLine
+        self.newNbFramesLine  = self.nbFramesLine
         
         # Because matplotlib key press event is not Tk canvas dependent (i.e it links it to the last drawn Tk canvas), we define an active singleFrame instance
         # which we use to update graphs when the focus is on them (CQFD ;))
@@ -267,6 +265,7 @@ class graphFrame:
         
         self.frameList         = []
         self.plotList          = []
+        self.originalFigSize   = (3.4, 3.4)
         
         #############################################
         #       Generating frames and canvas        #
@@ -296,35 +295,44 @@ class graphFrame:
         ''''Create the frames when uploading images'''
         
         self.nbFrames = nb
-        self.updateFramesPerLine(self.root.parent.winfo_width())
+        self.updateFramesPerLine(self.canvas.size)
         
         if nb != len(titles):
             raise Exception('Given number of frame titles does not match number of loaded frames.')
 
         for i, title in zip(range(nb), titles):
             self.frameList.append(tk.Frame(self.frame.obj, bd=self.bdSize, bg=self.bgColor))
-            self.plotList.append(singlePlotFrame(self.frameList[i], self.root, title=title, bgColor=self.bgColor))
+            self.plotList.append(singlePlotFrame(self.frameList[i], self.root, title=title, figsize=self.originalFigSize, bgColor=self.bgColor))
         return
     
     
-    def placeFrames(self, fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N):
+    def placeFrames(self, fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N, sticky=tk.N+tk.E+tk.W+tk.S):
         '''Place the created frames into the main frame'''
         
-        for pos, frame in enumerate(self.frameList):
-            colPos  = pos%self.realNbFramesLine
-            linePos = pos//self.realNbFramesLine
-            frame.grid(row=linePos, column=colPos, padx=5, pady=5,  sticky=tk.N+tk.E+tk.W)
+        # If the new number of frames per line is different from the old one we update it and (re)place the frames
+        if self.newNbFramesLine != self.nbFramesLine:
             
-        # Always update canvas scrollregions otherwise it does weird stuff
-        self.canvas.update_idletasks()
-        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+            self.nbFramesLine = self.newNbFramesLine
+            for pos, frame in enumerate(self.frameList):
+                colPos  = pos%self.nbFramesLine
+                linePos = pos//self.nbFramesLine
+                frame.grid(row=linePos, column=colPos, padx=padx, pady=pady, sticky=sticky)
+                
+            # Always update canvas scrollregions otherwise it does weird stuff
+            self.canvas.update_idletasks()
+            self.canvas.configure(scrollregion=self.canvas.bbox('all'))
         return
            
     
     def updateFramesPerLine(self, winSize):
         '''Update the number of allowed frames per each line'''
         
-        self.realNbFramesLine = int(self.scaleFactor*winSize)
+        # Compute the new number of frames per line
+        self.newNbFramesLine     = int(self.scaleFactor*winSize)
+        
+        # If it falls bellow 1, we force it to be 1
+        if self.newNbFramesLine < 1:
+            self.newNbFramesLine = 1
         return
     
     
@@ -332,7 +340,7 @@ class graphFrame:
         '''Destroy plots and frames, and reset their corresponding lists'''
         
         self.nbFrames         = 0
-        self.realNbFramesLine = self.nbFrames
+        self.nbFramesLine     = 0
         
         for frame in self.frameList:
             frame.grid_forget()
@@ -346,9 +354,13 @@ class graphFrame:
     def resizeFrame(self, event):
         '''Resize the main frame when the canvas is resised'''
         
+        self.updateFramesPerLine(event.width)
+        self.canvas.size = event.width
+        self.placeFrames()
         self.canvas.itemconfig(self.frame.id, width=event.width)
-        return
         
+        return
+            
 
 
 class topFrame:
@@ -370,9 +382,8 @@ class topFrame:
         self.bgColor     = bgColor
         
         # Visible (in input) and list of opened file names
-        self.initDir     = tk.StringVar()
+        self.initDir     = tk.StringVar(value='/home/wilfried/Thesis/hst/all_stamps/')
         self.fnames      = []
-        self.initDir.set('/home/wilfried/Thesis/hst/all_stamps/')
         
         # Data stored in a dictionnary with file names as keys
         self.data        = {}
@@ -421,20 +432,24 @@ class topFrame:
         self.zoom.im     = None
         self.zoom.xline  = None
         self.zoom.yline  = None
-        self.zoom.zoom   = 10
-        self.zoom.title  = 'Zoom (x10)'
+        self.zoom.list   = [2, 3, 4, 6, 8, 10, 20]
+        self.zoom.zoom   = self.zoom.list[-2]
+        self.zoom.title  = tk.StringVar(value='Zoom (x%i)' %self.zoom.zoom)
         
-        self.zoom.frame  = tk.Frame(self.parent, bg=self.bgColor)
-        self.zoom.fig    = Figure(figsize=(1.5, 1.5), tight_layout=True, facecolor=self.bgColor)
-        self.zoom.ax     = self.zoom.fig.add_subplot(111)
-        self.zoom.ax.yaxis.set_ticks_position('both')
-        self.zoom.ax.xaxis.set_ticks_position('both')
-        self.zoom.ax.tick_params(which='both', direction='in', labelsize=1)
-        self.zoom.ax.set_title(self.zoom.title)
-        self.zoom.canvas = FigureCanvasTkAgg(self.zoom.fig, master=self.zoom.frame)
-        self.zoom.canvas.draw()
+        # Frame, figure, axis and canvas
+        self.zoom.frame   = tk.Frame(self.parent, bg=self.bgColor)
+        self.zoom.axFrame = tk.Frame(self.zoom.frame, bg=self.bgColor, bd=2)
+        self.zoom.fig     = Figure(figsize=(1.2, 1.2), facecolor=self.bgColor)
+        self.zoom.ax      = Axes(self.zoom.fig, [0., 0., 1., 1.])
+        self.zoom.ax.set_axis_off()
+        self.zoom.fig.add_axes(self.zoom.ax)
+        self.zoom.canvas  = FigureCanvasTkAgg(self.zoom.fig, master=self.zoom.axFrame)
         
-        self.zoom.buttonP = ttk.Button(self.parent, command=self.changeZoom, text='+')
+        self.zoom.buttonP = tk.Button(self.zoom.frame, command=lambda step=1: self.changeZoom(step), text='+', activebackground='black', activeforeground='white', 
+                                      bg=self.bgColor, relief=tk.FLAT, bd=0, highlightthickness=0, font=(FONT, '9', 'bold'))
+        self.zoom.buttonM = tk.Button(self.zoom.frame, command=lambda step=-1: self.changeZoom(step), text='-', activebackground='black', activeforeground='white', 
+                                      bg=self.bgColor, relief=tk.FLAT, bd=0, highlightthickness=0, font=(FONT, '9', 'bold'))
+        self.zoom.text    = tk.Label(self.zoom.frame, textvariable=self.zoom.title, bg=self.bgColor, font=(FONT, '9', 'bold'))
         
         # Drawing elements
         self.loadButton.grid(  row=0, column=0, padx=padx,   pady=pady, sticky=tk.W+tk.N)
@@ -451,11 +466,55 @@ class topFrame:
         self.invert.y.grid(    row=0, column=6, padx=0,      pady=pady, sticky=tk.W+tk.N)
         
         self.zoom.frame.grid(  row=0, column=7, sticky=tk.E, padx=2*padx, pady=pady, rowspan=4)
-        self.zoom.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        self.zoom.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.zoom.axFrame.grid(row=1, column=0, columnspan=2)
+        self.zoom.canvas._tkcanvas.pack(fill=tk.BOTH)
+        self.zoom.canvas.draw()
+        
+        self.zoom.buttonP.grid(row=2, column=1, sticky=tk.W+tk.N, padx=10, pady=2)
+        self.zoom.buttonM.grid(row=2, column=0, sticky=tk.E+tk.N, padx=10, pady=2)
+        self.zoom.text.grid(   row=0, column=0, sticky=tk.N,     columnspan=2)
+        self.zoom.frame.grid_rowconfigure(0, weight=0)
+        self.zoom.frame.grid_rowconfigure(1, weight=1)
+        self.zoom.frame.grid_rowconfigure(2, weight=0)
         
         self.parent.grid_rowconfigure(1, weight=1)
         self.parent.grid_columnconfigure(7, weight=1)
+        
+        # Change border color to black
+        self.zoom.axFrame.config({'bg':'black'})
+        
+        
+    def changeZoom(self, step=1):
+        '''
+        Change the value of the zoom for the magnifier.
+
+        Optional inputs
+        ---------------.
+            step : int
+                How much to move the zoom value in the zoom list.
+        '''
+        
+        newPos         = self.zoom.list.index(self.zoom.zoom)+step
+        ll             = len(self.zoom.list)
+        
+        if newPos >= ll:
+            newPos     = ll-1
+        elif newPos < 0:
+            newPos     = 0
+            
+        # If w reach the ends of the list we gray out the corresponding button
+        if newPos == 0:
+            self.zoom.buttonM['state'] = 'disabled'
+        elif newPos == ll-1:
+            self.zoom.buttonP['state'] = 'disabled'
+        else:
+            for butt in [self.zoom.buttonM, self.zoom.buttonP]:
+                if butt['state'] == 'disabled':
+                    butt['state'] = 'normal'
+            
+        self.zoom.zoom = self.zoom.list[newPos]
+        self.zoom.title.set('Zoom (x%i)' %self.zoom.zoom)
+        return
 
 
     def genFigures(self):
@@ -529,6 +588,8 @@ class topFrame:
         
             # Set flag to True if data was succesfully loaded
             self.imLoaded = True
+            
+            fileWindow(self, self.root)
         return
 
         
@@ -579,6 +640,7 @@ class topFrame:
                 ypos           = int(ypos)
                 
                 # Derive new shape
+                print(self.zoom.zoom)
                 dimX, dimY     = np.shape(data)
                 newDimX        = dimX//self.zoom.zoom
                 newDimY        = dimY//self.zoom.zoom
@@ -626,7 +688,8 @@ class topFrame:
                     norm           = DivergingNorm(vcenter=0, vmin=np.nanmin(data), vmax=np.nanmax(data))
                     
                     self.zoom.ax.clear()
-                    self.zoom.ax.set_title(self.zoom.title)
+                    self.zoom.ax.axes.set_axis_off()
+                    #self.zoom.ax.set_title(self.zoom.title)
                     self.zoom.xline = self.zoom.ax.plot([-1, newDimX], [yNewPos, yNewPos], 'k--', linewidth=1)
                     self.zoom.yline = self.zoom.ax.plot([xNewPos, xNewPos], [-1, newDimY], 'k--', linewidth=1)
                     self.zoom.im    = self.zoom.ax.imshow(newData, cmap=self.cmap.var.get(), norm=norm, origin='lower')
@@ -637,6 +700,35 @@ class topFrame:
                         self.zoom.ax.set_ylim(self.zoom.ax.get_ylim()[::-1])
                     self.zoom.canvas.draw()
         return
+    
+
+
+class fileWindow:
+    ''''Window with all the info concerning the opened files'''
+
+    def __init__(self, parent, root, bgColor='grey'):
+        self.bgColor       = bgColor
+        self.window        = tk.Toplevel(height=500, width=500, bg=self.bgColor)
+        self.window.title('File(s)')
+        self.window.protocol("WM_DELETE_WINDOW", self.window.destroy)
+        
+        # Create style
+        self.style = ttk.Style()
+        self.style.configure("mystyle.Treeview", highlightthickness=10, background='red', font=(FONT, 9)) # Modify the font of the body
+        self.style.configure("mystyle.Treeview.Heading", font=(FONT, 11)) # Modify the font of the headings
+        
+        # Create notebook
+        self.treeview      = ttk.Treeview(self.window, columns=('Dimensions', 'PA'), style='mystyle.Treeview', selectmode='none')
+        self.treeview.heading('#0', text='Name')
+        self.treeview.heading('#1', text='Dimensions (px)')
+        self.treeview.heading('#2', text='PA (°)')
+        self.treeview.insert('', 'end', text='test', values=('200x200', ''))
+        
+        # Pack things up
+        self.treeview.pack(expand=1, fill='both')
+        
+    
+    def loadData(self, )
         
                 
                 
@@ -675,7 +767,7 @@ class modelFrame:
         self.modelLabel.id       = self.canvas.create_window(self.padx+self.posx[0], self.pady+self.posy[0], window=self.modelLabel.obj, anchor='nw')
         
         # Making a combobox to select the model
-        self.modelName           = tk.StringVar(value='Exponential disk')
+        self.modelName           = tk.StringVar(value='Sersic')
         
         self.modelList.obj       = ttk.Combobox(self.canvas, textvariable=self.modelName, values=list(DICT_MODELS.values()), state='readonly')
         self.modelList.id        = self.canvas.create_window(self.padx+self.canvas.bbox(self.modelLabel.id)[2], self.pady+self.posy[0], window=self.modelList.obj, anchor='nw')
@@ -962,6 +1054,8 @@ class rightFrame:
             
         for mframe in mframes:
             mframe.moveWidgetsVert(offset)
+
+
         
 class topMenu:
     '''Application top menu'''
