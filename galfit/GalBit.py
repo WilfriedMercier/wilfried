@@ -67,7 +67,7 @@ class singlePlotFrame:
     '''A frame for a single plot, with all its properties and methods.'''
     
     
-    def __init__(self, parent, root, data=None, title=None, figsize=(3.4, 3.4), bgColor='beige'):
+    def __init__(self, parent, root, data=None, name='', title=None, figsize=(3.4, 3.4), bgColor='beige'):
         
         # General properties
         self.bdOn           = 'black'
@@ -76,6 +76,7 @@ class singlePlotFrame:
         self.selected       = False
         self.data           = data
         self.shape          = (0, 0)
+        self.name           = name
         
         self.parent         = parent
         self.root           = root
@@ -155,7 +156,16 @@ class singlePlotFrame:
         
         # If state is default, we draw a border (technically we change the color of the border) around a plot frame to indicate that it has been selected
         if self.root.state == 'default':
+            
+            # Changing border first
             self.changeBorder()
+            
+            # (Un)selecting the corresponding line in the file list window
+            if self.selected:
+                self.root.topPane.fWindow.window.selectLine(self.name, select=True)
+            else:
+                self.root.topPane.fWindow.window.selectLine(self.name, select=False)
+            
         else:
             if not self.paLine.drawing:
                 self.paLine.posx[0] = event.xdata
@@ -291,7 +301,7 @@ class graphFrame:
         self.canvas.pack(    fill='both', expand='yes')
         
         
-    def makeFrames(self, nb=0, titles=[]):
+    def makeFrames(self, nb=0, titles=[], names=[]):
         ''''Create the frames when uploading images'''
         
         self.nbFrames = nb
@@ -299,10 +309,13 @@ class graphFrame:
         
         if nb != len(titles):
             raise Exception('Given number of frame titles does not match number of loaded frames.')
+            
+        if nb != len(names):
+            raise Exception('Given number of frame names does not match number of loaded frames.')
 
-        for i, title in zip(range(nb), titles):
+        for i, title, name in zip(range(nb), titles, names):
             self.frameList.append(tk.Frame(self.frame.obj, bd=self.bdSize, bg=self.bgColor))
-            self.plotList.append(singlePlotFrame(self.frameList[i], self.root, title=title, figsize=self.originalFigSize, bgColor=self.bgColor))
+            self.plotList.append(singlePlotFrame(self.frameList[i], self.root, title=title, name=name, figsize=self.originalFigSize, bgColor=self.bgColor))
         return
     
     
@@ -420,21 +433,30 @@ class topFrame:
         self.invert.x    = tk.Checkbutton(self.parent, text='Invert x', bg=self.bgColor, command=self.invertxAxes, state=tk.DISABLED)
         self.invert.y    = tk.Checkbutton(self.parent, text='Invert y', bg=self.bgColor, command=self.invertyAxes, state=tk.DISABLED)
         
+        
+        ######################################################
+        #               File window properties               #
+        ######################################################
+        self.fWindow        = container()
+        self.fWindow.loaded = False
+        self.fWindow.window = None
+        
+        
         ###################################################
         #                    Zoom widget                  #
         ###################################################
         
         # Variables
-        self.zoom        = container()
-        self.zoom.name   = ''
-        self.zoom.xpos   = None
-        self.zoom.ypos   = None
-        self.zoom.im     = None
-        self.zoom.xline  = None
-        self.zoom.yline  = None
-        self.zoom.list   = [2, 3, 4, 6, 8, 10, 20]
-        self.zoom.zoom   = self.zoom.list[-2]
-        self.zoom.title  = tk.StringVar(value='Zoom (x%i)' %self.zoom.zoom)
+        self.zoom         = container()
+        self.zoom.name    = ''
+        self.zoom.xpos    = None
+        self.zoom.ypos    = None
+        self.zoom.im      = None
+        self.zoom.xline   = None
+        self.zoom.yline   = None
+        self.zoom.list    = [2, 3, 4, 6, 8, 10, 20]
+        self.zoom.zoom    = self.zoom.list[-2]
+        self.zoom.title   = tk.StringVar(value='Zoom (x%i)' %self.zoom.zoom)
         
         # Frame, figure, axis and canvas
         self.zoom.frame   = tk.Frame(self.parent, bg=self.bgColor)
@@ -521,7 +543,8 @@ class topFrame:
         '''Generate figures which have been loaded'''
         
         # First we generate the frames
-        self.root.bottomPane.makeFrames(nb=len(self.data), titles=[i.split('/')[-1] for i in self.data.keys()])
+        titles = [i.split('/')[-1] for i in self.data.keys()]
+        self.root.bottomPane.makeFrames(nb=len(self.data), titles=titles, names=[i.rstrip('.fits') for i in titles])
         
         # Second we place them in our widget
         self.root.bottomPane.placeFrames()
@@ -589,7 +612,14 @@ class topFrame:
             # Set flag to True if data was succesfully loaded
             self.imLoaded = True
             
-            fileWindow(self, self.root)
+            # Generate the window listing files
+            if not self.fWindow.loaded:
+                self.fWindow.window = fileWindow(self, self.root)
+            else:
+                self.fWindow.window.emptyList()
+            for name, data in self.data.items():
+                self.fWindow.window.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
+            
         return
 
         
@@ -706,29 +736,103 @@ class topFrame:
 class fileWindow:
     ''''Window with all the info concerning the opened files'''
 
-    def __init__(self, parent, root, bgColor='grey'):
-        self.bgColor       = bgColor
-        self.window        = tk.Toplevel(height=500, width=500, bg=self.bgColor)
+    def __init__(self, parent, root, bgColor='beige'):
+        
+        
+        self.parent   = parent
+        self.root     = root
+        
+        self.bgColor  = bgColor
+        self.window   = tk.Toplevel(bg=self.bgColor)
+        self.window.wm_attributes('-type', 'utility')
         self.window.title('File(s)')
-        self.window.protocol("WM_DELETE_WINDOW", self.window.destroy)
+        self.window.protocol("WM_DELETE_WINDOW", self.destroy)
+        self.window.resizable(width=True, height=False)
+        
+        # Configure escape key
+        self.window.bind('<Escape>', lambda forceUnselect=True: self.selectAll(forceUnselect))
         
         # Create style
-        self.style = ttk.Style()
-        self.style.configure("mystyle.Treeview", highlightthickness=10, background='red', font=(FONT, 9)) # Modify the font of the body
-        self.style.configure("mystyle.Treeview.Heading", font=(FONT, 11)) # Modify the font of the headings
+        self.style    = ttk.Style()
+        self.style.configure("mystyle.Treeview", highlightthickness=10, background=self.bgColor, font=(FONT, 9)) # Modify the font of the body
+        self.style.configure("mystyle.Treeview.Heading", font=(FONT, 9, 'bold')) # Modify the font of the headings
         
         # Create notebook
-        self.treeview      = ttk.Treeview(self.window, columns=('Dimensions', 'PA'), style='mystyle.Treeview', selectmode='none')
-        self.treeview.heading('#0', text='Name')
-        self.treeview.heading('#1', text='Dimensions (px)')
-        self.treeview.heading('#2', text='PA (°)')
-        self.treeview.insert('', 'end', text='test', values=('200x200', ''))
+        self.columns  = ('Dimensions', 'PA')
+        self.treeview = ttk.Treeview(self.window, columns=self.columns, style='mystyle.Treeview', height=0)
+        self.treeview.heading('#0', text='Name',            anchor=tk.W, command=self.selectAll)
+        self.treeview.heading('#1', text='Dimensions (px)', anchor=tk.W, command=self.selectAll)
+        self.treeview.heading('#2', text='PA (°)',          anchor=tk.W, command=self.selectAll)
+        self.treeview.tag_configure('all', background=self.bgColor)
+        self.treeview.column('#0', anchor=tk.W)
+        for i in range(len(self.columns)):
+            self.treeview.column('#%d' %(i+1), anchor=tk.CENTER)
+        self.itemList = {}
         
         # Pack things up
-        self.treeview.pack(expand=1, fill='both')
+        self.treeview.pack(fill='x', side=tk.TOP)
+        
+        
+    def destroy(self):
+        self.parent.fWindow.loaded = False
+        self.window.destroy()
+        return        
+
+    
+    def emptyList(self):
+        for item in self.itemList:
+            self.treeview.delete(item)
+        return
+    
+    
+    def insertData(self, text, values, pos='end'):
+        '''
+        Insert a new line into the treeview
+
+        Mandatory inputs
+        ----------------
+            text : str
+                Main text associated to the line
+            values : tuple
+                values to be printed in the treeview
+        
+        Optional inputs
+        ---------------
+            pos : int or str
+                where to place the new line in the treeview list. 'end' to place it at the end, otherwise a number
+        '''
+        
+        self.itemList[text] = self.treeview.insert("", pos, text=text, values=values, tags=('all'))
+        self.treeview.configure(height=self.treeview['height']+1)
+        return
         
     
-    def loadData(self, )
+    def selectAll(self, forceUnselect=False):
+        '''
+        Either select or unselect all the lines.
+        
+        Optional inputs
+        ---------------
+            forceUnselect : bool
+                whether to force it to unselect all the lines or not. Default is to not force anything.
+        '''
+        
+        if len(self.treeview.selection()) != len(self.itemList) and not forceUnselect:
+            self.treeview.selection_set(list(self.itemList.values()))
+        else:
+            self.treeview.selection_remove(list(self.itemList.values()))
+        return
+    
+    
+    def selectLine(self, name, select=True):
+        
+        if select:
+            if self.itemList[name] not in self.treeview.selection():
+                self.treeview.selection_add(self.itemList[name])
+        else:
+            if self.itemList[name] in self.treeview.selection():
+                self.treeview.selection_remove(self.itemList[name])
+        return
         
                 
                 
