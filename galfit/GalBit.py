@@ -112,20 +112,29 @@ class singlePlotFrame:
         self.canvas.mpl_connect('motion_notify_event', self.onMove)
         self.canvas.mpl_connect('figure_enter_event',  self.onFigure)
         
+        
+    def borderOnOff(self, on=True):
+        
+        if not on :
+            self.parent.config({'bg':self.bdOff})
+            self.selected = False
+            self.root.bottomPane.numSelected -= 1
+        else:
+            self.parent.config({'bg':self.bdOn})
+            self.selected = True
+            self.root.bottomPane.numSelected += 1
+        return
+
 
     def changeBorder(self):
         '''Adds or remove a border around the figure canvas.'''
         
         # Case 1: the plot is selected, we change the border color back to the frame color
         if self.parent['bg'] == self.bdOn:
-            self.parent.config({'bg':self.bdOff})
-            self.selected = False
-            self.root.bottomPane.numSelected -= 1
+            self.borderOnOff(on=False)
         # Case 2: the plot is unselected and we change the border color to the 'On' color (default is black)
         else:
-            self.parent.config({'bg':self.bdOn})
-            self.selected = True
-            self.root.bottomPane.numSelected += 1
+           self.borderOnOff(on=True )
         return
     
     
@@ -156,16 +165,7 @@ class singlePlotFrame:
         
         # If state is default, we draw a border (technically we change the color of the border) around a plot frame to indicate that it has been selected
         if self.root.state == 'default':
-            
-            # Changing border first
-            self.changeBorder()
-            
-            # (Un)selecting the corresponding line in the file list window
-            if self.selected:
-                self.root.topPane.fWindow.window.selectLine(self.name, select=True)
-            else:
-                self.root.topPane.fWindow.window.selectLine(self.name, select=False)
-            
+            self.selectIt()
         else:
             if not self.paLine.drawing:
                 self.paLine.posx[0] = event.xdata
@@ -247,6 +247,20 @@ class singlePlotFrame:
         self.canvas.draw()
         return
     
+    
+    def selectIt(self):
+        ''''(Un)select the plot, that is change the border and either select or (un)select it in the file window.'''
+        
+        # Changing border first
+        self.changeBorder()
+        
+        # (Un)selecting the corresponding line in the file list window
+        if self.selected:
+            self.root.topPane.fWindow.window.selectLine(self.name, select=True)
+        else:
+            self.root.topPane.fWindow.window.selectLine(self.name, select=False)
+        return
+    
 
 
 class graphFrame:
@@ -275,6 +289,7 @@ class graphFrame:
         
         self.frameList         = []
         self.plotList          = []
+        self.linkNameToPlot    = {}
         self.originalFigSize   = (3.4, 3.4)
         
         #############################################
@@ -361,6 +376,7 @@ class graphFrame:
         
         self.frameList        = []
         self.plotList         = []
+        self.linkNameToPlot   = {}
         return
     
     
@@ -551,6 +567,7 @@ class topFrame:
             
         # Then we update each frame with the corresponding data
         for name, galaxy in self.data.items():
+            self.root.bottomPane.linkNameToPlot[name.split('/')[-1].rstrip('.fits')] = self.root.bottomPane.plotList[galaxy['loc']]
             self.root.bottomPane.plotList[galaxy['loc']].updateImage(galaxy['image'], maxi=galaxy['max'], mini=galaxy['min'], cmap=self.cmap.var.get())
         return
     
@@ -750,7 +767,8 @@ class fileWindow:
         self.window.resizable(width=True, height=False)
         
         # Configure escape key
-        self.window.bind('<Escape>', lambda forceUnselect=True: self.selectAll(forceUnselect))
+        self.window.bind('<Escape>',    lambda forceUnselect=True, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
+        self.window.bind('<Control-a>', lambda forceUnselect=False, forceSelect=True: self.selectAll(forceUnselect, forceSelect))
         
         # Create style
         self.style    = ttk.Style()
@@ -760,14 +778,20 @@ class fileWindow:
         # Create notebook
         self.columns  = ('Dimensions', 'PA')
         self.treeview = ttk.Treeview(self.window, columns=self.columns, style='mystyle.Treeview', height=0)
-        self.treeview.heading('#0', text='Name',            anchor=tk.W, command=self.selectAll)
-        self.treeview.heading('#1', text='Dimensions (px)', anchor=tk.W, command=self.selectAll)
-        self.treeview.heading('#2', text='PA (°)',          anchor=tk.W, command=self.selectAll)
+        self.treeview.heading('#0', text='Name',            anchor=tk.W, command=lambda forceUnselect=False, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
+        self.treeview.heading('#1', text='Dimensions (px)', anchor=tk.W, command=lambda forceUnselect=False, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
+        self.treeview.heading('#2', text='PA (°)',          anchor=tk.W, command=lambda forceUnselect=False, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
         self.treeview.tag_configure('all', background=self.bgColor)
         self.treeview.column('#0', anchor=tk.W)
         for i in range(len(self.columns)):
             self.treeview.column('#%d' %(i+1), anchor=tk.CENTER)
-        self.itemList = {}
+            
+        # Dictionnary of items (identifiers) and dictionnary of singlePlotFrames
+        self.itemDict = {}
+        self.plotDict = {}
+        
+        # Bind event(s)
+        self.treeview.bind('<<TreeviewSelect>>', self.onClick)
         
         # Pack things up
         self.treeview.pack(fill='x', side=tk.TOP)
@@ -780,7 +804,7 @@ class fileWindow:
 
     
     def emptyList(self):
-        for item in self.itemList:
+        for item in self.itemDict:
             self.treeview.delete(item)
         return
     
@@ -802,12 +826,25 @@ class fileWindow:
                 where to place the new line in the treeview list. 'end' to place it at the end, otherwise a number
         '''
         
-        self.itemList[text] = self.treeview.insert("", pos, text=text, values=values, tags=('all'))
+        self.itemDict[text]                = self.treeview.insert("", pos, text=text, values=values, tags=('all'))
+        self.plotDict[self.itemDict[text]] = self.root.bottomPane.linkNameToPlot[text]
         self.treeview.configure(height=self.treeview['height']+1)
+        return
+    
+    
+    def onClick(self, event):
+        
+        for iid in self.itemDict.values():
+            if iid in self.treeview.selection():
+                if not self.plotDict[iid].selected:
+                    self.plotDict[iid].borderOnOff(on=True)
+            else:
+                if self.plotDict[iid].selected:
+                    self.plotDict[iid].borderOnOff(on=False)
         return
         
     
-    def selectAll(self, forceUnselect=False):
+    def selectAll(self, forceUnselect=False, forceSelect=False):
         '''
         Either select or unselect all the lines.
         
@@ -815,23 +852,32 @@ class fileWindow:
         ---------------
             forceUnselect : bool
                 whether to force it to unselect all the lines or not. Default is to not force anything.
+            forceSelect : bool
+                whether to force it to select all the lines or not. Default is to not force anything.
         '''
         
-        if len(self.treeview.selection()) != len(self.itemList) and not forceUnselect:
-            self.treeview.selection_set(list(self.itemList.values()))
-        else:
-            self.treeview.selection_remove(list(self.itemList.values()))
+        # First try to force the (un)selection if one of the keywords is provided, otherwise do according to the number of selected items
+        if forceSelect:
+            self.treeview.selection_set(list(self.itemDict.values()))
+        elif forceUnselect:
+            self.treeview.selection_remove(list(self.itemDict.values()))
+        else:                
+            if len(self.treeview.selection()) != len(self.itemDict):
+                self.treeview.selection_set(list(self.itemDict.values()))
+            else:
+                self.treeview.selection_remove(list(self.itemDict.values()))
+            
         return
     
     
     def selectLine(self, name, select=True):
         
         if select:
-            if self.itemList[name] not in self.treeview.selection():
-                self.treeview.selection_add(self.itemList[name])
+            if self.itemDict[name] not in self.treeview.selection():
+                self.treeview.selection_add(self.itemDict[name])
         else:
-            if self.itemList[name] in self.treeview.selection():
-                self.treeview.selection_remove(self.itemList[name])
+            if self.itemDict[name] in self.treeview.selection():
+                self.treeview.selection_remove(self.itemDict[name])
         return
         
                 
@@ -1401,14 +1447,15 @@ class mainApplication:
         if self.bottomPane.nbFrames > self.bottomPane.numSelected:
             for plot in self.bottomPane.plotList:
                 if not plot.selected:
-                    plot.changeBorder()
+                    plot.selectIt()
+                    
             self.topPane.updateInvertWidgets(state='normal')
             self.bottomPane.numSelected = self.bottomPane.nbFrames
             
         # Case 2: all the plots are selected, so we unselect them all
         elif self.bottomPane.nbFrames == self.bottomPane.numSelected:
             for plot in self.bottomPane.plotList:
-                plot.changeBorder()
+                plot.selectIt()
             self.topPane.updateInvertWidgets(state='disabled')
             self.bottomPane.numSelected = 0
         
