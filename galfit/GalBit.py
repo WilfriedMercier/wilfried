@@ -86,6 +86,7 @@ class singlePlotFrame:
         self.paLine.posx    = [None, None]
         self.paLine.posy    = [None, None]
         self.paLine.drawing = False
+        self.paAngle        = None
         
         # Making a figure
         self.bgColor        = bgColor
@@ -174,6 +175,18 @@ class singlePlotFrame:
             else:
                 self.paLine.drawing = False
                 self.paLine.line.set_data([self.paLine.posx, self.paLine.posy])
+                
+                # Computing the PA angle (between -90° and +90°, counting from the vertical axis counter clockwise)
+                self.paAngle        = np.arctan((self.paLine.posy[1]-self.paLine.posy[0])/(self.paLine.posx[1]-self.paLine.posx[0]))
+                if self.paAngle>=0:
+                    self.paAngle    = np.pi/2 - self.paAngle
+                else:
+                    self.paAngle   = -(np.pi/2 + self.paAngle)
+                self.paAngle       *= 180/np.pi # convert to degrees
+                
+                # Update the file manager with this new data
+                self.updateFileManagerValues(valNames=['PA'], values=[np.round(self.paAngle, 2)])
+                
                 self.canvas.draw()
                 
         # if at least one graph is selected, we enable the x and y invert widgets
@@ -218,6 +231,26 @@ class singlePlotFrame:
             
         # Update the magnifier on the top right corner
         self.root.topPane.updateMagnifier(self.data, shape=self.shape, xpos=event.xdata, ypos=event.ydata, invertAxes=self.invertAx)
+        return
+    
+    
+    def updateFileManagerValues(self, valNames=[], values=[]):
+        '''Update the file manager with some new values'''
+        
+        # Find position in the heading list of all the values to change
+        posList     = []
+        for name in valNames:
+            posList.append(self.root.topPane.fWindow.window.treeview['columns'].index(name))
+        
+        # Get current values
+        currentVal  = self.root.topPane.fWindow.window.treeview.item(self.root.topPane.fWindow.window.itemDict[self.name])['values']
+        
+        # Update each value
+        for pos, val in zip(posList, values):
+            currentVal[pos] = val
+            
+        # Update the corresponding item once everything has been updated
+        self.root.topPane.fWindow.window.treeview.item(self.root.topPane.fWindow.window.itemDict[self.name], values=currentVal)
         return
     
     
@@ -838,9 +871,13 @@ class fileWindow:
             if iid in self.treeview.selection():
                 if not self.plotDict[iid].selected:
                     self.plotDict[iid].borderOnOff(on=True)
+                    self.root.topPane.updateInvertWidgets(state='normal')
+                    self.root.bottomPane.numSelected = self.root.bottomPane.nbFrames
             else:
                 if self.plotDict[iid].selected:
                     self.plotDict[iid].borderOnOff(on=False)
+                    self.root.topPane.updateInvertWidgets(state='disabled')
+                    self.root.bottomPane.numSelected = 0
         return
         
     
@@ -1424,6 +1461,9 @@ class mainApplication:
             self.bottomPane.activeSingleFrame.paLine.drawing = False
             self.bottomPane.activeSingleFrame.paLine.line.set_data([[], []])
             self.bottomPane.activeSingleFrame.canvas.draw()
+            
+            # Update the PA in the file manager
+            self.bottomPane.activeSingleFrame.updateFileManagerValues(valNames=['PA'], values=[''])
         
         
     def lineTracingState(self, event):
