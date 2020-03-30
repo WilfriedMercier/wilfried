@@ -1,0 +1,379 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Sep 30 22:09:08 2019
+
+@author: Benoit Epinat - LAM & Wilfried Mercier - IRAP
+
+Fonctions related to kinematical modelling of galaxies.
+"""
+
+import os, glob
+import numpy             as np
+import astropy.io.ascii  as asci
+import astropy.io.fits   as fits
+import astropy.constants as ct
+
+####################################################################################################################
+#                                                Analysis part                                                     #
+####################################################################################################################
+
+'''This module is to be used to clean kinematics map created using camel.'''
+
+def apply_mask(mask, image):
+    '''
+    This function applies a mask to an image and puts nan in the masked area.
+    
+    Authors
+    -------
+        Benoit Epinat - LAM
+        modified by Wilfried Mercier - IRAP
+    
+    Parameters
+    ----------
+        mask: numpy array
+            array containing the indices of the pixels to be masked
+        image: numpy array
+            image to be masked
+
+    Returns the masked image.
+    '''
+    
+    newImage       = image.copy()
+    newImage[mask] = np.nan
+    return newImage
+
+
+def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='snr', thrl=None, thru=None, option='_ssmooth', line='_OII3729'):
+    '''
+    This function cleans the maps created by CAMEL for a given galaxy.
+    
+    Authors
+    -------
+        Benoit Epinat - LAM
+        modified by Wilfried Mercier - IRAP
+    
+    Mandatory parameters
+    --------------------
+        fraction: float
+            fraction for a lower threshold on the velocity dispersion map
+        lsfw: float
+            spectral resolution in km/s (sigma)
+        name: str
+            name of the galaxy
+        ouputpath: str
+            path where the ouput data will be stored
+        path: str
+            path where the input data are stored
+        
+    Optional parameters
+    -------------------
+        clean: str
+            name of the manually cleaned map. Default is None so that no cleaned map is used to add an additional mask.
+        data_mask: str/list of str
+            basename of the map used for the threshold (e.g. 'snr' to use the signal to noise ratio map). Default is 'snr'.
+        line: str
+            line used (suffixe, e.g. '_Ha')
+        option: str
+            option of CAMEL to find the files to clean (e.g. '_ssmooth'). Default is '_ssmooth'.
+        thrl: float/list of floats
+            lower threshold for cleaning. Default is None so that the minimum (apart from nan) will be used.
+        thru: float/list of floats
+            upper threshold for cleaning. Default is None so that the maximum (apart from nan) will be used.
+        
+    '''
+    
+    #Checking path exists
+    if not(os.path.isdir(path)):
+        raise OSError('clean_galaxy: path % s does not exist' % (str(path)))
+ 
+    #Checking output path exists
+    if not(os.path.isdir(outputpath)):
+        raise OSError('clean_galaxy: path % s does not exist' % (str(outputpath)))
+    
+    # Dispersion threshold
+    smin            = lsfw * fraction
+    print('clean_galaxy: dispersion threshold % s' % (str(smin)))
+    
+    # Correct path name if wrongly provided
+    if path[-1] != '/':
+        path       += '/'
+        
+    if outputpath[-1] != '/':
+        outputpath += '/'
+        
+    # Set data_mask to a list if it is only a string
+    if isinstance(data_mask, str):
+        data_mask   = [data_mask]
+        
+    if not isinstance(thrl, list):
+        thrl        = [thrl]
+    
+    if not isinstance(thru, list):
+        thru        = [thru]
+    
+    # Get file in path with given name and option + dispersion map + map used for the mask (generally snr)
+    files           = glob.glob(path + name + option + '*.fits')
+    fim0            = glob.glob(path + name + option + '_disp_*[pn].fits')
+    fim1            = []
+    for name_mask in data_mask:
+        fim1.append(glob.glob(path + name + option + '_' + name_mask + '_*[pn].fits'))
+    
+    # Try to open the dispersion file (first extension)
+    try:
+        with fits.open(fim0[0]) as hdul0:
+            im0     = hdul0[0].data
+        print('clean_galaxy: using % s' % (str(fim0[0])))
+    except:
+        raise IOError('clean_galaxy: % s not found' % (str(path + name + option + '_disp_*[pn].fits')))
+        
+    # Try to open the map used for the mask (first extension for each map in fim1 list)
+    im1             = []
+    for fi1, name_mask in zip(fim1, data_mask):
+        try:
+            with fits.open(fi1[0]) as hdul1:
+                im1.append(hdul1[0].data)
+            print('clean_galaxy: using % s' % (str(fim1[0])))
+        except:
+            raise IOError('clean_galaxy: % s not found' % (str(path + name + option + '_' + name_mask + '_*[pn].fits')))
+    
+    ##################################################################
+    #                         Creating masks                         #
+    ##################################################################
+    
+    # Dispersion mask: True where im0>=smin
+    mask0     = create_mask(im0, thrl=smin)
+    
+    # Provided masks: True where thrl<=im1<=thru
+    mask1     = mask0.copy() * False + True
+    for im, tl, tu in zip(im1, thrl, thru):
+        mask1 = np.logical_and(mask1, create_mask(im, thrl=tl, thru=tu))
+    
+    # Keep positions where the values are out of bounds
+    mask      = np.where((np.logical_not(mask0)) | (np.logical_not(mask1)))
+    
+    ##############################################################
+    #               Using the manually cleaned map               #
+    ##############################################################
+    
+    if clean is not None:
+        fcl          = glob.glob(path + clean)
+        try:
+            # Get data and generate a mask wherever data is not None (neither upper nor lower threshold applied)
+            with fits.open(fcl[0]) as hducl:
+                imcl = hducl[0].data
+                
+            print('clean_galaxy: using % s' % (str(fcl[0])) )    
+            maskcl   = create_mask(imcl, thrl=None, thru=None)
+            mask2    = np.where((np.logical_not(mask0)) | (np.logical_not(mask1)) | (np.logical_not(maskcl)))
+        except:
+            print('clean_galaxy: % s not found' % (str(path + clean)) )
+            clean    = None
+    
+    #################################################
+    #             Updating all the maps             #
+    #################################################
+    
+    for fim, tl, tu in zip(files, thrl, thru):
+        
+        # We skip files which are already cleaned (either manually or automatically). This assumes that cleaned files have a 'clean' keyword in their name
+        if 'clean' in fim:
+            continue
+        
+        with fits.open(fim) as hdul:
+            im           = hdul[0].data
+            
+        # We skip datacubes
+        if im.ndim == 3:
+            continue
+
+        # Setting up the threshold value that will appear in the output file name
+        thr              = 0
+        if tl is not None:
+            thr          = tl
+        if tu is not None:
+            thr          = tu
+
+        # Directly modify the file data by applying the master mask (velocity dispersion + any other mask used such as snr)
+        if clean is None:
+            hdul[0].data = apply_mask(mask, im)
+            fimcl        = fim.split('.fits')[0].split('/')[-1] + '_clean%3.1f.fits' %thr
+        else:
+            hdul[0].data = apply_mask(mask2, im)
+            fimcl        = fim.split('.fits')[0].split('/')[-1] + '_mclean%3.1f.fits' %thr
+            
+        hdul.writeto(outputpath + fimcl, overwrite=True)
+        print.info('output written in %s' %(outputpath+fimcl))
+    
+    return
+
+
+def clean_setofgalaxies(path, filename='gals.config', logFile='folderList.list', fraction=1., data_mask='snr', thrl=None, thru=None, option='_ssmooth', line='_OII3729', clean=None):
+    '''
+    Clean maps created by camel for a list of galaxies.
+    
+    Authors
+    -------
+        Benoit Epinat - LAM
+        modified by Wilfried Mercier - IRAP
+        
+    How to use
+    ----------
+    
+        Provide:
+            - a filename containing two columns: the absolute file name of every galaxy config file (thus ending with .config) and their corresponding spectral resolution in km/s (e.g. /home/wilfried/CGr114_s/o2/CGr114_101_o2.config 30).
+            - a keyword for the additional mask (apart from the spectral width criterion), or a list of keywords
+            - thresholds if necessary
+            - a clean map if there is one. The same name will be used for every galaxy. Best practice would be to use an identical name for all the galaxies (located in different folders), such as 'clean.fits'.
+    
+    Mandatory parameters
+    --------------------
+        filename: str
+            name of the input file containing two columns: the list of galaxies and the associated spectral resolution in km/s (sigma)
+        path: str
+            path where the input data are stored
+        logFile: str
+            name of of the file containing the list of the output folders names
+            
+    Optional parameters
+    -------------------
+        clean: str
+            name of the manually cleaned map. Default is None so that no clean file is used to add an another manual mask.
+        data_mask: str/list of str
+            basename of the map used for threshold (e.g. 'snr' for signal to noise ratio map). Default is 'snr'.
+        fraction: float
+            fraction for a lower threshold on the velocity dispersion map. Default is 1.0, that is the Line Spread Function Width (lsfw).
+        thrl: float
+            lower threshold for cleaning. Default is None, so that the minimum (apart from nan) will be used.
+        thru: float
+            upper threshold for cleaning. Default is None, so that the maximum (apart from nan) will be used.
+        option: str
+            option from camel to find the files to clean (e.g. '_ssmooth'). Default is '_ssmooth'.
+        line: str
+            line used (suffixe, e.g. '_Ha'). Default is '_o2'.
+    '''
+    
+    cat                     = asci.read(filename)
+    with open(logFile, "w") as f:
+        for l in cat:
+            # Get name without the extension at the end and path
+            name            = l[0].split('/')[-1].split('.config')[0]
+            path            = l[0].split(name + '.config')[0]
+            
+            clean_galaxy(path, path, name, l[1], fraction, data_mask=data_mask, thru=thru, thrl=thrl, line=l, option=option, clean=clean)
+            f.write(path.rpartition('/')[0:-2] + "\n")
+    return
+
+
+def compute_velres(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
+    '''
+    Compute the spectral resolution in terms of velocity sigma from the line restframe wavelength, the redshift of the source and from MUSE LSF model: FWHM(lbda) = a2 * lbda ** 2 + a1 * lbda + a0
+    
+    Author
+    ------
+        Benoit Epinat - LAM
+    
+    Mandatory parameters
+    --------------------
+        lbda0: float
+            rest frame wavelength of the line used to infer kinematics (in Angstroms)
+        z: float
+            redshift of the galaxy
+    
+    Optional parameters
+    -------------------    
+        a0: float
+            lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda. Default is 5.835e-8 A.
+        a1: float
+            lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda. Default is -9.080e-4.
+        a2: float
+            lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda. Default is 5.983 A^{-1}.
+        
+    Return the observed (redshifted) wavelength, the LSF FWHM in Angstroms and the LSF dispersion in km/s, assuming a Gaussian shape for the LSF profile.
+    '''
+    
+    lbda   = lbda0 * (1 + z)
+    fwhm   = a2 * lbda ** 2 + a1 * lbda + a0
+    velsig = fwhm / (lbda * 2 * np.sqrt(2 * np.log(2))) * ct.c.value * 1e-3
+    return lbda, fwhm, velsig
+
+
+def velres_setofgalaxies(inname, outname, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
+    '''
+    Compute the resolution in velocity for a list of galaxies and write it into an output file along the corresponding file name.
+    
+    Authors
+    -------
+        Benoit Epinat - LAM
+        modified by Wilfried Mercier - IRAP
+        
+    How to use
+    ----------
+        Provide an input and output file names and the line rest-frame wavelength in Angstroms. The input file shoudl contain the following columns:
+            - galaxy file names
+            - redshift of the galaxies
+    
+    Mandatory parameters
+    --------------------
+        inname: str
+            input file name containing the list of galaxies and their redshift. In this version, the redshift is in the name itself, as well as the line used.
+        outname: str
+            output file name containing the list of galaxies and the spectral resolution
+
+    Optional parameters
+    -------------------    
+        a0: float
+            lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda. Default is 5.835e-8 A.
+        a1: float
+            lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda. Default is -9.080e-4.
+        a2: float
+            lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda. Default is 5.983 A^{-1}.
+    '''
+    
+    cat                        = asci.read(inname)
+    with open(outname, 'w') as f:
+        for line in cat:
+            z                  = float(line[1])
+            lbda, fwhm, velsig = compute_velres(z, lbda0, a2=a2, a1=a1, a0=a0)
+            line               = '{0:100} {1:5.1f} \n'.format(line[0], velsig)
+            f.write(line)
+    return
+
+
+def create_mask(image, thrl=None, thru=None):
+    '''
+    This function creates a mask from an image using a lower and an upper threshold.
+    
+    Authors
+    -------
+        Benoit Epinat - LAM
+        modified by Wilfried Mercier - IRAP
+    
+    Parameters
+    ----------
+        image: numpy array
+            image used to create the mask
+        thrl: float
+            lower threshold
+        thru: float
+            upper threshold
+
+    Returns a boolean mask (True everywhere thrl<=image<=thru).
+    '''
+    
+    if thrl is None:
+        thrl = np.nanmin(image)
+    if thru is None:
+        try:
+            thru = np.nanmax(image)
+        except ValueError:
+            raise ValueError("\nIt seems that no maximum value can be found. Please check that your .fits file is not corrupted.\n")
+            
+    print('create_mask: lower threshold % s' % (str(thrl)) )
+    print('create_mask: upper threshold % s' % (str(thru)) )
+    
+    return ((image <= thru) & (image >= thrl))
+
+
+
+
