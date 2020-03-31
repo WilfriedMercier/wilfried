@@ -118,11 +118,11 @@ class singlePlotFrame:
         
         if not on :
             self.parent.config({'bg':self.bdOff})
-            self.selected = False
+            self.selected                     = False
             self.root.bottomPane.numSelected -= 1
         else:
             self.parent.config({'bg':self.bdOn})
-            self.selected = True
+            self.selected                     = True
             self.root.bottomPane.numSelected += 1
         return
 
@@ -292,6 +292,15 @@ class singlePlotFrame:
             self.root.topPane.fWindow.window.selectLine(self.name, select=True)
         else:
             self.root.topPane.fWindow.window.selectLine(self.name, select=False)
+            
+        # Changing the selection value
+        self.selected = not self.selected
+        
+        # Updating number of selected frames
+        if self.selected:
+            self.root.bottomPane.numSelected += 1
+        else:
+            self.root.bottomPane.numSelected -= 1
         return
     
 
@@ -720,7 +729,6 @@ class topFrame:
                 ypos           = int(ypos)
                 
                 # Derive new shape
-                print(self.zoom.zoom)
                 dimX, dimY     = np.shape(data)
                 newDimX        = dimX//self.zoom.zoom
                 newDimY        = dimY//self.zoom.zoom
@@ -866,18 +874,17 @@ class fileWindow:
     
     
     def onClick(self, event):
+        ''''Actions taken when clicking on a line.'''
         
         for iid in self.itemDict.values():
             if iid in self.treeview.selection():
                 if not self.plotDict[iid].selected:
                     self.plotDict[iid].borderOnOff(on=True)
                     self.root.topPane.updateInvertWidgets(state='normal')
-                    self.root.bottomPane.numSelected = self.root.bottomPane.nbFrames
             else:
                 if self.plotDict[iid].selected:
                     self.plotDict[iid].borderOnOff(on=False)
                     self.root.topPane.updateInvertWidgets(state='disabled')
-                    self.root.bottomPane.numSelected = 0
         return
         
     
@@ -1490,15 +1497,16 @@ class mainApplication:
                     plot.selectIt()
                     
             self.topPane.updateInvertWidgets(state='normal')
-            self.bottomPane.numSelected = self.bottomPane.nbFrames
             
         # Case 2: all the plots are selected, so we unselect them all
         elif self.bottomPane.nbFrames == self.bottomPane.numSelected:
             for plot in self.bottomPane.plotList:
-                plot.selectIt()
+                if plot.selected:
+                    plot.selectIt()
             self.topPane.updateInvertWidgets(state='disabled')
-            self.bottomPane.numSelected = 0
         
+        return
+            
 
 def main(): 
     
