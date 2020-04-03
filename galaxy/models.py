@@ -674,6 +674,101 @@ def total_luminosity(mag, offset, factor=1.0):
     return np.array(factor) * 10**((np.array(offset)-np.array(mag))/2.5)
 
 
+############################################################################################
+#                                 Morphological parameters                                 #
+############################################################################################
+
+def computePAs(image, method='minmax', num=100, returnThresholds=False):
+    '''
+    Compute a set of PA values for a galaxy using different minimum threshold values.
+    
+    How it works
+    ------------
+        A set of threshold values are generated between the minimum and the maximum of the image, e.g. [0, 1, 2] for a galaxy with a minimum of 0 and a maximum of 2 (using num=3).
+        These values are applied one after another onto the image as a minmum threshold, that is data points with value<threshold are masked. We get what we call a 'slice'.
+        For each slice, we compute its PA (angle starting from the vertical axis, counting anti clockwise).
+        
+    Warning
+    -------
+        PA angles are given between -90° and +90° so that there is a degeneracy between these two bounds. 
+        If the 'minmax' method is used, a galaxy with a PA close to 90° will not have a good PA estimation as different slices will have values oscillating around +90° and -90°, yielding a median value of approximately 0°...
+
+    Inputs
+    ------   
+        im : numpy 2D array
+            image of a galaxy
+        method : 'minmax' or 'furthest'
+            - if 'minmax' the PA of each slice is computed as the angle between the min and the max within the slice (not very efficient)
+            - if 'furthest' the PA of each slice is computed as the angle between the max and the furthest point relative to it (much more efficient)
+        num : int
+            how many slices must be made
+        returnThresholds : bool
+            whether to return the threshold values as well as the PAs
+            
+    Return the PA list (and the threshold values if returnThresholds is set True).
+    '''
+    
+    if method.lower() not in ['minmax', 'furthest']:
+        raise ValueError('Given method is not correct. Please provide either minmax or furthest. Cheers !')
+    else:
+        method    = method.lower()
+    
+    if not isinstance(num, int):
+        raise TypeError('Given num parameter should only be an integer.')
+        
+    if not isinstance(returnThresholds, bool):
+        raise TypeError('Given returnThresholds parameter should only be a bool.')
+    
+    # Get size and generate an X and Y coordinates grid
+    sizeY, sizeX  = np.shape(image)
+    X, Y          = np.meshgrid(np.arange(sizeX), np.arange(sizeY))
+    
+    maxi          = {}
+    
+    # Get min, max and their position
+    maxi['val']   = np.nanmax(image)
+    maxi['where'] = np.where(image==maxi['val'])
+    maxi['x']     = X[maxi['where']]
+    maxi['y']     = Y[maxi['where']]
+    
+    # Compute distance to max
+    distance      = np.sqrt((X-maxi['x'])**2 + (Y-maxi['y'])**2)
+    
+    # Generate an evenly spaced range of values betwwen min and max 
+    valRange      = np.linspace(np.nanmin(image), maxi['val'], num)
+    theta         = []
+    
+    # We avoid the first value as there won't be pixels removed below this threshold, as well as the max since there will only remain one pixel, i.e. the max itself (in most cases)
+    imCopy        = np.copy(image)
+    point2        = {}
+    for i in valRange[1:-1]:
+        # Set to nan values below the threshold
+        whereLess          = np.where(imCopy<i)
+        imCopy[whereLess]  = np.nan
+        
+        if method=='minmax':
+            point2['val']        = np.nanmin(imCopy)
+            point2['where']      = np.where(imCopy==point2['val'])
+        elif method=='furthest':
+            distance[whereLess] = np.nan
+            point2['where']     = np.where(distance==np.nanmax(distance))
+            
+        # If there are multiple points, we select the first one
+        point2['x']             = X[point2['where']][0]
+        point2['y']             = Y[point2['where']][0]
+        
+        # Set new theta value
+        if maxi['x'] != maxi['y']:
+            theta.append(np.arctan(-(maxi['x']-point2['x'])/(maxi['y']-point2['y']))[0])
+        else:
+            theta.append(np.pi/2)
+        
+    if returnThresholds:
+        return theta, valRange
+    else:
+        return theta
+    
+
 #################################################################################################################
 #                                 Half-light radius computation                                                 #
 #################################################################################################################
