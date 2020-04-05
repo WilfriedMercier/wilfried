@@ -496,8 +496,7 @@ class topFrame:
         #               File window properties               #
         ######################################################
         self.fWindow        = container()
-        self.fWindow.loaded = False
-        self.fWindow.window = None
+        self.fWindow.window = fileWindow(parent, root, bgColor=self.bgColor)
         
         
         ###################################################
@@ -671,13 +670,8 @@ class topFrame:
             # Set flag to True if data was succesfully loaded
             self.imLoaded = True
             
-            # Generate the window listing files
-            if not self.fWindow.loaded:
-                self.fWindow.window = fileWindow(self, self.root)
-            else:
-                self.fWindow.window.emptyList()
-            for name, data in self.data.items():
-                self.fWindow.window.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
+            # Generate the window manager dialog
+            self.fWindow.window = fileWindow(self, self.root, bgColor=self.bgColor, dataLoaded=self.data)
             
         return
 
@@ -794,29 +788,75 @@ class topFrame:
 class fileWindow:
     ''''Window with all the info concerning the opened files'''
 
-    def __init__(self, parent, root, bgColor='beige'):
+    # Keeping track of the only instance allowed, _isLoaded 
+    _instance      = None
+
+    def __new__(cls, parent, root, bgColor='beige', dataLoaded=False):
+        '''We want to init the window only when data is loaded for the first time, then only the widgets within will be updated if necessary so we use a custom __new__ method'''
         
+        if cls._instance is None:
+            instance       = super(fileWindow, cls).__new__(cls)
+            cls._instance  = instance
+            
+            # First instance, window is not drawn yet
+            cls._isDrawn   = False
+            cls._isVisible = tk.BooleanVar()
+            cls._isVisible.set(False)
+        else:
+            instance       = cls._instance
+        return instance
         
-        self.parent   = parent
-        self.root     = root
+    def __init__(self, parent, root, bgColor='beige', dataLoaded=None):
         
-        self.bgColor  = bgColor
-        self.window   = tk.Toplevel(bg=self.bgColor)
-        self.window.wm_attributes('-type', 'utility')
-        self.window.title('File(s)')
-        self.window.protocol("WM_DELETE_WINDOW", self.destroy)
-        self.window.resizable(width=True, height=False)
+        # If we have the first instance and if there is data to load
+        if not fileWindow._isDrawn and dataLoaded is not None:
+            self.parent   = parent
+            self.root     = root
+            
+            self.bgColor  = bgColor
+            self.window   = tk.Toplevel(bg=self.bgColor)
+            self.window.wm_attributes('-type', 'utility')
+            self.window.title('File(s)')
+            self.window.protocol("WM_DELETE_WINDOW", self.destroy)
+            self.window.resizable(width=True, height=False)
+            
+            # Configure escape key
+            self.window.bind('<Escape>',    lambda forceUnselect=True, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
+            self.window.bind('<Control-a>', lambda forceUnselect=False, forceSelect=True: self.selectAll(forceUnselect, forceSelect))
+            
+            # Create style
+            self.style    = ttk.Style()
+            self.style.configure("mystyle.Treeview", highlightthickness=10, background=self.bgColor, font=(FONT, 9)) # Modify the font of the body
+            self.style.configure("mystyle.Treeview.Heading", font=(FONT, 9, 'bold')) # Modify the font of the headings
+            
+            # Dictionnary of items (identifiers) and dictionnary of singlePlotFrames
+            self.itemDict = {}
+            self.plotDict = {}
+            
+            # Generate treeview
+            self.createTreeview()
+            
+            # Fill treeview
+            for name, data in dataLoaded.items():
+                self.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
+            
+            self.__class__._isDrawn   = True
+            self.__class__._isVisible.set(True)
+            
+        # If window is already drawn but new data is provided, we update widgets only
+        elif fileWindow._isDrawn and dataLoaded is not None:
+            self.empty()
+            self.createTreeview()
+            
+            # Fill treeview
+            for name, data in dataLoaded.items():
+                self.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
         
-        # Configure escape key
-        self.window.bind('<Escape>',    lambda forceUnselect=True, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
-        self.window.bind('<Control-a>', lambda forceUnselect=False, forceSelect=True: self.selectAll(forceUnselect, forceSelect))
+    
+    def createTreeview(self):
+        '''Create the treeview widgets (generally called everytime new data is loaded)'''
         
-        # Create style
-        self.style    = ttk.Style()
-        self.style.configure("mystyle.Treeview", highlightthickness=10, background=self.bgColor, font=(FONT, 9)) # Modify the font of the body
-        self.style.configure("mystyle.Treeview.Heading", font=(FONT, 9, 'bold')) # Modify the font of the headings
-        
-        # Create notebook
+        # Create treeview
         self.columns  = ('Dimensions', 'PA')
         self.treeview = ttk.Treeview(self.window, columns=self.columns, style='mystyle.Treeview', height=0)
         self.treeview.heading('#0', text='Name',            anchor=tk.W, command=lambda forceUnselect=False, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
@@ -827,26 +867,30 @@ class fileWindow:
         for i in range(len(self.columns)):
             self.treeview.column('#%d' %(i+1), anchor=tk.CENTER)
             
-        # Dictionnary of items (identifiers) and dictionnary of singlePlotFrames
-        self.itemDict = {}
-        self.plotDict = {}
-        
         # Bind event(s)
         self.treeview.bind('<<TreeviewSelect>>', self.onClick)
         
         # Pack things up
-        self.treeview.pack(fill='x', side=tk.TOP)
+        self.treeview.pack(fill='x', side=tk.TOP, expand=True)
         
+        return
         
-    def destroy(self):
-        self.parent.fWindow.loaded = False
-        self.window.destroy()
-        return        
-
     
-    def emptyList(self):
-        for item in self.itemDict:
-            self.treeview.delete(item)
+    def destroy(self):
+        '''Just hide the window instead of really destroying it'''
+        
+        self.setState(state='withdrawn')
+        return
+        
+    
+    def empty(self):
+        '''Empty the window of any widgets and reset lists'''
+        
+        self.treeview.destroy()
+        #for item in self.itemDict.values():
+            #self.treeview.delete(item)
+        self.itemDict = {}
+        self.plotDict = {}
         return
     
     
@@ -915,6 +959,19 @@ class fileWindow:
     
     
     def selectLine(self, name, select=True):
+        '''
+        Select or unselect a line given the keyword value.
+        
+        Mandatory parameters
+        --------------------
+            name : str
+                Name of the desired item as listed in the self.itemDict dictionnary
+        
+        Optional parameters
+        -------------------
+            select : bool
+                whether to select the line (True) or unselect it (False)
+        '''
         
         if select:
             if self.itemDict[name] not in self.treeview.selection():
@@ -922,6 +979,41 @@ class fileWindow:
         else:
             if self.itemDict[name] in self.treeview.selection():
                 self.treeview.selection_remove(self.itemDict[name])
+        return
+    
+    
+    def setState(self, state='normal'):
+        '''
+        Set the sate of the window.
+
+        Optional parameters
+        -------------------
+            state : 'normal' or 'withdrawn'
+                change the window state to the given value if its state is different
+        '''
+        
+        state = state.lower()
+        if state not in ['normal', 'withdrawn']:
+            raise ValueError("Either provide 'normal' or 'withdrawn' as a state for the file manager dialog. Cheers !")
+            
+        if self.window.state() != state:
+            if state == 'normal':
+                self.__class__._isVisible.set(True)
+                self.window.deiconify()
+            elif state == 'withdrawn':
+                self.__class__._isVisible.set(False)
+                self.window.state(state)
+        return
+        
+    
+    
+    def switchWindowState(self):
+        '''Enable back the window if its state is such that it has been hidden, or the oposite if it is normal'''
+        
+        if self.window.state() != 'normal':
+            self.setState(state='normal')
+        else:
+            self.setState(state='withdrawn')
         return
         
                 
@@ -1270,6 +1362,10 @@ class topMenu:
         self.fileMenu.add_separator()
         self.fileMenu.add_command(label='Close (Alt+F4)',     command=self.parent.exitProgram)
         
+        # View menu within top menu
+        self.viewMenu = tk.Menu(self.topMenu, tearoff=0)
+        self.viewMenu.add_checkbutton(label=' File manager', variable=fileWindow._isVisible, command=self.parent.topPane.fWindow.window.switchWindowState)
+        
         # Help menu within top menu
         self.helpMenu = tk.Menu(self.topMenu, tearoff=0)
         self.helpMenu.add_command(label='Shortcuts (Ctrl+H)', command=self.showShortcuts)
@@ -1277,6 +1373,7 @@ class topMenu:
         
         # Adding sections into top menu
         self.topMenu.add_cascade( label="File", menu=self.fileMenu)
+        self.topMenu.add_cascade( label="View", menu=self.viewMenu)
         self.topMenu.add_cascade( label="Help", menu=self.helpMenu)
        
         
@@ -1346,7 +1443,6 @@ class topMenu:
             
             for pos, text in enumerate(self.fileLines.keys()):
                 self.makeLabelLine(self.tabFile, pos, text, self.fileLines[text])
-            
 
 
 class mainApplication:
