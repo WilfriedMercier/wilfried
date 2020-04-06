@@ -20,6 +20,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import astropy.io.fits as fits
 import numpy as np
 import copy
+import os
 
 
 class container:
@@ -438,6 +439,7 @@ class topFrame:
     '''
     Top frame with widgets used to import data and get additional information.
     '''
+    
     def __init__(self, parent, root, bgColor='grey'):
         '''
         Inputs
@@ -841,7 +843,9 @@ class fileWindow:
                 self.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
             
             self.__class__._isDrawn   = True
-            self.__class__._isVisible.set(True)
+        
+            # Set state to visible
+            self.setState(state='normal')
             
         # If window is already drawn but new data is provided, we update widgets only
         elif fileWindow._isDrawn and dataLoaded is not None:
@@ -989,20 +993,20 @@ class fileWindow:
         Optional parameters
         -------------------
             state : 'normal' or 'withdrawn'
-                change the window state to the given value if its state is different
+                change the window state to the given value
         '''
         
         state = state.lower()
         if state not in ['normal', 'withdrawn']:
             raise ValueError("Either provide 'normal' or 'withdrawn' as a state for the file manager dialog. Cheers !")
             
-        if self.window.state() != state:
-            if state == 'normal':
-                self.__class__._isVisible.set(True)
-                self.window.deiconify()
-            elif state == 'withdrawn':
-                self.__class__._isVisible.set(False)
-                self.window.state(state)
+        if state == 'normal':
+            self.__class__._isVisible.set(True)
+            self.window.deiconify()
+            self.window.lift()
+        elif state == 'withdrawn':
+            self.__class__._isVisible.set(False)
+            self.window.state(state)
         return
         
     
@@ -1445,6 +1449,36 @@ class topMenu:
                 self.makeLabelLine(self.tabFile, pos, text, self.fileLines[text])
 
 
+
+class minimisedButton(tk.Frame):
+    def __init__(self, parent, bgColor='beige'):
+        
+        self.bgColor = bgColor
+        self.parent  = parent
+        
+        super().__init__(self.parent, bg=self.bgColor)
+        
+        self.image   = tk.PhotoImage(width=1, height=1)
+        self.button  = tk.Button(self, image=self.image, bg=self.bgColor)
+        self.button.pack(side=tk.RIGHT, fill='both', expand=1)
+        
+
+        
+class MessageFrame(tk.Frame):
+    def __init__(self, parent, bgColor='beige'):
+        
+        self.bgColor = bgColor
+        self.parent  = parent
+        
+        super().__init__(self.parent, bg=self.bgColor)
+        
+        self.text    = tk.StringVar() 
+        self.text.set('123 soleil')
+        self.label   = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W)
+        self.label.pack(side=tk.RIGHT, fill='both', expand=1)
+               
+
+
 class mainApplication:
     '''
     Main application where all the different layouts are.
@@ -1469,6 +1503,7 @@ class mainApplication:
         
         # Set containers
         self.topFrame, self.rightFrame, self.bottomFrame = container(), container(), container()
+        self.sideFrame                                   = container()
         self.topMenu                                     = container()
         
         # Set colors
@@ -1477,7 +1512,7 @@ class mainApplication:
         self.bottomFrame.color = 'beige'
         self.topMenu.color     = 'slate gray'
         
-        # Making main three frames
+        # Making main frames
         self.topFrame.frame    = tk.Frame(self.parent, bg=self.topFrame.color)
         self.rightFrame.frame  = tk.Frame(self.parent, bg=self.topFrame.color)
         self.bottomFrame.frame = tk.Frame(self.parent, bg=self.bottomFrame.color, bd=2, relief=tk.GROOVE)
@@ -1486,6 +1521,9 @@ class mainApplication:
         self.topPane           = topFrame(  self.topFrame.frame,    self, bgColor=self.topFrame.color)
         self.rightPane         = rightFrame(self.rightFrame.frame,  self, bgColor=self.rightFrame.color)
         self.bottomPane        = graphFrame(self.bottomFrame.frame, self, bgColor=self.bottomFrame.color)
+        
+        self.minButton         = minimisedButton(self.parent, bgColor='black')
+        self.messageFrame      = MessageFrame(   self.parent, bgColor='beige')
         
         # Creating window top menu
         self.topMenu.window    = topMenu(self, self.parent, self.topMenu.color)
@@ -1507,9 +1545,12 @@ class mainApplication:
         self.bottomFrame.frame.bind('<Leave>', lambda event, frame='bottom': self.unsetScrollable(event, frame))
         
         # Drawing frames
-        self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=3)
+        self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=4)
         self.bottomFrame.frame.grid(row=1, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=2)
         self.rightFrame.frame.grid( row=1, sticky=tk.N+tk.S+tk.W+tk.E, column=2)
+        
+        self.minButton.grid(        row=2, sticky=tk.N+tk.S+tk.E,      column=0, pady=3)
+        self.messageFrame.grid(     row=2, sticky=tk.N+tk.S+tk.W+tk.E, column=1, columnspan=3, pady=3)
         
         # Setting grid geometry for main frames
         tk.Grid.rowconfigure(   self.parent, 0, weight=0, minsize=130)
@@ -1604,6 +1645,7 @@ class mainApplication:
         return
             
 
+
 def main(): 
     
     root = tk.Tk()
@@ -1612,6 +1654,9 @@ def main():
     app  = mainApplication(root)
     
     root.protocol("WM_DELETE_WINDOW", app.exitProgram)
+    
+    imgicon = tk.PhotoImage(file=os.path.dirname(os.path.abspath(__file__)) + '/icon.png')
+    root.tk.call('wm', 'iconphoto', root._w, imgicon)
     
     root.mainloop()
 
