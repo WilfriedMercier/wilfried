@@ -4,30 +4,34 @@
 Created on Wed Nov 27 17:18:55 2019
 
 @author: Wilfried - IRAP
+
+This is an still in dev software whose primary goal is to model the morphology of a large number of galaxies with automated tools.
 """
 
-import tkinter            as     tk
-from   tkinter            import messagebox
-from   tkinter.filedialog import askopenfilenames
-from   tkinter            import ttk
-
-import matplotlib
-matplotlib.use('TkAgg')
-from matplotlib.figure import Figure, Axes
-from matplotlib.colors import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
-import astropy.io.fits as fits
-import numpy as np
 import copy
 import os
+import matplotlib
+matplotlib.use('TkAgg')
+
+import tkinter         as     tk
+import astropy.io.fits as fits
+import numpy           as np
+
+from tkinter                           import messagebox
+from tkinter.filedialog                import askopenfilenames
+from tkinter                           import ttk
+from signal                            import signal, SIGINT
+from matplotlib.figure                 import Figure, Axes
+from matplotlib.colors                 import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from threading                         import Thread
 
 
 class container:
     '''Similar to a simple C struct'''
     
     def __init__(self):
-        info = 'A simple container'
+        pass
 
 # Global variables
 DICT_MODELS = {'deVaucouleur' : 'de Vaucouleur', 
@@ -44,6 +48,7 @@ DICT_MODELS = {'deVaucouleur' : 'de Vaucouleur',
 
 FONT        = 'Arial'
 
+# A set of global variables used to generate Tkinter Bitmap objects (personal icons)
 CIRCLE      = """
 #define circle_width 13
 #define circle_height 13
@@ -59,6 +64,14 @@ static unsigned char circle_inv_bits[] = {
    0xf0, 0x01, 0xf8, 0x03, 0xfc, 0x07, 0xfe, 0x0f, 0xff, 0x1f, 0xff, 0x1f,
    0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xfe, 0x0f, 0xfc, 0x07, 0xf8, 0x03,
    0xf0, 0x01};"""
+
+ARROW       = """
+#define arrow_width 13
+#define arrow_height 13
+static unsigned char arrow_bits[] = {
+   0xff, 0x1f, 0x01, 0x10, 0x01, 0x10, 0x41, 0x10, 0xe1, 0x10, 0xf1, 0x11,
+   0xf9, 0x13, 0xe1, 0x10, 0xe1, 0x10, 0xe1, 0x10, 0x01, 0x10, 0x01, 0x10,
+   0xff, 0x1f};"""
 
 
 
@@ -811,50 +824,57 @@ class fileWindow:
     def __init__(self, parent, root, bgColor='beige', dataLoaded=None):
         
         # If we have the first instance and if there is data to load
-        if not fileWindow._isDrawn and dataLoaded is not None:
-            self.parent   = parent
-            self.root     = root
+        if dataLoaded is not None:
+            if not fileWindow._isDrawn:
+                self.parent   = parent
+                self.root     = root
+                
+                self.bgColor  = bgColor
+                self.window   = tk.Toplevel(bg=self.bgColor)
+                self.window.wm_attributes('-type', 'utility')
+                self.window.title('File(s)')
+                self.window.protocol("WM_DELETE_WINDOW", self.destroy)
+                self.window.resizable(width=True, height=False)
+                
+                # Configure escape key
+                self.window.bind('<Escape>',    lambda forceUnselect=True, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
+                self.window.bind('<Control-a>', lambda forceUnselect=False, forceSelect=True: self.selectAll(forceUnselect, forceSelect))
+                
+                # Create style
+                self.style    = ttk.Style()
+                self.style.configure("mystyle.Treeview", highlightthickness=10, background=self.bgColor, font=(FONT, 9)) # Modify the font of the body
+                self.style.configure("mystyle.Treeview.Heading", font=(FONT, 9, 'bold')) # Modify the font of the headings
+                
+                # Dictionnary of items (identifiers) and dictionnary of singlePlotFrames
+                self.itemDict = {}
+                self.plotDict = {}
+                
+                # Generate treeview
+                self.createTreeview()
+                
+                # Fill treeview
+                for name, data in dataLoaded.items():
+                    self.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
+                
+                self.__class__._isDrawn   = True
             
-            self.bgColor  = bgColor
-            self.window   = tk.Toplevel(bg=self.bgColor)
-            self.window.wm_attributes('-type', 'utility')
-            self.window.title('File(s)')
-            self.window.protocol("WM_DELETE_WINDOW", self.destroy)
-            self.window.resizable(width=True, height=False)
-            
-            # Configure escape key
-            self.window.bind('<Escape>',    lambda forceUnselect=True, forceSelect=False: self.selectAll(forceUnselect, forceSelect))
-            self.window.bind('<Control-a>', lambda forceUnselect=False, forceSelect=True: self.selectAll(forceUnselect, forceSelect))
-            
-            # Create style
-            self.style    = ttk.Style()
-            self.style.configure("mystyle.Treeview", highlightthickness=10, background=self.bgColor, font=(FONT, 9)) # Modify the font of the body
-            self.style.configure("mystyle.Treeview.Heading", font=(FONT, 9, 'bold')) # Modify the font of the headings
-            
-            # Dictionnary of items (identifiers) and dictionnary of singlePlotFrames
-            self.itemDict = {}
-            self.plotDict = {}
-            
-            # Generate treeview
-            self.createTreeview()
-            
-            # Fill treeview
-            for name, data in dataLoaded.items():
-                self.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
-            
-            self.__class__._isDrawn   = True
-        
-            # Set state to visible
-            self.setState(state='normal')
-            
-        # If window is already drawn but new data is provided, we update widgets only
-        elif fileWindow._isDrawn and dataLoaded is not None:
-            self.empty()
-            self.createTreeview()
-            
-            # Fill treeview
-            for name, data in dataLoaded.items():
-                self.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
+                # Set state to visible
+                self.setState(state='normal')
+                
+                # Ungrey main app menu checkbox
+                self.root.topMenu.window.viewMenu.entryconfigure(0, state='normal')
+                
+            # If window is already drawn but new data is provided, we update widgets only
+            elif fileWindow._isDrawn:
+                self.empty()
+                self.createTreeview()
+                
+                # Fill treeview
+                for name, data in dataLoaded.items():
+                    self.insertData(name.split('/')[-1].rstrip('.fits'), values=('%dx%d' %data['image'].shape, ''))
+                    
+            # Hide bottom button if data is loaded
+            self.root.messageFrame.setButtonstate(state='hide')
         
     
     def createTreeview(self):
@@ -1001,12 +1021,22 @@ class fileWindow:
             raise ValueError("Either provide 'normal' or 'withdrawn' as a state for the file manager dialog. Cheers !")
             
         if state == 'normal':
+            # Show again and lift window
             self.__class__._isVisible.set(True)
             self.window.deiconify()
             self.window.lift()
+            
+            # Hide button in the message frame
+            self.root.messageFrame.setButtonstate(state='hide')
+            
         elif state == 'withdrawn':
+            # Hide window
             self.__class__._isVisible.set(False)
             self.window.state(state)
+            
+            # Show button in the message frame
+            self.root.messageFrame.setButtonstate(state='show')
+            
         return
         
     
@@ -1368,8 +1398,9 @@ class topMenu:
         
         # View menu within top menu
         self.viewMenu = tk.Menu(self.topMenu, tearoff=0)
-        self.viewMenu.add_checkbutton(label=' File manager', variable=fileWindow._isVisible, command=self.parent.topPane.fWindow.window.switchWindowState)
-        
+        self.viewMenu.add_checkbutton(label=' File manager', variable=fileWindow._isVisible, state=tk.DISABLED,
+                                      command=self.parent.topPane.fWindow.window.switchWindowState)
+
         # Help menu within top menu
         self.helpMenu = tk.Menu(self.topMenu, tearoff=0)
         self.helpMenu.add_command(label='Shortcuts (Ctrl+H)', command=self.showShortcuts)
@@ -1447,41 +1478,75 @@ class topMenu:
             
             for pos, text in enumerate(self.fileLines.keys()):
                 self.makeLabelLine(self.tabFile, pos, text, self.fileLines[text])
-
-
-
-class minimisedButton(tk.Frame):
-    def __init__(self, parent, bgColor='beige'):
         
-        self.bgColor = bgColor
-        self.parent  = parent
-        
-        super().__init__(self.parent, bg=self.bgColor)
-        
-        self.image   = tk.PhotoImage(width=1, height=1)
-        self.button  = tk.Button(self, image=self.image, bg=self.bgColor)
-        self.button.pack(side=tk.RIGHT, fill='both', expand=1)
-        
-
+    
         
 class MessageFrame(tk.Frame):
-    def __init__(self, parent, bgColor='beige'):
+    '''Small bottom frame with moving help texts and maximise button'''
+    
+    def __init__(self, parent, root, bgColor='beige'):
         
         self.bgColor = bgColor
         self.parent  = parent
+        self.root    = root
         
-        super().__init__(self.parent, bg=self.bgColor)
+        super().__init__(self.parent, bg=self.bgColor, highlightthickness=1, relief=tk.FLAT, highlightbackground='black')
+        
+        self.blank   = ' '*10
+        self.msgList = ['You can access the shortcut list by pressing Ctrl+h or from the menu Help/Shortcuts.'
+                        'Need to select galaxies ? Either click on the figures or press Ctrl+a to select them all.']
+        self.lindex  = 0
+        self.tindex  = 0
+        self.computeMsgFindex()
+        
+        self.image   = tk.BitmapImage(data=ARROW)
+        self.button  = tk.Button(self, image=self.image, bg=self.bgColor, bd=0, highlightthickness=0, command=self.root.topPane.fWindow.window.switchWindowState)
         
         self.text    = tk.StringVar() 
-        self.text.set('123 soleil')
+        self.text.set(self.blank)
         self.label   = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W)
+        
+        #self.button.pack(side=tk.LEFT)
         self.label.pack(side=tk.RIGHT, fill='both', expand=1)
+    
+    
+    def computeMsgFindex(self):
+        self.findex  = len(self.msgList[self.lindex])-1
+        return
+    
+    
+    def setButtonstate(self, state='show'):
+        '''
+        Either show or hide the button.
+
+        Optional parameters
+        -------------------
+            state : either 'show' or 'hide'
+                whether to show the button or hide it
+        '''
+        if state.lower() == 'show':
+            self.button.pack(side=tk.LEFT)
+        elif state.lower() == 'hide':
+            self.button.pack_forget()
+        return
+    
+    
+    def updateMessage(self):
+        
+        newText      = self.text.get()[1:] + self.msgList[self.lindex][self.tindex]
+        self.text.set(newText)
+        self.tindex += 1
+        
+        if self.tindex > self.findex:
+            self.tindex = 0
+        
+    
                
 
 
 class mainApplication:
     '''
-    Main application where all the different layouts are.
+    Main application where all the different layouts are defined.
     '''
     
     def __init__(self, parent):
@@ -1522,8 +1587,7 @@ class mainApplication:
         self.rightPane         = rightFrame(self.rightFrame.frame,  self, bgColor=self.rightFrame.color)
         self.bottomPane        = graphFrame(self.bottomFrame.frame, self, bgColor=self.bottomFrame.color)
         
-        self.minButton         = minimisedButton(self.parent, bgColor='black')
-        self.messageFrame      = MessageFrame(   self.parent, bgColor='beige')
+        self.messageFrame      = MessageFrame(self.parent, self, bgColor='beige')
         
         # Creating window top menu
         self.topMenu.window    = topMenu(self, self.parent, self.topMenu.color)
@@ -1549,8 +1613,7 @@ class mainApplication:
         self.bottomFrame.frame.grid(row=1, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=2)
         self.rightFrame.frame.grid( row=1, sticky=tk.N+tk.S+tk.W+tk.E, column=2)
         
-        self.minButton.grid(        row=2, sticky=tk.N+tk.S+tk.E,      column=0, pady=3)
-        self.messageFrame.grid(     row=2, sticky=tk.N+tk.S+tk.W+tk.E, column=1, columnspan=3, pady=3)
+        self.messageFrame.grid(     row=2, sticky=tk.N+tk.S+tk.W+tk.E, column=1, columnspan=3, pady=2, padx=2)
         
         # Setting grid geometry for main frames
         tk.Grid.rowconfigure(   self.parent, 0, weight=0, minsize=130)
@@ -1643,22 +1706,64 @@ class mainApplication:
             self.topPane.updateInvertWidgets(state='disabled')
         
         return
-            
+     
+        
+class runMainloop(Thread):
+    '''Class inheriting from threading.Thread. Defined this way to ensure that SIGINT signal from the shell can be caught despite the mainloop.'''
+    
+    def run(self):
+        '''Run method from Thread called when using start()'''
+        
+        self.root = tk.Tk()
+        self.root.title('GalBit - Easily do stuff')
+        self.root.geometry("1500x800")
+        app  = mainApplication(self.root)
+        
+        self.root.protocol("WM_DELETE_WINDOW", lambda signal=SIGINT, frame=None, obj=self, skipUpdate=True: sigintHandler(signal, frame, obj, skipUpdate))
+        
+        imgicon = tk.PhotoImage(file=PATH + '/icon.png')
+        self.root.tk.call('wm', 'iconphoto', self.root._w, imgicon)
+        
+        self.root.mainloop()
 
+
+def sigintHandler(signal, frame, obj=None, skipUpdate=False):
+    '''
+    Handle SIGINT (Ctrl+C in shell) signal + tkinter WM_DELETE_WINDOW event.
+
+    Mandatory parameters
+    --------------------
+        frame : unknown
+            frame object from signal.signal
+        signal : int
+            type of signal    
+    
+    Optional inputs
+    ---------------
+        obj : any type with a root attribute
+            object with root attribute which is to be destroyed
+        skipUpdate : bool
+            whether to skip the update method. Default is to not skip it.
+    '''
+    
+    print('Thanks for using Galbite. See you another time !')
+    obj.root.quit()
+    
+    if not skipUpdate:
+        obj.root.update()
+    return
 
 def main(): 
+    global PATH
     
-    root = tk.Tk()
-    root.title('GalBit - Easily do stuff')
-    root.geometry("1500x800")
-    app  = mainApplication(root)
+    PATH     = os.path.dirname(os.path.abspath(__file__))
+    mainLoop = runMainloop()
     
-    root.protocol("WM_DELETE_WINDOW", app.exitProgram)
-    
-    imgicon = tk.PhotoImage(file=os.path.dirname(os.path.abspath(__file__)) + '/icon.png')
-    root.tk.call('wm', 'iconphoto', root._w, imgicon)
-    
-    root.mainloop()
+    # Link Ctrl+C keystroke in shell to terminating window
+    signal(SIGINT, lambda signal, frame, obj=mainLoop, skipUpdate=False: sigintHandler(signal, frame, obj, skipUpdate))
+
+    mainLoop.start()
 
 if __name__ == '__main__':
+    PATH = None
     main()
