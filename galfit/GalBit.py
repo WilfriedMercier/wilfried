@@ -13,7 +13,8 @@ import os
 import matplotlib
 matplotlib.use('TkAgg')
 
-import tkinter         as     tk
+import tkinter         as tk
+import tkinter.font    as font
 import astropy.io.fits as fits
 import numpy           as np
 
@@ -1486,32 +1487,39 @@ class MessageFrame(tk.Frame):
     
     def __init__(self, parent, root, bgColor='beige'):
         
-        self.bgColor = bgColor
-        self.parent  = parent
-        self.root    = root
+        self.bgColor   = bgColor
+        self.parent    = parent
+        self.root      = root
         
         super().__init__(self.parent, bg=self.bgColor, highlightthickness=1, relief=tk.FLAT, highlightbackground='black')
         
-        self.blank   = ' '*10
-        self.msgList = ['You can access the shortcut list by pressing Ctrl+h or from the menu Help/Shortcuts.'
-                        'Need to select galaxies ? Either click on the figures or press Ctrl+a to select them all.']
-        self.lindex  = 0
-        self.tindex  = 0
-        self.computeMsgFindex()
+        self.image     = tk.BitmapImage(data=ARROW)
+        self.button    = tk.Button(self, image=self.image, bg=self.bgColor, bd=0, highlightthickness=0, command=self.root.topPane.fWindow.window.switchWindowState)
         
-        self.image   = tk.BitmapImage(data=ARROW)
-        self.button  = tk.Button(self, image=self.image, bg=self.bgColor, bd=0, highlightthickness=0, command=self.root.topPane.fWindow.window.switchWindowState)
-        
-        self.text    = tk.StringVar() 
-        self.text.set(self.blank)
-        self.label   = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W)
+        self.text      = tk.StringVar()
+        self.font      = font.Font(family=FONT, size=10, weight='normal')
+        self.pixToFont = self.font.measure('m')
+        self.label     = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W, font=self.font)
         
         #self.button.pack(side=tk.LEFT)
         self.label.pack(side=tk.RIGHT, fill='both', expand=1)
+        
+        self.msgList   = ['You can access the shortcut list by pressing Ctrl+h or from the menu Help/Shortcuts.',
+                          'Need to select galaxies ? Either click on the figures or press Ctrl+a to select them all.']
+        
+        self.str       = LoopingStr(textList=self.msgList)
+        self.text.set(self.str.str)
+        
+        # Link label changing size event to updating the length of the visible text
+        self.label.bind('<Configure>', self.updateTextLength)
+        
+        # Trigger the rolling messages on the bottom
+        self.moveHelpMessage()
+        
     
-    
-    def computeMsgFindex(self):
-        self.findex  = len(self.msgList[self.lindex])-1
+    def moveHelpMessage(self):
+        self.text.set(self.str.updateStr())
+        self.label.after(150, self.moveHelpMessage)
         return
     
     
@@ -1531,17 +1539,135 @@ class MessageFrame(tk.Frame):
         return
     
     
-    def updateMessage(self):
-        
-        newText      = self.text.get()[1:] + self.msgList[self.lindex][self.tindex]
-        self.text.set(newText)
-        self.tindex += 1
-        
-        if self.tindex > self.findex:
-            self.tindex = 0
+    def updateTextLength(self, event):
+        self.text.set(self.str.updateLength(event.width//self.pixToFont))
         
     
-               
+
+class LoopingStr:
+    '''Generate a string object which is the visible part of a longer string with methods to loop on it.'''
+    
+    def __init__(self, textList=[''], visibleLength=10):
+        '''
+        Optional parameters
+        -------------------
+            textList : list
+                List of texts to combine. Default is a single empty string.
+            separation : int
+                number of blank spaces added between texts. Default is 10.
+            visibleLength : int
+                size (in characters) of the visible part of the full string. Default is 10.
+        '''
+        
+        super().__init__()
+            
+        if not isinstance(visibleLength, int):
+            raise TypeError('visibleLength should be an integer only. Cheers !')
+    
+        self.index    = [0, 0]       # [Text index, List index]
+        self.visLen   = visibleLength
+        
+        # Setup the text list
+        self.textList = [' '*self.visLen]
+        for text in textList:
+            self.textList.append(text)
+            self.textList.append(' '*self.visLen)
+        self.textList = self.textList[:-1]
+        self.curText  = self.textList[0]
+        
+        # Maximum indices for each text and number of texts
+        self.indexMax = [len(self.curText)-1, len(self.textList)-1]
+        
+        self.str = ''
+        
+    
+    def __add__(self, strOrList):
+        '''
+        Add a string or a list of strings into the text
+
+        Mandatory parameters
+        --------------------
+            strOrList : str or list of str
+                string or list of strings to add to the current text
+
+        Return the newly created text
+        '''
+        
+        if isinstance(strOrList, str):
+            theList = [strOrList]
+        elif isinstance(strOrList, list):
+            theList = strOrList
+        else:
+            raise TypeError('Only str or list can be added.')
+            
+        return self._makeTextFromList(theList)
+    
+    
+    def append(self, strOrList):
+        '''Alias of __add__ method'''
+        
+        return self.__add__(strOrList)
+    
+    
+    def updateLength(self, width):
+        
+        # Update visible length
+        self.visLen = width
+        
+        # Update the intermediate blank spaces length
+        for i in range(0, self.indexMax[1], 2):
+            self.textList[i] = ' '*self.visLen
+        
+        self._updateCurrentText(doStep=False)
+        
+        self.updateStr(doStep=False)
+        return self.str
+    
+    
+    def _updateCurrentText(self, doStep=True):
+        '''Update the current text and the corresponding indices'''
+        
+        # If we have reached the end of the text list, we go back to the beginning
+        if doStep:
+            if self.index[1] >= self.indexMax[1]:
+                self.index[1]  = 0
+            else:
+                self.index[1] += 1
+            
+        self.curText       = self.textList[self.index[1]]
+        self.index[0]      = 0
+        self.indexMax[0]   = len(self.curText)-1
+        
+        return self.curText
+    
+
+    def updateStr(self, doStep=True):
+        '''Update and return the visible string'''
+        
+        # If we've reached the end of the string, we go to the next one
+        if self.index[0]+doStep > self.indexMax[0]:
+            self._updateCurrentText()
+        else:
+            self.index[0]  += doStep
+        
+        # If the length goes beyond the text, we count how many characters from the next line we need to add
+        if self.index[0]+self.visLen-1 > self.indexMax[0]:
+            endThisLine     = self.indexMax[0]+1
+            nbCharsNextLine = self.index[0]+self.visLen-1 - self.indexMax[0]
+        else:
+            endThisLine     = self.index[0]+self.visLen
+            nbCharsNextLine = 0
+        
+        if self.index[1] >= self.indexMax[1]:
+            nextIndex   = 0
+        else:
+            nextIndex           = self.index[1] + 1
+        
+        # Generate the string
+        self.str            = self.curText[self.index[0]:endThisLine] + self.textList[nextIndex][:nbCharsNextLine]
+        
+        return self.str
+    
 
 
 class mainApplication:
