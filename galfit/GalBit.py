@@ -26,6 +26,7 @@ from matplotlib.figure                 import Figure, Axes
 from matplotlib.colors                 import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from threading                         import Thread
+from random                            import randint
 
 
 class container:
@@ -1290,7 +1291,7 @@ class rightFrame:
         self.nbModels     = 0
         self.modelsFrames = []
         self.scrollFrac   = 0.0
-        
+         
         self.bgColor      = bgColor
         self.bd           = 4
         self.padx         = 5
@@ -1496,32 +1497,41 @@ class MessageFrame(tk.Frame):
         self.image     = tk.BitmapImage(data=ARROW)
         self.button    = tk.Button(self, image=self.image, bg=self.bgColor, bd=0, highlightthickness=0, command=self.root.topPane.fWindow.window.switchWindowState)
         
-        self.text      = tk.StringVar()
-        self.font      = font.Font(family=FONT, size=10, weight='normal')
-        self.pixToFont = self.font.measure('m')
-        self.label     = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W, font=self.font)
+        self.text       = tk.StringVar()
+        self.font       = font.Font(family=FONT, size=10, weight='normal')
+        self.pixToFont  = self.font.measure('m')
+        self.label      = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W, font=self.font, padx=5)
         
         #self.button.pack(side=tk.LEFT)
         self.label.pack(side=tk.RIGHT, fill='both', expand=1)
         
-        self.msgList   = ['You can access the shortcut list by pressing Ctrl+h or from the menu Help/Shortcuts.',
-                          'Need to select galaxies ? Either click on the figures or press Ctrl+a to select them all.']
-        
-        self.str       = LoopingStr(textList=self.msgList)
-        self.text.set(self.str.str)
+        self.messages  = {'general':['You can access the shortcut list by pressing Ctrl+h or from the menu Help/Shortcuts.'],
+                          'bottom'  :['Need to select galaxies ? Either click on the figures or press Ctrl+a to select them all.'],
+                          'top'    :['Want to invert the x and/or y axis ? Select the plot(s) first and then click on the checkbutton.'],
+                          'right'  :['Did you know ? You can add as many models as you want, but the more you add, the less likely galfit is to converge.']
+                         }
         
         # Link label changing size event to updating the length of the visible text
-        self.label.bind('<Configure>', self.updateTextLength)
+        self.bind('<Configure>', self.updateLabelLen)
         
-        # Trigger the rolling messages on the bottom
-        self.moveHelpMessage()
         
-    
-    def moveHelpMessage(self):
-        self.text.set(self.str.updateStr())
-        self.label.after(150, self.moveHelpMessage)
-        return
-    
+    def _randomPick(self, which):
+        '''
+        Pick and return a random message from the general and the given lists.
+
+        Mandatory parameters
+        --------------------
+            which : str
+                key name for the list to generate a random message from
+
+        Return the randomly picked message.
+        '''
+        if which not in self.messages:
+            raise ValueError('%s not a valid message key. Could not pick a random help message.' %which)
+            
+        theList = self.messages['general'] + self.messages[which]
+        return theList[randint(0, len(theList)-1)]
+        
     
     def setButtonstate(self, state='show'):
         '''
@@ -1536,137 +1546,23 @@ class MessageFrame(tk.Frame):
             self.button.pack(side=tk.LEFT)
         elif state.lower() == 'hide':
             self.button.pack_forget()
+        
+        # Update the label length
+        self.updateLabelLen()
+        
         return
     
     
-    def updateTextLength(self, event):
-        self.text.set(self.str.updateLength(event.width//self.pixToFont))
-        
-    
-
-class LoopingStr:
-    '''Generate a string object which is the visible part of a longer string with methods to loop on it.'''
-    
-    def __init__(self, textList=[''], visibleLength=10):
-        '''
-        Optional parameters
-        -------------------
-            textList : list
-                List of texts to combine. Default is a single empty string.
-            separation : int
-                number of blank spaces added between texts. Default is 10.
-            visibleLength : int
-                size (in characters) of the visible part of the full string. Default is 10.
-        '''
-        
-        super().__init__()
-            
-        if not isinstance(visibleLength, int):
-            raise TypeError('visibleLength should be an integer only. Cheers !')
-    
-        self.index    = [0, 0]       # [Text index, List index]
-        self.visLen   = visibleLength
-        
-        # Setup the text list
-        self.textList = [' '*self.visLen]
-        for text in textList:
-            self.textList.append(text)
-            self.textList.append(' '*self.visLen)
-        self.textList = self.textList[:-1]
-        self.curText  = self.textList[0]
-        
-        # Maximum indices for each text and number of texts
-        self.indexMax = [len(self.curText)-1, len(self.textList)-1]
-        
-        self.str = ''
-        
-    
-    def __add__(self, strOrList):
-        '''
-        Add a string or a list of strings into the text
-
-        Mandatory parameters
-        --------------------
-            strOrList : str or list of str
-                string or list of strings to add to the current text
-
-        Return the newly created text
-        '''
-        
-        if isinstance(strOrList, str):
-            theList = [strOrList]
-        elif isinstance(strOrList, list):
-            theList = strOrList
-        else:
-            raise TypeError('Only str or list can be added.')
-            
-        return self._makeTextFromList(theList)
+    def setMessage(self, which):
+        self.text.set(self._randomPick(which))
+        return
     
     
-    def append(self, strOrList):
-        '''Alias of __add__ method'''
+    def updateLabelLen(self, *args):
+        #self.label['width'] = self.winfo_width() - self.button.winfo_width()
+        print(self.label['width'], self.label.winfo_width(), self.button.winfo_width())
+        return
         
-        return self.__add__(strOrList)
-    
-    
-    def updateLength(self, width):
-        
-        # Update visible length
-        self.visLen = width
-        
-        # Update the intermediate blank spaces length
-        for i in range(0, self.indexMax[1], 2):
-            self.textList[i] = ' '*self.visLen
-        
-        self._updateCurrentText(doStep=False)
-        
-        self.updateStr(doStep=False)
-        return self.str
-    
-    
-    def _updateCurrentText(self, doStep=True):
-        '''Update the current text and the corresponding indices'''
-        
-        # If we have reached the end of the text list, we go back to the beginning
-        if doStep:
-            if self.index[1] >= self.indexMax[1]:
-                self.index[1]  = 0
-            else:
-                self.index[1] += 1
-            
-        self.curText       = self.textList[self.index[1]]
-        self.index[0]      = 0
-        self.indexMax[0]   = len(self.curText)-1
-        
-        return self.curText
-    
-
-    def updateStr(self, doStep=True):
-        '''Update and return the visible string'''
-        
-        # If we've reached the end of the string, we go to the next one
-        if self.index[0]+doStep > self.indexMax[0]:
-            self._updateCurrentText()
-        else:
-            self.index[0]  += doStep
-        
-        # If the length goes beyond the text, we count how many characters from the next line we need to add
-        if self.index[0]+self.visLen-1 > self.indexMax[0]:
-            endThisLine     = self.indexMax[0]+1
-            nbCharsNextLine = self.index[0]+self.visLen-1 - self.indexMax[0]
-        else:
-            endThisLine     = self.index[0]+self.visLen
-            nbCharsNextLine = 0
-        
-        if self.index[1] >= self.indexMax[1]:
-            nextIndex   = 0
-        else:
-            nextIndex           = self.index[1] + 1
-        
-        # Generate the string
-        self.str            = self.curText[self.index[0]:endThisLine] + self.textList[nextIndex][:nbCharsNextLine]
-        
-        return self.str
     
 
 
@@ -1728,11 +1624,13 @@ class mainApplication:
         self.parent.bind('<Control-h>',  self.topMenu.window.showShortcuts)
         
         # Bind enter and leave frames to know where the cursor lies
-        self.rightFrame.frame.bind('<Enter>', lambda event, frame='right': self.setScrollable(event, frame))
+        self.rightFrame.frame.bind('<Enter>', lambda event, frame='right': self.onEnter(event=event, frame=frame))
         self.rightFrame.frame.bind('<Leave>', lambda event, frame='right': self.unsetScrollable(event, frame))
         
-        self.bottomFrame.frame.bind('<Enter>', lambda event, frame='bottom': self.setScrollable(event, frame))
+        self.bottomFrame.frame.bind('<Enter>', lambda event, frame='bottom': self.onEnter(event=event, frame=frame))
         self.bottomFrame.frame.bind('<Leave>', lambda event, frame='bottom': self.unsetScrollable(event, frame))
+        
+        self.topFrame.frame.bind('<Enter>', lambda event, frame='top': self.onEnter(event=event, frame=frame))
         
         # Drawing frames
         self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=4)
@@ -1747,46 +1645,7 @@ class mainApplication:
         tk.Grid.columnconfigure(self.parent, 2, weight=0, minsize=100)
         tk.Grid.columnconfigure(self.parent, 1, weight=1)
         
-        
-    def setScrollable(self, event, frame='right'):
-        self.parent.bind('<MouseWheel>', lambda event, frame=frame: self.setMouseWheel(event, frame))
-        self.parent.bind("<Button-4>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
-        self.parent.bind("<Button-5>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
-        return
-        
-        
-    def unsetScrollable(self, event, frame='right'):
-        self.parent.unbind('<MouseWheel>')
-        self.parent.unbind("<Button-4>")
-        self.parent.unbind("<Button-5>")
-        return
-            
-        
-    def setMouseWheel(self, event, frame='right'):
-        if frame == 'right':
-            if self.rightPane.canvas.bbox('all')[3] > self.rightPane.labelFrame.winfo_height():
-                if event.num==5 or event.delta<0:
-                    step = -1
-                else:
-                    step = 1            
-                self.rightPane.canvas.yview_scroll(step, 'units')
-        elif frame == 'bottom':
-            if event.num==5 or event.delta<0:
-                step = -1
-            else:
-                step = 1            
-            self.bottomPane.canvas.yview_scroll(step, 'units')
-        return
-        
-    
-    def defaultState(self, event):
-        '''Change the graphFrame instance back to default state (where the user can select plots)'''
-        
-        if self.state != 'default':
-            self.bottomFrame.frame.config(cursor='arrow')
-            self.state = 'default'
-        return
-            
+
     def cancel(self, event):
         '''Cancel PA line drawing if Ctrl-z is pressed'''
         
@@ -1797,22 +1656,43 @@ class mainApplication:
             
             # Update the PA in the file manager
             self.bottomPane.activeSingleFrame.updateFileManagerValues(valNames=['PA'], values=[''])
+        return
+    
+    
+    def defaultState(self, event):
+        '''Change the graphFrame instance back to default state (where the user can select plots)'''
         
+        if self.state != 'default':
+            self.bottomFrame.frame.config(cursor='arrow')
+            self.state = 'default'
+        return
+    
+
+    def exitProgram(self):
+        '''Destroys main window.'''
         
+        self.parent.destroy()
+        return
+        
+
     def lineTracingState(self, event):
         '''Change the graphFrame instance to lineTracing state to enable the tracing of PA line.'''
         
         if self.state != 'lineTracing':
             self.bottomFrame.frame.config(cursor='crosshair')
             self.state = 'lineTracing'
-            
-            
-    def exitProgram(self):
-        '''Destroys main window.'''
+        return
         
-        self.parent.destroy()
-            
     
+    def onEnter(self, frame='right', *args, **kwargs):
+        '''Actions taken when the cursor enters a frame'''
+        
+        # Set a new help message
+        self.messageFrame.setMessage(frame)
+        self.setScrollable(*args, **kwargs)
+        return
+        
+
     def selectAll(self, event):
         '''Select or unselect all the plots.'''
         
@@ -1832,6 +1712,39 @@ class mainApplication:
             self.topPane.updateInvertWidgets(state='disabled')
         
         return
+    
+    
+    def setMouseWheel(self, event, frame='right'):
+        if frame == 'right':
+            if self.rightPane.canvas.bbox('all')[3] > self.rightPane.labelFrame.winfo_height():
+                if event.num==5 or event.delta<0:
+                    step = -1
+                else:
+                    step = 1            
+                self.rightPane.canvas.yview_scroll(step, 'units')
+        elif frame == 'bottom':
+            if event.num==5 or event.delta<0:
+                step = -1
+            else:
+                step = 1            
+            self.bottomPane.canvas.yview_scroll(step, 'units')
+        return
+    
+        
+    def setScrollable(self, event, frame='right', *args, **kwargs):
+        # Set the scrollbar to the given widget
+        self.parent.bind('<MouseWheel>', lambda event, frame=frame: self.setMouseWheel(event, frame))
+        self.parent.bind("<Button-4>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
+        self.parent.bind("<Button-5>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
+        return
+        
+        
+    def unsetScrollable(self, event, frame='right'):
+        self.parent.unbind('<MouseWheel>')
+        self.parent.unbind("<Button-4>")
+        self.parent.unbind("<Button-5>")
+        return
+
      
         
 class runMainloop(Thread):
