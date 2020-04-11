@@ -450,7 +450,7 @@ class graphFrame:
             
 
 
-class topFrame:
+class topFrame(tk.Frame):
     '''
     Top frame with widgets used to import data and get additional information.
     '''
@@ -469,6 +469,8 @@ class topFrame:
         self.root        = root
         self.bgColor     = bgColor
         
+        super().__init__(self.root, bg=self.bgColor)
+        
         # Visible (in input) and list of opened file names
         self.initDir     = tk.StringVar(value='/home/wilfried/Thesis/hst/all_stamps/')
         self.fnames      = []
@@ -479,7 +481,7 @@ class topFrame:
         padx             = 10
         pady             = 10
         
-        self.loadButton  = ttk.Button(self.parent, command=self.openFile, text='Browse')
+        self.loadButton  = ttk.Button(self, command=self.openFile, text='Browse')
         
         # Making the cmap list widget
         cmapNames        = list(matplotlib.cm.cmap_d.keys())
@@ -487,14 +489,14 @@ class topFrame:
         
         self.cmap        = container()
         self.cmap.var    = tk.StringVar(value='bwr')
-        self.cmap.list   = ttk.Combobox(self.parent, textvariable=self.cmap.var, values=cmapNames, state='readonly')
+        self.cmap.list   = ttk.Combobox(self, textvariable=self.cmap.var, values=cmapNames, state='readonly')
         self.cmap.list.bind("<<ComboboxSelected>>", self.updateCmap)
         
-        self.cmap.label  = tk.Label(self.parent, text='Colormap', bg=self.bgColor)
+        self.cmap.label  = tk.Label(self, text='Colormap', bg=self.bgColor)
         
         # Making the position and value label when moving through the graphs
         self.hover       = container()
-        self.hover.frame = tk.Frame(self.parent, bg=self.bgColor)
+        self.hover.frame = tk.Frame(self, bg=self.bgColor)
         self.hover.var   = tk.StringVar(value='Current image:')
         self.hover.xvar  = tk.StringVar(value='x:')
         self.hover.yvar  = tk.StringVar(value='y:')
@@ -505,8 +507,8 @@ class topFrame:
         
         # Adding checkboxes to invert axes
         self.invert      = container()
-        self.invert.x    = tk.Checkbutton(self.parent, text='Invert x', bg=self.bgColor, command=self.invertxAxes, state=tk.DISABLED)
-        self.invert.y    = tk.Checkbutton(self.parent, text='Invert y', bg=self.bgColor, command=self.invertyAxes, state=tk.DISABLED)
+        self.invert.x    = tk.Checkbutton(self, text='Invert x', bg=self.bgColor, command=self.invertxAxes, state=tk.DISABLED)
+        self.invert.y    = tk.Checkbutton(self, text='Invert y', bg=self.bgColor, command=self.invertyAxes, state=tk.DISABLED)
         
         
         ######################################################
@@ -533,7 +535,7 @@ class topFrame:
         self.zoom.title   = tk.StringVar(value='Zoom (x%i)' %self.zoom.zoom)
         
         # Frame, figure, axis and canvas
-        self.zoom.frame   = tk.Frame(self.parent, bg=self.bgColor)
+        self.zoom.frame   = tk.Frame(self, bg=self.bgColor)
         self.zoom.axFrame = tk.Frame(self.zoom.frame, bg=self.bgColor, bd=2)
         self.zoom.fig     = Figure(figsize=(1.2, 1.2), facecolor=self.bgColor)
         self.zoom.ax      = Axes(self.zoom.fig, [0., 0., 1., 1.])
@@ -573,8 +575,8 @@ class topFrame:
         self.zoom.frame.grid_rowconfigure(1, weight=1)
         self.zoom.frame.grid_rowconfigure(2, weight=0)
         
-        self.parent.grid_rowconfigure(1, weight=1)
-        self.parent.grid_columnconfigure(7, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(7, weight=1)
         
         # Change border color to black
         self.zoom.axFrame.config({'bg':'black'})
@@ -618,28 +620,28 @@ class topFrame:
         
         # First we generate the frames
         titles = [i.split('/')[-1] for i in self.data.keys()]
-        self.root.bottomPane.makeFrames(nb=len(self.data), titles=titles, names=[i.rstrip('.fits') for i in titles])
+        self.parent.bottomPane.makeFrames(nb=len(self.data), titles=titles, names=[i.rstrip('.fits') for i in titles])
         
         # Second we place them in our widget
-        self.root.bottomPane.placeFrames()
+        self.parent.bottomPane.placeFrames()
             
         # Then we update each frame with the corresponding data
         for name, galaxy in self.data.items():
-            self.root.bottomPane.linkNameToPlot[name.split('/')[-1].rstrip('.fits')] = self.root.bottomPane.plotList[galaxy['loc']]
-            self.root.bottomPane.plotList[galaxy['loc']].updateImage(galaxy['image'], maxi=galaxy['max'], mini=galaxy['min'], cmap=self.cmap.var.get())
+            self.parent.bottomPane.linkNameToPlot[name.split('/')[-1].rstrip('.fits')] = self.parent.bottomPane.plotList[galaxy['loc']]
+            self.parent.bottomPane.plotList[galaxy['loc']].updateImage(galaxy['image'], maxi=galaxy['max'], mini=galaxy['min'], cmap=self.cmap.var.get())
         return
     
 
     def invertxAxes(self):
         '''Invert the x axis of the selected graphs'''
         
-        for plot in self.root.bottomPane.plotList:
+        for plot in self.parent.bottomPane.plotList:
             plot.invertAxis(axis='x')
         return
             
              
     def invertyAxes(self):
-        for plot in self.root.bottomPane.plotList:
+        for plot in self.parent.bottomPane.plotList:
             plot.invertAxis(axis='y')
         return
     
@@ -679,7 +681,7 @@ class topFrame:
                 self.loadFitsFile(name, pos)
             
             # Reset frames before loading new figures
-            self.root.bottomPane.resetFrames()
+            self.parent.bottomPane.resetFrames()
             
             # Generate frames and figures
             self.genFigures()
@@ -688,7 +690,7 @@ class topFrame:
             self.imLoaded = True
             
             # Generate the window manager dialog
-            self.fWindow.window = fileWindow(self, self.root, bgColor=self.bgColor, dataLoaded=self.data)
+            self.fWindow.window = fileWindow(self, self.parent, bgColor=self.bgColor, dataLoaded=self.data)
             
         return
 
@@ -696,7 +698,7 @@ class topFrame:
     def updateCmap(self, event):
         '''Update the cmap of the already plotted images.'''
         
-        for plot in self.root.bottomPane.plotList:
+        for plot in self.parent.bottomPane.plotList:
             plot.im.set_cmap(self.cmap.var.get())
             plot.canvas.draw()
             
@@ -864,7 +866,7 @@ class fileWindow:
                 self.setState(state='normal')
                 
                 # Ungrey main app menu checkbox
-                self.root.topMenu.window.viewMenu.entryconfigure(0, state='normal')
+                self.root.topmenu.viewMenu.entryconfigure(0, state='normal')
                 
             # If window is already drawn but new data is provided, we update widgets only
             elif fileWindow._isDrawn:
@@ -1271,7 +1273,7 @@ class modelFrame:
         
                           
         
-class rightFrame:
+class rightFrame(tk.LabelFrame):
     '''Right frame window with different options to trigger.'''
     
     def __init__(self, parent, root, bgColor='grey'):
@@ -1279,7 +1281,7 @@ class rightFrame:
         Inputs
         ------
             parent : tk object
-                parent object to put the widget within
+                parent object
             root : tk.Tk instance
                 main application object
         '''
@@ -1298,15 +1300,14 @@ class rightFrame:
         self.pady         = 5
         self.padyModels   = 10
         
+        super().__init__(self.root, text='Configuration pane', bg=self.parent.colors['topPane'], relief=tk.RIDGE, bd=self.bd)
+        
         # Container objects
         self.frame, self.addModel = container(), container()
         
-        # Define label frame
-        self.labelFrame   = tk.LabelFrame(self.parent, text='Configuration pane', bg=self.root.topFrame.color, relief=tk.RIDGE, bd=self.bd)
-        
         # Define canvas within label frame to add a scrollbar
-        self.canvas       = tk.Canvas(self.labelFrame, bd=0, bg=self.bgColor)
-        self.scrollbar    = tk.Scrollbar(self.labelFrame, orient="vertical", command=self.canvas.yview, width=5, bg='black')
+        self.canvas       = tk.Canvas(self, bd=0, bg=self.bgColor)
+        self.scrollbar    = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview, width=5, bg='black')
         
         # Define a frame within the canvas to hold widgets
         self.frame.obj    = tk.Frame(self.canvas, bg=self.bgColor)
@@ -1328,7 +1329,7 @@ class rightFrame:
         # Draw widgets
         self.scrollbar.pack( fill='both', side='right')
         self.canvas.pack(    fill='both', expand='yes')
-        self.labelFrame.pack(fill='both', expand='yes', padx=self.padx, pady=self.pady)
+        #self.pack(fill='both', expand='yes', padx=self.padx, pady=self.pady)
        
         
     def updateFrameSize(self, event):
@@ -1379,48 +1380,126 @@ class rightFrame:
 
 
         
-class topMenu:
+class topMenu(tk.Menu):
     '''Application top menu'''
     
-    def __init__(self, parent, root, color):
+    def __init__(self, parent, root, bgColor):
         
         self.parent   = parent
         self.root     = root
-        self.color    = color
+        self.bgColor  = bgColor
         self.exists   = False
         
-        # Top Menu widget
-        self.topMenu  = tk.Menu(bg=self.color)
+        super().__init__(bg=self.bgColor)
         
         # File menu within top menu
-        self.fileMenu = tk.Menu(self.topMenu, tearoff=0)
+        self.fileMenu = tk.Menu(self, tearoff=0)
         self.fileMenu.add_command(label='Open (Ctrl+O)',      command=self.parent.topPane.openFile)
         self.fileMenu.add_separator()
-        self.fileMenu.add_command(label='Close (Alt+F4)',     command=self.parent.exitProgram)
+        self.fileMenu.add_command(label='Close (Alt+F4)',     command=self.exitMainProgram)
         
         # View menu within top menu
-        self.viewMenu = tk.Menu(self.topMenu, tearoff=0)
+        self.viewMenu = tk.Menu(self, tearoff=0)
         self.viewMenu.add_checkbutton(label=' File manager', variable=fileWindow._isVisible, state=tk.DISABLED,
                                       command=self.parent.topPane.fWindow.window.switchWindowState)
 
         # Help menu within top menu
-        self.helpMenu = tk.Menu(self.topMenu, tearoff=0)
+        self.helpMenu = tk.Menu(self, tearoff=0)
         self.helpMenu.add_command(label='Shortcuts (Ctrl+H)', command=self.showShortcuts)
         self.helpMenu.add_command(label='Galfit website',     command=lambda:print('work in progress'))
         
         # Adding sections into top menu
-        self.topMenu.add_cascade( label="File", menu=self.fileMenu)
-        self.topMenu.add_cascade( label="View", menu=self.viewMenu)
-        self.topMenu.add_cascade( label="Help", menu=self.helpMenu)
+        self.add_cascade( label="File", menu=self.fileMenu)
+        self.add_cascade( label="View", menu=self.viewMenu)
+        self.add_cascade( label="Help", menu=self.helpMenu)
+        
+
+    def exitMainProgram(self):
+        sigintHandler(SIGINT, root=self.root, skipUpdate=True)
+        return
        
         
-    def exitProgram(self):
+    def exitHelp(self):
         '''Exit top level window.'''
         
-        self.window.destroy()
+        sigintHandler(SIGINT, None, obj=self.root, skipUpdate=True)
         self.exists    = False
+        return
+    
+    
+    def showShortcuts(self, *args, **kwargs):
+        helpWindow(300, 300)
+        return
         
+   
+    
+class helpWindow(tk.Toplevel):
+    # Keeping track of the only instance allowed, _isLoaded 
+    _instance      = None
+
+    def __new__(cls, height, width, keyColor='white', keyRelief=tk.RAISED, border=2, pad=3, *args, **kwargs):
+        '''Only generate the help window once when it is visible, hence the custom __new__ method.'''
         
+        if cls._instance is None:
+            instance       = super(helpWindow, cls).__new__(cls)
+            cls._instance  = instance
+            
+            # First instance, window is not drawn yet
+            cls._isVisible = False
+        else:
+            instance       = cls._instance
+            cls._isVisible = True
+        return instance
+    
+    def __init__(self, height, width, keyColor='white', keyRelief=tk.RAISED, border=2, pad=3, *args, **kwargs):
+        
+        if not self.__class__._isVisible:
+            
+            ##################################################
+            #            Generate Toplevel window            #
+            ##################################################
+            
+            super().__init__(height=height, width=width)
+            self.maxsize(height, width)
+            self.minsize(height, width)
+            self.title('List of shortcuts')
+            
+            self.keyColor      = keyColor
+            self.keyRelief     = keyRelief
+            self.bd            = border
+            self.pad           = pad
+            
+            self.protocol("WM_DELETE_WINDOW", self.exit)
+            
+            # Create notebook
+            self.notebook      = ttk.Notebook(self)
+            self.notebook.enable_traversal()
+            self.notebook.pack(expand=1, fill='both')
+            
+            # Make first tab (edit tab)
+            self.tabEdit       = ttk.Frame(self)
+            self.notebook.add(self.tabEdit, text='Edit figure', underline=0)
+            self.editLines     = {'Select all'  :         ['Ctrl', 'A'], 
+                                  'Draw PA line':         ['Ctrl', 'P'],
+                                  'Back to default mode': ['ESC']}
+            
+            for pos, text in enumerate(self.editLines.keys()):
+                self.makeLabelLine(self.tabEdit, pos, text, self.editLines[text])
+                
+            # Make second tab (file tab)
+            self.tabFile       = ttk.Frame(self)
+            self.notebook.add(self.tabFile, text='File', underline=0)
+            self.fileLines     = {'Open file': ['Ctrl', 'O']}
+            
+            for pos, text in enumerate(self.fileLines.keys()):
+                self.makeLabelLine(self.tabFile, pos, text, self.fileLines[text])
+      
+    def exit(self):
+        self.__class__._instance = None
+        self.destroy()
+        return
+    
+    
     def makeLabelLine(self, tab, row, text, listButtonLabels, underline=-1):
         '''Used to create a line of labels within the help window'''
         
@@ -1440,47 +1519,7 @@ class topMenu:
                 
             i.grid(row=row, column=pos, padx=padx, pady=pady, sticky=sticky)
         return labels
-            
-        
-        
-    def showShortcuts(self, *args):
-        if not self.exists:
-            self.window        = tk.Toplevel(height=300, width=300)
-            self.window.maxsize(300, 300)
-            self.window.minsize(300, 300)
-            self.window.title('List of shortcuts')
-            self.exists        = True
-            
-            self.keyColor      = 'white'
-            self.keyRelief     = tk.RAISED
-            self.bd            = 2
-            self.pad           = 3
-            
-            self.window.protocol("WM_DELETE_WINDOW", self.exitProgram)
-            
-            # Create notebook
-            self.notebook      = ttk.Notebook(self.window)
-            self.notebook.enable_traversal()
-            self.notebook.pack(expand=1, fill='both')
-            
-            # Make first tab (edit tab)
-            self.tabEdit       = ttk.Frame(self.notebook)
-            self.notebook.add(self.tabEdit, text='Edit figure', underline=0)
-            self.editLines     = {'Select all'  :         ['Ctrl', 'A'], 
-                                  'Draw PA line':         ['Ctrl', 'P'],
-                                  'Back to default mode': ['ESC']}
-            
-            for pos, text in enumerate(self.editLines.keys()):
-                self.makeLabelLine(self.tabEdit, pos, text, self.editLines[text])
-                
-            # Make second tab (file tab)
-            self.tabFile       = ttk.Frame(self.notebook)
-            self.notebook.add(self.tabFile, text='File', underline=0)
-            self.fileLines     = {'Open file': ['Ctrl', 'O']}
-            
-            for pos, text in enumerate(self.fileLines.keys()):
-                self.makeLabelLine(self.tabFile, pos, text, self.fileLines[text])
-        
+    
     
         
 class MessageFrame(tk.Frame):
@@ -1492,10 +1531,10 @@ class MessageFrame(tk.Frame):
         self.parent    = parent
         self.root      = root
         
-        super().__init__(self.parent, bg=self.bgColor, highlightthickness=1, relief=tk.FLAT, highlightbackground='black')
+        super().__init__(self.root, bg=self.bgColor, highlightthickness=1, relief=tk.FLAT, highlightbackground='black')
         
         self.image     = tk.BitmapImage(data=ARROW)
-        self.button    = tk.Button(self, image=self.image, bg=self.bgColor, bd=0, highlightthickness=0, command=self.root.topPane.fWindow.window.switchWindowState)
+        self.button    = tk.Button(self, image=self.image, bg=self.bgColor, bd=0, highlightthickness=0, command=self.parent.topPane.fWindow.window.switchWindowState)
         
         self.text       = tk.StringVar()
         self.font       = font.Font(family=FONT, size=10, weight='normal')
@@ -1513,6 +1552,7 @@ class MessageFrame(tk.Frame):
         
         # Link label changing size event to updating the length of the visible text
         self.bind('<Configure>', self.updateLabelLen)
+        self.bind('<Enter>', self.showFloatingText)
         
         
     def _randomPick(self, which):
@@ -1558,11 +1598,49 @@ class MessageFrame(tk.Frame):
         return
     
     
+    def showFloatingText(self, event):
+        floatingText(self, self.parent, self.bgColor, self.text.get())
+        return
+    
     def updateLabelLen(self, *args):
         #self.label['width'] = self.winfo_width() - self.button.winfo_width()
         print(self.label['width'], self.label.winfo_width(), self.button.winfo_width())
         return
+    
+    
+class floatingText(tk.Toplevel):
+    # Keeping track of the instances
+    _instance      = None
+
+    def __new__(cls, parent, root, bgColor='beige', text):
+        '''One floating text is allowed at once. Futhermore, if the instance already exist, but the coordinates have changed, we want to update that only.'''
         
+        if cls._instance is None:
+            instance       = super(floatingText, cls).__new__(cls)
+            cls._instance  = instance
+            
+            # First instance, window is not drawn yet
+            cls._isDrawn   = False
+            cls._isVisible = tk.BooleanVar()
+            cls._isVisible.set(False)
+        else:
+            instance       = cls._instance
+        return instance
+    
+    
+    def __init__(self, parent, root, bgColor='beige', text):
+        if self.__class__._instances is None:
+            self.visible = False
+            
+        if not self.visible:
+            self.parent  = parent
+            self.root    = root
+            self.visible = True
+            
+            super().__init__(parent, bg=bgColor)
+            self.label = tk.Label(self, text=text)
+            self.label.pack(expand=True, fill='both')
+            self.
     
 
 
@@ -1589,31 +1667,28 @@ class mainApplication:
         self.activeFrame       = None
         
         # Set containers
-        self.topFrame, self.rightFrame, self.bottomFrame = container(), container(), container()
-        self.sideFrame                                   = container()
-        self.topMenu                                     = container()
+        self.bottomFrame = container()
         
         # Set colors
-        self.topFrame.color    = 'lavender'
-        self.rightFrame.color  = 'beige'
-        self.bottomFrame.color = 'beige'
-        self.topMenu.color     = 'slate gray'
+        self.colors            = {'topPane'      : 'lavender', 
+                                  'bottomPane'   : 'beige',
+                                  'rightPane'    : 'beige',
+                                  'messageFrame' : 'beige',
+                                  'topmenu'      : 'slate gray'}
         
         # Making main frames
-        self.topFrame.frame    = tk.Frame(self.parent, bg=self.topFrame.color)
-        self.rightFrame.frame  = tk.Frame(self.parent, bg=self.topFrame.color)
-        self.bottomFrame.frame = tk.Frame(self.parent, bg=self.bottomFrame.color, bd=2, relief=tk.GROOVE)
+        self.bottomFrame.frame = tk.Frame(self.parent, bg=self.colors['bottomPane'], bd=2, relief=tk.GROOVE)
         
         # Creating widgets within frames
-        self.topPane           = topFrame(  self.topFrame.frame,    self, bgColor=self.topFrame.color)
-        self.rightPane         = rightFrame(self.rightFrame.frame,  self, bgColor=self.rightFrame.color)
-        self.bottomPane        = graphFrame(self.bottomFrame.frame, self, bgColor=self.bottomFrame.color)
+        self.bottomPane        = graphFrame(self.bottomFrame.frame, self, bgColor=self.colors['bottomPane'])
         
-        self.messageFrame      = MessageFrame(self.parent, self, bgColor='beige')
+        self.topPane           = topFrame(    self, self.parent, bgColor=self.colors['topPane'])
+        self.rightPane         = rightFrame(  self, self.parent, bgColor=self.colors['rightPane'])
+        self.messageFrame      = MessageFrame(self, self.parent, bgColor=self.colors['messageFrame'])
         
         # Creating window top menu
-        self.topMenu.window    = topMenu(self, self.parent, self.topMenu.color)
-        self.parent.config(menu=self.topMenu.window.topMenu)
+        self.topmenu           = topMenu(self, self.parent, bgColor=self.colors['topmenu'])
+        self.parent.config(menu=self.topmenu)
         
         # Binding key events
         self.parent.bind('<Control-p>',  self.lineTracingState)
@@ -1621,21 +1696,21 @@ class mainApplication:
         self.parent.bind('<Control-a>',  self.selectAll)
         self.parent.bind('<Control-z>',  self.cancel)
         self.parent.bind('<Control-o>',  self.topPane.openFile)
-        self.parent.bind('<Control-h>',  self.topMenu.window.showShortcuts)
+        self.parent.bind('<Control-h>',  self.topmenu.showShortcuts)
         
         # Bind enter and leave frames to know where the cursor lies
-        self.rightFrame.frame.bind('<Enter>', lambda event, frame='right': self.onEnter(event=event, frame=frame))
-        self.rightFrame.frame.bind('<Leave>', lambda event, frame='right': self.unsetScrollable(event, frame))
+        self.rightPane.bind('<Enter>', lambda event, frame='right': self.onEnter(event=event, frame=frame))
+        self.rightPane.bind('<Leave>', lambda event, frame='right': self.unsetScrollable(event, frame))
         
         self.bottomFrame.frame.bind('<Enter>', lambda event, frame='bottom': self.onEnter(event=event, frame=frame))
         self.bottomFrame.frame.bind('<Leave>', lambda event, frame='bottom': self.unsetScrollable(event, frame))
         
-        self.topFrame.frame.bind('<Enter>', lambda event, frame='top': self.onEnter(event=event, frame=frame))
+        self.topPane.bind('<Enter>', lambda event, frame='top': self.onEnter(event=event, frame=frame))
         
         # Drawing frames
-        self.topFrame.frame.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=4)
+        self.topPane.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=4)
         self.bottomFrame.frame.grid(row=1, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=2)
-        self.rightFrame.frame.grid( row=1, sticky=tk.N+tk.S+tk.W+tk.E, column=2)
+        self.rightPane.grid( row=1, sticky=tk.N+tk.S+tk.W+tk.E, column=2)
         
         self.messageFrame.grid(     row=2, sticky=tk.N+tk.S+tk.W+tk.E, column=1, columnspan=3, pady=2, padx=2)
         
@@ -1666,13 +1741,6 @@ class mainApplication:
             self.bottomFrame.frame.config(cursor='arrow')
             self.state = 'default'
         return
-    
-
-    def exitProgram(self):
-        '''Destroys main window.'''
-        
-        self.parent.destroy()
-        return
         
 
     def lineTracingState(self, event):
@@ -1689,7 +1757,7 @@ class mainApplication:
         
         # Set a new help message
         self.messageFrame.setMessage(frame)
-        self.setScrollable(*args, **kwargs)
+        self.setScrollable(frame=frame, *args, **kwargs)
         return
         
 
@@ -1715,8 +1783,9 @@ class mainApplication:
     
     
     def setMouseWheel(self, event, frame='right'):
+        print(event, frame)
         if frame == 'right':
-            if self.rightPane.canvas.bbox('all')[3] > self.rightPane.labelFrame.winfo_height():
+            if self.rightPane.canvas.bbox('all')[3] > self.rightPane.winfo_height():
                 if event.num==5 or event.delta<0:
                     step = -1
                 else:
@@ -1758,7 +1827,7 @@ class runMainloop(Thread):
         self.root.geometry("1500x800")
         app  = mainApplication(self.root)
         
-        self.root.protocol("WM_DELETE_WINDOW", lambda signal=SIGINT, frame=None, obj=self, skipUpdate=True: sigintHandler(signal, frame, obj, skipUpdate))
+        self.root.protocol("WM_DELETE_WINDOW", lambda signal=SIGINT, frame=None, obj=self, skipUpdate=True: sigintHandler(signal, obj, None, skipUpdate))
         
         imgicon = tk.PhotoImage(file=PATH + '/icon.png')
         self.root.tk.call('wm', 'iconphoto', self.root._w, imgicon)
@@ -1766,7 +1835,8 @@ class runMainloop(Thread):
         self.root.mainloop()
 
 
-def sigintHandler(signal, frame, obj=None, skipUpdate=False):
+
+def sigintHandler(signal, obj=None, root=None, skipUpdate=False, *args, **kwargs):
     '''
     Handle SIGINT (Ctrl+C in shell) signal + tkinter WM_DELETE_WINDOW event.
 
@@ -1785,11 +1855,17 @@ def sigintHandler(signal, frame, obj=None, skipUpdate=False):
             whether to skip the update method. Default is to not skip it.
     '''
     
-    print('Thanks for using Galbite. See you another time !')
-    obj.root.quit()
+    if obj is not None:
+        obj.root.quit()
+    elif root is not None:
+        root.quit()
+    else:
+        raise ValueError('Neither tk.Tk object, nor root was provided. Exiting not possible.')
+        return
     
     if not skipUpdate:
         obj.root.update()
+    print('Thanks for using Galbite. See you another time !')
     return
 
 def main(): 
