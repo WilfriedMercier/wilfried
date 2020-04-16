@@ -11,6 +11,8 @@ This is an still in dev software whose primary goal is to model the morphology o
 import copy
 import os
 import matplotlib
+import gc
+import weakref
 matplotlib.use('TkAgg')
 
 import tkinter         as tk
@@ -59,6 +61,7 @@ static unsigned char circle_bits[] = {
    0x01, 0x10, 0x01, 0x10, 0x01, 0x10, 0x02, 0x08, 0x04, 0x04, 0x08, 0x02,
    0xf0, 0x01};"""
 
+
 CIRCLE_INV  = """
 #define circle_inv_width 13
 #define circle_inv_height 13
@@ -66,6 +69,7 @@ static unsigned char circle_inv_bits[] = {
    0xf0, 0x01, 0xf8, 0x03, 0xfc, 0x07, 0xfe, 0x0f, 0xff, 0x1f, 0xff, 0x1f,
    0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xfe, 0x0f, 0xfc, 0x07, 0xf8, 0x03,
    0xf0, 0x01};"""
+
 
 ARROW       = """
 #define arrow_width 13
@@ -76,6 +80,21 @@ static unsigned char arrow_bits[] = {
    0xff, 0x1f};"""
 
 
+FOLDERICON  =   {'data':"""
+#define folder_width 16
+#define folder_height 16
+static unsigned char folder_bits[] = {
+   0x7f, 0x00, 0xc1, 0xff, 0x81, 0xff, 0xff, 0x80, 0x01, 0x80, 0x01, 0x80,
+   0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0x01, 0x80,
+   0x01, 0x80, 0x01, 0x80, 0x01, 0x80, 0xff, 0xff};""",
+                 'mask':"""
+#define folder_mask_width 16
+#define folder_mask_height 16
+static unsigned char folder_mask_bits[] = {
+   0x7f, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};"""
+                }
 
 
 
@@ -481,7 +500,9 @@ class topFrame(tk.Frame):
         padx             = 10
         pady             = 10
         
-        self.loadButton  = ttk.Button(self, command=self.openFile, text='Browse')
+        self.buttonIcon  = tk.BitmapImage(data=FOLDERICON['data'], maskdata=FOLDERICON['mask'], background='goldenrod')
+        self.loadButton  = tk.Button(self, command=self.openFile, image=self.buttonIcon, 
+                                     bd=0, bg=self.bgColor, highlightbackground=self.bgColor,  relief=tk.FLAT)
         
         # Making the cmap list widget
         cmapNames        = list(matplotlib.cm.cmap_d.keys())
@@ -1541,6 +1562,7 @@ class MessageFrame(tk.Frame):
         self.pixToFont  = self.font.measure('m')
         self.label      = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W, font=self.font, padx=5)
         
+        
         #self.button.pack(side=tk.LEFT)
         self.label.pack(side=tk.RIGHT, fill='both', expand=1)
         
@@ -1552,7 +1574,8 @@ class MessageFrame(tk.Frame):
         
         # Link label changing size event to updating the length of the visible text
         self.bind('<Configure>', self.updateLabelLen)
-        self.bind('<Enter>', self.showFloatingText)
+        self.bind('<Enter>', lambda event: self.parent.floatingText.show(self.text.get(), event.x_root, event.y_root))
+        self.bind('<Leave>', self.parent.floatingText.exit)
         
         
     def _randomPick(self, which):
@@ -1594,13 +1617,42 @@ class MessageFrame(tk.Frame):
     
     
     def setMessage(self, which):
+        '''
+        Randomly select and set a message to print in the help message frame.
+
+        Mandatory parameters
+        --------------------
+            which : str
+                from which list of messages to pick
+        '''
+        
         self.text.set(self._randomPick(which))
         return
     
     
     def showFloatingText(self, event):
-        floatingText(self, self.parent, self.bgColor, self.text.get())
+        '''
+        Show a floating window where the cursor lies.
+
+        Parameters
+        ----------
+        event : tk event
+            event with x and y instance variables
+        '''
+            
+        self.floatingText = floatingText(event.x_root, event.y_root, self, self.parent, self.bgColor, text=self.text.get())
         return
+    
+    
+    def removeFloatingText(self, event):
+        self.floatingText.exit()
+        
+        """
+        print('before the loop')
+        for obj in gc.get_objects():
+            if isinstance(obj, floatingText):
+                print('the object', obj.name, obj)
+                """
     
     def updateLabelLen(self, *args):
         #self.label['width'] = self.winfo_width() - self.button.winfo_width()
@@ -1608,39 +1660,63 @@ class MessageFrame(tk.Frame):
         return
     
     
+    
 class floatingText(tk.Toplevel):
-    # Keeping track of the instances
-    _instance      = None
-
-    def __new__(cls, parent, root, bgColor='beige', text):
-        '''One floating text is allowed at once. Futhermore, if the instance already exist, but the coordinates have changed, we want to update that only.'''
+    def __init__(self, x, y, parent, root, bgColor='beige', text=''):
+        self.parent               = parent
+        self.root                 = root
+        self.breakLoop            = False
+            
+        super().__init__(bg=bgColor)
+        self.wm_attributes('-type', 'splash')
+        self.wm_attributes('-alpha', 0.8)
+        self.wm_attributes('-topmost', True)
+            
+        self.yOffset    = -20
+        self.afterTime  = 100 #ms
         
-        if cls._instance is None:
-            instance       = super(floatingText, cls).__new__(cls)
-            cls._instance  = instance
-            
-            # First instance, window is not drawn yet
-            cls._isDrawn   = False
-            cls._isVisible = tk.BooleanVar()
-            cls._isVisible.set(False)
-        else:
-            instance       = cls._instance
-        return instance
+        self.font       = font.Font(family=FONT, size=10, weight='normal')
+        self.pixToFont  = self.font.measure('m')
+        self.text       = tk.StringVar()
+        self.text.set(text)
+        
+        self.label = tk.Label(self, textvariable=self.text, font=self.font)
+        self.label.pack(expand=True, fill='both')
+      
+
+    def show(self, text, x, y):
+        self.breakLoop = False
+        if self.text.get() != text:
+            self.text.set(text)
+        self.updateCoords(x, y)
+        
+        self.after(self.afterTime, self.onMove)
+        return
+                      
+    
+    def onMove(self):
+        
+        if not self.breakLoop:        
+            # If coordinates changed we update them
+            if self.winfo_x() != self.winfo_pointerx() or self.winfo_y() != self.winfo_pointery()+self.yOffset:
+                self.updateCoords(self.winfo_pointerx(), self.winfo_pointery())
+                
+            try:
+                self.after(self.afterTime, self.onMove)
+            except:
+                pass
+        return
     
     
-    def __init__(self, parent, root, bgColor='beige', text):
-        if self.__class__._instances is None:
-            self.visible = False
-            
-        if not self.visible:
-            self.parent  = parent
-            self.root    = root
-            self.visible = True
-            
-            super().__init__(parent, bg=bgColor)
-            self.label = tk.Label(self, text=text)
-            self.label.pack(expand=True, fill='both')
-            self.
+    def updateCoords(self, x, y):
+        self.wm_geometry('%dx%d+%d+%d' %(len(self.text.get())*self.pixToFont, 15, x, y+self.yOffset))
+        return
+    
+    
+    def exit(self, *args, **kwargs):
+        self.state('withdrawn')
+        self.breakLoop            = True
+        return
     
 
 
@@ -1666,6 +1742,11 @@ class mainApplication:
         # Set active frame
         self.activeFrame       = None
         
+        #####################################################################
+        #                    Creating floating info text                    #
+        #####################################################################
+        self.floatingText     = floatingText(0, 0, self, self.parent)
+        
         # Set containers
         self.bottomFrame = container()
         
@@ -1686,7 +1767,10 @@ class mainApplication:
         self.rightPane         = rightFrame(  self, self.parent, bgColor=self.colors['rightPane'])
         self.messageFrame      = MessageFrame(self, self.parent, bgColor=self.colors['messageFrame'])
         
-        # Creating window top menu
+        ####################################################################
+        #                     Creating window top menu                     #
+        ####################################################################
+        
         self.topmenu           = topMenu(self, self.parent, bgColor=self.colors['topmenu'])
         self.parent.config(menu=self.topmenu)
         
