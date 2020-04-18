@@ -11,8 +11,6 @@ This is an still in dev software whose primary goal is to model the morphology o
 import copy
 import os
 import matplotlib
-import gc
-import weakref
 matplotlib.use('TkAgg')
 
 import tkinter         as tk
@@ -29,6 +27,7 @@ from matplotlib.colors                 import Normalize, LogNorm, SymLogNorm, Po
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from threading                         import Thread
 from random                            import randint
+from copy                              import deepcopy
 
 
 class container:
@@ -98,6 +97,31 @@ static unsigned char folder_mask_bits[] = {
 
 
 
+class OwnCheckbutton(tk.Frame):
+    def __init__(self, root, side=tk.LEFT, frameDict={}, checkbuttonDict={}, labelDict={}):
+        self.root = root
+        super().__init__(self.root, **frameDict)
+        
+        self.checkbutton = tk.Checkbutton(self, **checkbuttonDict)
+        self.label       = tk.Label(self, **labelDict)
+        
+        self.state       = self.checkbutton['state']
+        
+        if side in [tk.LEFT, tk.RIGHT]:
+            self.label.pack(side=side)
+            self.checkbutton.pack(side=side)
+        else:
+            raise ValueError('Given side is not correct. Text must either be tk.LEFT to the checbutton or tk.RIGHT to it.')
+            
+    
+    def setState(self, state):
+        self.checkbutton.config({'state':state})
+        self.label.config({'state':state})
+        self.state = state
+        return
+            
+            
+
 class singlePlotFrame:
     '''A frame for a single plot, with all its properties and methods.'''
     
@@ -134,6 +158,11 @@ class singlePlotFrame:
         self.ax.xaxis.set_ticks_position('both')
         self.ax.tick_params(which='both', direction='in', labelsize=12)
         
+        # Store default spines values
+        self.tmpSpines = {}
+        for name, axis in self.ax.spines.items():
+            self.tmpSpines[name] = {'lw':axis.get_linewidth(), 'color':axis.get_edgecolor(), 'ls':axis.get_linestyle()}
+        
         # Adding a title
         if title is not None and type(title) is str:
             self.title = title
@@ -147,6 +176,7 @@ class singlePlotFrame:
         self.canvas.mpl_connect('button_press_event',  self.onClick)
         self.canvas.mpl_connect('motion_notify_event', self.onMove)
         self.canvas.mpl_connect('figure_enter_event',  self.onFigure)
+        self.canvas.mpl_connect('figure_leave_event',  self.outFigure)
         
         
     def borderOnOff(self, on=True):
@@ -232,11 +262,29 @@ class singlePlotFrame:
         return
                 
                 
-    def onFigure(self, event):
-        '''Set focus onto the main window when the cursor enters it.'''
+    def onFigure(self, *args, **kwargs):
+        '''Actions taken when the cursor is on the Figure.'''
         
+        # Set focus onto the main window when the cursor enters it.
         self.root.parent.focus()
+        
+        # Change plot border width, color and linestyle
+        for name, axis in self.ax.spines.items():
+            axis.set_linewidth(2)
+            axis.set_color('blue')
+            axis.set_linestyle('dotted')
+            
+        self.canvas.draw()
         return
+    
+    
+    def outFigure(self, *args, **kwargs):
+        # Change plot border width, color and linestyle
+        for name, axis in self.tmpSpines.items():
+            self.ax.spines[name].set_linewidth(axis['lw'])
+            self.ax.spines[name].set_color(axis['color'])
+            self.ax.spines[name].set_linestyle(axis['ls'])
+        self.canvas.draw()
             
             
     def onMove(self, event):
@@ -502,18 +550,23 @@ class topFrame(tk.Frame):
         
         self.buttonIcon  = tk.BitmapImage(data=FOLDERICON['data'], maskdata=FOLDERICON['mask'], background='goldenrod')
         self.loadButton  = tk.Button(self, command=self.openFile, image=self.buttonIcon, 
-                                     bd=0, bg=self.bgColor, highlightbackground=self.bgColor,  relief=tk.FLAT)
+                                     bd=0, bg=self.bgColor, highlightbackground=self.bgColor,  relief=tk.FLAT, activebackground='black')
         
-        # Making the cmap list widget
+        
+        ####################################################
+        #                 cmap list widget                 #
+        ####################################################
         cmapNames        = list(matplotlib.cm.cmap_d.keys())
         cmapNames.sort()
         
         self.cmap        = container()
         self.cmap.var    = tk.StringVar(value='bwr')
-        self.cmap.list   = ttk.Combobox(self, textvariable=self.cmap.var, values=cmapNames, state='readonly')
-        self.cmap.list.bind("<<ComboboxSelected>>", self.updateCmap)
         
-        self.cmap.label  = tk.Label(self, text='Colormap', bg=self.bgColor)
+        self.cmap.frame  = tk.Frame(self, bg=self.bgColor, highlightbackground=self.bgColor, highlightthickness=0, bd=0)
+        self.cmap.list   = ttk.Combobox(self.cmap.frame, textvariable=self.cmap.var, values=cmapNames, state='readonly')
+        self.cmap.list.bind("<<ComboboxSelected>>", self.updateCmap)
+        self.cmap.label  = tk.Label(self.cmap.frame, text='Colormap', bg=self.bgColor)
+        
         
         # Making the position and value label when moving through the graphs
         self.hover       = container()
@@ -526,11 +579,23 @@ class topFrame(tk.Frame):
         self.hover.xpos  = tk.Label(self.hover.frame, textvariable=self.hover.xvar, bg=self.bgColor)
         self.hover.ypos  = tk.Label(self.hover.frame, textvariable=self.hover.yvar, bg=self.bgColor)
         
-        # Adding checkboxes to invert axes
-        self.invert      = container()
-        self.invert.x    = tk.Checkbutton(self, text='Invert x', bg=self.bgColor, command=self.invertxAxes, state=tk.DISABLED)
-        self.invert.y    = tk.Checkbutton(self, text='Invert y', bg=self.bgColor, command=self.invertyAxes, state=tk.DISABLED)
         
+        ######################################################
+        #                 Invert axes widget                 #
+        ######################################################
+        self.invert       = container()
+        self.invert.frame = tk.Frame(self, highlightthickness=1, bd=5, highlightbackground='black', bg=self.bgColor)
+        self.invert.text  = tk.Label(self.invert.frame, text='Invert axes', bg=self.bgColor)
+        self.invert.x     = OwnCheckbutton(self.invert.frame, 
+                                            frameDict={'highlightthickness':0, 'bd':0, 'highlightbackground':self.bgColor, 'bg':self.bgColor},
+                                            labelDict={'text':'x', 'bg':self.bgColor, 'state':tk.DISABLED},
+                                            checkbuttonDict={'bg':self.bgColor, 'command':self.invertxAxes, 'state':tk.DISABLED, 'relief':tk.FLAT, 'highlightthickness':0}
+                                           )
+        self.invert.y     = OwnCheckbutton(self.invert.frame, side=tk.RIGHT,
+                                            frameDict={'highlightthickness':0, 'bd':0, 'highlightbackground':self.bgColor, 'bg':self.bgColor},
+                                            labelDict={'text':'y', 'bg':self.bgColor, 'state':tk.DISABLED},
+                                            checkbuttonDict={'bg':self.bgColor, 'command':self.invertyAxes, 'state':tk.DISABLED, 'relief':tk.FLAT, 'highlightthickness':0}
+                                           )
         
         ######################################################
         #               File window properties               #
@@ -573,16 +638,19 @@ class topFrame(tk.Frame):
         # Drawing elements
         self.loadButton.grid(  row=0, column=0, padx=padx,   pady=pady, sticky=tk.W+tk.N)
         
-        self.cmap.label.grid(  row=0, column=3, padx=2*padx, pady=pady, sticky=tk.W+tk.N)
-        self.cmap.list.grid(   row=0, column=4, padx=0,      pady=pady, sticky=tk.W+tk.N)
+        self.cmap.label.pack(anchor=tk.W)
+        self.cmap.list.pack(anchor=tk.W, pady=pady//2)
+        self.cmap.frame.grid(  row=0, column=3, padx=2*padx, pady=pady, sticky=tk.N)
         
         self.hover.label.grid( row=0, column=0, sticky=tk.W+tk.N)
         self.hover.xpos.grid(  row=1, column=0, sticky=tk.W+tk.N)
         self.hover.ypos.grid(  row=2, column=0, sticky=tk.W+tk.N)
-        self.hover.frame.grid( row=1, column=0, padx=padx,   pady=pady, sticky=tk.W+tk.N+tk.E, columnspan=7)
+        self.hover.frame.grid( row=1, column=0, padx=padx, sticky=tk.W+tk.N+tk.E, columnspan=7)
         
-        self.invert.x.grid(    row=0, column=5, padx=2*padx, pady=pady, sticky=tk.W+tk.N)
-        self.invert.y.grid(    row=0, column=6, padx=0,      pady=pady, sticky=tk.W+tk.N)
+        self.invert.frame.grid(row=0, column=5, padx=2*padx, pady=pady, sticky=tk.N)
+        self.invert.text.pack(side=tk.TOP)
+        self.invert.x.pack(side=tk.LEFT)
+        self.invert.y.pack(side=tk.RIGHT)
         
         self.zoom.frame.grid(  row=0, column=7, sticky=tk.E, padx=2*padx, pady=pady, rowspan=4)
         self.zoom.axFrame.grid(row=1, column=0, columnspan=2)
@@ -596,7 +664,7 @@ class topFrame(tk.Frame):
         self.zoom.frame.grid_rowconfigure(1, weight=1)
         self.zoom.frame.grid_rowconfigure(2, weight=0)
         
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(7, weight=1)
         
         # Change border color to black
@@ -696,7 +764,13 @@ class topFrame(tk.Frame):
             
             # Empty data dict first
             self.data = {}
-            
+                        
+            # Set cursor to busy (watch on linux, wait on macosx and windows)
+            try:
+                self.root.config(cursor='watch')
+            except:
+                self.root.config(cursor='wait')
+
             for pos, name in enumerate(self.fnames):
                 # Load data
                 self.loadFitsFile(name, pos)
@@ -712,6 +786,9 @@ class topFrame(tk.Frame):
             
             # Generate the window manager dialog
             self.fWindow.window = fileWindow(self, self.parent, bgColor=self.bgColor, dataLoaded=self.data)
+            
+            # Set cursor to normal
+            self.root.config(cursor="")
             
         return
 
@@ -732,11 +809,11 @@ class topFrame(tk.Frame):
     def updateInvertWidgets(self, state):
         '''Change the invert widgets into some state (normal, disabled, etc.)'''
         
-        if self.invert.x['state'] != state:
-            self.invert.x.config({'state':state})
+        if self.invert.x.state != state:
+            self.invert.x.setState(state)
         
-        if self.invert.y['state'] != state:
-            self.invert.y.config({'state':state})
+        if self.invert.y.state != state:
+            self.invert.y.setState(state)
         return
     
     
@@ -857,7 +934,7 @@ class fileWindow:
                 self.bgColor  = bgColor
                 self.window   = tk.Toplevel(bg=self.bgColor)
                 self.window.wm_attributes('-type', 'utility')
-                self.window.title('File(s)')
+                self.window.title('Files properties')
                 self.window.protocol("WM_DELETE_WINDOW", self.destroy)
                 self.window.resizable(width=True, height=False)
                 
@@ -914,7 +991,7 @@ class fileWindow:
         self.treeview.tag_configure('all', background=self.bgColor)
         self.treeview.column('#0', anchor=tk.W)
         for i in range(len(self.columns)):
-            self.treeview.column('#%d' %(i+1), anchor=tk.CENTER)
+            self.treeview.column('#%d' %(i+1), anchor=tk.CENTER, width=80)
             
         # Bind event(s)
         self.treeview.bind('<<TreeviewSelect>>', self.onClick)
@@ -1574,8 +1651,16 @@ class MessageFrame(tk.Frame):
         
         # Link label changing size event to updating the length of the visible text
         self.bind('<Configure>', self.updateLabelLen)
-        self.bind('<Enter>', lambda event: self.parent.floatingText.show(self.text.get(), event.x_root, event.y_root))
-        self.bind('<Leave>', self.parent.floatingText.exit)
+        
+        ###########################################################################################
+        #             Link enter and leave events to showing an info floating message             #
+        ###########################################################################################
+        
+        self.label.bind('<Enter>', lambda event: self.parent.floatingText.show(self.text.get(), event.x_root, event.y_root))
+        self.label.bind('<Leave>', self.parent.floatingText.exit)
+        
+        self.button.bind('<Enter>', lambda event: self.parent.floatingText.show('Show the opened files properties window', event.x_root, event.y_root))
+        self.button.bind('<Leave>', self.parent.floatingText.exit)
         
         
     def _randomPick(self, which):
@@ -1630,31 +1715,7 @@ class MessageFrame(tk.Frame):
         return
     
     
-    def showFloatingText(self, event):
-        '''
-        Show a floating window where the cursor lies.
-
-        Parameters
-        ----------
-        event : tk event
-            event with x and y instance variables
-        '''
-            
-        self.floatingText = floatingText(event.x_root, event.y_root, self, self.parent, self.bgColor, text=self.text.get())
-        return
-    
-    
-    def removeFloatingText(self, event):
-        self.floatingText.exit()
-        
-        """
-        print('before the loop')
-        for obj in gc.get_objects():
-            if isinstance(obj, floatingText):
-                print('the object', obj.name, obj)
-                """
-    
-    def updateLabelLen(self, *args):
+    def updateLabelLen(self, *args, **kwargs):
         #self.label['width'] = self.winfo_width() - self.button.winfo_width()
         print(self.label['width'], self.label.winfo_width(), self.button.winfo_width())
         return
@@ -1672,7 +1733,8 @@ class floatingText(tk.Toplevel):
         self.wm_attributes('-alpha', 0.8)
         self.wm_attributes('-topmost', True)
             
-        self.yOffset    = -20
+        self.yOffset    = -30
+        self.xOffset    = 10
         self.afterTime  = 100 #ms
         
         self.font       = font.Font(family=FONT, size=10, weight='normal')
@@ -1682,13 +1744,19 @@ class floatingText(tk.Toplevel):
         
         self.label = tk.Label(self, textvariable=self.text, font=self.font)
         self.label.pack(expand=True, fill='both')
+        self.exit()
       
 
     def show(self, text, x, y):
+        # Set cursor to question mark
+        self.root.config(cursor='question_arrow')
+        
         self.breakLoop = False
         if self.text.get() != text:
             self.text.set(text)
+        
         self.updateCoords(x, y)
+        self.state('normal')
         
         self.after(self.afterTime, self.onMove)
         return
@@ -1709,11 +1777,14 @@ class floatingText(tk.Toplevel):
     
     
     def updateCoords(self, x, y):
-        self.wm_geometry('%dx%d+%d+%d' %(len(self.text.get())*self.pixToFont, 15, x, y+self.yOffset))
+        self.wm_geometry('%dx%d+%d+%d' %(len(self.text.get())*self.pixToFont, 15, x+self.xOffset, y+self.yOffset))
         return
     
     
     def exit(self, *args, **kwargs):
+        # Set cursor to default state
+        self.root.config(cursor='')
+        
         self.state('withdrawn')
         self.breakLoop            = True
         return
