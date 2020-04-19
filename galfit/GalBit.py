@@ -95,6 +95,46 @@ static unsigned char folder_mask_bits[] = {
    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};"""
                 }
 
+INTERROGATION = {'data':"""
+#define interrogation_width 15
+#define interrogation_height 15
+static unsigned char interrogation_bits[] = {
+   0xff, 0x7f, 0x01, 0x40, 0x01, 0x40, 0xc1, 0x41, 0x21, 0x42, 0x21, 0x42,
+   0x01, 0x42, 0x01, 0x41, 0x81, 0x40, 0x81, 0x40, 0x01, 0x40, 0x81, 0x40,
+   0x01, 0x40, 0x01, 0x40, 0xff, 0x7f};""",
+                 'mask':"""
+#define interrogation_side_width 15
+#define interrogation_side_height 15
+static unsigned char interrogation_side_bits[] = {
+   0x00, 0x00, 0xfe, 0x3f, 0xfe, 0x3f, 0xfe, 0x3f, 0xfe, 0x3f, 0xfe, 0x3f,
+   0xfe, 0x3f, 0xfe, 0x3f, 0xfe, 0x3f, 0xfe, 0x3f, 0xfe, 0x3f, 0xfe, 0x3f,
+   0xfe, 0x3f, 0xfe, 0x3f, 0x00, 0x00};"""
+                }
+
+FILEICON      = {'data':"""
+#define file_width 13
+#define file_height 17
+static unsigned char file_bits[] = {
+   0xff, 0x1f, 0x01, 0x12, 0x01, 0x14, 0x01, 0x18, 0x01, 0x10, 0x01, 0x10,
+   0x41, 0x10, 0x41, 0x10, 0xf1, 0x11, 0x41, 0x10, 0x41, 0x10, 0x01, 0x10,
+   0x01, 0x10, 0x01, 0x10, 0x01, 0x10, 0x01, 0x10, 0xff, 0x1f};"""                 
+}
+
+DELETEICON     = {'data':"""
+#define delete_width 15
+#define delete_height 18
+static unsigned char delete_bits[] = {
+   0x80, 0x00, 0xe0, 0x03, 0x38, 0x0e, 0x1c, 0x1c, 0xff, 0x7f, 0xff, 0x7f,
+   0x5c, 0x1d, 0x5c, 0x1d, 0x5c, 0x1d, 0x5c, 0x1d, 0x5c, 0x1d, 0x5c, 0x1d,
+   0x5c, 0x1d, 0x5c, 0x1d, 0x5c, 0x1d, 0x5c, 0x1d, 0xfc, 0x1f, 0xfc, 0x1f};""",
+                 'mask':"""
+#define delete_mask_width 15
+#define delete_mask_height 18
+static unsigned char delete_mask_bits[] = {
+   0x80, 0x00, 0xe0, 0x03, 0x38, 0x0e, 0x1c, 0x1c, 0xff, 0x7f, 0xff, 0x7f,
+   0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f,
+   0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f, 0xfc, 0x1f};"""}
+
 
 
 class OwnCheckbutton(tk.Frame):
@@ -548,10 +588,22 @@ class topFrame(tk.Frame):
         padx             = 10
         pady             = 10
         
-        self.buttonIcon  = tk.BitmapImage(data=FOLDERICON['data'], maskdata=FOLDERICON['mask'], background='goldenrod')
-        self.loadButton  = tk.Button(self, command=self.openFile, image=self.buttonIcon, 
+        self.buttonFrame = tk.Frame(self, bg=self.bgColor, bd=0, highlightbackground=self.bgColor, highlightthickness=0)
+        
+        self.load        = container()
+        self.load.icon   = tk.BitmapImage(data=FOLDERICON['data'], maskdata=FOLDERICON['mask'], background='goldenrod')
+        self.load.button = tk.Button(self.buttonFrame, command=self.openFile, image=self.load.icon, 
                                      bd=0, bg=self.bgColor, highlightbackground=self.bgColor,  relief=tk.FLAT, activebackground='black')
         
+        self.add         = container()
+        self.add.icon    = tk.BitmapImage(data=FILEICON['data'], background='mint cream')
+        self.add.button  = tk.Button(self.buttonFrame, image=self.add.icon, bd=0, 
+                                     bg=self.bgColor, highlightbackground=self.bgColor, relief=tk.FLAT, activebackground='black')
+        
+        self.dlt         = container()
+        self.dlt.icon    = tk.BitmapImage(data=DELETEICON['data'], maskdata=DELETEICON['mask'], background='red', foreground='red3')
+        self.dlt.button  = tk.Button(self.buttonFrame, image=self.dlt.icon, bd=0,
+                                     bg=self.bgColor, highlightbackground=self.bgColor, relief=tk.FLAT, activebackground='black')
         
         ####################################################
         #                 cmap list widget                 #
@@ -584,7 +636,7 @@ class topFrame(tk.Frame):
         #                 Invert axes widget                 #
         ######################################################
         self.invert       = container()
-        self.invert.frame = tk.Frame(self, highlightthickness=1, bd=5, highlightbackground='black', bg=self.bgColor)
+        self.invert.frame = tk.Frame(self, highlightthickness=1, bd=5, highlightbackground='slate gray', bg=self.bgColor)
         self.invert.text  = tk.Label(self.invert.frame, text='Invert axes', bg=self.bgColor)
         self.invert.x     = OwnCheckbutton(self.invert.frame, 
                                             frameDict={'highlightthickness':0, 'bd':0, 'highlightbackground':self.bgColor, 'bg':self.bgColor},
@@ -635,19 +687,24 @@ class topFrame(tk.Frame):
                                       bg=self.bgColor, relief=tk.FLAT, bd=0, highlightthickness=0, font=(FONT, '9', 'bold'))
         self.zoom.text    = tk.Label(self.zoom.frame, textvariable=self.zoom.title, bg=self.bgColor, font=(FONT, '9', 'bold'))
         
-        # Drawing elements
-        self.loadButton.grid(  row=0, column=0, padx=padx,   pady=pady, sticky=tk.W+tk.N)
+        ######################################################
+        #                  Drawing elements                  #
+        ######################################################
+        self.load.button.grid(row=0, column=0, sticky=tk.W)
+        self.add.button.grid( row=0, column=1, sticky=tk.E)
+        self.dlt.button.grid( row=1, column=0,sticky=tk.W)
+        self.buttonFrame.grid(row=0, column=0, padx=padx, pady=pady, sticky=tk.W+tk.N)
         
         self.cmap.label.pack(anchor=tk.W)
         self.cmap.list.pack(anchor=tk.W, pady=pady//2)
-        self.cmap.frame.grid(  row=0, column=3, padx=2*padx, pady=pady, sticky=tk.N)
+        self.cmap.frame.grid(  row=0, column=2, padx=2*padx, pady=pady, sticky=tk.N)
         
         self.hover.label.grid( row=0, column=0, sticky=tk.W+tk.N)
         self.hover.xpos.grid(  row=1, column=0, sticky=tk.W+tk.N)
         self.hover.ypos.grid(  row=2, column=0, sticky=tk.W+tk.N)
         self.hover.frame.grid( row=1, column=0, padx=padx, sticky=tk.W+tk.N+tk.E, columnspan=7)
         
-        self.invert.frame.grid(row=0, column=5, padx=2*padx, pady=pady, sticky=tk.N)
+        self.invert.frame.grid(row=0, column=3, padx=2*padx, pady=pady, sticky=tk.N)
         self.invert.text.pack(side=tk.TOP)
         self.invert.x.pack(side=tk.LEFT)
         self.invert.y.pack(side=tk.RIGHT)
@@ -1503,7 +1560,7 @@ class topMenu(tk.Menu):
 
         # Help menu within top menu
         self.helpMenu = tk.Menu(self, tearoff=0)
-        self.helpMenu.add_command(label='Shortcuts (Ctrl+H)', command=self.showShortcuts)
+        self.helpMenu.add_command(label='Shortcuts (Ctrl+H)', command=self.parent.showShortcuts)
         self.helpMenu.add_command(label='Galfit website',     command=lambda:print('work in progress'))
         
         # Adding sections into top menu
@@ -1522,11 +1579,6 @@ class topMenu(tk.Menu):
         
         sigintHandler(SIGINT, None, obj=self.root, skipUpdate=True)
         self.exists    = False
-        return
-    
-    
-    def showShortcuts(self, *args, **kwargs):
-        helpWindow(300, 300)
         return
         
    
@@ -1560,7 +1612,7 @@ class helpWindow(tk.Toplevel):
             super().__init__(height=height, width=width)
             self.maxsize(height, width)
             self.minsize(height, width)
-            self.title('List of shortcuts')
+            self.title('Shortcuts list')
             
             self.keyColor      = keyColor
             self.keyRelief     = keyRelief
@@ -1574,17 +1626,25 @@ class helpWindow(tk.Toplevel):
             self.notebook.enable_traversal()
             self.notebook.pack(expand=1, fill='both')
             
-            # Make first tab (edit tab)
+            # Make general tab
+            self.tabGeneral    = ttk.Frame(self)
+            self.notebook.add(self.tabGeneral, text='General', underline=0)
+            self.generalLines  = {'Help mode'           : ['Ctrl', 'Alt', 'h'],
+                                  'Back to default mode': ['ESC']}
+            
+            for pos, text in enumerate(self.generalLines.keys()):
+                self.makeLabelLine(self.tabGeneral, pos, text, self.generalLines[text])
+            
+            # Make edit tab
             self.tabEdit       = ttk.Frame(self)
             self.notebook.add(self.tabEdit, text='Edit figure', underline=0)
-            self.editLines     = {'Select all'  :         ['Ctrl', 'A'], 
-                                  'Draw PA line':         ['Ctrl', 'P'],
-                                  'Back to default mode': ['ESC']}
+            self.editLines     = {'Select all'          : ['Ctrl', 'A'], 
+                                  'Draw PA line'        : ['Ctrl', 'P']}
             
             for pos, text in enumerate(self.editLines.keys()):
                 self.makeLabelLine(self.tabEdit, pos, text, self.editLines[text])
                 
-            # Make second tab (file tab)
+            # Make file tab
             self.tabFile       = ttk.Frame(self)
             self.notebook.add(self.tabFile, text='File', underline=0)
             self.fileLines     = {'Open file': ['Ctrl', 'O']}
@@ -1634,13 +1694,23 @@ class MessageFrame(tk.Frame):
         self.image     = tk.BitmapImage(data=ARROW)
         self.button    = tk.Button(self, image=self.image, bg=self.bgColor, bd=0, highlightthickness=0, command=self.parent.topPane.fWindow.window.switchWindowState)
         
-        self.text       = tk.StringVar()
-        self.font       = font.Font(family=FONT, size=10, weight='normal')
-        self.pixToFont  = self.font.measure('m')
-        self.label      = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W, font=self.font, padx=5)
+        self.text      = tk.StringVar()
+        self.font      = font.Font(family=FONT, size=10, weight='normal')
+        self.pixToFont = self.font.measure('m')
+        self.label     = tk.Label(self, textvariable=self.text, bg=self.bgColor, justify=tk.LEFT, anchor=tk.W, font=self.font, padx=5)
+        
+        ##################################################
+        #                 Help indicator                 #
+        ##################################################
+        self.helpBmp            = container()
+        self.helpBmp.bgColorOn  = 'green4'
+        self.helpBmp.bgColorOff = 'red3'
+        self.helpBmp.im         = tk.BitmapImage(data=INTERROGATION['data'], maskdata=INTERROGATION['mask'], background=self.helpBmp.bgColorOff, foreground='white')
+        self.helpBmp.lb         = tk.Label(self, image=self.helpBmp.im, bd=0, highlightthickness=1, bg='black', highlightbackground=self.bgColor)
         
         
         #self.button.pack(side=tk.LEFT)
+        self.helpBmp.lb.pack(side=tk.RIGHT)
         self.label.pack(side=tk.RIGHT, fill='both', expand=1)
         
         self.messages  = {'general':['You can access the shortcut list by pressing Ctrl+h or from the menu Help/Shortcuts.'],
@@ -1748,21 +1818,32 @@ class floatingText(tk.Toplevel):
       
 
     def show(self, text, x, y):
-        # Set cursor to question mark
-        self.root.config(cursor='question_arrow')
+        '''Shows the given text at the given location.
         
-        self.breakLoop = False
-        if self.text.get() != text:
-            self.text.set(text)
+        Mandatory parameters
+        --------------------
+            text : str
+                text to print on screen
+            x : float
+                window x coordinate
+            y : float
+                window y coordinate
+        '''
         
-        self.updateCoords(x, y)
-        self.state('normal')
-        
-        self.after(self.afterTime, self.onMove)
+        if self.parent.state == 'help':
+            self.breakLoop = False
+            if self.text.get() != text:
+                self.text.set(text)
+            
+            self.updateCoords(x, y)
+            self.state('normal')
+            
+            self.after(self.afterTime, self.onMove)
         return
                       
     
     def onMove(self):
+        '''Actions taken when the mouse is moving'''
         
         if not self.breakLoop:        
             # If coordinates changed we update them
@@ -1777,13 +1858,23 @@ class floatingText(tk.Toplevel):
     
     
     def updateCoords(self, x, y):
+        '''
+        Update window coordinates when mouse is moving.
+        
+        Mandatory parameters
+        --------------------
+            x : float
+                cursor x coordinate
+            y : float
+                cursor y coordinate
+        '''
+        
         self.wm_geometry('%dx%d+%d+%d' %(len(self.text.get())*self.pixToFont, 15, x+self.xOffset, y+self.yOffset))
         return
     
     
     def exit(self, *args, **kwargs):
-        # Set cursor to default state
-        self.root.config(cursor='')
+        '''Used to disable and hide the window'''
         
         self.state('withdrawn')
         self.breakLoop            = True
@@ -1826,7 +1917,7 @@ class mainApplication:
                                   'bottomPane'   : 'beige',
                                   'rightPane'    : 'beige',
                                   'messageFrame' : 'beige',
-                                  'topmenu'      : 'slate gray'}
+                                  'topmenu'      : 'light steel blue'}
         
         # Making main frames
         self.bottomFrame.frame = tk.Frame(self.parent, bg=self.colors['bottomPane'], bd=2, relief=tk.GROOVE)
@@ -1845,13 +1936,17 @@ class mainApplication:
         self.topmenu           = topMenu(self, self.parent, bgColor=self.colors['topmenu'])
         self.parent.config(menu=self.topmenu)
         
-        # Binding key events
-        self.parent.bind('<Control-p>',  self.lineTracingState)
-        self.parent.bind('<Escape>',     self.defaultState)
-        self.parent.bind('<Control-a>',  self.selectAll)
-        self.parent.bind('<Control-z>',  self.cancel)
-        self.parent.bind('<Control-o>',  self.topPane.openFile)
-        self.parent.bind('<Control-h>',  self.topmenu.showShortcuts)
+        ##############################################################
+        #                     Binding key events                     #
+        ##############################################################
+        
+        self.parent.bind('<Control-p>',     self.lineTracingState)
+        self.parent.bind('<Escape>',        self.defaultState)
+        self.parent.bind('<Control-a>',     self.selectAll)
+        self.parent.bind('<Control-z>',     self.cancel)
+        self.parent.bind('<Control-o>',     self.topPane.openFile)
+        self.parent.bind('<Control-h>',     self.showShortcuts)
+        self.parent.bind('<Control-Alt-h>', self.helpState)
         
         # Bind enter and leave frames to know where the cursor lies
         self.rightPane.bind('<Enter>', lambda event, frame='right': self.onEnter(event=event, frame=frame))
@@ -1889,12 +1984,39 @@ class mainApplication:
         return
     
     
-    def defaultState(self, event):
+    def defaultState(self, *args, **kwargs):
         '''Change the graphFrame instance back to default state (where the user can select plots)'''
         
         if self.state != 'default':
+            
+            # Make floating text disappear if it is on screen
+            if self.floatingText.state != 'withdrawn':
+                self.floatingText.exit()
+            
+            # Reverse the help indicator if it is on
+            if self.messageFrame.helpBmp.im['background'] != self.messageFrame.helpBmp.bgColorOff:
+                self.messageFrame.helpBmp.im.configure(background=self.messageFrame.helpBmp.bgColorOff)
+            
+            self.parent.configure(cursor='arrow')
             self.bottomFrame.frame.config(cursor='arrow')
             self.state = 'default'
+        return
+    
+    
+    def helpState(self, *args, **kwargs):
+        '''Change the state of the program to help mode'''
+        
+        if self.state != 'help':
+            
+            # Set cursor to the help cursor for all the 'frames' that may have different unique cursor
+            self.parent.configure(cursor='question_arrow')
+            self.bottomFrame.frame.config(cursor='question_arrow')
+            
+            # Change info icon background
+            self.messageFrame.helpBmp.im.configure(background=self.messageFrame.helpBmp.bgColorOn)
+            
+            # Define new state
+            self.state = 'help'
         return
         
 
@@ -1902,6 +2024,7 @@ class mainApplication:
         '''Change the graphFrame instance to lineTracing state to enable the tracing of PA line.'''
         
         if self.state != 'lineTracing':
+            self.defaultState()
             self.bottomFrame.frame.config(cursor='crosshair')
             self.state = 'lineTracing'
         return
@@ -1960,6 +2083,11 @@ class mainApplication:
         self.parent.bind('<MouseWheel>', lambda event, frame=frame: self.setMouseWheel(event, frame))
         self.parent.bind("<Button-4>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
         self.parent.bind("<Button-5>",   lambda event, frame=frame: self.setMouseWheel(event, frame))
+        return
+    
+    
+    def showShortcuts(self, *args, **kwargs):
+        helpWindow(350, 300)
         return
         
         
