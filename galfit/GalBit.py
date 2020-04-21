@@ -525,26 +525,59 @@ class graphFrame:
         self.canvas.pack(    fill='both', expand='yes')
         
         
-    def makeFrames(self, nb=0, titles=[], names=[]):
-        ''''Create the frames when uploading images'''
+    def addFrame(self, title, name):
+        '''Add a new single frame'''
         
-        self.nbFrames = nb
-        self.updateFramesPerLine(self.canvas.size)
+        # Create a new frame and add a singlePlotFrame instance within it
+        frame = tk.Frame(self.frame.obj, bd=self.bdSize, bg=self.bgColor)
+        self.frameList.append(frame)
+        self.plotList.append(singlePlotFrame(self.frameList[-1], self.root, title=title, name=name, figsize=self.originalFigSize, bgColor=self.bgColor))
         
-        if nb != len(titles):
-            raise Exception('Given number of frame titles does not match number of loaded frames.')
-            
-        if nb != len(names):
-            raise Exception('Given number of frame names does not match number of loaded frames.')
+        # Update number of frames and number of frames per line
+        self.nbFrames += 1
+        
+        return frame
+        
+        
+    def makeFrames(self, titles=[], names=[]):
+        ''''
+        Create the frames when uploading images.
+        
+        Optional parameters
+        -------------------
+            names : list of str
+                names of the frames
+            titles : list of str
+                titles for the frames
+        '''
+        
+        if len(names) != len(titles):
+            raise Exception('Not enough frame names or titles given.')
 
-        for i, title, name in zip(range(nb), titles, names):
-            self.frameList.append(tk.Frame(self.frame.obj, bd=self.bdSize, bg=self.bgColor))
-            self.plotList.append(singlePlotFrame(self.frameList[i], self.root, title=title, name=name, figsize=self.originalFigSize, bgColor=self.bgColor))
+        frames = []
+        for title, name in zip(titles, names):
+            frames.append(self.addFrame(title, name))
+        
+        return frames
+    
+    
+    def placeNewFrames(self, frames, fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N, sticky=tk.N+tk.E+tk.W+tk.S):
+        '''Place additional frames after already existing ones'''
+        
+        lenFrames   = len(self.frameList)
+        for pos, frame in enumerate(frames[::-1]):
+            colPos  = (lenFrames - pos - 1)%self.nbFramesLine
+            linePos = (lenFrames - pos - 1)//self.nbFramesLine
+            frame.grid(row=linePos, column=colPos, padx=padx, pady=pady, sticky=sticky)
+        
+        # Always update canvas scrollregions otherwise it does weird stuff
+        self.canvas.update_idletasks()
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
         return
     
     
-    def placeFrames(self, fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N, sticky=tk.N+tk.E+tk.W+tk.S):
-        '''Place the created frames into the main frame'''
+    def updateFrames(self, fill='x', expand=True, side=tk.LEFT, padx=5, pady=5, anchor=tk.N, sticky=tk.N+tk.E+tk.W+tk.S):
+        '''Update the position of the created frames into the main frame.'''
         
         # If the new number of frames per line is different from the old one we update it and (re)place the frames
         if self.newNbFramesLine != self.nbFramesLine:
@@ -562,7 +595,7 @@ class graphFrame:
            
     
     def updateFramesPerLine(self, winSize):
-        '''Update the number of allowed frames per each line'''
+        '''Update the number of allowed frames per each line.'''
         
         # Compute the new number of frames per line
         self.newNbFramesLine     = int(self.scaleFactor*winSize)
@@ -574,7 +607,7 @@ class graphFrame:
     
     
     def resetFrames(self):
-        '''Destroy plots and frames, and reset their corresponding lists'''
+        '''Destroy plots and frames, and reset their corresponding lists.'''
         
         self.nbFrames         = 0
         self.nbFramesLine     = 0
@@ -590,11 +623,11 @@ class graphFrame:
     
     
     def resizeFrame(self, event):
-        '''Resize the main frame when the canvas is resised'''
+        '''Resize the main frame when the canvas is resised.'''
         
         self.updateFramesPerLine(event.width)
         self.canvas.size = event.width
-        self.placeFrames()
+        self.updateFrames()
         self.canvas.itemconfig(self.frame.id, width=event.width)
         
         return
@@ -636,15 +669,14 @@ class topFrame(tk.Frame):
         
         self.load        = container()
         self.load.icon   = tk.BitmapImage(data=FOLDERICON['data'], maskdata=FOLDERICON['mask'], background='goldenrod')
-        self.load.button = tk.Button(self.buttonFrame, command=self.openFile, image=self.load.icon, 
-                                     bd=0, bg=self.bgColor, highlightbackground=self.bgColor,  relief=tk.FLAT, activebackground='black')
+        self.load.button = tk.Button(self.buttonFrame, command=self.openFile, image=self.load.icon, bd=0, 
+                                     bg=self.bgColor, highlightbackground=self.bgColor,  relief=tk.FLAT, activebackground='black')
         
         self.add         = container()
         self.add.icon    = tk.BitmapImage(data=FILEICON['data'], maskdata=FILEICON['mask'], background='mint cream')
-        self.add.button  = tk.Button(self.buttonFrame, image=self.add.icon, bd=0, 
+        self.add.button  = tk.Button(self.buttonFrame, command=self.addFile, image=self.add.icon, bd=0, 
                                      bg=self.bgColor, highlightbackground=self.bgColor, highlightthickness=0, relief=tk.FLAT)
-        self.add.button.bind('<Enter>', lambda event: self.add.icon.configure(foreground='royal blue'))
-        self.add.button.bind('<Leave>', lambda event: self.add.icon.configure(foreground='black'))
+        self.add.button.configure(state='disabled')
         
         self.dlt         = container()
         self.dlt.icon    = tk.BitmapImage(data=DELETEICON['data'], maskdata=DELETEICON['mask'], background='mint cream', foreground='black')
@@ -726,6 +758,7 @@ class topFrame(tk.Frame):
         self.zoom.list    = [2, 3, 4, 6, 8, 10, 20]
         self.zoom.zoom    = self.zoom.list[-2]
         self.zoom.title   = tk.StringVar(value='Zoom (x%i)' %self.zoom.zoom)
+        self.imLoaded     = False
         
         # Frame, figure, axis and canvas
         self.zoom.frame   = tk.Frame(self, bg=self.bgColor)
@@ -783,6 +816,42 @@ class topFrame(tk.Frame):
         # Change border color to black
         self.zoom.axFrame.config({'bg':'black'})
         
+    
+    def addFile(self, *args, **kwargs)    :
+        fnames = list(askopenfilenames(initialdir=self.initDir.get().rsplit('/', 1)[0], title='Add file(s)...', filetypes=(('Fits files', '.fits'), )))
+        
+        if self.fnames not in ['', []]:
+            
+            # Loop around names and check whether some are already loaded
+            for fname in fnames:
+                if fname in self.fnames:
+                    fnames.remove(fname)
+                else:
+                    self.fnames.append(fname)
+                        
+            # Set cursor to load shape
+            self.parent.setCursor('load')
+
+            # Adding new data into the data dict
+            newData       = {}
+            for name in fnames:
+                newData   = {**newData, **self.loadFitsFile(name)}
+            
+            # Generate frames and figures
+            self.genFigures(newData, mode='add')
+        
+            # Set flag to True if data was succesfully loaded
+            if not self.imLoaded:
+                self.imLoaded = True
+            
+            # Generate the window manager dialog
+            self.fWindow.window = fileWindow(self, self.parent, bgColor=self.bgColor, dataLoaded=self.data)
+            
+            # Set cursor to normal
+            self.parent.setCursor('normal')
+            
+        return
+        
         
     def changeZoom(self, step=1):
         '''
@@ -817,18 +886,21 @@ class topFrame(tk.Frame):
         return
 
 
-    def genFigures(self):
+    def genFigures(self, data, mode='load'):
         '''Generate figures which have been loaded'''
         
         # First we generate the frames
-        titles = [i.split('/')[-1] for i in self.data.keys()]
-        self.parent.bottomPane.makeFrames(nb=len(self.data), titles=titles, names=[i.rstrip('.fits') for i in titles])
+        titles = [i.split('/')[-1] for i in data.keys()]
+        frames = self.parent.bottomPane.makeFrames(titles=titles, names=[i.rstrip('.fits') for i in titles])
         
         # Second we place them in our widget
-        self.parent.bottomPane.placeFrames()
+        if   mode.lower() == 'load':
+            self.parent.bottomPane.updateFrames()
+        elif mode.lower() == 'add':
+            self.parent.bottomPane.placeNewFrames(frames)
             
         # Then we update each frame with the corresponding data
-        for name, galaxy in self.data.items():
+        for name, galaxy in data.items():
             self.parent.bottomPane.linkNameToPlot[name.split('/')[-1].rstrip('.fits')] = self.parent.bottomPane.plotList[galaxy['loc']]
             self.parent.bottomPane.plotList[galaxy['loc']].updateImage(galaxy['image'], maxi=galaxy['max'], mini=galaxy['min'], cmap=self.cmap.var.get())
         return
@@ -848,27 +920,31 @@ class topFrame(tk.Frame):
         return
     
     
-    def loadFitsFile(self, file, num):
+    def loadFitsFile(self, file):
         '''
         Loads a .fits file and data into self.data dict.
         
-        Mandatory inputs
-        ----------------
+        Mandatory parameters
+        --------------------
             file : str
                 file name to open
-            num : int
-                position number of the plot (counted from left to right, top to bottom)
+                
+        Return a dictionnary representation of the newly generated data.
         '''
         
         try:
-            hdul            = fits.open(file)
-            self.data[file] = {'loc':num, 'image':hdul[0].data, 'min':hdul[0].data.min(), 'max':hdul[0].data.max()}
+            # Add data into the data list if and only if it is not already within it
+            if file not in self.data:
+                hdul            = fits.open(file)
+                num             = len(self.data)
+                self.data[file] = {'loc':num, 'image':hdul[0].data, 'min':np.nanmin(hdul[0].data), 'max':np.nanmax(hdul[0].data)}
         except IOError:
             messagebox.showerror('Invalid input', 'The given file name %s is not a FITS file' %self.fname.get())
-        return
+            
+        return {file:self.data[file]}
     
-        
-    def openFile(self, *args):
+       
+    def openFile(self, *args, **kwargs):
         '''Open a file using self.fname.get() value.'''
         
         self.fnames = list(askopenfilenames(initialdir=self.initDir.get().rsplit('/', 1)[0], title='Select file(s)...', filetypes=(('Fits files', '.fits'), )))
@@ -878,34 +954,47 @@ class topFrame(tk.Frame):
             # Empty data dict first
             self.data = {}
                         
-            # Set cursor to busy (watch on linux, wait on macosx and windows)
-            try:
-                self.root.config(cursor='watch')
-            except:
-                self.root.config(cursor='wait')
-
-            for pos, name in enumerate(self.fnames):
-                # Load data
-                self.loadFitsFile(name, pos)
+            # Set cursor to load shape
+            self.parent.setCursor('load')
             
             # Reset frames before loading new figures
             self.parent.bottomPane.resetFrames()
+
+            for name in self.fnames:
+                self.loadFitsFile(name)
             
             # Generate frames and figures
-            self.genFigures()
+            self.genFigures(self.data)
         
             # Set flag to True if data was succesfully loaded
-            self.imLoaded = True
+            if not self.imLoaded:
+                self.imLoaded = True
+                
+            self.setAddButtonState(state='normal')
             
             # Generate the window manager dialog
             self.fWindow.window = fileWindow(self, self.parent, bgColor=self.bgColor, dataLoaded=self.data)
             
             # Set cursor to normal
-            self.root.config(cursor="")
+            self.parent.setCursor('normal')
             
         return
 
         
+    def setAddButtonState(self, state='normal'):
+        '''Set the add button state and all its bindings'''
+        
+        if state == 'normal':
+            self.add.button.configure(state='normal')
+            self.add.button.bind('<Enter>', lambda event: self.add.icon.configure(foreground='royal blue'))
+            self.add.button.bind('<Leave>', lambda event: self.add.icon.configure(foreground='black'))
+        else:
+            self.add.button.configure(state='disabled')
+            self.save.button.unbind('<Enter>')
+            self.save.button.unbind('<Leave')
+        return
+    
+    
     def updateCmap(self, event):
         '''Update the cmap of the already plotted images.'''
         
@@ -2116,8 +2205,27 @@ class mainApplication:
         return
     
     
+    def setCursor(self, cursor):
+        '''
+        Set cusor shape.
+        
+        Mandatory parameters
+        --------------------
+            cursor : 'load' or 'normal'
+                cursor type
+        '''
+        
+        if cursor == 'load':
+            try:
+                self.parent.config(cursor='watch')
+            except:
+                self.parent.config(cursor='wait')
+        elif cursor == 'normal':
+            self.parent.config(cursor='')
+        return
+    
+    
     def setMouseWheel(self, event, frame='right'):
-        print(event, frame)
         if frame == 'right':
             if self.rightPane.canvas.bbox('all')[3] > self.rightPane.winfo_height():
                 if event.num==5 or event.delta<0:
