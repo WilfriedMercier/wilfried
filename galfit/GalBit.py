@@ -378,12 +378,15 @@ class singlePlotFrame:
         if self.root.topPane.hover.var.get() != self.title:
             self.root.topPane.hover.var.set( 'Current image: %s' %self.title)
             
-        # Update x and y pos in top Frame
+        # Update x and y pos, and pixel value in top Frame
         if event.xdata is not None:
             self.root.topPane.hover.xvar.set('x: %.2f' %event.xdata)
             
         if event.ydata is not None:
             self.root.topPane.hover.yvar.set('y: %.2f' %event.ydata)
+        
+        if event.xdata is not None and event.ydata is not None:
+            self.root.topPane.hover.val.set('value: %.2f' %(self.data[int(event.ydata), int(event.xdata)]))
             
         # Draw PA line
         if self.paLine.drawing:
@@ -702,8 +705,20 @@ class topFrame(tk.Frame):
         self.cmap.var    = tk.StringVar(value='bwr')
         
         self.cmap.frame  = tk.Frame(self, bg=self.bgColor, highlightbackground=self.bgColor, highlightthickness=0, bd=0)
-        self.cmap.list   = ttk.Combobox(self.cmap.frame, textvariable=self.cmap.var, values=cmapNames, state='readonly')
+        
+        # Define a custom style for the combobox widget
+        self.cmap.style  = ttk.Style()
+        self.cmap.style.configure('topPane.TCombobox')
+        self.cmap.style.map('topPane.TCombobox', 
+                            fieldbackground=[('readonly', self.bgColor)], 
+                            background=[('disabled', 'ghost white'), ('active', 'dark slate gray'), ('readonly', 'slate gray')],
+                            arrowcolor=[('disabled', 'gainsboro'), ('readonly', 'white')],
+                            selectbackground=[('readonly', self.bgColor)],
+                            selectforeground=[('readonly', 'black')])
+        
+        self.cmap.list   = ttk.Combobox(self.cmap.frame, textvariable=self.cmap.var, values=cmapNames, state='readonly', style='topPane.TCombobox')
         self.cmap.list.bind("<<ComboboxSelected>>", self.updateCmap)
+        self.cmap.list.configure(state='disabled')
         self.cmap.label  = tk.Label(self.cmap.frame, text='Colormap', bg=self.bgColor)
         
         
@@ -713,10 +728,12 @@ class topFrame(tk.Frame):
         self.hover.var   = tk.StringVar(value='Current image:')
         self.hover.xvar  = tk.StringVar(value='x:')
         self.hover.yvar  = tk.StringVar(value='y:')
+        self.hover.val   = tk.StringVar(value='value:')
         
         self.hover.label = tk.Label(self.hover.frame, textvariable=self.hover.var,  bg=self.bgColor)
         self.hover.xpos  = tk.Label(self.hover.frame, textvariable=self.hover.xvar, bg=self.bgColor)
         self.hover.ypos  = tk.Label(self.hover.frame, textvariable=self.hover.yvar, bg=self.bgColor)
+        self.hover.value = tk.Label(self.hover.frame, textvariable=self.hover.val,  bg=self.bgColor)
         
         
         ######################################################
@@ -791,6 +808,7 @@ class topFrame(tk.Frame):
         self.hover.label.grid( row=0, column=0, sticky=tk.W+tk.N)
         self.hover.xpos.grid(  row=1, column=0, sticky=tk.W+tk.N)
         self.hover.ypos.grid(  row=2, column=0, sticky=tk.W+tk.N)
+        self.hover.value.grid( row=3, column=0, sticky=tk.W+tk.N)
         self.hover.frame.grid( row=1, column=0, padx=padx, sticky=tk.W+tk.N+tk.E, columnspan=7)
         
         self.invert.frame.grid(row=0, column=3, padx=2*padx, pady=pady, sticky=tk.N)
@@ -970,7 +988,9 @@ class topFrame(tk.Frame):
             if not self.imLoaded:
                 self.imLoaded = True
                 
+            # Set widgets state to normal
             self.setAddButtonState(state='normal')
+            self.cmap.list.configure(state='readonly')
             
             # Generate the window manager dialog
             self.fWindow.window = fileWindow(self, self.parent, bgColor=self.bgColor, dataLoaded=self.data)
@@ -1594,16 +1614,25 @@ class rightFrame(tk.LabelFrame):
         self.modelsFrames = []
         self.scrollFrac   = 0.0
          
+        # Set min and max width (max is updated the first time the hide button is hit)
+        self.widthMax     = None
+        self.widthMin     = 10
+        
         self.bgColor      = bgColor
-        self.bd           = 4
+        self.bd           = 3
         self.padx         = 5
         self.pady         = 5
         self.padyModels   = 10
         
-        super().__init__(self.root, text='Configuration pane', bg=self.parent.colors['topPane'], relief=tk.RIDGE, bd=self.bd)
+        super().__init__(self.root, text='Configuration pane', bg=self.parent.colors['topPane'], relief=tk.RIDGE, bd=self.bd, highlightthickness=2, highlightbackground=self.parent.colors['topPane'])
         
         # Container objects
         self.frame, self.addModel = container(), container()
+        
+        # Add a button to hide the frame
+        self.noImage      = tk.BitmapImage()
+        self.hideButton   = tk.Button(self, bg=self.bgColor, text='>', highlightbackground=self.bgColor, relief=tk.FLAT, 
+                                      width=1, image=self.noImage, bd=0, highlightthickness=0, activebackground='black', cursor='right_side', command=self.showHideFrame)
         
         # Define canvas within label frame to add a scrollbar
         self.canvas       = tk.Canvas(self, bd=0, bg=self.bgColor)
@@ -1627,27 +1656,11 @@ class rightFrame(tk.LabelFrame):
         self.canvas.bind('<Configure>', self.updateFrameSize) 
   
         # Draw widgets
+        self.hideButton.pack(fill='y', side='left')
         self.scrollbar.pack( fill='both', side='right')
         self.canvas.pack(    fill='both', expand='yes')
         #self.pack(fill='both', expand='yes', padx=self.padx, pady=self.pady)
        
-        
-    def updateFrameSize(self, event):
-        '''Update the frame size of every model frame'''
-        
-        # Update main window frame element first
-        self.canvas.itemconfig(self.frame.id, width = event.width) 
-        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
-        
-        self.width = event.width
-        
-        # Update each model frame
-        for mframe in self.modelsFrames:
-            mframe.updateDimension(newWidth=event.width-2*mframe.posx[0])
-            
-        
-        
-        self.canvas.update_idletasks()
         
     
     def addNewModel(self):
@@ -1665,6 +1678,35 @@ class rightFrame(tk.LabelFrame):
         
         # Always update canvas scrollregions otherwise it does weird stuff
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+        
+    
+    def updateFrameSize(self, event):
+        '''Update the frame size of every model frame'''
+        
+        # Update main window frame element first
+        self.canvas.itemconfig(self.frame.id, width = event.width) 
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+        
+        self.width = event.width
+        
+        # Update each model frame
+        for mframe in self.modelsFrames:
+            mframe.updateDimension(newWidth=event.width-2*mframe.posx[0])
+            
+        self.canvas.update_idletasks()
+        
+        
+    def showHideFrame(self):
+        if self.widthMax is None:
+            self.widthMax = self.winfo_width()
+            
+        if self.winfo_width() == self.widthMin:
+            self.configure(width=self.widthMax)
+        else:
+            print('coucou')
+        print(self.winfo_width())
+            
+        return
         
         
     def verticalOffset(self, nb=1, where='below', offset=0):
@@ -2094,13 +2136,13 @@ class mainApplication:
         self.parent.bind('<Control-Alt-h>', self.helpState)
         
         # Bind enter and leave frames to know where the cursor lies
-        self.rightPane.bind('<Enter>', lambda event, frame='right': self.onEnter(event=event, frame=frame))
-        self.rightPane.bind('<Leave>', lambda event, frame='right': self.unsetScrollable(event, frame))
+        self.rightPane.bind(        '<Enter>', lambda event, frame='right' : self.onEnter(event=event, frame=frame))
+        self.rightPane.bind(        '<Leave>', lambda event, frame='right' : self.unsetScrollable(event, frame))
         
         self.bottomFrame.frame.bind('<Enter>', lambda event, frame='bottom': self.onEnter(event=event, frame=frame))
         self.bottomFrame.frame.bind('<Leave>', lambda event, frame='bottom': self.unsetScrollable(event, frame))
         
-        self.topPane.bind('<Enter>', lambda event, frame='top': self.onEnter(event=event, frame=frame))
+        self.topPane.bind(          '<Enter>', lambda event, frame='top'   : self.onEnter(event=event, frame=frame))
         
         # Drawing frames
         self.topPane.grid(   row=0, sticky=tk.N+tk.S+tk.W+tk.E, columnspan=4)
