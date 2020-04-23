@@ -632,7 +632,6 @@ class graphFrame:
         self.canvas.size = event.width
         self.updateFrames()
         self.canvas.itemconfig(self.frame.id, width=event.width)
-        
         return
             
 
@@ -1376,6 +1375,88 @@ class fileWindow:
         
                 
                 
+class VerticalButton(tk.Canvas):
+    def __init__(self, root, parent, label, height=None, width=None, command=None, **kwargs):
+        
+        self.parent = parent
+        self.root   = root
+        
+        self.font    = font.nametofont("TkDefaultFont")
+        self.label   = label
+        
+        # Deal with width and height (a bit experimental)
+        if height is None:
+            self.height = self.font.measure(self.label) + 4
+        else:
+            self.height = height
+        if width is None:
+            self.width  = self.font.metrics()['linespace']
+        else:
+            self.width  = width
+            
+        #################################################################################
+        #             Temporary values for active background and foreground             #
+        #################################################################################
+        activebackground     = None
+        if 'activebackground' in kwargs:
+            activebackground = kwargs['activebackground']
+            kwargs.pop('activebackground')
+            
+        fill                 = 'black'
+        if 'fg' in kwargs:
+            fill             = kwargs['fg']
+            kwargs.pop('fg')
+            
+        activefill           = None
+        if 'activeforeground' in kwargs:
+            activefill = kwargs['activeforeground']
+            kwargs.pop('activeforeground')
+
+        # Generate the canvas
+        super().__init__(self.parent, height=self.height, width=self.width, cursor='right_side', **kwargs)
+        bg = self['bg']
+        
+        ###############################################################
+        #                  Defining active background                 #
+        ###############################################################
+        if activebackground is None:
+            activebackground = self.bg
+            
+        if activefill is None:
+            activefill       = fill
+            
+        # setup the callback command
+        if command is not None:
+            self.bind('<Button-1>', command)
+            
+        # Setup layout when there is focus
+        self.bind('<Enter>', lambda event: self._changeState(activebackground, activefill))
+        self.bind('<Leave>', lambda event: self._changeState(bg, fill))
+
+        self.text = self.create_text((self.width/2+4, self.height/2+7), text=self.label, font=self.font, angle="90")
+        
+    
+    def configure(self, *args, **kwargs):
+        super().configure(*args, **kwargs)
+        
+        if 'height' in kwargs:
+            height      = kwargs['height']
+            self.move(self.text, 0, (height-self.height)/2)
+            self.height = height
+        if 'width' in kwargs:
+            width       = kwargs['width']
+            self.move(self.text, (width-self.width)/2, 0)
+            self.width  = width
+        return
+    
+
+    def _changeState(self, bg, fg):
+        self.configure(bg=bg)
+        self.itemconfig(self.text, fill=fg)
+        return
+        
+
+
 class modelFrame:
     '''Frame-like object drawn in canvas which holds widgets relative to configuring models'''
     
@@ -1614,9 +1695,8 @@ class rightFrame(tk.LabelFrame):
         self.modelsFrames = []
         self.scrollFrac   = 0.0
          
-        # Set min and max width (max is updated the first time the hide button is hit)
-        self.widthMax     = None
-        self.widthMin     = 10
+        self.state        = 'show'
+        self.width        = 0
         
         self.bgColor      = bgColor
         self.bd           = 3
@@ -1624,18 +1704,17 @@ class rightFrame(tk.LabelFrame):
         self.pady         = 5
         self.padyModels   = 10
         
-        super().__init__(self.root, text='Configuration pane', bg=self.parent.colors['topPane'], relief=tk.RIDGE, bd=self.bd, highlightthickness=2, highlightbackground=self.parent.colors['topPane'])
+        super().__init__(self.root, labelanchor=tk.W, bg=self.bgColor, relief=tk.RIDGE, bd=self.bd, highlightthickness=2, highlightbackground=self.parent.colors['topPane'])
+        self.labelWidget  = VerticalButton(self.root, self, ' Configuration pane', 
+                                           bg=self.bgColor, highlightbackground=self.parent.colors['topPane'], highlightthickness=2, bd=self.bd, relief=tk.RIDGE,
+                                           activebackground='black', activeforeground='white', command=self.showHideFrame)
+        self.configure(labelwidget=self.labelWidget)
         
         # Container objects
         self.frame, self.addModel = container(), container()
         
-        # Add a button to hide the frame
-        self.noImage      = tk.BitmapImage()
-        self.hideButton   = tk.Button(self, bg=self.bgColor, text='>', highlightbackground=self.bgColor, relief=tk.FLAT, 
-                                      width=1, image=self.noImage, bd=0, highlightthickness=0, activebackground='black', cursor='right_side', command=self.showHideFrame)
-        
         # Define canvas within label frame to add a scrollbar
-        self.canvas       = tk.Canvas(self, bd=0, bg=self.bgColor)
+        self.canvas       = tk.Canvas(self, bd=0, bg='red', highlightthickness=0)
         self.scrollbar    = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview, width=5, bg='black')
         
         # Define a frame within the canvas to hold widgets
@@ -1653,13 +1732,11 @@ class rightFrame(tk.LabelFrame):
         self.canvas.configure(scrollregion=self.canvas.bbox('all'), yscrollcommand=self.scrollbar.set)
         
         # Bind resize event to updating the frame size
-        self.canvas.bind('<Configure>', self.updateFrameSize) 
+        self.canvas.bind('<Configure>', lambda event: self.updateFrameSize(event.width, event.height)) 
   
         # Draw widgets
-        self.hideButton.pack(fill='y', side='left')
         self.scrollbar.pack( fill='both', side='right')
         self.canvas.pack(    fill='both', expand='yes')
-        #self.pack(fill='both', expand='yes', padx=self.padx, pady=self.pady)
        
         
     
@@ -1680,31 +1757,37 @@ class rightFrame(tk.LabelFrame):
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
         
     
-    def updateFrameSize(self, event):
+    def updateFrameSize(self, width, height):
         '''Update the frame size of every model frame'''
         
         # Update main window frame element first
-        self.canvas.itemconfig(self.frame.id, width = event.width) 
+        self.canvas.itemconfig(self.frame.id, width = width) 
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
         
-        self.width = event.width
+        self.width  = width
+        self.height = height
+        
+        # Update label widget associated with the labelFrame
+        self.labelWidget.configure(height=height)
         
         # Update each model frame
         for mframe in self.modelsFrames:
-            mframe.updateDimension(newWidth=event.width-2*mframe.posx[0])
+            mframe.updateDimension(newWidth=width-2*mframe.posx[0])
             
         self.canvas.update_idletasks()
         
         
-    def showHideFrame(self):
-        if self.widthMax is None:
-            self.widthMax = self.winfo_width()
-            
-        if self.winfo_width() == self.widthMin:
-            self.configure(width=self.widthMax)
+    def showHideFrame(self, *args, **kwargs):
+        if self.state == 'hide':
+            self.canvas.pack(side='left', expand='yes')
+            self.updateFrameSize(self.width, self.height)
+            print(self.width, self.height)
+            self.state = 'show'
+            self.labelWidget.configure(cursor='right_side')
         else:
-            print('coucou')
-        print(self.winfo_width())
+            self.canvas.pack_forget()
+            self.state = 'hide'
+            self.labelWidget.configure(cursor='left_side')
             
         return
         
@@ -2154,7 +2237,7 @@ class mainApplication:
         # Setting grid geometry for main frames
         tk.Grid.rowconfigure(   self.parent, 0, weight=0, minsize=130)
         tk.Grid.rowconfigure(   self.parent, 1, weight=1)
-        tk.Grid.columnconfigure(self.parent, 2, weight=0, minsize=100)
+        tk.Grid.columnconfigure(self.parent, 2, weight=0)
         tk.Grid.columnconfigure(self.parent, 1, weight=1)
         
 
