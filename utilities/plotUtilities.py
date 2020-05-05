@@ -1170,11 +1170,14 @@ def asManyPlots2(numPlot, datax, datay,
         Return given data if type is correct or a list of a given length with data value inside if not.
         """
         
-        if data is not typeToCheck:
-            try:
-                data = list(data)
-            except TypeError:
+        if not isinstance(data, typeToCheck):
+            if isinstance(data, str):
                 data = [data]*length
+            else:
+                try:
+                    data = list(data)
+                except TypeError:
+                    data = [data]*length
         return data
             
     def completeList(data, length, default):
@@ -1353,6 +1356,7 @@ def asManyPlots2(numPlot, datax, datay,
         data.transparency  = checkTypeAndChangeValueToList(data.transparency, list, data.nplots)
         data.marker.type   = checkTypeAndChangeValueToList(data.marker.type, list, data.nplots)
         data.marker.unfill = checkTypeAndChangeValueToList(data.marker.unfill, list, data.nplots)
+        data.line.style    = checkTypeAndChangeValueToList(data.line.style, list, data.nplots)
         
         # If the user provides an incomplete list, we complete it
         completeList(data.transparency, data.nplots, 1)
@@ -1370,6 +1374,12 @@ def asManyPlots2(numPlot, datax, datay,
             
         if data.line.style is None:
             data.line.style       = []
+            
+        # If data.color is not provided, we set plot colors to 'black' and scatter plots points to the same value
+        if data.color is None:
+            data.color = ['black']*data.nplots
+        else:
+            setDefault(data.color, default='black')
         
         # Complete the size list with either 0 of the default value is the list is not complete
         lms = len(data.marker.size)  
@@ -1408,19 +1418,14 @@ def asManyPlots2(numPlot, datax, datay,
                 else:
                     data.line.style[pos] = str(data.line.style[pos])
             
-        # If data.color is not provided, we set plot colors to 'black' and scatter plots points to the same value
-        if data.color is None:
-            data.color = ['black']*data.nplots
-        else:
-            setDefault(data.color, default='black')
-            
         # Set marker edge colors to face corlor (with 'face') if data points are supposed to be unfilled only for scatter plots
         for pos, nfllMrkr, typ in zip(range(data.nplots), data.marker.unfill, data.type):
-            if nfllMrkr and typ == 'scatter':
+            if typ == 'scatter' and (nfllMrkr or data.marker.edgeColor[pos] is None):
                 data.marker.edgeColor[pos] = 'face'
 
+    
 
-    ########################################data.marker.edgeColor
+    ########################################
     #            Axes properties           #
     ########################################
     
@@ -1634,7 +1639,6 @@ def asManyPlots2(numPlot, datax, datay,
         #######################################################
         
         if typ == 'plot':
-            print('coucou', clr,mrkrSz, lnwdth, nfll, mrkrDgClr)
             listPlots.append( plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=trnsprnc,
                                        linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=mrkrDgClr,
                                        markersize=mrkrSz, linewidth=lnwdth)
@@ -1691,7 +1695,6 @@ def asManyPlots2(numPlot, datax, datay,
     #######################################
     
     if not legend.hide:
-        print("haha")
         
         # Define a markerfirst argument to position the markers in the legend accordingly
         if legend.marker.position == 'right':
