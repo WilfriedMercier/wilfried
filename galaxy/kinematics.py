@@ -14,6 +14,8 @@ import astropy.io.ascii  as asci
 import astropy.io.fits   as fits
 import astropy.constants as ct
 
+from   .MUSE             import compute_fwhm
+
 ####################################################################################################################
 #                                                Analysis part                                                     #
 ####################################################################################################################
@@ -85,11 +87,21 @@ def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='
     
     #Checking path exists
     if not(os.path.isdir(path)):
-        raise OSError('clean_galaxy: path % s does not exist' % (str(path)))
+        print('clean_galaxy: path % s does not exist' % (str(path)))
+        answer      = input('Should we skip this galaxy ? [Y or N] ')
+        if answer.lower() in ['y', 'yes']:
+            return
+        else:
+            raise OSError()
  
     #Checking output path exists
     if not(os.path.isdir(outputpath)):
-        raise OSError('clean_galaxy: path % s does not exist' % (str(outputpath)))
+        print('clean_galaxy: path % s does not exist' % (str(outputpath)))
+        answer      = input('Should we skip this galaxy ? [Y or N] ')
+        if answer.lower() in ['y', 'yes']:
+            return
+        else:
+            raise OSError()
     
     # Dispersion threshold
     smin            = lsfw * fraction
@@ -125,7 +137,12 @@ def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='
             im0     = hdul0[0].data
         print('clean_galaxy: using % s' % (str(fim0[0])))
     except:
-        raise IOError('clean_galaxy: % s not found' % (str(path + name + option + '_disp_*[pn].fits')))
+        print('clean_galaxy: % s not found' % (str(path + name + option + '_disp_*[pn].fits')))
+        answer      = input('Should we skip this galaxy ? [Y or N] ')
+        if answer.lower() in ['y', 'yes']:
+            return
+        else:
+            raise IOError()
         
     # Try to open the map used for the mask (first extension for each map in fim1 list)
     im1             = []
@@ -133,20 +150,27 @@ def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='
         try:
             with fits.open(fi1[0]) as hdul1:
                 im1.append(hdul1[0].data)
-            print('clean_galaxy: using % s' % (str(fim1[0])))
+            print('clean_galaxy: using % s' % (str(fi1[0])))
         except:
-            raise IOError('clean_galaxy: % s not found' % (str(path + name + option + '_' + name_mask + '_*[pn].fits')))
+            print('clean_galaxy: % s not found' % (str(path + name + option + '_' + name_mask + '_*[pn].fits')))
+            answer  = input('Should we skip this galaxy ? [Y or N] ')
+            if answer.lower() in ['y', 'yes']:
+                return
+            else:
+                raise IOError()
     
     ##################################################################
     #                         Creating masks                         #
     ##################################################################
     
     # Dispersion mask: True where im0>=smin
+    print('clean_galaxy: making dispersion mask')
     mask0     = create_mask(im0, thrl=smin)
     
     # Provided masks: True where thrl<=im1<=thru
     mask1     = mask0.copy() * False + True
-    for im, tl, tu in zip(im1, thrl, thru):
+    for im, tl, tu, name_mask in zip(im1, thrl, thru, data_mask):
+        print('clean_galaxy: making an additional mask (%s)' %name_mask)
         mask1 = np.logical_and(mask1, create_mask(im, thrl=tl, thru=tu))
     
     # Keep positions where the values are out of bounds
@@ -174,7 +198,7 @@ def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='
     #             Updating all the maps             #
     #################################################
     
-    for fim, tl, tu in zip(files, thrl, thru):
+    for fim in files:
         
         # We skip files which are already cleaned (either manually or automatically). This assumes that cleaned files have a 'clean' keyword in their name
         if 'clean' in fim:
@@ -189,10 +213,12 @@ def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='
 
         # Setting up the threshold value that will appear in the output file name
         thr              = 0
-        if tl is not None:
-            thr          = tl
-        if tu is not None:
-            thr          = tu
+        notNonethrl      = list(filter(lambda x:x is not None, thrl))
+        notNonethru      = list(filter(lambda x:x is not None, thru))
+        if  len(notNonethrl) != 0 :
+            thr          = min(notNonethrl) 
+        if len(notNonethru) != 0:
+            thr          = max(notNonethru)
 
         # Directly modify the file data by applying the master mask (velocity dispersion + any other mask used such as snr)
         if clean is None:
@@ -203,12 +229,12 @@ def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='
             fimcl        = fim.split('.fits')[0].split('/')[-1] + '_mclean%3.1f.fits' %thr
             
         hdul.writeto(outputpath + fimcl, overwrite=True)
-        print.info('output written in %s' %(outputpath+fimcl))
+        print('output written in %s' %(outputpath+fimcl))
     
     return
 
 
-def clean_setofgalaxies(path, filename='gals.config', logFile='folderList.list', fraction=1., data_mask='snr', thrl=None, thru=None, option='_ssmooth', line='_OII3729', clean=None):
+def clean_setofgalaxies(path, filename='galsList.input', logFile='folderList.list', fraction=1., data_mask='snr', thrl=None, thru=None, option='_ssmooth', line='_OII3729', clean=None):
     '''
     Clean maps created by camel for a list of galaxies.
     
@@ -231,9 +257,9 @@ def clean_setofgalaxies(path, filename='gals.config', logFile='folderList.list',
         filename: str
             name of the input file containing two columns: the list of galaxies and the associated spectral resolution in km/s (sigma)
         path: str
-            path where the input data are stored
+            path where the input file is stored
         logFile: str
-            name of of the file containing the list of the output folders names
+            name of of the file containing the list of the output folder names
             
     Optional parameters
     -------------------
@@ -250,18 +276,39 @@ def clean_setofgalaxies(path, filename='gals.config', logFile='folderList.list',
         option: str
             option from camel to find the files to clean (e.g. '_ssmooth'). Default is '_ssmooth'.
         line: str
-            line used (suffixe, e.g. '_Ha'). Default is '_o2'.
+            line used (suffixe, e.g. '_Ha'). Default is '_OII3729'.
     '''
     
+    # If the user provides o2 as line we change it to the correct value
+    if line == 'o2':
+        line = '_OII3729'
+    
     cat                     = asci.read(filename)
+    
+    # Generating a new name if the given file name already exsits
+    if os.path.isfile(logFile):
+        splt                = logFile.rsplit('.', 1)
+        
+        if len(splt) == 1:
+            end = ''
+        else:
+            end = '.' + splt[1]
+        
+        try:
+            num             = int(splt[0][-1])
+            splt[0]         = splt[0][:-1]
+        except ValueError:
+            num             = 1
+        logFile             = splt[0] + str(num) + end
+        
     with open(logFile, "w") as f:
         for l in cat:
             # Get name without the extension at the end and path
             name            = l[0].split('/')[-1].split('.config')[0]
-            path            = l[0].split(name + '.config')[0]
+            galPath         = l[0].split(name + '.config')[0]
             
-            clean_galaxy(path, path, name, l[1], fraction, data_mask=data_mask, thru=thru, thrl=thrl, line=l, option=option, clean=clean)
-            f.write(path.rpartition('/')[0:-2] + "\n")
+            clean_galaxy(galPath, galPath, name, l[1], fraction, data_mask=data_mask, thru=thru, thrl=thrl, line=l, option=option, clean=clean)
+            f.write(galPath.rpartition('/')[0] + "\n")
     return
 
 
@@ -293,7 +340,7 @@ def compute_velres(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
     '''
     
     lbda   = lbda0 * (1 + z)
-    fwhm   = a2 * lbda ** 2 + a1 * lbda + a0
+    fwhm   = compute_fwhm(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983)
     velsig = fwhm / (lbda * 2 * np.sqrt(2 * np.log(2))) * ct.c.value * 1e-3
     return lbda, fwhm, velsig
 
@@ -373,7 +420,3 @@ def create_mask(image, thrl=None, thru=None):
     print('create_mask: upper threshold % s' % (str(thru)) )
     
     return ((image <= thru) & (image >= thrl))
-
-
-
-
