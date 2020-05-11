@@ -202,7 +202,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         with open(log, 'w') as f:
             f.write(text)
         
-        print('Galaxy %s done (~ %.2f%% yet to do)' %(name.strip('.feedme'), (1-len(all_procs)/total_num)*100))
+        print('Object %s done (~ %.2f%% yet to do)' %(name.strip('.feedme'), (1-len(all_procs)/total_num)*100))
         semaphore.release()
         return 
     
@@ -471,7 +471,7 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathOut)
     if not isdir(pathFeedme):
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathFeedme)
-    if not isdir(pathConstraints):
+    if constraints is not None and not isdir(pathConstraints):
         raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathConstraints)
 
     #################################################################
