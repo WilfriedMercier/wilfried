@@ -15,7 +15,7 @@ import numpy as np
 
 #matplotlib imports
 #import matplotlib.colors
-from matplotlib.colors import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm
+from matplotlib.colors import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 from matplotlib.markers import MarkerStyle
@@ -123,6 +123,23 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
             value at which the diverging norm will split in two
     """
     
+    def noModelAvailable():
+        '''Generate default values when no model is available for the plot'''
+        
+        sz        = 60
+        data      = np.array([[0]*sz]*sz)
+        model     = data
+        res       = data
+        maxi      = 1
+        mini      = 0
+        log       = False
+        diverging = False
+        cmap      = 'Greys_r'
+        norm      = BoundaryNorm([0, 0.5, 1], 2)
+        noFile    = True
+        
+        return sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile
+    
     #get file names from a file if necessary
     if readFromFile:
         fnamesList, groupNumbers = np.genfromtxt(fnamesList, dtype=str, unpack=True)
@@ -135,64 +152,97 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
     for num, name in enumerate(fnamesList):
         names[num] = name.split('/')[-1]
     
-    #creating default values if group numbers are not given
+    # Creating default values if group numbers are not given
     if (groupNumbers is None) or (len(groupNumbers) != len(fnamesList)):
         groupNumbers = [None]*(nbfig)
     
-    #going through the opening and plotting phases
-    #first deifning the grid
     fig = plt.figure(figsize=(17, 6*nbfig))
     gs  = gridspec.GridSpec(nbfig, 3, figure=fig)
     
+    cmapSave       = cmap
     previousNumber = None
     for num, file, name, gr in zip(range(0, 3*nbfig, 3), fnamesList, names, groupNumbers):
-        #fetching fits file extensions with data, model and residual maps
-        hdul       = fits.open(file)
-        data       = hdul[1].data
-        sz         = int(hdul[1].header['NAXIS2'])
-        model      = hdul[2].data
-        res        = hdul[3].data
         
-        #defining a maximum and minimum which are symetrical
-        maxi       = np.max([np.max([data, model]), np.abs(np.min([data, model]))])
-        mini       = -maxi
+        # Re-initialise the color map if it was changed
+        cmap           = cmapSave
         
-        #defining norm based on input parameter value
-        norm       = None
+        # Fetching fits file extensions with data, model and residual maps
+        try:
+            hdul       = fits.open(file)
+            data       = hdul[1].data
+            sz         = int(hdul[1].header['NAXIS2'])
+            model      = hdul[2].data
+            res        = hdul[3].data
+            
+            # Defining a maximum and minimum which are symetrical
+            maxi       = np.nanmax([np.nanmax([data, model]), np.abs(np.nanmin([data, model]))])
+            mini       = -maxi
+            norm       = None
+            noFile     = False
+            
+        except FileNotFoundError:
+            # If no file can be found (Galfit failed to model), we generate a default image to place on the plots
+            sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile = noModelAvailable()
+        
+        # Defining norm based on input parameter value
         if log:
             norm   = SymLogNorm(linthresh=maxi/1e3, vmin=mini, vmax=maxi)
         if diverging:
-            mini   = np.min([data, model])
-            maxi   = np.max([data, model])
-            norm   = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+            mini   = np.nanmin([data, model])
+            maxi   = np.nanmax([data, model])
+            
+            if mini == maxi:
+                sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile = noModelAvailable() 
+            elif mini == zeroPoint:
+                mini = - maxi
+                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+            elif maxi == zeroPoint:
+                maxi = -mini
+                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
         
-        #Plotting the three plots side by side
+        # Plotting the three plots side by side
         ax1        = plt.subplot(gs[num])
-        plt.grid()
         ax1.title.set_text(name)
         plt.imshow(data, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
-        plt.colorbar(fraction=0.05, shrink=1.)
         
-        #adding group info on the plots if a new group is encountered
+        if not noFile:
+            plt.grid()
+            plt.colorbar(fraction=0.05, shrink=1.)
+        
+        # Adding group info on the plots if a new group is encountered
         if previousNumber != gr:
             print("group", gr)
             previousNumber = gr
             plt.text(0, sz+30, "Group: %s" %(str(gr)), fontsize=20, fontweight='bold')
         
         ax2 = plt.subplot(gs[num+1])
-        plt.grid()
         ax2.title.set_text('model')
         plt.imshow(model, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
-        plt.colorbar(fraction=0.05, shrink=1.)
+        
+        if not noFile:
+            plt.grid()
+            plt.colorbar(fraction=0.05, shrink=1.)
         
         ax3 = plt.subplot(gs[num+2])
         ax3.title.set_text('residual')
         
-        maxi = np.max(res)
-        mini = np.min(res)
-        norm = DivergingNorm(vmin=mini, vmax=maxi, vcenter=zeroPoint)
+        if not noFile:
+            maxi = np.nanmax(res)
+            mini = np.nanmin(res)
+            
+            if mini == maxi:
+                sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile = noModelAvailable() 
+            elif mini == zeroPoint:
+                mini = - maxi
+                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+            elif maxi == zeroPoint:
+                maxi = -mini
+                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+            
         plt.imshow(res, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
-        plt.colorbar(fraction=0.05, shrink=1.)
+        
+        if not noFile:
+            plt.colorbar(fraction=0.05, shrink=1.)
     
     plt.savefig(pdfOut, bbox_inches='tight')
     plt.close()
