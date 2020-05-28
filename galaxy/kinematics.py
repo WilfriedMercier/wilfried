@@ -9,12 +9,11 @@ Fonctions related to kinematical modelling of galaxies.
 """
 
 import os, glob
-import numpy             as np
-import astropy.io.ascii  as asci
-import astropy.io.fits   as fits
-import astropy.constants as ct
-
-from   .MUSE             import compute_fwhm
+import numpy             as     np
+import astropy.io.ascii  as     asci
+import astropy.io.fits   as     fits
+import astropy.constants as     ct
+from   .MUSE             import compute_lsfw
 
 ####################################################################################################################
 #                                                Analysis part                                                     #
@@ -340,7 +339,7 @@ def compute_velres(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
     '''
     
     lbda   = lbda0 * (1 + z)
-    fwhm   = compute_fwhm(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983)
+    fwhm   = compute_lsfw(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983)
     velsig = fwhm / (lbda * 2 * np.sqrt(2 * np.log(2))) * ct.c.value * 1e-3
     return lbda, fwhm, velsig
 
