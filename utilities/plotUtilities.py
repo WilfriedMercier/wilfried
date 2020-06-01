@@ -1173,6 +1173,8 @@ def asManyPlots2(numPlot, datax, datay,
     
             Style related keys
             ------------------
+                'alpha' : float
+                    transparency of the legend background. 1 is plain, 0 is fully transparent. Default is 1.
                 'background' : str
                     color of the legend background. Default is None so that the default value in your rcParams file will be used (usually white).
                 'fancy' : bool
@@ -1591,13 +1593,13 @@ def asManyPlots2(numPlot, datax, datay,
         else:
             legend.hide = False
      
-        legend.style.shadow, legend.style.fancy, legend.style.bg = setListFromDict(legendProperties, keys=['shadow', 'fancy', 'background'], default=[True, True, None])
+        legend.style.shadow, legend.style.fancy, legend.style.bg, legend.style.alpha = setListFromDict(legendProperties, keys=['shadow', 'fancy', 'background', 'transparency'], default=[True, True, None, 1])
         legend.loc, legend.ncols, legend.labels.size, legend.labels.text = setListFromDict(legendProperties, keys=['loc', 'ncols', 'labelSize', 'labels'], default=['best', 1, layout.textsize, ['']*data.nplots]) 
         legend.line.color, legend.marker.edgecolor, legend.marker.facecolor, legend.marker.position , legend.marker.scale = setListFromDict(legendProperties, keys=['lineColor', 'markerEdgeColor', 'markerFaceColor', 'markerPosition', 'markerScale'], default=[None, None, None, 'left', 1.0])
      
         # Checking that given parameters have the correct type
-        legend.labels.text               = checkTypeAndChangeValueToList(legend.labels.text, list, data.nplots)
-        legend.line.color                = checkTypeAndChangeValueToList(legend.line.color, list, data.nplots)
+        legend.labels.text               = checkTypeAndChangeValueToList(legend.labels.text,      list, data.nplots)
+        legend.line.color                = checkTypeAndChangeValueToList(legend.line.color,       list, data.nplots)
         legend.marker.edgecolor          = checkTypeAndChangeValueToList(legend.marker.edgecolor, list, data.nplots)
         legend.marker.facecolor          = checkTypeAndChangeValueToList(legend.marker.facecolor, list, data.nplots)
         
@@ -1755,7 +1757,8 @@ def asManyPlots2(numPlot, datax, datay,
             markerfirst = True
         
         # Plot legend before making changes and get legend handles
-        leg = plt.legend(loc=legend.loc, prop={'size': legend.labels.size}, shadow=True, fancybox=True, ncol=legend.ncols, markerfirst=markerfirst, markerscale=legend.marker.scale)
+        leg = plt.legend(loc=legend.loc, prop={'size': legend.labels.size}, shadow=legend.style.shadow, fancybox=legend.style.fancy, ncol=legend.ncols, markerfirst=markerfirst, 
+                                               markerscale=legend.marker.scale, framealpha=legend.style.alpha)
         
         for h, mkfclr, mkeclr, lc, typ in zip(leg.legendHandles, legend.marker.facecolor, legend.marker.edgecolor, legend.line.color, data.type):
             if typ in ['plot', 'mix']:
