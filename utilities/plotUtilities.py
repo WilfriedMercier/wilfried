@@ -1191,6 +1191,8 @@ def asManyPlots2(numPlot, datax, datay,
                     whether to overwrite the ouput file or not. Default is False.
                 'tightLayout' : bool
                     whether to set a tight_layout in the ouput image (no blank space on the sides) or not. Default is True.
+                'transparent' : bool
+                    whether to have a transparent background or not. Default is False.
         
     Ouputs
     ------
@@ -1399,14 +1401,14 @@ def asManyPlots2(numPlot, datax, datay,
         data.marker.type, data.marker.size, data.marker.fillstyle, data.marker.unfill, data.marker.edgeColor = setListFromDict(dataProperties, keys=['marker', 'markerSize', 'markerFillstyle', 'unfillMarker', 'markerEdgeColor'], default=[['o']*data.nplots, None, None, [False]*data.nplots, [None]*data.nplots])
         
         # Set properties of the lines on the plots
-        data.line.width, data.line.style = setListFromDict(dataProperties, keys=['linewdith', 'linestyle'], default=[None, None])
+        data.line.width, data.line.style = setListFromDict(dataProperties, keys=['linewidth', 'linestyle'], default=[None, None])
         
         # If the user provides a single value, we change it to a list
-        data.type          = checkTypeAndChangeValueToList(data.type, list, data.nplots)
-        data.transparency  = checkTypeAndChangeValueToList(data.transparency, list, data.nplots)
-        data.marker.type   = checkTypeAndChangeValueToList(data.marker.type, list, data.nplots)
+        data.type          = checkTypeAndChangeValueToList(data.type,          list, data.nplots)
+        data.transparency  = checkTypeAndChangeValueToList(data.transparency,  list, data.nplots)
+        data.marker.type   = checkTypeAndChangeValueToList(data.marker.type,   list, data.nplots)
         data.marker.unfill = checkTypeAndChangeValueToList(data.marker.unfill, list, data.nplots)
-        data.line.style    = checkTypeAndChangeValueToList(data.line.style, list, data.nplots)
+        data.line.style    = checkTypeAndChangeValueToList(data.line.style,    list, data.nplots)
         
         # If the user provides an incomplete list, we complete it
         completeList(data.transparency, data.nplots, 1)
@@ -1619,7 +1621,7 @@ def asManyPlots2(numPlot, datax, datay,
     ########################################
     output = gatherThingsUp()
     if isType(outputProperties, dict, 'outputProperties'):
-        output.name, output.overwrite, output.tight = setListFromDict(outputProperties, keys=['outputName', 'overwrite', 'tightLayout'], default=[None, False, True])
+        output.name, output.overwrite, output.tight, output.transparent = setListFromDict(outputProperties, keys=['outputName', 'overwrite', 'tightLayout', 'transparent'], default=[None, False, True, False])
     
     ############################################################################################
     #                         Set subplot and its overall properties                           #
@@ -1792,7 +1794,7 @@ def asManyPlots2(numPlot, datax, datay,
             else:
                 bbox_inches = None
             
-            plt.savefig(output.name, bbox_inches=bbox_inches)
+            plt.savefig(output.name, bbox_inches=bbox_inches, transparent=output.transparent)
     
     #plt.show()
     return ax1, listPlots
