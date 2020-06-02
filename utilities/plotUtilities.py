@@ -852,8 +852,7 @@ def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideY
 
 def asManyPlots2(numPlot, datax, datay, 
                  dataProperties={}, generalProperties={}, axesProperties={}, titleProperties={}, 
-                 colorbarProperties={}, legendProperties={}, outputProperties={},
-                 outputName=None, overwrite=False, tightLayout=True):
+                 colorbarProperties={}, legendProperties={}, outputProperties={}):
     
     """
     Function which plots on a highly configurable subplot grid either with pyplot.plot or pyplot.scatter. A list of X and Y arrays can be given to have multiple plots on the same subplot.
