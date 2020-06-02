@@ -11,6 +11,7 @@ Functions directly related to MUSE instrument and its observations.
 import numpy         as np
 import astropy.units as u
 import astropy.wcs   as wcs
+import os.path       as opath
 
 
 def centreFromHSTtoMUSE(X, Y, imHST, imMUSE):
@@ -30,6 +31,13 @@ def centreFromHSTtoMUSE(X, Y, imHST, imMUSE):
 
     Return the new (MUSE) pixel coordinates.
     '''
+    
+    # Check files exist first
+    if not opath.isfile(imHST):
+        raise IOError('HST image %s does not exist.' %imHST)
+    
+    if not opath.isfile(imMUSE):
+        raise IOError('MUSE image/cube %s does not exist.' %imMUSE)
     
     # HST wcs object
     wh      = wcs.WCS(imHST)
