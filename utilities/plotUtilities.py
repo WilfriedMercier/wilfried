@@ -343,7 +343,7 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
 
 def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYlabel=False, hideYticks=False, hideXticks=False,
                 placeYaxisOnRight=False, xlabel="", ylabel='', color='black',
-                label='', zorder=0, textsize=24, showLegend=False, legendTextSize=24,
+                label='', zorder=0, textsize=24, showLegend=False, legendTextSize=24, shadow=True, fancybox=True, framealpha=1,
                 xlim=[None, None], locLegend='best', tickSize=24, title='', titlesize=24,
                 outputName=None, overwrite=False, tightLayout=True, integralIsOne=None,
                 align='mid', histtype='stepfilled', alpha=1.0, cumulative=False, legendNcols=1, hatch=None, orientation='vertical', log=False, stacked=False, grid=True):
@@ -365,6 +365,10 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
         whether to plot the cumulative distribution (where each bin equals the sum of the values in the previous bins up to this one) or the histogram
     data: numpy array, list of numpy arrays
         the data
+    fancybox : bool
+        whether to draw a fancy legend or not
+    framealpha : float
+        alpha value of the legend background
     grid : bool
         whether to show the grid or not
     hatch : char
@@ -401,6 +405,8 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
         whether to place the y axis of the plot on the right or not
     textsize : int
         size for the labels
+    shadow : bool
+        whether to draw a shadow around the legend or not
     showLegend : boolean
         whether to show the legend or not
     tickSize : int
@@ -462,10 +468,11 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
                              align=align, histtype=histtype, label=label, zorder=zorder, alpha=alpha,
                              cumulative=cumulative, hatch=hatch, orientation=orientation, log=log, stacked=stacked)
     
+    ax1.set_xlim(xlim)
     #set hatching pattern if there is one
     
     if showLegend:
-        plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, ncol=legendNcols)
+        plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=shadow, fancybox=fancybox, framealpha=framealpha, ncol=legendNcols)
         
     if outputName is not None:
         #If we do not want to overwrite the file
