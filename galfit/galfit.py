@@ -94,7 +94,7 @@ myPDFViewer = 'okular'
 
 
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
-               pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/",
+               pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/", pathLog="./log/",
                constraints=None, forceConfig=False, noGalfit=False, noPDF=False, showRecapFiles=True, showLog=False):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
@@ -174,6 +174,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             location of the feedme file names relative to the current folder or in absolute
         pathIn : str
             location of the input file names relative to the current folder or in absolute
+        pathLog : str
+            location of the log file names relative to the current folder or in absolute
         pathOut : str
             location of the output file names relative to the current folder or in absolute
         showLog : bool
@@ -286,7 +288,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             p.join()
     
         # Move the galfit files to log directory as well
-        run(['mv galfit.[0-9]* log'], shell=True)
+        run(['mv galfit.[0-9]* %s' %pathLog], shell=True)
     
     #############################################################
     #                 Generate pdf recap files                  #
@@ -319,7 +321,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     if showLog:
         print("Showing log files")
         
-        logFiles = ['log/%s' %name.replace('.feedme', '.log') for name in feedmeFiles]
+        logFiles = ['%s%s' %(pathLog, name.replace('.feedme', '.log')) for name in feedmeFiles]
         for log in logFiles:
             print(log)
             with open(log, 'r') as f:
@@ -514,7 +516,7 @@ def genConstraint(dicts):
     
     Mandatory inputs
     -----------------
-        dicts : list of dictionaries
+        dicts : list of dictionariesbesoin d'
             list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
             
             Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
