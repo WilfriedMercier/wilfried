@@ -1416,7 +1416,7 @@ def asManyPlots2(numPlot, datax, datay,
         data.transparency  = checkTypeAndChangeValueToList(data.transparency,  list, data.nplots)
         data.marker.type   = checkTypeAndChangeValueToList(data.marker.type,   list, data.nplots)
         data.marker.unfill = checkTypeAndChangeValueToList(data.marker.unfill, list, data.nplots)
-        data.line.style    = checkTypeAndChangeValueToList(data.line.style,    list, data.nplots)
+        data.line.style    = [str(i) for i in checkTypeAndChangeValueToList(data.line.style,    list, data.nplots)]
         
         # If the user provides an incomplete list, we complete it
         completeList(data.transparency, data.nplots, 1)
@@ -1431,9 +1431,6 @@ def asManyPlots2(numPlot, datax, datay,
             
         if data.line.width is None:
             data.line.width       = []
-            
-        if data.line.style is None:
-            data.line.style       = []
             
         # If data.color is not provided, we set plot colors to 'black' and scatter plots points to the same value
         if data.color is None:
@@ -1475,15 +1472,11 @@ def asManyPlots2(numPlot, datax, datay,
                     data.line.width.append(layout.line.width)
                 if pos >= lls:
                     data.line.style.append(layout.line.style)
-                else:
-                    data.line.style[pos] = str(data.line.style[pos])
             
         # Set marker edge colors to face corlor (with 'face') if data points are supposed to be unfilled only for scatter plots
         for pos, nfllMrkr, typ in zip(range(data.nplots), data.marker.unfill, data.type):
             if typ == 'scatter' and (nfllMrkr or data.marker.edgeColor[pos] is None):
                 data.marker.edgeColor[pos] = 'face'
-
-    
 
     ########################################
     #            Axes properties           #
@@ -1699,6 +1692,10 @@ def asManyPlots2(numPlot, datax, datay,
         #######################################################
         
         if typ == 'plot':
+            
+            if mrkrSz==0 and lnstl=='None':
+                lnstl = '-'
+            
             listPlots.append( plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=trnsprnc,
                                        linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=mrkrDgClr,
                                        markersize=mrkrSz, linewidth=lnwdth)
