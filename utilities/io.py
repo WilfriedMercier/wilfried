@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+TEST
 Created on Mon Jan  6 10:34:54 2020
 
 @author: wilfried
@@ -9,7 +10,7 @@ Functions related to input-output interaction.
 """
 
 from   astropy.table          import Table
-from   astropy.io.votable     import is_votable, writeto
+from   astropy.io.votable     import is_votable, writeto, parse
 import numpy.lib.recfunctions as     rec
 import numpy                  as     np
 
@@ -29,9 +30,61 @@ def is_VOtable(fullname):
     Returns True if it is a VOtable. False otherwise.
     """
     
-    tag = is_votable(fullname)
-    print("The file", fullname, "is a VOtable, right ?", tag)
-    return tag
+    if not is_votable(fullname):
+        raise IOError('File %s is not a VOtable.' %fullname)
+    return True
+
+
+def loadVOtable(name, outputType='Table', num=0, pedantic=False, use_names_over_ids=False):
+    '''
+    Load a VOtable using astropy.
+    
+    Mandatory parameters
+    --------------------
+        name : str
+            VOtable catalogue file name
+        
+    Optional parameters
+    -------------------
+        num : int
+            number of the required table within the VOtable. Default is 0 so as to load the first table.
+        outputType : 'default' or 'array' or 'Table'
+            which type of output. 
+                - 'VOtable'       : return the loaded VOtable as the standard astropy VOtable type
+                - 'tableElement'  : return the loaded VOtable as the 
+                - 'array'         : return the loaded VOtable as a numpy structured array
+                - 'Table'         : return the loaded VOtable as an astropy Table
+                
+        pedantic : bool
+            whether to disable Exceptions when reading VOtable files with unusual keywords. Default is False.
+        use_names_over_id : bool
+            whether (when creating as astropy Table out of the VOtable table element) to use columns names rather than the unique IDs in the VOtable columns to name the astropy Table columns. Default is False.
+                
+    Return the loaded table.
+    '''
+    
+    if not isinstance(outputType, str):
+        raise TypeError('output type must be a string.')
+        
+    if not isinstance(num, int):
+        raise TypeError('Please only provide an integer value for the table number. Cheers !')
+    
+    outputType = outputType.lower()
+    if outputType not in ['votable', 'tableelement', 'array', 'table']:
+        outputType = 'votable'
+
+    # Convert data to the given format        
+    data = parse(name, pedantic=pedantic)
+    
+    if outputType != 'votable':
+        data = data.get_table_by_index(num)
+        
+        if outputType == 'array':
+            data = data.array
+        elif outputType == 'table':
+            data = data.to_table(use_names_over_ids=use_names_over_ids)
+    
+    return data
 
 
 def move_bad_fields_to_bottom(array, orderedFieldList, orderedTypeList):
