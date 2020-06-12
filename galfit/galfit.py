@@ -13,9 +13,9 @@ from wilfried.utilities.dictionaries import checkDictKeys, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
 from wilfried.utilities.plotUtilities import genMeThatPDF
 
-from os import mkdir
-from os.path import isdir, isfile
-from subprocess import run, check_output
+from   os              import mkdir, system
+import os.path         as     opath
+from   subprocess      import run, check_output, CalledProcessError
 import multiprocessing
 
 from numpy import unique, array
@@ -94,7 +94,7 @@ myPDFViewer = 'okular'
 
 
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
-               pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/", pathLog="./log/",
+               pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/", pathLog="./log/", pathRecap='./recap/',
                constraints=None, forceConfig=False, noGalfit=False, noPDF=False, showRecapFiles=True, showLog=False):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
@@ -178,6 +178,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             location of the log file names relative to the current folder or in absolute
         pathOut : str
             location of the output file names relative to the current folder or in absolute
+        pathRecap : str
+            location of the pdf recap files relative to the current folder or in absolute
         showLog : bool
             whether to show log files or not. Default is False.
         showRecapFiles : bool
@@ -190,21 +192,22 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     
     def singleGalfit(name, all_procs):
         # Get galfit output into a variable
-        text = check_output(['galfit', pathFeedme + name])
+        try:
+            text = check_output(['galfit', opath.join(pathFeedme, name)])
             
-        # Make log directory if it does not exist yet
-        if not isdir('log'):
-            mkdir('log')
+            # Only keep the relevant part in the ouput
+            text = 'Iteration ' + text.decode('utf8').split('Iteration')[-1].split('COUNTDOWN')[0].rsplit('\n', maxsplit=1)[0]
             
-        # Only keep the relevant part in the ouput
-        text = 'Iteration ' + text.decode('utf8').split('Iteration')[-1].split('COUNTDOWN')[0].rsplit('\n', maxsplit=1)[0]
-        
-        # Save content into a log file
-        log  = 'log/%s' %name.replace('.feedme', '.log')
-        with open(log, 'w') as f:
-            f.write(text)
-        
-        print('Object %s done (~ %.2f%% yet to do)' %(name.strip('.feedme'), (1-len(all_procs)/total_num)*100))
+            # Save content into a log file
+            log  = opath.join(pathLog, name.replace('.feedme', '.log'))
+            with open(log, 'w') as f:
+                f.write(text)
+            
+            print('Object %s done (~ %.2f%% yet to do)' %(name.strip('.feedme'), (1-len(all_procs)/total_num)*100))
+            
+        except CalledProcessError:
+            print('Galfit failed: probably a segmentation fault caused by a wrong constraint name or values. Try running galfit by hand on one of the feedme files to find out what went wrong.')
+            
         semaphore.release()
         return 
     
@@ -216,7 +219,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         else:
             maxi     = i*maxImages
             
-        genMeThatPDF(outputFiles[mini:maxi], 'recap%d.pdf' %i, log=False, diverging=True)
+        genMeThatPDF(outputFiles[mini:maxi], opath.join(pathRecap, 'recap%d.pdf' %i), log=False, diverging=True)
         print("Recap file number %d made." %i)
         semaphore.release()
         return
@@ -231,7 +234,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         raise TypeError('Given feedmeFiles variable is not a list. Please provide a list of galfit .feedme file names. Cheers !')
     
     # Find where given .feedme files do not exist
-    notExists             = [not isfile(pathFeedme + fname) for fname in feedmeFiles]
+    notExists             = [not opath.isfile(pathFeedme + fname) for fname in feedmeFiles]
             
     
     ##################################################
@@ -274,6 +277,11 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     
     if not noGalfit:
         print("Running galfit using multiprocesses")
+        
+        # Make log directory if it does not exist yet
+        if not opath.isdir(pathLog):
+            mkdir(pathLog)
+        
         total_feedmes = array(feedmeFiles)[[not i for i in notExists]]
         total_num     = len(total_feedmes)
         semaphore     = multiprocessing.Semaphore(8)
@@ -295,7 +303,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     #############################################################
     
     # Matplotlib forces pdf images to have a maximum size. This corresponds to ~100 lines of plots given the plot size taken
-    outputFiles      = [pathOut + i for i in outputNames]
+    outputFiles      = [opath.join(pathOut, i) for i in outputNames]
     ll               = len(outputFiles)
     maxImages        = 100
     splt             = ll // maxImages
@@ -338,7 +346,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         for i in range(1, splt+2):
             print('Showing recap file recap%d.pdf' %i)
             try:
-                run([myPDFViewer, 'recap%d.pdf' %i])
+                system('recap%d.pdf' %i)
             except FileNotFoundError:
                 print('Cannot find given pdf viewer %s. Please provide a correct software name.' %myPDFViewer)
                 myPDFViewer = input()
@@ -463,18 +471,24 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
     
     if len(inputNames) != len(outputNames) or len(inputNames) != len(feedmeNames) or len(inputNames) != len(constraintNames):
         raise ValueError("Lists intputNames, outputNames, feedmeNames and constraintNames do not have the same length. Please provide lists with similar length in order to know how many feedme files to generate. Cheers !")
-    
+  
     if pathIn is None:
         pathIn = ""
     else:
-        if not isdir(pathIn):
-            raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathIn)
-    if not isdir(pathOut):
-        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathOut)
-    if not isdir(pathFeedme):
-        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathFeedme)
-    if constraints is not None and not isdir(pathConstraints):
-        raise OSError("Given path directory %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathConstraints)
+        if not opath.isdir(pathIn):
+            raise OSError("Given path %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathIn)
+            
+    if not opath.isdir(pathOut):
+        raise OSError("Given path %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathOut)
+        
+    if not opath.isdir(pathFeedme):
+        raise OSError("Given path %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathFeedme)
+        
+    if constraints is None:
+        print('No constraints provided. Parameters are free to vary as much they want.')
+    else:
+        if not opath.isdir(pathConstraints):
+            raise OSError("Given path %s does not exist or is not a directory. Please provide an existing directory before making the .feedme files. Cheers !" %pathConstraints)
 
     #################################################################
     #                Writing feedme and constraint files            #
@@ -484,7 +498,7 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
 
         # output .constraint file
         if constraints is not None:
-            fname = pathConstraints + con
+            fname = opath.join(pathConstraints, con)
             with open(fname, "w") as file:
                 # Get formatted text
                 tmp = genConstraint(constraints)
@@ -494,11 +508,11 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
                 header['couplingFile'] = fname
         
         # output .feedme file
-        with open(pathFeedme + fee, "w") as file:
+        with open(opath.join(pathFeedme, fee), "w") as file:
             
             # Set input and ouput file names
-            header['inputImage']  = pathIn + inp
-            header['outputImage'] = pathOut + out
+            header['inputImage']  = opath.join(pathIn,  inp)
+            header['outputImage'] = opath.join(pathOut, out)
             
             # Get formatted text, check in genFeedme that dict keys are okay and write into file if so
             tmp = genFeedme(header, listProfiles)
@@ -549,6 +563,23 @@ def genConstraint(dicts):
     
     Return a galfit .constraint file as formatted text.
     """
+    
+    def mapParams(par):
+        '''Map the given parameter to its correct name (shall be updated as new segmentation faults are found)'''
+        
+        if   par.lower() in ['fwhm', 'diskscalelength', 'diskscaleheight', 'rs', 'rt', 'rc']:
+            par = 're'
+        elif par.lower() == 'bovera':
+            par = 'q'
+        elif par.lower() == 'pa':
+            par = 'pa'
+        elif par.lower() in ['alphaferrer', 'powerlaw']:
+            par = 'alpha'
+        elif par.lower() == 'betaferrer':
+            par = 'beta'
+        
+        return par
+    
 
     if type(dicts) is not list:
         raise TypeError("Given parameter 'dicts' is not a list. Please provide a list of dictionaries. Cheers !")
@@ -575,8 +606,6 @@ def genConstraint(dicts):
         
         if param not in everyParam:
             raise ValueError('Given parameter %s is not correct. Possible values are %s. Please provide one of these values if you want to put constraints on one of these parameters. Cheers !' %(param, everyParam))
-        
-
 
         try:
             if constraint['type'] not in everyConstraint:
@@ -612,6 +641,7 @@ def genConstraint(dicts):
             for num in components:
                 tmp += "%d_" %num
             compList.append(tmp)
+            
         elif constraint['type'] == 'componentWiseRange':
             compList.append("%d-%d" %tuple(components))
         elif constraint['type'] == 'componentWiseRatio':
@@ -627,7 +657,8 @@ def genConstraint(dicts):
         else:
             constraintList.append('%.1f %.1f' %tuple(constraint['value']))
             
-        # set parameter name
+        # Some parameters must change name between the feedme file and the constraint file (typically FWHM -> re) so we map them
+        param = mapParams(param)
         paramList.append(param)
         
     compList       = ["# Component"] + compList
@@ -786,10 +817,12 @@ def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", p
     
     # Image region to fit
     imageRegion     = "%d %d %d %d" %(xmin, xmax, ymin, ymax)
+    
     # Convolution box X and Y size
     convBox         = "%d %d" %(sizeConvX, sizeConvY)
+    
     # Angular size per pixel in X and Y directions
-    plateScale      = "%d %d" %tuple(arcsecPerPixel)
+    plateScale      = "%.3f %.3f" %tuple(arcsecPerPixel)
         
     # Compute max text length to align columns
     textLenMax      = maxStringsLen([outputImage, inputImage, sigmaImage, psfImage, psfSamplingFactor, maskImage, couplingFile, imageRegion, convBox, zeroPointMag, plateScale, displayType, option])
