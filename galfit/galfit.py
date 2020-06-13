@@ -13,12 +13,14 @@ from wilfried.utilities.dictionaries import checkDictKeys, removeKeys, setDict
 from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
 from wilfried.utilities.plotUtilities import genMeThatPDF
 
-from   os              import mkdir, system
+from   os              import mkdir
 import os.path         as     opath
-from   subprocess      import run, check_output, CalledProcessError
+from   subprocess      import run, check_output, CalledProcessError, call
 import multiprocessing
 
-from numpy import unique, array
+import colorama
+
+from   numpy import unique, array
 
 
 ##########################################
@@ -246,8 +248,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         if forceConfig:
             notExists     = [True]*len(feedmeFiles)
         else:
-            print('Some .feedme files do not exist yet. Do you want to generate automatically the files using the provided input parameters ? [N] or Y')
-            answer        = input().lower()
+            answer        = input('Some .feedme files do not exist yet. Do you want to generate automatically the files using the provided input parameters ? [N] or Y: ').lower()
             
         if forceConfig or answer in ['y', 'yes']:
             print("Making configuration files")
@@ -339,22 +340,46 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     #######################################################
     #                   Show recap files                  # 
     #######################################################
+                
+    def askAgain(recapName, showTips=True):
+        global myPDFViewer
+        
+        myPDFViewer = input('Opening failed. Probably cannot find given pdf viewer %s. Please provide a correct software name: ' %myPDFViewer)
+        
+        if showTips:
+            print('Tips: for next uses, you can change the myPDFViewer global variable in the Global Variable section of galfit.py and set it to your favourite pdf viewer.')
+        return
     
     if showRecapFiles:
         global myPDFViewer
         
+        print('Trying to open recap files located in %s with %s' %(pathRecap, myPDFViewer))
+        recap     = opath.join(pathRecap, 'recap')
+        showTips  = True
+        
         for i in range(1, splt+2):
-            print('Showing recap file recap%d.pdf' %i)
+            recapName        = '%s%d.pdf' %(recap, i)
+            print('Showing recap file %s' %recapName)
+            
             try:
-                system('recap%d.pdf' %i)
-            except FileNotFoundError:
-                print('Cannot find given pdf viewer %s. Please provide a correct software name.' %myPDFViewer)
-                myPDFViewer = input()
-                print('Tips: for next uses, you can change the myPDFViewer global variable in the Global Variable section of galfit.py and set it to your favourite pdf viewer to not have to provide it every time.')
-                try:
-                    run([myPDFViewer, 'recap%d.pdf' %i])
-                except FileNotFoundError:
-                    raise OSError('Given pdf viewer %s could not be found. Please, provide a correct software next time. Cheers !'  %myPDFViewer)
+                
+                code         = call(myPDFViewer + '' + recapName, shell=True)
+                
+                if code != 0:
+                    try:
+                        askAgain(recapName, showTips=showTips)
+                        code = call(myPDFViewer + '' + recapName, shell=True)
+                        
+                        if code != 0:
+                            raise OSError
+                    except:
+                        raise OSError
+            except:
+                raise OSError('Could not open pdf recap file %s with pdf viewer %s' %(recapName, myPDFViewer))
+    
+    return True
+                    
+                
                     
                 
     
