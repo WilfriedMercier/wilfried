@@ -8,19 +8,19 @@ Created on Thu Oct 10 13:29:00 2019
 Functions related to automating galfit modelling.
 """
 
-from wilfried.galfit.models import gendeVaucouleur, genEdgeOnDisk, genExpDisk, genFerrer, genGaussian, genKing, genMoffat, genNuker, genPSF, genSersic, genSky, bendingModes, boxy_diskyness, fourierModes
-from wilfried.utilities.dictionaries import checkDictKeys, removeKeys, setDict
-from wilfried.utilities.strings import putStringsTogether, toStr, maxStringsLen
-from wilfried.utilities.plotUtilities import genMeThatPDF
-
-from   os              import mkdir
-import os.path         as     opath
-from   subprocess      import run, check_output, CalledProcessError, call
+from   .io                              import errorMessage, okMessage, brightMessage, dimMessage
+from   .models                          import gendeVaucouleur, genEdgeOnDisk, genExpDisk, genFerrer, genGaussian, genKing, genMoffat, genNuker, genPSF, genSersic, genSky, bendingModes, boxy_diskyness, fourierModes
+from   wilfried.utilities.dictionaries  import checkDictKeys, removeKeys, setDict
+from   wilfried.utilities.strings       import putStringsTogether, toStr, maxStringsLen
+from   wilfried.utilities.plotUtilities import genMeThatPDF
+from   os                               import mkdir
+import subprocess                       as     sub
+from   numpy                            import unique, array
+import os.path                          as     opath
 import multiprocessing
+import colorama                         as     col
+col.init()
 
-import colorama
-
-from   numpy import unique, array
 
 
 ##########################################
@@ -97,7 +97,8 @@ myPDFViewer = 'okular'
 
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
                pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/", pathLog="./log/", pathRecap='./recap/',
-               constraints=None, forceConfig=False, noGalfit=False, noPDF=False, showRecapFiles=True, showLog=False):
+               constraints=None, forceConfig=False, noGalfit=False, noPDF=False, showRecapFiles=True, showLog=False,
+               numThreads=8):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
     If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
@@ -170,6 +171,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             whether to not run galfit or not. Default is False (galfit shall be run).
         noPDF : bool
             whether to make the pdf recap files or not. Default is False (recap file shall be made).
+        numThreads : int
+            number of threads used to parallelise. Default is 8.
         outputNames: list of str
             list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
         pathFeedme : str
@@ -188,14 +191,19 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             whether to show the recap files made at the end or not. Default is True.
     """
     
+    # Enabling colored text
+    col.reinit()
+    
     #################################################
     #                Local functions                #
     #################################################
     
     def singleGalfit(name, all_procs):
-        # Get galfit output into a variable
+        '''Run galfit for a single image.'''
+        
         try:
-            text = check_output(['galfit', opath.join(pathFeedme, name)])
+            # Get galfit output into a variable
+            text = sub.check_output(['galfit', opath.join(pathFeedme, name)])
             
             # Only keep the relevant part in the ouput
             text = 'Iteration ' + text.decode('utf8').split('Iteration')[-1].split('COUNTDOWN')[0].rsplit('\n', maxsplit=1)[0]
@@ -205,24 +213,29 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             with open(log, 'w') as f:
                 f.write(text)
             
-            print('Object %s done (~ %.2f%% yet to do)' %(name.strip('.feedme'), (1-len(all_procs)/total_num)*100))
+            print(okMessage('Object %s done ' %name.strip('.feedme')) + '[~%.2f%%]'  %(len(all_procs)/total_num*100))
             
-        except CalledProcessError:
-            print('Galfit failed: probably a segmentation fault caused by a wrong constraint name or values. Try running galfit by hand on one of the feedme files to find out what went wrong.')
+        except sub.CalledProcessError:
+            print(errorMessage('Galfit failed:') + ' Probably a segmentation fault caused by a wrong constraint name or value. Try running galfit by hand on one of the feedme files to find out what went wrong.')
             
         semaphore.release()
         return 
     
     def pdf(i, maxImages, splt, ll):
+        '''Generate a single pdf file.'''
+        
         print("Making pdf file recap%d.pdf" %i)
         mini         = (i-1)*maxImages
         if i == splt or splt == 0:
             maxi     = ll
         else:
             maxi     = i*maxImages
-            
-        genMeThatPDF(outputFiles[mini:maxi], opath.join(pathRecap, 'recap%d.pdf' %i), log=False, diverging=True)
-        print("Recap file number %d made." %i)
+        
+        try:
+            genMeThatPDF(outputFiles[mini:maxi], opath.join(pathRecap, 'recap%d.pdf' %i), log=False, diverging=True)
+            print(okMessage("Recap file number %d made." %i))
+        except:
+            pass
         semaphore.release()
         return
     
@@ -233,7 +246,11 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     
     # Check input data type is okay
     if type(feedmeFiles) is not list:
-        raise TypeError('Given feedmeFiles variable is not a list. Please provide a list of galfit .feedme file names. Cheers !')
+        raise TypeError(errorMessage('Given feedmeFiles variable is not a list') + '. Please provide a list of galfit .feedme file names. Cheers !')
+        
+    if not isinstance(numThreads, int) or numThreads<1:
+        print(errorMessage('Incorrect given number of threads: %s.' %numThreads) + ' Setting default value to ' + brightMessage('1'))
+        numThreads        = 1
     
     # Find where given .feedme files do not exist
     notExists             = [not opath.isfile(pathFeedme + fname) for fname in feedmeFiles]
@@ -248,7 +265,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         if forceConfig:
             notExists     = [True]*len(feedmeFiles)
         else:
-            answer        = input('Some .feedme files do not exist yet. Do you want to generate automatically the files using the provided input parameters ? [N] or Y: ').lower()
+            answer        = input(brightMessage('Some .feedme files do not exist yet. Do you want to generate automatically the files using the provided input parameters ? [N] or Y: ')).lower()
             
         if forceConfig or answer in ['y', 'yes']:
             print("Making configuration files")
@@ -268,7 +285,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                     
                 notExists = [False]*len(notExists)
             except Exception as e:
-                print("An Error occured during galfit configuration file creation.\n")
+                print(errorMessage("An Error occured during galfit configuration file creation.\n"))
                 raise e
                 
                 
@@ -277,7 +294,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     ##########################################################################
     
     if not noGalfit:
-        print("Running galfit using multiprocesses")
+        print(brightMessage("Running galfit using multiprocesses") + ' (%d threads used)' %numThreads)
         
         # Make log directory if it does not exist yet
         if not opath.isdir(pathLog):
@@ -285,7 +302,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
         
         total_feedmes = array(feedmeFiles)[[not i for i in notExists]]
         total_num     = len(total_feedmes)
-        semaphore     = multiprocessing.Semaphore(8)
+        semaphore     = multiprocessing.Semaphore(numThreads)
         all_procs     = []
         for num, fname in enumerate(total_feedmes):
             semaphore.acquire()
@@ -297,7 +314,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             p.join()
     
         # Move the galfit files to log directory as well
-        run(['mv galfit.[0-9]* %s' %pathLog], shell=True)
+        sub.run(['mv galfit.[0-9]* %s' %pathLog], shell=True)
     
     #############################################################
     #                 Generate pdf recap files                  #
@@ -310,12 +327,12 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     splt             = ll // maxImages
     
     if not noPDF:
-        semaphore        = multiprocessing.Semaphore(8)
+        semaphore        = multiprocessing.Semaphore(numThreads)
         all_procs        = []
         print('Making pdf recap files')
-        for i in range(1, splt+2):                
+        for i in range(1, splt+1):                
             semaphore.acquire()
-            proc         = multiprocessing.Process(name=i, target=pdf, args=(i, maxImages, splt+1, ll))
+            proc         = multiprocessing.Process(name=i, target=pdf, args=(i, maxImages, splt, ll))
             all_procs.append(proc)
             proc.start()        
             
@@ -344,39 +361,41 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     def askAgain(recapName, showTips=True):
         global myPDFViewer
         
-        myPDFViewer = input('Opening failed. Probably cannot find given pdf viewer %s. Please provide a correct software name: ' %myPDFViewer)
+        myPDFViewer = input(errorMessage('Opening failed:') + ' Probably cannot find given pdf viewer ' + brightMessage(myPDFViewer) + '. Please provide a correct software name: ')
         
         if showTips:
-            print('Tips: for next uses, you can change the myPDFViewer global variable in the Global Variable section of galfit.py and set it to your favourite pdf viewer.')
+            print(dimMessage('Tips: for next uses, you can change the myPDFViewer global variable in the Global Variable section of galfit.py and set it to your favourite pdf viewer.'))
         return
     
     if showRecapFiles:
         global myPDFViewer
         
-        print('Trying to open recap files located in %s with %s' %(pathRecap, myPDFViewer))
+        print('Trying to open recap files located in ' + brightMessage(pathRecap) + ' with ' +  brightMessage(myPDFViewer))
         recap     = opath.join(pathRecap, 'recap')
         showTips  = True
         
-        for i in range(1, splt+2):
+        for i in range(1, splt+1):
             recapName        = '%s%d.pdf' %(recap, i)
-            print('Showing recap file %s' %recapName)
+            print('Showing recap file ' + brightMessage(recapName))
             
             try:
                 
-                code         = call(myPDFViewer + '' + recapName, shell=True)
+                code         = sub.run(myPDFViewer + ' ' + recapName, shell=True).returncode
                 
                 if code != 0:
                     try:
                         askAgain(recapName, showTips=showTips)
-                        code = call(myPDFViewer + '' + recapName, shell=True)
+                        code = sub.run(myPDFViewer + ' ' + recapName, shell=True).returncode
                         
                         if code != 0:
                             raise OSError
                     except:
                         raise OSError
             except:
-                raise OSError('Could not open pdf recap file %s with pdf viewer %s' %(recapName, myPDFViewer))
+                raise OSError(errorMessage('Could not open pdf recap file %s with pdf viewer %s' %(recapName, myPDFViewer)))
     
+    # Disabling future colored text
+    col.deinit()
     return True
                     
                 
