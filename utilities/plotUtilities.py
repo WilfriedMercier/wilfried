@@ -35,23 +35,23 @@ def display_hst_models(file1, fileout='test.pdf', title='title', cmap='spectral'
     
     Authors:
     ----------
-    Main contributor  : Epinat Benoit - LAM
-    Sec. conttributor : Mercier Wilfried - IRAP
+        Main contributor  : Epinat Benoit - LAM
+        Sec. conttributor : Mercier Wilfried - IRAP
     
     Parameters
     ----------
-    log : booelan
-        whether to have a log scale or not
-    cmap : string
-        name of the colormap
-    file1: string
-        name of GALFIT file that contains the model
-    fileout: string
-        name of the output file
-    show : boolean
-        whether to show the image or not
-    title: string
-        title of the output image
+        log : booelan
+            whether to have a log scale or not
+        cmap : string
+            name of the colormap
+        file1: string
+            name of GALFIT file that contains the model
+        fileout: string
+            name of the output file
+        show : boolean
+            whether to show the image or not
+        title: string
+            title of the output image
     '''
     
     hdul     = fits.open(file1)
@@ -140,14 +140,14 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
         
         return sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile
     
-    #get file names from a file if necessary
+    # Get file names from a file if necessary
     if readFromFile:
         fnamesList, groupNumbers = np.genfromtxt(fnamesList, dtype=str, unpack=True)
     
-    #computing the number of necessary subfigures
+    # Computing the number of necessary subfigures
     nbfig    = len(fnamesList)
     
-    #gathering the file names only (without path)
+    # Stripping path from file names
     names = np.copy(fnamesList)
     for num, name in enumerate(fnamesList):
         names[num] = name.split('/')[-1]
@@ -1031,13 +1031,13 @@ def asManyPlots2(numPlot, datax, datay,
                     scale for the x-axis (the most used are "linear", "log", "symlog"). Default is "linear".
                     
                 'xmax' : float
-                    maximum value of the x-axis. Default is None, so that matplotlib automatically scales the axes.
+                    maximum value of the x-axis. Default is None, so that the maximum value of x data is used as upper limit.
                 'xmin' : float
-                    minimum value of the x-axis. Default is None, so that matplotlib automatically scales the axes.
+                    minimum value of the x-axis. Default is None, so that the minimum value of x data is used as lower limit.
                 'ymax' : float
-                    maximum value of the y-axis. Default is None, so that matplotlib automatically scales the axes.
+                    maximum value of the y-axis. Default is None, so that the maximum value of x data is used as upper limit..
                 'ymin' : float
-                    minimum value of the y-axis. Default is None, so that matplotlib automatically scales the axes.
+                    minimum value of the y-axis. Default is None, so that the minimum value of x data is used as lower limit.
                 
             Position related keys
             ---------------------
@@ -1179,7 +1179,7 @@ def asManyPlots2(numPlot, datax, datay,
     
             Style related keys
             ------------------
-                'alpha' : float
+                'transparency' : float
                     transparency of the legend background. 1 is plain, 0 is fully transparent. Default is 1.
                 'background' : str
                     color of the legend background. Default is None so that the default value in your rcParams file will be used (usually white).
@@ -1187,6 +1187,10 @@ def asManyPlots2(numPlot, datax, datay,
                     whether to have a fancy legend box (round edges) or not. Default is True.
                 'shadow' : bool
                     whether to draw a shadow around the legend or not. Default is True.
+                'title' : str
+                    legend title. Default is empty string.
+                'titleSize' : float
+                    legend title font size. Default is given by 'textsize' key in generalProperties dict.
     
         outputProperties : dict
             dictionary gathering all tunable ouput properties. See the list below for the comple list of dictionary keys.
@@ -1502,6 +1506,15 @@ def asManyPlots2(numPlot, datax, datay,
         # Other properties
         xaxis.pos, yaxis.pos, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xAxisPos", "yAxisPos", "xmin", "xmax", "ymin", "ymax"], default=["bottom", "left", None, None, None, None])
       
+    # Set x and y bounds if not provided
+    if xaxis.min is None:
+        xaxis.min = np.nanmin([np.nanmin(i) for i in data.x.data])
+    if xaxis.max is None:
+        xaxis.max = np.nanmax([np.nanmax(i) for i in data.x.data])
+    if yaxis.min is None:
+        yaxis.min = np.nanmin([np.nanmin(i) for i in data.y.data])
+    if yaxis.min is None:
+        yaxis.max = np.nanmax([np.nanmax(i) for i in data.y.data])
         
     #########################################
     #             Title properties          #
@@ -1592,10 +1605,11 @@ def asManyPlots2(numPlot, datax, datay,
         else:
             legend.hide = False
      
+        legend.title, legend.titleSize = setListFromDict(legendProperties, keys=['title', 'titleSize'], default=['', layout.textsize])
         legend.style.shadow, legend.style.fancy, legend.style.bg, legend.style.alpha = setListFromDict(legendProperties, keys=['shadow', 'fancy', 'background', 'transparency'], default=[True, True, None, 1])
         legend.loc, legend.ncols, legend.labels.size, legend.labels.text = setListFromDict(legendProperties, keys=['loc', 'ncols', 'labelSize', 'labels'], default=['best', 1, layout.textsize, ['']*data.nplots]) 
         legend.line.color, legend.marker.edgecolor, legend.marker.facecolor, legend.marker.position , legend.marker.scale = setListFromDict(legendProperties, keys=['lineColor', 'markerEdgeColor', 'markerFaceColor', 'markerPosition', 'markerScale'], default=[None, None, None, 'left', 1.0])
-     
+        
         # Checking that given parameters have the correct type
         legend.labels.text               = checkTypeAndChangeValueToList(legend.labels.text,      list, data.nplots)
         legend.line.color                = checkTypeAndChangeValueToList(legend.line.color,       list, data.nplots)
@@ -1761,15 +1775,29 @@ def asManyPlots2(numPlot, datax, datay,
         
         # Plot legend before making changes and get legend handles
         leg = plt.legend(loc=legend.loc, prop={'size': legend.labels.size}, shadow=legend.style.shadow, fancybox=legend.style.fancy, ncol=legend.ncols, markerfirst=markerfirst, 
-                                               markerscale=legend.marker.scale, framealpha=legend.style.alpha)
+                                               markerscale=legend.marker.scale, framealpha=legend.style.alpha, 
+                                               title=legend.title, title_fontsize=legend.titleSize)
         
-        for h, mkfclr, mkeclr, lc, typ in zip(leg.legendHandles, legend.marker.facecolor, legend.marker.edgecolor, legend.line.color, data.type):
-            if typ in ['plot', 'mix']:
-                h.set_color(lc)
-                h.set_markerfacecolor(mkfclr)
-                h.set_markeredgecolor(mkeclr)
-            elif typ == 'scatter':
-                h.set_color(mkfclr)
+        # Map handles to the correct list shape
+        legend.handles = []
+        cnt            = 0
+        for text in legend.labels.text:
+            if text is not None:
+                legend.handles.append(leg.legendHandles[cnt])
+                cnt   += 1
+            else:
+                legend.handles.append(None)
+        
+        for h, mkfclr, mkeclr, lc, typ in zip(legend.handles, legend.marker.facecolor, legend.marker.edgecolor, legend.line.color, data.type):
+            
+            if h is not None:
+                print('coucou')
+                if typ in ['plot', 'mix']:
+                    h.set_color(lc)
+                    h.set_markerfacecolor(mkfclr)
+                    h.set_markeredgecolor(mkeclr)
+                elif typ == 'scatter':
+                    h.set_color(mkfclr)
                 
     # Set x and y scales        
     plt.yscale(yaxis.scale)
