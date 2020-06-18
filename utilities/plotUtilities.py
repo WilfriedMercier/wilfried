@@ -10,20 +10,150 @@ Acknowledgments to Issa Lina - ENS who spotted a quite tough bug in asManyPlots 
 Functions to automatise as much as possible plotting of data of any kind.
 """
 
-#numpy imports
-import numpy as np
+import time
+import numpy               as     np
+import matplotlib.pyplot   as     plt
+import matplotlib.gridspec as     gridspec
+from   matplotlib.colors   import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
+from   matplotlib.markers  import MarkerStyle
+import astropy.io.fits     as     fits
+import subprocess          as     sub
+from   copy                import copy
+from   os.path             import isfile
+from   .coloredMessages    import *
+import colorama            as     col
+col.init()
 
-#matplotlib imports
-#import matplotlib.colors
-from matplotlib.colors import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
-import matplotlib.gridspec as gridspec
-import matplotlib.pyplot as plt
-from matplotlib.markers import MarkerStyle
 
-import astropy.io.fits as fits
+###########################################################################
+#                   Interactive spectral plots with ds9                   #
+###########################################################################
 
-from copy import copy
-from os.path import isfile
+def inspectSpectrum(file, extension=1):
+    '''
+    Inspect the pixel spectra in a data cube opened in SAOImage ds9.
+
+    Mandatory parameters
+    --------------------
+        file : str
+            data cube file (must also be opened in ds9)
+    
+    Optional parameters
+    -------------------
+        extension : int
+            data cube extension to open. Default is the 2nd one (index 1)
+    '''
+    
+    def getxpaOutput():
+        output    = sub.run('xpaget ds9 pan', shell=True, capture_output=True).stdout
+        
+        try:
+            x, y  = map(int, map(float, output.decode().rstrip('\n').split(' ')))
+            ok    = True
+        except:
+            print(errorMessage('Failed to map coordinates from %s into int values...' %output))
+            ok    = False
+        
+        print('Coordinates x y: %f %f' %(x, y))
+        return x, y, ok
+    
+    col.reinit()
+    
+    # Check that at least one instance of ds9 is running
+    code = sub.run('xpaget xpans', shell=True).returncode
+    if code != 0:
+        raise IOError(errorMessage('No xpa compatible software can be found. Please run ds9 prior to using this function. Cheers !'))
+    
+    ##############################################
+    #          Gathering data from cube          #
+    ##############################################
+        
+    print(brightMessage('Loading data cube (# %d) into memory...' %extension))
+    with fits.open(file) as hdul:
+        header = hdul[extension].header
+        data   = hdul[extension].data
+        
+    if 'NAXIS3' not in header:
+        col.deinit()
+        raise IOError(errorMessage('NAXIS3 key missing in cube header. Not possible to retrieve the number of channels...'))
+    else:
+        nbWv   = header['NAXIS3']
+        
+    # Getting spectral range if given in fits header
+    if 'CRVAL3' in header:
+        minX   = header['CRVAL3']
+        print(okMessage('CRVAL3 key found in header:') + ' using %s as minimum wavelength value' %minX)
+    else:
+        minX   = 0
+        print(errorMessage('No CRVAL3 key found in header.'))
+        
+    if 'CD3_3' in header:
+        deltaX = header['CD3_3']
+        print(okMessage('CD3_3 key found in header:') + ' using %s as wavelength step' %deltaX)
+    else:
+        deltaX = 1
+        print(errorMessage('No CD3_3 key found in header.'))
+    
+    # Getting x and y axes units    
+    if 'BUNIT' in header:
+        funit  = header['BUNIT']
+        print(okMessage('BUNIT key found in header:') + ' using %s as flux unit' %funit)
+    else:
+        funit  = ''
+        print(errorMessage('No BUNIT key found in header.'))
+        
+    if 'CUNIT3' in header:
+        wunit  = header['CUNIT3']
+        print(okMessage('CUNIT3 key found in header:') + ' using %s as wavelength unit' %wunit)
+    else:
+        wunit  = ''
+        print(errorMessage('No CUNIT3 key found in header.'))
+    
+    ####################################################################
+    #                     Generate an empty figure                     #
+    ####################################################################
+        
+    print(brightMessage('Making figure...'))
+    
+    f        = plt.figure(figsize=(12, 4))
+    ax       = plt.subplot(111)
+    plt.tick_params(axis='both', which='both', direction='in', left=True, right=True, bottom=True, top=True, labelbottom=True, labeltop=False, labelleft=True, labelright=False, labelsize=14)
+    plt.xlabel('Wavelength [%s]' %wunit, fontsize=14)
+    plt.ylabel('Flux [%s]' %funit, fontsize=14)
+    
+    xdata     = np.linspace(minX, minX+deltaX*nbWv, num=nbWv)
+    spectrum, = ax.plot(xdata, [0]*nbWv, 'k')
+    ax.set_xlim(np.nanmin(xdata), np.nanmax(xdata))
+    
+    # Set cursor behaviour to pan
+    sub.run('xpaset -p ds9 mode pan', shell=True)
+    prevx, prevy, t   = getxpaOutput()
+    while True:
+        
+        updateFig = False
+        x, y, code    = getxpaOutput()
+        if not code:
+            time.sleep(0.5)
+            continue
+        
+        # Update coordinates and plot if necessary
+        if prevx != x:
+            prevx     = x
+            updateFig = True
+        if prevy != y:
+            prevx     = y
+            updateFig = True
+        
+        if updateFig:
+            ydata = data[:, x, y]
+            print(ydata)
+            spectrum.set_ydata(ydata)
+            ax.set_ylim(np.nanmin(ydata), np.nanmax(ydata))
+        
+        plt.pause(0.5)
+    
+    col.deinit()
+    return
 
 ################################################################################################
 #                                   Plots functions                                            #
