@@ -146,7 +146,6 @@ def inspectSpectrum(file, extension=1):
         
         if updateFig:
             ydata = data[:, x, y]
-            print(ydata)
             spectrum.set_ydata(ydata)
             ax.set_ylim(np.nanmin(ydata), np.nanmax(ydata))
         
@@ -1160,14 +1159,25 @@ def asManyPlots2(numPlot, datax, datay,
                 'yscale' : str
                     scale for the x-axis (the most used are "linear", "log", "symlog"). Default is "linear".
                     
-                'xmax' : float
-                    maximum value of the x-axis. Default is None, so that the maximum value of x data is used as upper limit.
-                'xmin' : float
-                    minimum value of the x-axis. Default is None, so that the minimum value of x data is used as lower limit.
-                'ymax' : float
-                    maximum value of the y-axis. Default is None, so that the maximum value of x data is used as upper limit..
-                'ymin' : float
-                    minimum value of the y-axis. Default is None, so that the minimum value of x data is used as lower limit.
+                'xmax' : None, float or str
+                    maximum value of the x-axis. Three different type of values can be given (default is None):
+                        - None so that the maximum value of x data is used as upper limit
+                        - float so that the given value is used as upper limit
+                        - string with one of the following forms: 'num+offset' or '*+offset'
+                    
+                    in the latter case:
+                        - num is an int corresponding to the position, in the x data list, of the data used to compute the minimum x value
+                        - * corresponds to the full list of x data, so that the minimum value is that of the complete set of data
+                        - offset is the offset applied to the x minimum value 
+                    For e.g., '0+-1' will compute the minimum value in the Oth data element in the x data list (assume it is equal to -3). The x-axis minmum value will therefore be equal to this value minus 1 (-3-1=-4)
+                    For e.g., '*+2' will compute the minimum value of all the x data in the x data list and set the x-axis minmum value to this value plus 2.
+                    
+                'xmin' : None, float or str
+                    minimum value of the x-axis. Three different type of values can be given (default is None), see 'xmax' description for more information.
+                'ymax' : None, float or str
+                    maximum value of the y-axis. Three different type of values can be given (default is None), see 'xmax' description for more information.
+                'ymin' : None, float or str
+                    minimum value of the y-axis. Three different type of values can be given (default is None), see 'xmax' description for more information.
                 
             Position related keys
             ---------------------
@@ -1474,6 +1484,27 @@ def asManyPlots2(numPlot, datax, datay,
                 out.append(df)
         return out
     
+    def checkBoundStr(value, name):
+        
+        try:
+            datanum, value = value.split('+')
+            
+            if datanum != '*':
+                datanum    = int(datanum)
+            value          = float(value)
+        except:
+            raise ValueError('Incorrect format (%s) for %s. If a string is provided it must have a format similar to 1+-2 or *+4.' %(value, name))
+            
+        if isinstance(datanum, str) and datanum != '*':
+            raise ValueError('Mapping %s format into int and float failed. Check again that you provided the correct format. Cheers !' %name)
+        if datanum != '*' and datanum < 0:
+            raise ValueError('Given plot number for %s is negative. Only non-negative numbers are accepted.' %name)
+        if datanum != '*' and datanum > data.nplots-1:
+            raise ValueError('Given plot number (%d) for %s is too large. Expected a number below %d' %(datanum, name, data.plots-1))
+            
+        
+        return datanum, value
+        
     class gatherThingsUp:
         """
         An empty class used to store data within the same object.
@@ -1636,15 +1667,56 @@ def asManyPlots2(numPlot, datax, datay,
         # Other properties
         xaxis.pos, yaxis.pos, xaxis.min, xaxis.max, yaxis.min, yaxis.max = setListFromDict(axesProperties, keys=["xAxisPos", "yAxisPos", "xmin", "xmax", "ymin", "ymax"], default=["bottom", "left", None, None, None, None])
       
+    # Check minimum and maximum axes values first
+    xminPlot                 = '*' 
+    xminOffset               = 0
+    if isinstance(xaxis.min, str):
+        xminPlot, xminOffset = checkBoundStr(xaxis.min, 'xaxis.min')
+        xaxis.min            = None
+    
+    xmaxPlot                 = '*' 
+    xmaxOffset               = 0
+    if isinstance(xaxis.max, str):
+        xmaxPlot, xmaxOffset = checkBoundStr(xaxis.max, 'xaxis.max')
+        xaxis.max            = None
+        
+    yminPlot                 = '*' 
+    yminOffset               = 0
+    if isinstance(yaxis.min, str):
+        yminPlot, yminOffset = checkBoundStr(yaxis.min, 'yaxis.min')
+        yaxis.min            = None
+    
+    ymaxPlot                 = '*' 
+    ymaxOffset               = 0
+    if isinstance(yaxis.max, str):
+        ymaxPlot, ymaxOffset = checkBoundStr(yaxis.max, 'yaxis.max')
+        yaxis.max            = None
+        
+        
     # Set x and y bounds if not provided
     if xaxis.min is None:
-        xaxis.min = np.nanmin([np.nanmin(i) for i in data.x.data])
+        if xminPlot == '*':
+            xaxis.min = np.nanmin([np.nanmin(i) for i in data.x.data]) + xminOffset
+        else:
+            xaxis.min = np.nanmin(data.x.data[xminPlot]) + xminOffset
+            
     if xaxis.max is None:
-        xaxis.max = np.nanmax([np.nanmax(i) for i in data.x.data])
+        if xmaxPlot == '*':
+            xaxis.max = np.nanmax([np.nanmax(i) for i in data.x.data]) + xmaxOffset
+        else:
+            xaxis.max = np.nanmax(data.x.data[xmaxPlot]) + xmaxOffset
+            
     if yaxis.min is None:
-        yaxis.min = np.nanmin([np.nanmin(i) for i in data.y.data])
-    if yaxis.min is None:
-        yaxis.max = np.nanmax([np.nanmax(i) for i in data.y.data])
+        if yminPlot == '*':
+            yaxis.min = np.nanmin([np.nanmin(i) for i in data.y.data]) + yminOffset
+        else:
+            yaxis.min = np.nanmin(data.y.data[yminPlot]) + yminOffset
+            
+    if yaxis.max is None:
+        if ymaxPlot == '*':
+            yaxis.max = np.nanmax([np.nanmax(i) for i in data.y.data]) + ymaxOffset
+        else:
+            yaxis.max = np.nanmax(data.y.data[ymaxOffset]) + ymaxOffset
         
     #########################################
     #             Title properties          #
