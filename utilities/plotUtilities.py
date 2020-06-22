@@ -5,23 +5,24 @@ Created on Fri Oct 11 16:43:25 2019
 
 @author: Wilfried Mercier - IRAP
 
-Acknowledgments to Issa Lina - ENS who spotted a quite tough bug in asManyPlots when it computes the minimum of the cmap when one wants to jointly plots a scatter plot with any other kind of plot.
+With the help of Issa Lina - OBSPM
 
-Functions to automatise as much as possible plotting of data of any kind.
+Functions meant to automatise as much as possible plotting of data of any kind.
 """
 
 import time
 import numpy               as     np
 import matplotlib.pyplot   as     plt
 import matplotlib.gridspec as     gridspec
-from   matplotlib.colors   import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
-from   matplotlib.markers  import MarkerStyle
+import bottleneck          as     bn
+import colorama            as     col
 import astropy.io.fits     as     fits
 import subprocess          as     sub
+from   matplotlib.colors   import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
+from   matplotlib.markers  import MarkerStyle
 from   copy                import copy
 from   os.path             import isfile
 from   .coloredMessages    import *
-import colorama            as     col
 col.init()
 
 
@@ -49,13 +50,11 @@ def inspectSpectrum(file, extension=1):
         
         try:
             x, y  = map(int, map(float, output.decode().rstrip('\n').split(' ')))
-            ok    = True
+            print('Coordinates x y: %f %f' %(x, y))
         except:
-            print(errorMessage('Failed to map coordinates from %s into int values...' %output))
-            ok    = False
-        
-        print('Coordinates x y: %f %f' %(x, y))
-        return x, y, ok
+            raise IOError(errorMessage('Failed to map coordinates from %s into int values...' %output))
+
+        return x, y
     
     col.reinit()
     
@@ -73,8 +72,10 @@ def inspectSpectrum(file, extension=1):
         header = hdul[extension].header
         data   = hdul[extension].data
         
+    if 'EXTNAME' in header:
+        print('Extension name: ' + brightMessage(header['EXTNAME']))
+        
     if 'NAXIS3' not in header:
-        col.deinit()
         raise IOError(errorMessage('NAXIS3 key missing in cube header. Not possible to retrieve the number of channels...'))
     else:
         nbWv   = header['NAXIS3']
@@ -115,7 +116,7 @@ def inspectSpectrum(file, extension=1):
         
     print(brightMessage('Making figure...'))
     
-    f        = plt.figure(figsize=(12, 4))
+    f        = plt.figure(figsize=(10, 4))
     ax       = plt.subplot(111)
     plt.tick_params(axis='both', which='both', direction='in', left=True, right=True, bottom=True, top=True, labelbottom=True, labeltop=False, labelleft=True, labelright=False, labelsize=14)
     plt.xlabel('Wavelength [%s]' %wunit, fontsize=14)
@@ -127,14 +128,11 @@ def inspectSpectrum(file, extension=1):
     
     # Set cursor behaviour to pan
     sub.run('xpaset -p ds9 mode pan', shell=True)
-    prevx, prevy, t   = getxpaOutput()
+    prevx, prevy      = getxpaOutput()
     while True:
         
-        updateFig = False
-        x, y, code    = getxpaOutput()
-        if not code:
-            time.sleep(0.5)
-            continue
+        updateFig     = False
+        x, y          = getxpaOutput()
         
         # Update coordinates and plot if necessary
         if prevx != x:
@@ -145,7 +143,8 @@ def inspectSpectrum(file, extension=1):
             updateFig = True
         
         if updateFig:
-            ydata = data[:, x, y]
+            ydata = data[:, y, x]
+            ydata = bn.move_mean(ydata, window=8, min_count=1)
             spectrum.set_ydata(ydata)
             ax.set_ylim(np.nanmin(ydata), np.nanmax(ydata))
         
@@ -153,6 +152,7 @@ def inspectSpectrum(file, extension=1):
     
     col.deinit()
     return
+
 
 ################################################################################################
 #                                   Plots functions                                            #
