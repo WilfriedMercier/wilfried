@@ -60,6 +60,13 @@ def centreFromHSTtoMUSE(X, Y, imHST, imMUSE):
 class ListGroups:
     
     def __init__(self):
+        '''
+        Keep track of the measurements made to know the PSF evolution as a function of wavelength in each MUSE field
+
+        - FWHM within old fields were measured at two wavelengths ([OII] and [OIII] rest-frame), so that is why PSF FWHM values are given for these two wavelengths along with the redshift of the galaxies on which it was measured.
+        - For the new fields, FWHM was measured as the median of each star modelled at ~100 different wavelengths.
+          So, for these fields, slope and offset are directly given instead of given two measurements and a z value
+        '''
         
         # Rest-frame wavelengths in Angstrom
         self.OII  = 3729 
@@ -112,7 +119,14 @@ class ListGroups:
                                      'z'    : 0.731648}, 
                           '84-N'  : {'OII'  : 2.89,	
                                      'OIII' : 2.58, 
-                                     'z'    : 0.727755}
+                                     'z'    : 0.727755},
+                          
+                          '172'   : {'slope' : -2.99e-04,
+                                     'offset': 4.891},
+                          '35'    : {'slope' : -2.555e-04,
+                                     'offset': 4.934},
+                          '87'    : {'slope' : -2.306e-04,
+                                     'offset': 4.756}
                          }
         
         self.moffat = {'23'   : {'OII'  : 3.97, 
@@ -207,7 +221,7 @@ def computeFWHM(wavelength, field, model='Gaussian'):
     Mandatory parameters
     --------------------
         field : str
-            the group for each desired wavelength
+            field name for each desired wavelength
         wavelength : int
             the wavelength for which we want to compute the FWHM in Angstrom
             
@@ -226,22 +240,32 @@ def computeFWHM(wavelength, field, model='Gaussian'):
             psfValues = groups.gaussian[field]
         except KeyError:
             raise KeyError('Given field name %s is not correct. Correct values are %s.' %(field, str(list(groups.gaussian()))[1:-1]))
+            
     elif model.lower() == 'moffat':
         try:
             psfValues = groups.moffat[field]
         except KeyError:
             raise KeyError('Given field name %s is not correct. Correct values are %s.' %(field, str(list(groups.gaussian()))[1:-1]))
+            
     else:
         raise Exception("Model %s not recognised. Available values are %s." %(model, "Moffat or Gaussian"))
     
-    # Wavelength difference
-    deltaLambda = groups.OIII - groups.OII
     
-    #A factor of (1+z) must be applied to deltaLambda and OII lambda
+    ##############################################
+    #            Get slope and offset            #
+    ##############################################
     
-    slope  = (psfValues['OIII'] - psfValues['OII']) / (deltaLambda*(1+psfValues['z']))
-    offset = psfValues['OII']   - slope*groups.OII*(1+psfValues['z'])
+    if field not in ['172', '35', '87']:
+        # Wavelength difference
+        deltaLambda = groups.OIII - groups.OII
+        
+        #A factor of (1+z) must be applied to deltaLambda and OII lambda
+        
+        slope       = (psfValues['OIII'] - psfValues['OII']) / (deltaLambda*(1+psfValues['z']))
+        offset      = psfValues['OII']   - slope*groups.OII*(1+psfValues['z'])
+    else:
+        slope       = psfValues['slope'] 
+        offset      = psfValues['offset']
     
     FWHM = slope*wavelength+offset
-            
     return FWHM
