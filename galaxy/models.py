@@ -8,18 +8,19 @@ Created on Mon Sep 30 22:09:08 2019
 Useful functions for galaxy modelling and other related computation
 """
 
-import numpy                            as     np
-from   numpy.fft                        import fft2, ifft2
+import numpy                              as     np
+from   numpy.fft                          import fft2, ifft2
 
-import astropy.units                    as     u
-from astropy.modeling.functional_models import Sersic2D
+import astropy.units                      as     u
+from   astropy.modeling.functional_models import Sersic2D
 
-from   scipy.special                    import gammaincinv, gammainc, gamma
-from   scipy.optimize                   import root
-from   scipy.integrate                  import quad
-import scipy.ndimage                    as     nd
+from   scipy.special                      import gammaincinv, gammainc, gamma
+from   scipy.optimize                     import root
+from   scipy.integrate                    import quad
+import scipy.ndimage                      as     nd
 
-from   math                             import factorial, ceil
+from   math                               import factorial, ceil
+from   ..utilities.coloredMessages        import *
 
 ####################################################################################################################
 #                                           1D Sersic profiles                                                     #
@@ -193,7 +194,7 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     Mandatory inputs
     ----------------
         r : float/list of floats
-            position at which the profile is integrated. If a list if given, the position will be computed at each radius in the list.
+            position at which the profile is integrated. If a list is given, the position will be computed at each radius in the list.
         rb : float
             half-light radius of the bulge component
         rd : float
@@ -497,23 +498,30 @@ def ratioLuminosities1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag
 def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False, False], 
                         Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0.0, PA=0.0,
                         arcsecToGrid=0.03, fineSampling=81,
-                        PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}):
+                        PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'},
+                        verbose=True):
     """
-    Compute the ratio of the luminosity of a bulge+disk model at two radii either in the galaxy plane or in the sky plane.
+    Compute the ratio of the luminosity of a bulge+disk model between two radii either in the galaxy plane or in the sky plane.
     This function computes the ratio from 2D models (projected on the sky plane or not) with or without PSF convolution.
     
     How to use
     ----------
     
         Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. 
-        For instance, a ratio at radii 1" (in galaxy plane) and 3" (in sky plane) for a disk (n=1, Re=10", inclination=23°, PA=40°) + bulge (n=4, Re=20") decomposition would give something like
+        For instance, a ratio for a radius of 1 pixel (in galaxy plane) over 3 pixels (in sky plane) for a disk (n=1, Re=10 pixels, inclination=23°, PA=40°) + bulge (n=4, Re=20 pixels) decomposition would give something like
             >> ratioLuminosities(1, 3, 10, 20, magD=25, magB=30, offsetD=30, offsetB=30, inclination=23, PA=40, where=['galaxy', 'sky']})
     
    Caution
     -------
-        Radii should be given in pixel units. If you provide them in arcsec, you must update the arcsecToGrid value to 1 (since 1 pixel before oversampling will be equal to 1 arcsec). 
+        To avoid problems, provide all radii in the same pixel unit (e.g. HST or MUSE) and update the arcsecToGrid conversion factor for the PSF if necessary.
+        By default, the arcsecToGrid is tuned for HST resolution, so that the default PSF FWHM values (corresponding to MUSE PSF) will be converted into HST pixel values.
         
-    
+        If radii are given in say MUSE pixel values, then the MUSE conversion factor must be given for arcsecToGrid.
+        If radii are given in arcsec, then we are considering a grid with pixel size = 1", so that the conversion factor should be set to 1.
+        
+        The PSF FWHM and sigma values can be given in any relevant unit (arcsec, arcmin, degrees, radians, etc.). Please update the 'unit' key in the PSF dictionnary if you are providing values in arcsec.
+        Astropy will apply the corresponding conversion from the given unit to pixel values, so it is important to always give arcsecToGrid in units of arcsec/pixel and nothing else.
+        
     Mandatory inputs
     ----------------
         listn : list of float/int
@@ -521,11 +529,11 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
         r1 : float
             first radius where the luminosity will be computed
         r2 : float
-            second radius where the luminoisty will be computed
+            second radius where the luminoisty will be computed (same unit as r1)
         Rb : float
-            disk half-light radius
+            disk half-light radius (same unit as r1)
         Rd : float
-            bulge half-light radius
+            bulge half-light radius (same unit as r1)
         
     Optional inputs
     ---------------
@@ -554,6 +562,8 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
         PSF : dict
             Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
             For now, only 2D Gaussians are accepted as PSF.
+        verbose : bool
+            whether to print info on stdout or not
         where : list of 2 str
             where the luminosity is computed. For each radius two values are possible: either 'galaxy' if the luminosity is to be computed in the galaxy plane or 'sky' if it is to be computed in the sky plane. Default is 'galaxy' for both radius.
          
@@ -624,7 +634,7 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
     
     X1, Y1, mod1     = bulgeDiskOnSky(size, size, Rd, Rb, Id=Id, Ib=Ib, inclination=inc[0], PA=pa[0],
                                       fineSampling=fineSampling, PSF=PSF, noPSF=noPSF[0], arcsecToGrid=arcsecToGrid,
-                                      samplingZone=samplingZone)
+                                      samplingZone=samplingZone, verbose=verbose)
     
     size             = 2*ceil(r2)
     if size%2  == 0:
@@ -637,7 +647,7 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
         
     X2, Y2, mod2     = bulgeDiskOnSky(size, size, Rd, Rb, Id=Id, Ib=Ib, inclination=inc[1], PA=pa[1],
                                       fineSampling=fineSampling, PSF=PSF, noPSF=noPSF[1], arcsecToGrid=arcsecToGrid,
-                                      samplingZone=samplingZone)
+                                      samplingZone=samplingZone, verbose=verbose)
     
     # We compute the luminosities then
     where1           = X1**2+Y1**2 <= r1**2
@@ -823,7 +833,8 @@ def jacobian_re_equation(re, gal, b1=None, b4=None, noStructuredArray=False, mag
     prefactor = 10**(-magD/2.5) * (b1/Rd)**2 * np.exp(-b1*re/Rd) + 10**(-magB/2.5) * (b4/Rb)**8 * np.exp(-b4*(re/Rb)**(1.0/4.0)) / (4.0*gamma(8))
     return [prefactor*re]
 
-def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructuredArray=False, magD=None, magB=None, Rd=None, Rb=None, norm=1.0, stretch=1.0):
+def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructuredArray=False, magD=None, magB=None, Rd=None, Rb=None, offsetMagD=None, offsetMagB=None, 
+                                          norm=1.0, stretch=1.0):
     """
     A semi-analytical equation whose zero should give the value of the half-light radius when two Sersic profiles (with n=1 and n=4) are combined together.
     This is meant to be used with a zero search algorithm (dichotomy or anything else).
@@ -849,6 +860,10 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
             normalisation factor to divide the equation (used to improve convergence)
         noStructuredArray : boolean
             if False, the structured array gal will be used. If False, values of the magnitudes and half-light radii of the two components must be given.
+        offsetMagD : float/list of floats
+            magnitude offset used in the magnitude system for the disk component
+        offsetMagB : float/list of floats
+            magnitude offset used in the magnitude system for the bulge component
         Rb : float/list of floats
             half-light radius of the bulge components of the galaxies
         Rd : float/list of floats
@@ -862,6 +877,18 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
     b1, b4 = check_bns([1, 4], [b1, b4])
     magD, magB, Rd, Rb = fromStructuredArrayOrNot(gal, magD, magB, Rd, Rb, noStructuredArray)
     
+    # Check mag offsets first
+    if offsetMagD is not None and offsetMagB is not None:
+        if not isinstance(offsetMagD, float) and not isinstance(offsetMagD, int):
+            raise TypeError(errorMessage('Disk magnitude is neither float not int. ') + 'Please provide a correct type. Cheers !')
+            
+        if not isinstance(offsetMagB, float) and not isinstance(offsetMagB, int):
+            raise TypeError(errorMessage('Bulge magnitude is neither float not int. ') + 'Please provide a correct type. Cheers !')
+    else:
+        print(brightMessage('At least one of the mag offset was not given. Assuming both are equal.'))
+        offsetMagB     = 0
+        offsetMagD     = 0
+    
     # Convert strecth factor to float to avoid numpy casting operation errors
     re = re*float(stretch)
     
@@ -871,7 +898,7 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
         if re < 0:
             re = 0
     
-    return ( 10**(-magD/2.5)*(gammainc(2, b1*(re/Rd)) - 0.5) + 10**(-magB/2.5)*(gammainc(8, b4*(re/Rb)**(1.0/4.0)) - 0.5) ) / norm
+    return ( 10**((offsetMagD-magD)/2.5)*(gammainc(2, b1*(re/Rd)) - 0.5) + 10**((offsetMagB-magB)/2.5)*(gammainc(8, b4*(re/Rb)**(1.0/4.0)) - 0.5) ) / norm
 
 
 def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=None, magB=None, Rd=None, Rb=None, normalise=True, stretch=5e-2,
@@ -994,7 +1021,6 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
         if guess is None:
             guess    = np.copy(Rd)*0+10
     
-    
     #################################################
     #            Declare output arrays              #
     #################################################
@@ -1006,24 +1032,30 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
     
     #compute re from the re equation instead of integrating
     if not integration:
-        
-        #define the normalisation of the equation
-        if normalise:
-            norm     = 0.5*(10**(-magD/2.5) + 10**(-magB/2.5))
-        else:
-            norm     = 1.0
             
         if jacobian == 'numerical':
             jacobian = False
         elif jacobian == 'analytical':
             jacobian = jacobian_re_equation
+            
+        # Check mag offset values
+        if offsetMagB is None or offsetMagD is None:
+            print(brightMessage('At least one of the mag offset values was not provided. Assuming both are equal.'))
+            offsetMagB = 0
+            offsetMagD = 0
+            
+        #define the normalisation of the equation
+        if normalise:
+            norm     = 0.5*(10**((offsetMagD-magD)/2.5) + 10**((offsetMagB-magB)/2.5))
+        else:
+            norm     = 1.0
         
         #solve by finding the zero of the function
         for g, md, mb, rd, rb, nm in zip(guess, magD, magB, Rd, Rb, norm):
             sol      = root(the_re_equation_for_2_Sersic_profiles, g, 
-                           args=(None, b1, b4, True, md, mb, rd, rb, nm, stretch), 
-                           jac=jacobian,
-                           method=method, options={'xtol':xtol, 'maxfev':200})
+                            args=(None, b1, b4, True, md, mb, rd, rb, offsetMagD, offsetMagB, nm, stretch), 
+                            jac=jacobian,
+                            method=method, options={'xtol':xtol, 'maxfev':200})
             
             # solution tested in the_re_equation is multiplied by the stretch factor, so that the best-solution*stretch gives the_re_equation \approx 0
             # thus the best-solution needs to be multiplied by the stretch factor at the end to recover the true values
@@ -1161,6 +1193,27 @@ def compute_bn(n):
     return res
 
 
+def compute_R22(Red, b1=None):
+    '''
+    Compute R22 given an array of disk effective radii.
+
+    Mandatory parameter
+    -------------------
+        Red : float or numpy array of floats
+            disk effective radii
+            
+    Optional parameters
+    -------------------
+        b1 : float
+            Usual b1 factor appearing in exponential disc profiles. If not provided, its value will be computed.
+
+    Return R22.
+    '''
+    
+    b1, = check_bns([1], [b1])
+    return 2.2*Red/b1
+
+
 def intensity_at_re(n, mag, re, offset, bn=None):
     """
     Computes the intensity of a given Sersic profile with index n at the position of the half-light radius re. This assumes to know the integrated magnitude of the profile, as well as the offset used for the magnitude definition.
@@ -1258,7 +1311,7 @@ def whereCentralIntensityDrops(n, Re, factor=1.0, bn=None):
 
 def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0, PA=0, combine=True,
                    PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, noPSF=False, arcsecToGrid=0.03,
-                   fineSampling=1, samplingZone={'where':'centre', 'dx':2, 'dy':2}, skipCheck=False):
+                   fineSampling=1, samplingZone={'where':'centre', 'dx':2, 'dy':2}, skipCheck=False, verbose=True):
     '''
     Generate a bulge + (sky projected) disk 2D model (with PSF convolution).
     
@@ -1326,6 +1379,8 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
             x-axis centre position. Default is None so that nx//2 will be used.
         y0 : float/int
             y-axis centre position. Default is None so that ny//2 will be used.
+        verbose : bool
+            whether to print text on stdout or not. Default is True.
         
     Return X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition.
     '''
@@ -1390,10 +1445,10 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
             fineSampling   = 1
         
         if combine:
-            model          = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling)
+            model          = PSFconvolution2D(model, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling, verbose=verbose)
         else:
             for pos, mod in enumerate(model):
-                model[pos] = PSFconvolution2D(mod, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling)
+                model[pos] = PSFconvolution2D(mod, model=PSF, arcsecToGrid=arcsecToGrid/fineSampling, verbose=verbose)
                 
     return X, Y, model
 
@@ -1586,7 +1641,7 @@ def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, 
     return X, Y, intensity
 
 
-def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}):
+def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, verbose=True):
     '''
     Convolve using fast FFT a 2D array with a pre-defined (2D) PSF.
     
@@ -1608,6 +1663,8 @@ def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX
         model : dict
             Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
             For now, only 2D Gaussians are accepted as PSF.
+        verbose : bool
+            whether to print text on stdout or not. Default is True.
 
     Return a new image where the convolution has been performed.                                                                                                                                                                                       
     '''
@@ -1639,8 +1696,9 @@ def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX
             else:
                 out.append(df)
         return out
-    
-    print('Convoluting')
+
+    if verbose:
+        print('Convoluting')
     
     # Retrieve PSF parameters and set default values if not provided
     if model['name'].lower() == 'gaussian2d':
