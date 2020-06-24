@@ -1096,6 +1096,8 @@ def asManyPlots2(numPlot, datax, datay,
                     
             Text properties
             ---------------
+                'rcParams' : dict
+                    advanced properties to pass to matplotlib rcParams
                 'textsize' : int
                     overall text size in points. Default is 24.
                     
@@ -1519,7 +1521,7 @@ def asManyPlots2(numPlot, datax, datay,
     layout, layout.ticks, layout.line, layout.grid = gatherThingsUp(), gatherThingsUp(), gatherThingsUp(), gatherThingsUp()
     if isType(generalProperties, dict, 'generalProperties'):
         
-        layout.textsize, = setListFromDict(generalProperties, keys=['textsize'], default=[24])
+        layout.textsize, layout.rcParams = setListFromDict(generalProperties, keys=['textsize', 'rcParams'], default=[24, None])
         
         # general ticks properties
         layout.ticks.labelSize, layout.ticks.size, layout.ticks.direction = setListFromDict(generalProperties, keys=['ticksLabelsSize', 'ticksSize', 'tickDirection'], default=[layout.textsize-2, 7, 'in'])
@@ -1533,6 +1535,9 @@ def asManyPlots2(numPlot, datax, datay,
         # General line properties
         layout.line.width, layout.line.style = setListFromDict(generalProperties, keys=['linewidth', 'linestyle'], default=[2, '-'])
     
+    if layout.rcParams is not None:
+        plt.rcParams.update(**layout.rcParams)
+        
         
     ################################################################################################
     #                  Checking datax and datay are lists with a similar shape                     #
@@ -1716,7 +1721,7 @@ def asManyPlots2(numPlot, datax, datay,
         if ymaxPlot == '*':
             yaxis.max = np.nanmax([np.nanmax(i) for i in data.y.data]) + ymaxOffset
         else:
-            yaxis.max = np.nanmax(data.y.data[ymaxOffset]) + ymaxOffset
+            yaxis.max = np.nanmax(data.y.data[ymaxPlot]) + ymaxOffset
         
     #########################################
     #             Title properties          #
