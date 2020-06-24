@@ -1193,9 +1193,9 @@ def compute_bn(n):
     return res
 
 
-def compute_R22(Red, b1=None):
+def compute_R22(Red, dRed=None, b1=None):
     '''
-    Compute R22 given an array of disk effective radii.
+    Compute R22 (and its error) given an array of disk effective radii.
 
     Mandatory parameter
     -------------------
@@ -1206,12 +1206,18 @@ def compute_R22(Red, b1=None):
     -------------------
         b1 : float
             Usual b1 factor appearing in exponential disc profiles. If not provided, its value will be computed.
+        dRed : float or numpy array of floats
+            error estimate on the effective radii
 
-    Return R22.
+    Return R22 (and its error).
     '''
     
     b1, = check_bns([1], [b1])
-    return 2.2*Red/b1
+    
+    if dRed is None:
+        return 2.2*Red/b1
+    else:
+        return 2.2*Red/b1, 2.2*dRed/b1
 
 
 def intensity_at_re(n, mag, re, offset, bn=None):
