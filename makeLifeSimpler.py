@@ -11,23 +11,6 @@ A set of useful functions to make life simpler when analysing data.
 import numpy as np
 
 
-def linear_fit(x, A, offset):
-    """
-    Compute a linear relation A*x+offset.
-    
-    Input
-    -----
-    x : numpy array
-        input data
-    A : float
-        Slope coefficient
-    offset : float
-        x=0 Y-coordinate
-        
-    Returns a numpy array A*x+offset.
-    """
-    return A*x+offset
-
 def convertCoords(coordinates, inSize=(200.0, 200.0), outSize=(31.0, 31.0), conversionFactor=1.0):
     '''
     Transforms the coordinates of a/many point(s) from one image to another
@@ -56,89 +39,7 @@ def convertCoords(coordinates, inSize=(200.0, 200.0), outSize=(31.0, 31.0), conv
             coordinates[num][key] *= outSize[pos]/inSize[pos]*conversionFactor
     return coordinates
 
-def computeGroupFWHM(wavelength, groups, verbose=True, model='Moffat'):
-    '''
-    Computes the FWHM at a given observed wavelength assuming a linearly decreasing relation for the FWHM with wavelength (calibrated on OII and OIII measurements at different redshifts) stars measurements for each group in the COSMOS field.
-    
-    Input
-    -----
-    groups : string or list of strings
-        the group for each desired wavelength
-    model : string
-        the model to use, either Moffat or Gaussian
-    verbose : boolean
-        whether to print a message on screen with the computed FWHM or not
-    wavelength : integer
-        the wavelength(s) at which we want to compute the FWHM (must be in Angstroms)
-    
-    Returns a list of tuples with the group and the computed FWHM.
-    '''
-    
-    #structure is as folows : number of the group, o2 FWHM, o3hb FWHM, mean redshift of the group
-    if model == 'Moffat':
-        listGroups = {'23' : [3.97, 3.29, 0.850458], '26' : [3.16, 2.9, 0.439973], '28' : [3.18, 3.13, 0.950289],
-                      '32-M1' : [2.46, 1.9, 0.753319], '32-M2' : [2.52, 2.31, 0.753319], '32-M3' : [2.625, 2.465, 0.753319],
-                      '51' : [3.425, 2.95, 0.386245], '61' : [3.2, 3.02, 0.364009], '79' : [2.895, 2.285, 0.780482], 
-                      '84-N' : [2.49, 2.21, 0.727755], '30_d' : [2.995, 2.68, 0.809828], '30_bs' : [2.745, 2.45, 0.809828],
-                      '84' : [2.835, 2.715, 0.731648], '34_d' : [2.89, 2.695, 0.857549], '34_bs' : [np.nan, np.nan, 0.85754],
-                      '114' : [3.115, 2.81, 0.598849]}
-    elif model == "Gaussian":
-        listGroups = {'23' : [4.28, 3.65, 0.850458], '26' : [3.68, 3.34, 0.439973], '28' : [3.62, 3.26, 0.950289],
-                      '32-M1' : [2.975,	2.58,  0.753319], '32-M2' : [3.16,	2.54, 0.753319], '32-M3' : [3.61,	3.3, 0.753319],
-                      '51' : [3.75, 3.28, 0.386245], '61' : [3.915,	3.34, 0.364009], '79' : [3.29,	2.695, 0.780482],
-                      '84-N' : [2.89,	2.58, 0.727755], '30_d' : [3.485,	3.11, 0.809828], '30_bs' : [3.185,	2.815, 0.809828],
-                      '84' : [3.24,	3.055, 0.731648], '34_d' : [3.31,	2.995, 0.857549], '34_bs' : [3.3,	3.003, 0.85754],
-                      '114' : [3.705,	3.315, 0.598849]}
-    else:
-        raise Exception("Model %s not recognised. Available values are %s" %(model, ["Moffat", "Gaussian"]))
-    
-    #lines wavelengths in Anstrom
-    OIIlambda   = 3729 
-    OIIIlambda  = 5007
-    deltaLambda = OIIIlambda - OIIlambda
-    
-    try:
-        np.shape(wavelength)[0]
-    except:
-        wavelength = [wavelength]
-    try:
-        np.shape(groups)[0]
-    except:
-        groups = [groups]
-        
-    #check wavelength and groups have the same size
-    if len(wavelength) != len(groups):
-        exit("Wavelength and group lists do not have the same length. Please provide exactly one group for each wavelength you want to compute.")
-    
-    #checking given group names exist
-    for pos, name in enumerate(groups):
-        name        = str(name)
-        groups[pos] = name
-        
-        try:
-            listGroups[name]
-        except KeyError:
-            exit("Given group %s is not correct. Possible values are %s" %(name, listGroups.keys()))
-            
-    outputList = []
-    for wv, gr in zip(wavelength, groups):
-        #lines wavelength are rest-frame wavelengths, but FWHM measurements were made at a certain redshift
-        #A factor of (1+z) must be applied to deltaLambda and OII lambda
-        grVals = listGroups[gr]
-        slope  = (grVals[1] - grVals[0])/(deltaLambda*(1+grVals[2]))
-        offset = grVals[0] - slope*OIIlambda*(1+grVals[2])
-        
-        FWHM = slope*wv+offset
-        outputList.append((gr, FWHM))
-        
-        if verbose:
-            print("FWHM at wavelength", wv, "angstroms in group", gr, "is", FWHM)
-            
-    return outputList
-        
-    
-    
-    
+
 
 def printSimpleStat(catalog, unit=None):
     """
