@@ -13,13 +13,48 @@ import numpy             as     np
 import astropy.io.ascii  as     asci
 import astropy.io.fits   as     fits
 import astropy.constants as     ct
-from   .MUSE             import compute_lsfw
+from   ..utilities.coloredMessages import *
+from   .MUSE                       import compute_lsfw
+
+##########################################################################################################
+#                                         Kinematical properties                                         #
+##########################################################################################################
+
+def velocityAtR(radius, Vt, Rt, Rlast):
+    '''
+    Assuming a linear ramp model, try to compute the velocity at a single radius.
+
+    Parameters
+    ----------
+        radius : float/int
+            position where the velocity must be computed (in the same units as Rt and Rlast)
+        Vt : float
+            plateau velocity
+        Rt : float
+            radius of transition between the inner linear slope and the outer plateau
+        Rlast : float
+            distance from the centre of the furthest pixel used in the fit
+
+    Return the computed velocity in units of Vt and a boolean value indicating whether the computed value is reliable or not.
+    '''
+
+    # If Rt<Rlast, there is no issue, but when Rt>Rlast, the value is much more unconstrained
+    if Rt <= Rlast:
+        ok           = True
+        if radius < Rt:
+            velocity = radius/Rt*Vt
+        else:
+            velocity = Vt
+    else:
+        print(errorMessage('Rt > Rlast by %.1f' %(Rt-Rlast)))
+        ok           = False
+        velocity     = radius/Rt*Vt
+        
+    return velocity, ok
 
 ####################################################################################################################
 #                                                Analysis part                                                     #
 ####################################################################################################################
-
-'''This module is to be used to clean kinematics map created using camel.'''
 
 def apply_mask(mask, image):
     '''
