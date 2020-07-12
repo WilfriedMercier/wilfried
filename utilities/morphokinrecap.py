@@ -155,8 +155,20 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
             list of MUSE flux maps file names
         hst : str
             file name of the GALFIT output fits file containing the image as the 1st extension, the model as the 2nd extension and the residuals as the 3rd
+        lsf : float
+            MUSE LSF FWHM at the galaxy redshift
+        name : str
+            galaxy name
         offset : list of two int/float
-            offsets to subtract from the x and y reference pixel coordinates
+            offsets to subtract from the x and y reference pixel coordinates (in the same pixel coordinates as in the fits files)
+        pa : int/float
+            position angle in degrees
+        psf : float
+            MUSE PSF FWHM at the galaxy redshift
+        r22 : float
+            2.2*disk scalelength in HST pixels
+        rc : float
+            ???
         sig : str
             velocity dispersion map file name
         sigm : str
@@ -170,89 +182,108 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
         vfm : str
             velocity field model file name
         vfr : str
-            velocity field residuals file name
+            velocity field 1residuals file name
+        vsys : float
+            galaxy systemic velocity in km/s
+        xc : int/float
+            x-axis centre position in MUSE pixels
+        yc : int/float
+            y-axis centre position in MUSE pixels
+        z : float
+            galaxy redshift
             
     Optional parameters
     -------------------
+        deltapa : int/float
+            offset to apply to the galaxy position angle. Default is -42°. WHY ?
         HST_smooth_sigma : float
             smoothing value (Gaussian std) used for Gaussian smoothing the HST image. Default is 3.0 HST pixels.
         MUSE_smooth_sigma : float
             smoothing value (Gaussian std) used for Gaussian smoothing the MUSE flux data. Default is 1.0 MUSE pixel.
     '''
     
+    ##################################################
+    #                  Getting data                  #
+    ##################################################
+    
     # HST data
     with fits.open(hst) as hsthdu:
-        hstimhdu  = hsthdu[1]
-        hstmodhdu = hsthdu[2]
-        hstreshdu = hsthdu[3]
+        hstimhdu         = hsthdu[1]
+        hstmodhdu        = hsthdu[2]
+        hstreshdu        = hsthdu[3]
     
-    hstimmap      = hstimhdu.data
-    hstimhdr      = hstimhdu.header
+    hstimmap             = hstimhdu.data
+    hstimhdr             = hstimhdu.header
     
     # Get and apply x and y offsets
-    offstr        = hstimhdr['OBJECT']
-    boundaries    = offstr.replace('[', ' ').replace(',', ' ').replace(']', ' ').replace(':', ' ').split()
-    offx          = np.int(boundaries[0]) - 1
-    offy          = np.int(boundaries[2]) - 1
+    offstr               = hstimhdr['OBJECT']
+    boundaries           = offstr.replace('[', ' ').replace(',', ' ').replace(']', ' ').replace(':', ' ').split()
+    offx                 = np.int(boundaries[0]) - 1
+    offy                 = np.int(boundaries[2]) - 1
     
-    hstimhdr['CRPIX1'] += offset[1] - offx
-    hstimhdr['CRPIX2'] += offset[0] - offy
+    hstimhdr['CRPIX1']  += offset[1] - offx
+    hstimhdr['CRPIX2']  += offset[0] - offy
     
-    hstmodmap     = hstmodhdu.data
-    hstmodhdr     = copy.deepcopy(hstimhdr)
+    hstmodmap            = hstmodhdu.data
+    hstmodhdr            = copy.deepcopy(hstimhdr)
     
-    hstresmap     = hstreshdu.data
-    hstreshdr     = copy.deepcopy(hstimhdr)
+    hstresmap            = hstreshdu.data
+    hstreshdr            = copy.deepcopy(hstimhdr)
     
     # Opening and combining MUSE flux maps
     if isinstance(flux, str):
-        flux      = [flux]
+        flux             = [flux]
     
     with fits.open(flux[0]) as fluxhdu:
-        fluxmap   = fluxhdu[0].data * 0
-        fluxhdr   = fluxhdu[0].header
+        fluxmap          = fluxhdu[0].data * 0
+        fluxhdr          = fluxhdu[0].header
         
     for file in flux:
         with fits.open(file) as temphdu:
-            fluxmap += temphdu[0].data
+            fluxmap     += temphdu[0].data
             
-    pixarea       = (fluxhdr['CD1_1'] * 3600) ** 2  # arcsec**2 
-    fluxmap      /= pixarea
+    pixarea              = (fluxhdr['CD1_1'] * 3600) ** 2  # arcsec**2 
+    fluxmap             /= pixarea
     
     # SNR file
     with fits.open(snr) as snrhdu:
-        snrmap    = snrhdu[0].data
-        snrhdr    = snrhdu[0].header
+        snrmap           = snrhdu[0].data
+        snrhdr           = snrhdu[0].header
         
     # Velocity field (CAMEL map)
     with fits.open(vf) as vfhdu:
-        vfmap     = vfhdu[0].data
-        vfhdr     = vfhdu[0].header
+        vfmap            = vfhdu[0].data
+        vfhdr            = vfhdu[0].header
     
     # Velocity field model
     with fits.open(vfm) as vfmhdu:
-        vfmmap    = vfmhdu[0].data
-        vfmhdr    = vfmhdu[0].header
+        vfmmap           = vfmhdu[0].data
+        vfmhdr           = vfmhdu[0].header
     
     # Velocity field residuals
     with fits.open(vfr) as vfrhdu:
-        vfrmap    = vfrhdu[0].data
-        vfrhdr    = vfrhdu[0].header
+        vfrmap           = vfrhdu[0].data
+        vfrhdr           = vfrhdu[0].header
     
     # Velocity dispersion map (CAMEL)
     with fits.open(sig) as sighdu:
-        sigmap = sighdu[0].data
-        sighdr = sighdu[0].header
+        sigmap           = sighdu[0].data
+        sighdr           = sighdu[0].header
 
     # Velocity dispersion map model    
     with fits.open(sigm) as sigmhdu:
-        sigmmap = sigmhdu[0].data
-        sigmhdr = sigmhdu[0].header
+        sigmmap          = sigmhdu[0].data
+        sigmhdr          = sigmhdu[0].header
 
     # Velocity dispersion map residuals  
     with fits.open(sigr) as sigrhdu:
-        sigrmap = sigrhdu[0].data
-        sigrhdr = sigrhdu[0].header
+        sigrmap          = sigrhdu[0].data
+        sigrhdr          = sigrhdu[0].header
+    
+    
+    #########################################################
+    #                 Setting up parameters                 #
+    #########################################################
     
     # Defining wcs
     fluxhdr['WCSAXES']   = 2
@@ -277,278 +308,252 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     facres               = 1
     
     # Get MUSE and HST pixel scales in arcsec as the geometric mean of the x and y pixel scales
-    pix                  = np.sqrt(fluxhdr['CD1_1']**2 + fluxhdr['CD1_2']**2) * 3600
+    pix                  = np.sqrt(fluxhdr['CD1_1']**2  + fluxhdr['CD1_2'] **2) * 3600
     pixh                 = np.sqrt(hstimhdr['CD1_1']**2 + hstimhdr['CD1_2']**2) * 3600
     
     # Smoothing data
     data                 = gaussian_filter(hstimmap, HST_smooth_sigma)
-    fluxcont             = gaussian_filter(fluxmap, MUSE_smooth_sigma)
+    fluxcont             = gaussian_filter(fluxmap,  MUSE_smooth_sigma)
     
-    # positions of center and major axis
+    # Major axis (in MUSE pixel)
+    r22m                 = r22 * pixh / pix
+    rcas                 = rc * pix
     
-    r22m = r22 * pixh / pix  # in Muse pixels
-    rcas = rc * pix
+    # X and y positions for the major axis, taking into account PA, given in MUSE pixel coordinates
+    xma1                 = xc + r22m * np.sin(np.radians(pa+deltapa))
+    yma1                 = yc - r22m * np.cos(np.radians(pa+deltapa))
+    xma2                 = xc - r22m * np.sin(np.radians(pa+deltapa))
+    yma2                 = yc + r22m * np.cos(np.radians(pa+deltapa))
     
-    xma1 = xc + r22m * np.sin(np.radians(pa+deltapa))
-    yma1 = yc - r22m * np.cos(np.radians(pa+deltapa))
-    xma2 = xc - r22m * np.sin(np.radians(pa+deltapa))
-    yma2 = yc + r22m * np.cos(np.radians(pa+deltapa))
+    # Get world coordinates (ra, dec pairs) for the centre and the two end points of the PA line
+    ra0, dec0            = fluxwcs.wcs_pix2world([xc, xma1, xma2], [yc, yma1, yma2], 0)
     
-    #print(xma1, xma2, yma1, yma2, pa)
-    
-    ra0, dec0 = fluxwcs.wcs_pix2world([xc, xma1, xma2], [yc, yma1, yma2], 0)
-    
-    # Def of size of images
-    #if rcas < 2.0:
-        #szim = 2.3  # arcsec
-        #ticklabels = np.arange(-2, 3, 1)
+    # Defining the size of images and ticks labels in arcsec
     if rcas < 2.5:
-        szim = 2.8  # arcsec
+        szim       = 2.8
         ticklabels = np.arange(-2, 3, 1)
     else:
-        szim = 3.3  # arcsec
+        szim       = 3.3
         ticklabels = np.arange(-3, 4, 1)
-    #else:
-        #szim = 3.8  # arcsec
-        #ticklabels = np.arange(-3, 4, 1)
     
-    #ticklabels = np.arange(-2, 3, 1)
+    # Converting ticks into MUSE pixel values
+    xticks         = ticklabels/pix + xc
+    yticks         = ticklabels/pix + yc
     
-    xticks = ticklabels/pix + xc
-    yticks = ticklabels/pix + yc
+    # Defining lower and upper axes bounds in MUSE pixels (used for MUSE images)
+    xmin           = xc - szim / pix
+    xmax           = xc + szim / pix
+    ymin           = yc - szim / pix
+    ymax           = yc + szim / pix
     
-    xmin = xc - szim / pix
-    xmax = xc + szim / pix
     
-    ymin = yc - szim / pix
-    ymax = yc + szim / pix
+    ##########################################
+    #                Plotting                #
+    ##########################################
     
-    # Initializing figure
-    figx = 7
-    width_ratios = [1,1,1]
+    # Initializing figure ratio
+    figx          = 7
+    width_ratios  = [1,1,1]
     height_ratios = [1,1,1,0.075]
-    figy = figx * (np.sum(height_ratios) + 0.075) / np.sum(width_ratios)
-    fig = plt.figure(figsize=(figx, figy))  # sums of width in gridspec + intervals in subplots_adjust, eventually multiply by some factor
+    figy          = figx * (np.sum(height_ratios) + 0.075) / np.sum(width_ratios)
+    fig           = plt.figure(figsize=(figx, figy))  # sums of width in gridspec + intervals in subplots_adjust, eventually multiply by some factor
     
-    num = name.split('_')[-2]
-    grid = name.split('_')[0].split('-')[0]
+    # Printing galaxy name and redshift
+    num           = name.split('_')[-2]
+    grid          = name.split('_')[0].split('-')[0]
     if 'B' in name:
-        grid += 'b'
-    #print(name, num, grid)
+        grid     += 'b'
             
-    #plt.figtext(0.2, 0.25, 'ID ' + name.split('_o2')[0].split('_')[-1])
-    plt.figtext(0.2, 1.01, grid + '-' + num, fontsize=16)
+    plt.figtext(0.2, 1.01, grid + '-' + num,        fontsize=16)
     plt.figtext(0.4, 1.01, r'$z={:.5f}$'.format(z), fontsize=16)
     
-    nlines = 4
-    ncols = 3
-    gs = gridspec.GridSpec(nlines, ncols, width_ratios=width_ratios, height_ratios=height_ratios)
+    # Setting up the grid
+    nlines        = 4
+    ncols         = 3
+    gs            = gridspec.GridSpec(nlines, ncols, width_ratios=width_ratios, height_ratios=height_ratios)
     
-    ## Valeurs HST
-    print('std res: ', np.std(hstresmap))
-    # std ~ 30
-    vmin0 = 3e1
-    hstimmap += vmin0
-    hstmodmap += vmin0
-    hstresmap += vmin0
-    vmin = 1.5e1
-    vmax = 1.5e3
+    ## HST values
+    print('std res: ', np.std(hstresmap)) # std ~ 30
+    vmin0         = 3e1
+    hstimmap     += vmin0
+    hstmodmap    += vmin0
+    hstresmap    += vmin0
+    vmin          = 1.5e1
+    vmax          = 1.5e3
     
-    xh, yh = hstimwcs.wcs_world2pix(ra0, dec0, 0)
+    # Recover the MUSE centre position and PA endpoints but in HST pixel coordinates this time
+    xh, yh        = hstimwcs.wcs_world2pix(ra0, dec0, 0)
+    xch           = xh[0]
+    ych           = yh[0]
     
-    xch = xh[0]
-    ych = yh[0]
+    xmah1         = xh[1]
+    xmah2         = xh[2]
+    ymah1         = yh[1]
+    ymah2         = yh[2]
     
-    xmah1 = xh[1]
-    xmah2 = xh[2]
-    ymah1 = yh[1]
-    ymah2 = yh[2]
-    
-    xminh = xch - szim / pixh
-    xmaxh = xch + szim / pixh
-    
-    yminh = ych - szim / pixh
-    ymaxh = ych + szim / pixh
+    # Axes limits in HST pixels
+    xminh         = xch - szim / pixh
+    xmaxh         = xch + szim / pixh
+    yminh         = ych - szim / pixh
+    ymaxh         = ych + szim / pixh
 
-    axim, imim = plot_hst(gs[0], hstimmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=True, title=True, fluxcont=fluxcont)
-    axmod, immod = plot_hst(gs[0 + ncols], hstmodmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
-    axres, imres = plot_hst(gs[0 + 2 * ncols], hstresmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
+
+    #############################################################################
+    #                    HST plots (image, model, residuals)                    #
+    #############################################################################
     
-    #-------------
+    axim, imim    = plot_hst(gs[0],             hstimmap,  xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=True,  title=True, fluxcont=fluxcont)
+    axmod, immod  = plot_hst(gs[0 + ncols],     hstmodmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
+    axres, imres  = plot_hst(gs[0 + 2 * ncols], hstresmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
+    
     # HST colorbar
-    #-------------
-    axcbhst = plt.subplot(gs[0 + 3 * ncols])
-    
-    pos_axres = axres.get_position()
-    pos_axcbhst = axcbhst.get_position()
+    axcbhst       = plt.subplot(gs[0 + 3 * ncols])
+    pos_axres     = axres.get_position()
+    pos_axcbhst   = axcbhst.get_position()
     axcbhst.set_position([pos_axres.bounds[0], pos_axcbhst.bounds[1], pos_axres.width, pos_axcbhst.height])
-    
-    #stepvf = np.ceil(vmax/3/10) * 10
-    #stepvf = np.ceil(vmax/3/15) * 15
-    #ticksvf = np.arange(-4 * stepvf,vmax + 1, stepvf)
-    
-    cb = plt.colorbar(imres, orientation='horizontal', cax=axcbhst)
+
+    cb            = plt.colorbar(imres, orientation='horizontal', cax=axcbhst)
     cb.set_label(r'arbitrary (log)')
-    #cb.ax.set_xticklabels(np.int64(ticksvf),rotation=45)
-    #print(cb.ax.get_xticklabels()[:])
-    #cb.ax.set_xticklabels([], rotation=45)
     cb.ax.set_xticklabels([], rotation=0)
-    
     cb.ax.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=False)
     
-    ##-------------
-    ## Flux map
-    ##-------------
-    #axflux = plt.subplot(gs[0 + 2 * ncols])
     
-    #fluxmap[fluxmap == 0] = np.nan
-    #vmin = np.nanmin(fluxmap)
-    #vmax = np.nanmax(fluxmap)
+    ######################################################################
+    #                              Flux map                              #
+    ######################################################################
     
-    #axflux.set_xlim(xmin, xmax)
-    #axflux.set_ylim(ymin, ymax)
+    if withFlux:
+        # Setting axes limits
+        axflux                = plt.subplot(gs[0 + 2 * ncols])
+        fluxmap[fluxmap == 0] = np.nan
+        vmin                  = np.nanmin(fluxmap)
+        vmax                  = np.nanmax(fluxmap)
+        axflux.set_xlim(xmin, xmax)
+        axflux.set_ylim(ymin, ymax)
+        
+        imfluxmap             = axflux.imshow(fluxmap, norm=LogNorm(vmin=vmin, vmax=vmax), cmap=plt.cm.gray_r, origin='lower', interpolation='nearest')
+        
+        # Setting ticks and ticks labels
+        axflux.set_xticks(xticks)
+        axflux.set_xticklabels(-ticklabels)
+        axflux.set_yticks(yticks)
+        axflux.set_yticklabels(ticklabels)
+        
+        ml                    = AutoMinorLocator(4)
+        axflux.xaxis.set_minor_locator(ml)
+        axflux.yaxis.set_minor_locator(ml)
+        axflux.set_xlabel(r"$\Delta \alpha~('')$")
+        
+        axflux.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=True)
+        axflux.xaxis.set_label_position("top")
+        axflux.set_title(r'[O\textsc{ ii}] flux')
+        
+        # Flux colorbar
+        axcbfl                = plt.subplot(gs[3 * ncols])
+        pos_axfl              = axflux.get_position()
+        pos_axcbfl            = axcbfl.get_position()
+        axcbfl.set_position([pos_axfl.bounds[0], pos_axcbfl.bounds[1], pos_axfl.width, pos_axcbfl.height])
+        cb                    = plt.colorbar(imfluxmap, orientation='horizontal', cax=axcbfl)
+        cb.set_label(r'arbitrary (log)')
+        cb.ax.set_xticklabels([], rotation=45)
+        cb.ax.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=False)
+        
     
-    #imfluxmap = axflux.imshow(fluxmap, norm=LogNorm(vmin=vmin, vmax=vmax), cmap=plt.cm.gray_r, origin='lower', interpolation='nearest')
+    #########################################################################
+    #                                SNR map                                #
+    #########################################################################
     
-    #axflux.set_xticks(xticks)
-    #axflux.set_xticklabels(-ticklabels)
-    #ml = AutoMinorLocator(4)
-    #axflux.xaxis.set_minor_locator(ml)
-    #axflux.set_xlabel(r"$\Delta \alpha~('')$")
-    ##axfluxt.set_xlabel(r"$\Delta \alpha~('')$")
-    
-    #axflux.set_yticks(yticks)
-    #axflux.set_yticklabels(ticklabels)
-    #ml = AutoMinorLocator(4)
-    #axflux.yaxis.set_minor_locator(ml)
-    ##axflux.set_ylabel(r"$\Delta \delta~('')$")
-    
-    #axflux.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=True)
-    #axflux.xaxis.set_label_position("top")
-    ##axflux.yaxis.set_label_position("right")
-    #axflux.set_title(r'[O\textsc{ ii}] flux')
-    
-    ##plt.rcParams['xtick.labelbottom'] = True
-    
-    ##-------------
-    ## Flux colorbar
-    ##-------------
-    #axcbfl = plt.subplot(gs[3 * ncols])
-    
-    #pos_axfl = axflux.get_position()
-    #pos_axcbfl = axcbfl.get_position()
-    #axcbfl.set_position([pos_axfl.bounds[0], pos_axcbfl.bounds[1], pos_axfl.width, pos_axcbfl.height])
-    #print(pos_axcbfl.height, pos_axcbfl.bounds[1])
-    
-    #cb = plt.colorbar(imfluxmap, orientation='horizontal', cax=axcbfl)
-    #cb.set_label(r'arbitrary (log)')
-    ##cb.ax.set_xticklabels(np.int64(ticksvf),rotation=45)
-    ##print(cb.ax.get_xticklabels()[:])
-    #cb.ax.set_xticklabels([], rotation=45)
-    
-    #cb.ax.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=False)
-    
-    ##-------------
-    ## SNR map
-    ##-------------
-    
-    #axsnr = plt.subplot(gs[2], projection=snrwcs)
-    ##axsnr = fig.add_subplot(3, 5, 3, projection=snrwcs)
-    
-    #vmin = np.nanmin(snrmap)
-    #vmax = np.nanmax(snrmap)
-    
-    #axsnr.set_xlim(xmin, xmax)
-    #axsnr.set_ylim(ymin, ymax)
-    
-    #imsnrmap = axsnr.imshow(snrmap, norm=LogNorm(vmin=vmin, vmax=vmax), cmap=plt.cm.gray_r, origin='lower', interpolation='nearest')  # Logarithmic scale
-    #ra = axsnr.coords['ra']
-    #dec = axsnr.coords['dec']
-    ##dec.set_ticklabel(rotation=90)
-    #ra.set_ticklabel_visible(False)
-    #dec.set_ticklabel_visible(False)
-    ##dec.set_axislabel('Declination (J2000)')
-    ##ra.set_axislabel('Right ascention (J2000)', minpad=0.4)
-    
-    ##cb = plt.colorbar(imsnrmap, orientation='horizontal', fraction=0.04, pad=0.)
-    ##cbarC.set_label(---)
+    if withSNR:
+        axsnr = plt.subplot(gs[2], projection=snrwcs)
+        
+        vmin      = np.nanmin(snrmap)
+        vmax      = np.nanmax(snrmap)
+        axsnr.set_xlim(xmin, xmax)
+        axsnr.set_ylim(ymin, ymax)
+        
+        # Logarithmic scale
+        imsnrmap  = axsnr.imshow(snrmap, norm=LogNorm(vmin=vmin, vmax=vmax), cmap=plt.cm.gray_r, origin='lower', interpolation='nearest')
+        ra        = axsnr.coords['ra']
+        dec       = axsnr.coords['dec']
+        ra.set_ticklabel_visible(False)
+        dec.set_ticklabel_visible(False)
 
     
-    #-------------
-    # VF map
-    #-------------
-    axvf = plt.subplot(gs[1])
-    val = np.max([np.abs(np.nanmax(vfmmap - vsys)), np.abs(np.nanmin(vfmmap - vsys))])
+    ########################################################################
+    #                                VF map                                #
+    ########################################################################
+    
+    axvf        = plt.subplot(gs[1])
+    val         = np.max([np.abs(np.nanmax(vfmmap - vsys)), np.abs(np.nanmin(vfmmap - vsys))])
     
     if val < 32.5:
-        val = 32.5
+        val     = 32.5
     
-    vmin = -val
-    vmax = val
-    
+    # Setting axes limits
+    vmin        = -val
+    vmax        = val
     axvf.set_xlim(xmin, xmax)
     axvf.set_ylim(ymin, ymax)
     
-    imvf = axvf.imshow(vfmap - vsys, vmin=vmin, vmax=vmax, cmap=plt.cm.seismic, origin='lower', interpolation='nearest')
+    imvf        = axvf.imshow(vfmap - vsys, vmin=vmin, vmax=vmax, cmap=plt.cm.seismic, origin='lower', interpolation='nearest')
     
+    # Setting ticks and ticks labels
     axvf.set_xticks(xticks)
     axvf.set_xticklabels(-ticklabels)
-    ml = AutoMinorLocator(4)
+    ml          = AutoMinorLocator(4)
     axvf.xaxis.set_minor_locator(ml)
     axvf.set_xlabel(r"$\Delta \alpha~('')$")
     
     axvf.set_yticks(yticks)
     axvf.set_yticklabels(ticklabels)
-    ml = AutoMinorLocator(4)
     axvf.yaxis.set_minor_locator(ml)
-    #axvf.set_ylabel(r"$\Delta \delta~('')$")
     
     axvf.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=True)
     axvf.xaxis.set_label_position("top")
-    #axvf.yaxis.set_label_position("right")
     axvf.set_title(r'Velocity field')
     
-    #trans = axvf.get_transform(hstreswcs)
-    #axvf.contour(data, levels=np.logspace(-3, 0., 7), colors='k', transform=trans)
-    #cont_levels = np.logspace(np.log10(300), np.log10(8000), 5)
+    # Plotting flux contours in log scale
     cont_levels = np.logspace(np.log10(250), np.log10(8000), 6)
-    #ctr = axvf.contour(np.log10(fluxcont), levels=np.log10(cont_levels), cmap='brg')
-    ctr = axvf.contour(np.log10(fluxcont), levels=np.log10(cont_levels), colors='0.5')
+    ctr         = axvf.contour(np.log10(fluxcont), levels=np.log10(cont_levels), colors='0.5')
     
+    # Plotting centre and PA
     axvf.plot([xc], [yc], 'g+', mew=1)
     axvf.plot([xma1, xma2], [yma1, yma2], 'g')
     
-    print('PSF FWHM: ',  psf)
-    circle = Circle(xy=(xmin + psf*1.4, ymin + psf*1.4), radius=psf, edgecolor='0.8', fc='0.8', lw=0.5)
+    # Plotting PSF on the bottom left corner
+    print('PSF FWHM: ', psf)
+    circle      = Circle(xy=(xmin + psf*1.4, ymin + psf*1.4), radius=psf, edgecolor='0.8', fc='0.8', lw=0.5)
     axvf.add_patch(circle)
     
-    #-------------
-    # VF model
-    #-------------
-    axvfm = plt.subplot(gs[1 + ncols])
     
+    ##############################################################
+    #                          VF model                          #
+    ##############################################################
+    
+    axvfm       = plt.subplot(gs[1 + ncols])
+    
+    # Axes limits
     axvfm.set_xlim(xmin, xmax)
     axvfm.set_ylim(ymin, ymax)
     
-    imvfm = axvfm.imshow(vfmmap - vsys, vmin=vmin, vmax=vmax, cmap=plt.cm.seismic, origin='lower', interpolation='nearest')
+    imvfm       = axvfm.imshow(vfmmap - vsys, vmin=vmin, vmax=vmax, cmap=plt.cm.seismic, origin='lower', interpolation='nearest')
     
+    # Set ticks and ticks labels
     axvfm.set_xticks(xticks)
     axvfm.set_xticklabels(-ticklabels)
-    ml = AutoMinorLocator(4)
     axvfm.xaxis.set_minor_locator(ml)
-    #axvfm.set_xlabel(r"$\Delta \alpha~('')$")
     
     axvfm.set_yticks(yticks)
     axvfm.set_yticklabels(ticklabels)
-    ml = AutoMinorLocator(4)
     axvfm.yaxis.set_minor_locator(ml)
-    #axvfm.set_ylabel(r"$\Delta \delta~('')$")
     
     axvfm.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=False)
     
-    #-------------
-    # VF residuals
-    #-------------
+    
+    ######################################################################
+    #                            VF residuals                            #
+    ######################################################################
+    
     axvfr = plt.subplot(gs[1 + 2 * ncols])
     #axvfr = plt.subplot(gs[2 + 2 * ncols], projection=vfwcs)
     #axvfr = fig.add_subplot(3, 5, 14, projection=vfwcs)
