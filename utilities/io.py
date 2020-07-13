@@ -9,6 +9,7 @@ Created on Mon Jan  6 10:34:54 2020
 Functions related to input-output interaction.
 """
 
+import astropy.table.table
 from   astropy.table          import Table
 from   astropy.io.votable     import is_votable, writeto, parse
 import numpy.lib.recfunctions as     rec
@@ -69,52 +70,51 @@ def loadVOtable(name, outputType='Table', num=0, pedantic=False, use_names_over_
     if not isinstance(num, int):
         raise TypeError('Please only provide an integer value for the table number. Cheers !')
     
-    outputType = outputType.lower()
+    outputType     = outputType.lower()
     if outputType not in ['votable', 'tableelement', 'array', 'table']:
         outputType = 'votable'
 
-    # Convert data to the given format        
-    data = parse(name, pedantic=pedantic)
+    # Convert data to the given format
+    if is_VOtable(name):
+        data           = parse(name, pedantic=pedantic)
     
     if outputType != 'votable':
-        data = data.get_table_by_index(num)
+        data       = data.get_table_by_index(num)
         
         if outputType == 'array':
-            data = data.array
+            data   = data.array
         elif outputType == 'table':
-            data = data.to_table(use_names_over_ids=use_names_over_ids)
+            data   = data.to_table(use_names_over_ids=use_names_over_ids)
     
     return data
 
 
-def move_bad_fields_to_bottom(array, orderedFieldList, orderedTypeList):
-    """
-    Move a list of fields from a structured array to the bottom and change their type.
+def VOtableColumns(name, fullInfo=False):
+    '''
+    Show the column names in the VOtable object.
+
+    Parameters
+    ----------
+        name : str
+            VOtable file name
     
-    Mandatory inputs
-    ----------------                                                
-        array : numpy structured array
-            array to modify               
-        orderedFieldList : list
-            list of field names to move and to change type 
-        orderedTypeList : list
-            list of new types for the fields (same order as orderedFieldList)
-                           
-    Return an array with some fields moved to the bottom and with different types.
-    """
+    Optional parameters
+    -------------------
+        fullInfo : bool
+            whether to show full information or just the names. Default is False.
+    '''
     
-    outArray = array.copy()
-    for name, typ in zip(orderedFieldList, orderedTypeList):
-        
-        #Remove field of interest from the array
-        tmpArray = rec.rec_drop_fields(outArray, name)
-        
-        #Append the same field at the end of the array with the right data type
-        outArray = rec.rec_append_fields(tmpArray, name, array[name].copy(), dtypes=typ)
-    return outArray
+    data = loadVOtable(name)
+    
+    if fullInfo:
+        print(data.info)
+    else:
+        print(data.colnames)
+    
+    return
 
 
-def write_array_to_vot(array, outputFile, isTable=False):
+def write_array_to_vot(array, outputFile):
     """
     Write an array or an astropy table into a VOtable file.
     
@@ -124,14 +124,9 @@ def write_array_to_vot(array, outputFile, isTable=False):
             The array to write into the file
         outputFile : str
             The file to write the array into
-        
-    Optional inputs
-    ---------------
-        isTable : boolean
-            Whether the array is an astropy table or not. Default is False.
     """
     
-    if not isTable:
+    if not isinstance(array, astropy.table.table.Table):
         array = Table(data=array)
         
     writeto(array, outputFile)
@@ -226,3 +221,28 @@ def add_new_array_to_previous(newArray, fullFileName, fields, oldArray=None, isF
     return outArray
 
 
+def move_bad_fields_to_bottom(array, orderedFieldList, orderedTypeList):
+    """
+    Move a list of fields from a structured array to the bottom and change their type.
+    
+    Mandatory inputs
+    ----------------                                                
+        array : numpy structured array
+            array to modify               
+        orderedFieldList : list
+            list of field names to move and to change type 
+        orderedTypeList : list
+            list of new types for the fields (same order as orderedFieldList)
+                           
+    Return an array with some fields moved to the bottom and with different types.
+    """
+    
+    outArray = array.copy()
+    for name, typ in zip(orderedFieldList, orderedTypeList):
+        
+        #Remove field of interest from the array
+        tmpArray = rec.rec_drop_fields(outArray, name)
+        
+        #Append the same field at the end of the array with the right data type
+        outArray = rec.rec_append_fields(tmpArray, name, array[name].copy(), dtypes=typ)
+    return outArray
