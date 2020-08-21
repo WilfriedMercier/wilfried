@@ -11,18 +11,19 @@ Functions meant to automatise as much as possible plotting of data of any kind.
 """
 
 import time
-import numpy               as     np
-import matplotlib.pyplot   as     plt
-import matplotlib.gridspec as     gridspec
-import bottleneck          as     bn
-import colorama            as     col
-import astropy.io.fits     as     fits
-import subprocess          as     sub
-from   matplotlib.colors   import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
-from   matplotlib.markers  import MarkerStyle
-from   copy                import copy
-from   os.path             import isfile
-from   .coloredMessages    import *
+import numpy                              as     np
+import matplotlib.pyplot                  as     plt
+import matplotlib.gridspec                as     gridspec
+import bottleneck                         as     bn
+import colorama                           as     col
+import astropy.io.fits                    as     fits
+import subprocess                         as     sub
+from   matplotlib.colors                  import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
+from   astropy.modeling.functional_models import Gaussian2D
+from   matplotlib.markers                 import MarkerStyle
+from   copy                               import copy
+from   os.path                            import isfile
+from   .coloredMessages                   import *
 col.init()
 
 
@@ -155,7 +156,7 @@ def inspectSpectrum(file, extension=1):
 
 
 ################################################################################################
-#                                   Plots functions                                            #
+#                                   Galfit models plots                                        #
 ################################################################################################
 
 
@@ -376,7 +377,130 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
     plt.savefig(pdfOut, bbox_inches='tight')
     plt.close()
     
+
+#########################################################################
+#                    Automated plotting utilities                       #
+#########################################################################
     
+def effective_local_density(numPlot, X, Y, xerr, yerr, xmin=None, xmax=None, ymin=None, ymax=None, dx=1, dy=1, nx=None, ny=None):
+    '''
+    Generate an effective local density plot. The idea is that, given a set of measurements for which we have values of the data points scatter in X and Y, rather than just plotting those values with error bars, we can instead try to compute the likelihood of having data points in a particular location.
+    
+    Information
+    -----------
+        The likelihood is represented as an effective 2D density, that is in points/whather X and Y axes unit is^2.
+        If we are located infinitely far away from the bulk of the points, then we expect the density to drop to 0.
+        On the other hand, if all the measurements are located at the same location with 0 error assigned to them, then we expect to have a density maximised as N/box size of a point.
+    
+        This gives an idea of how clustered along a certain relation the points could be given their error bars.
+        
+        However, error bars are only indicators of how wrong the measurement could be. They do not strictly show the lower and upper bounds of the measurement.
+        Usually, error bars represent the 1 sigma width of a Gaussian distribution centered at that measurement location.
+        Therefore, we are assuming that this is the case here.
+
+    Mandatory parameters
+    --------------------
+        X : numpy array of float/int
+            x position of the data points
+        xerr : numpy array of float/int
+            x axis error on the data points
+        Y : numpy array of float/int
+            y position of the data  points
+        yerr : numpy array of float/int
+            y axis error on the data points
+   
+    Optional parameters
+    -------------------
+    dx : float/int
+        x axis step used to draw the grid. If nx is provided, this parameter is overriden. Default is 1.
+    dy : float/int
+        y axis step used to draw the grid. If ny is provided, this parameters is overriden. Defualt is 1.
+    nx : int
+        number of cells along the x axis. Default is None so that dx is used instead to compute this value.
+    ny : int
+        number of cells along the y axis. Default is NOne so that dy is used instead to compute this value.
+    xmin : float/int
+        minimum x axis value for the x axis of the plot. Default is None so that the data points values will be used as bound.
+    xmax : float/int
+        maximum x axis value for the x axis of the plot. Default is None so that the data points values will be used as bound.
+    ymin : float/int
+        minimum y axis value for the y axis of the plot. Default is None so that the data points values will be used as bound.
+    ymax : float/int
+        maximum y axis value for the y axis of the plot. Default is None so that the data points values will be used as bound.
+        
+    Return matplotlib main axis.
+    '''
+    
+    # Generate subplot
+    typ = type(numPlot)
+    if (typ == list or typ == np.ndarray) and len(numPlot)>=3:
+        ax1 = plt.subplot(numPlot[0], numPlot[1], numPlot[2])
+    else:
+        ax1 = plt.subplot(numPlot)
+    
+    for i in [X, Y, xerr, yerr]:
+        if not isinstance(i, np.ndarray):
+            raise TypeError('One of the mandatory parameters is type %s but mandatory parameters must be numpy arrays only. Cheers !' %type(i))
+        
+    if xmin is None:
+        xmin  = np.nanmin(X)
+    if xmax is None:
+        xmax  = np.nanmax(X)
+    if ymin is None:
+        ymin  = np.nanmin(Y)
+    if ymax is None:
+        ymax  = np.nanmax(Y)
+    
+    if np.nan in [xmin, xmax, ymin, ymax]:
+        raise ValueError('One in xmin, xmax, ymin, ymax is nan, which may be due to having an array full of np.nan. Please check your arrays. Cheers !')
+        
+    # Add a small error on data if error is 0 or np.nan, otherwise the Gaussian becomes a Dirac
+    xerr0   = xerr==0
+    yerr0   = yerr==0
+    xerrnan = np.isnan(xerr)
+    yerrnan = np.isnan(yerr)
+    
+    """
+    if np.any(xerr0) or np.any(xerrnan):
+        xerr[np.logical_or(xerr0, xerrnan)] = np.nanmin(xerr[np.logical_and(~xerrnan, ~xerr0)])
+    
+    
+    if np.any(yerr0) or np.any(yerrnan):
+        yerr[np.logical_or(yerr0, yerrnan)] = np.nanmin(yerr[np.logical_and(~yerrnan, ~yerr0)])
+    """
+    
+    # Generate the Gaussians
+    gaussians = [Gaussian2D(amplitude=1.0, x_mean=x, y_mean=y, x_stddev=xe, y_stddev=ye) for x, y, xe, ye in zip(X, Y, xerr, yerr)]
+        
+    # Generate the grid
+    if nx is None:
+        nx    = (xmax - xmin)//dx + 1
+    if ny is None:
+        ny    = (ymax - ymin)//dy + 1
+    
+    xarr      = np.linspace(xmin, xmax, nx)
+    yarr      = np.linspace(ymin, ymax, ny)
+    
+    XX, YY    = np.meshgrid(xarr, yarr)
+    
+    # Compute the sum of Gaussians at each grid point
+    ZZ        = np.sum([i(XX, YY) for i in gaussians], axis=0)
+    
+    # Compute the most likely path of Y given X
+    YgX_x, YgX_y = np.asarray([[x[0], y[np.argmax(z)]] for x, y, z in zip(XX.T, YY.T, ZZ.T)]).T
+    
+    # Compute the most likely path of X given Y
+    XgY_x, XgY_y = np.asarray([[x[np.argmax(z)], y[0]] for x, y, z in zip(XX, YY, ZZ)]).T
+    
+    # Plotting
+    ret       = plt.contourf(XX, YY, ZZ, levels=nx//2, cmap='hot')
+    
+    plt.plot(YgX_x, YgX_y, linestyle='--', color='blue', linewidth=2, label=r'$\lbrace (x,y) | y(x) = \max_Y ( Z(X=x, Y) ) \rbrace$')
+    plt.plot(XgY_x, XgY_y, linestyle='-', color='magenta', linewidth=2.5, label=r'$\lbrace (x,y) | x(y) = \max_X ( Z(X, Y=y) ) \rbrace$')
+    
+    return ax1, col, ret
+    
+
 def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hideAllTicks=False, cmap='plasma', colorbar=True,
                   norm='log', cut=None, xlim=None, ylim=None, title=None, filled='both'):
     '''
@@ -465,10 +589,6 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
     
     return ax, ret
 
-
-######################################################################################################
-#                    asMany utilities: including histograms, plots and scatter                       #
-######################################################################################################
 
 def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYlabel=False, hideYticks=False, hideXticks=False,
                 placeYaxisOnRight=False, xlabel="", ylabel='', color='black',
@@ -627,363 +747,10 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
     return ax1, n, bns, ptchs
 
                 
-def asManyPlots(numPlot, datax, datay, hideXlabel=False, hideYlabel=False, hideYticks=False,
-                placeYaxisOnRight=False, xlabel="", ylabel='', marker='o', color='black', plotFlag=True,
-                label='', zorder=None, textsize=24, showLegend=False, legendTextSize=24, linestyle='None',
-                ylim=[None, None], xlim=[None, None], cmap='Greys', cmapMin=None, cmapMax=None,
-                showColorbar=False, locLegend='best', tickSize=24, title='', titlesize=24, 
-                colorbarOrientation='vertical', colorbarLabel=None, colorbarTicks=None, colorbarTicksLabels=None,
-                colorbarLabelSize=24, colorbarTicksSize=24, colorbarTicksLabelsSize=24,
-                outputName=None, overwrite=False, tightLayout=True, linewidth=3,
-                fillstyle='full', unfilledFlag=False, alpha=1.0,
-                noCheck=False, legendNcols=1, removeGrid=False, markerSize=16, 
-                legendMarkerFaceColor=None, legendMarkerEdgeColor=None, legendLineColor=None,
-                norm=None, xscale=None, yscale=None):
-    """
-    Function which plots on a highly configurable subplot grid either with pyplot.plot or pyplot.scatter. A list of X and Y arrays can be given to have multiple plots on the same subplot.
-    This function has been developed to be used with numpy arrays or list of numpy arrays (structured or not). Working with astropy tables or any other kind of data structure might or might not work depending on its complexity and behaviour. 
+def asManyPlots(*args, **kwargs):
+    '''Alias for asManyPlots2. See asManyPlots2 docstring for more details.'''
     
-    Input
-    -----
-    alpha : float, list of floats
-        indicates the transparency of the data points (1 is plain, 0 is invisible)
-    cmap : matplotlib colormap
-        the colormap to use for the scatter plot only
-    cmapMin: float
-        the minmum value for the colormap
-    cmapMax: float
-        the maximum value for the colormap
-    color : list of strings/chars/RGBs/lists of values
-        color for the data. For scatter plots, the values must be in numpy array format. For plots, it can either be a string, char or RGB value.
-        WARNING: it is highly recommanded to give the color as a list. For instance, if plotting only one plot of black color, you should preferentially use ['black'] rather than 'black'. For, say one plot and one scatter plot, you have to use ['black', yourNumpyArray].
-    colorbarLabel : string
-        the name to be put next to the colorbar
-    colorbarLabelSize : int
-        size of the label next to the colorbar
-    colorbarOrientation : 'vertical' or 'horizontal'
-        specifies if the colorbar must be place on the right or on the bottom of the graph
-    colorbarTicks : list of int/float
-        specifies the values taken by the ticks which will be printed next to the colorbar
-    colorbarTicksLabels : list of string
-        specifies the labels associated to the chosen ticks values
-    colorbarTicksLabelsSize : int
-        size of the labels associated to the chosen ticks
-    colorbarTicksSize : int
-        size of the chosen ticks
-    datax: numpy array, list of numpy arrays
-        the x data
-    datay : numpy array, list of numpy arrays 
-        the y data
-    fillstyle : string, list of strings
-        which fillstyle use for the markers (see matplotlib fillstyles for more information)
-    hideXlabel : boolean
-        whether to hide the x label or not
-    hideYlabel : boolean
-        whether to hide the y label or not
-    hideYticks : boolean
-        whether to hide the y ticks or not
-    label : string
-        legend label for the data
-    legendLineColor : list of strings/chars/RGBs
-        the line color in the legend. If None, uses the plot color (for plots) and black (for scatter plots) as default.
-    legendMarkerEdgeColor : list of strings/chars/RGBs
-        the color of the edges of each marker in the legend. If None, uses the plot color (for plots) and black (for scatter plots) as default.
-    legendMarkerFaceColor : list of strings/chars/RGBs
-        the face color (color of the main area) of each marker in the legend. If None, uses the plot color (for plots) and black (for scatter plots) as default.
-    legendNcols : int
-        number of columns in the legend
-    legendTextSize : int
-        size for the legend
-    linestyle : string, list of strings for many plots
-        which line style to use
-    linewidth : float
-        the width of the line
-    locLegend : string, int
-        position where to place the legend
-    marker : string, char, list of both for many plots
-        the marker to use for the data
-    markerSize : float or list of floats for scatter plots
-        the size of the marker
-    noCheck : boolean
-        whether to check the given parameters all have the relevant shape or not
-    norm : Matplotlib Normalize instance
-        the norm of the colormap (for log scale colormaps for instance)
-    numPlot : int (3 digits)
-        the subplot number
-    outputName : str
-        name of the file to save the graph into. If None, the plot is not saved into a file
-    overwrite : boolean
-        whether to overwrite the ouput file or not
-    placeYaxisOnRight : boolean
-        whether to place the y axis of the plot on the right or not
-    plotFlag : boolean, list of booleans for many plots
-        if True, plots with pyplot.plot function. If False, use pyplot.scatter
-    removeGrid : boolean, list of booleans for many plots
-        whether to remove the grid or not
-    textsize : int
-        size for the labels
-    showColorbar : boolean
-        whether to show the colorbar for a scatter plot or not
-    showLegend : boolean
-        whether to show the legend or not
-    tickSize : int
-        size of the ticks on both axes
-    tightLayout : boolean
-        whether to use bbox_inches='tight' if tightLayout is True or bbox_inches=None otherwise
-    unfilledFlag : boolean, list of booleans
-        whether to unfill the points' markers or not
-    xlabel : string
-        the x label
-    xlim : list of floats/None
-        the x-axis limits to use. If None is specified as lower/upper/both limit(s), the minimum/maximum/both values are used
-    xscale : string
-        the scale to use (most used are "linear", "log", "symlog") for the x axis
-    ylabel : string
-        the y label
-    ylim : list of floats/None
-        the y-axis limits to use. If None is specified as lower/upper/both limit(s), the minimum/maximum/both values are used
-    yscale : string
-        the scale to use (most used are "linear", "log", "symlog") for the y axis
-    zorder : int, list of ints for many plots
-        whether the data will be plot in first position or in last. The lower the value, the earlier it will be plotted
-        
-    Return current axis and last plot.
-    """
-    
-    try:
-        len(numPlot)
-        ax1 = plt.subplot(numPlot[0], numPlot[1], numPlot[2])
-    except:
-        ax1 = plt.subplot(numPlot)
-    ax1.yaxis.set_ticks_position('both')
-    ax1.xaxis.set_ticks_position('both')
-    ax1.set_title(title, size=titlesize)
-    ax1.tick_params(which='both', direction='in', labelsize=tickSize)
-    
-    if not removeGrid:
-        plt.grid(zorder=1000)
-    
-    #Checking shape consistency between datax and datay
-    shpX = np.shape(datax)
-    shpY = np.shape(datay)
-    if shpX != shpY:
-        exit("X data was found to have shape", shpX, "but Y data seems to have shape", shpY, ".Exiting.")
-        
-    #If we have an array instead of a list of arrays, transform it to the latter
-    try:
-        np.shape(datax[0])[0]
-    except:
-        datax = [datax]
-        datay = [datay]
-        
-    lx = len(datax)
-        
-    #If we have only one marker/color/zorder/linestyle/label/plotFlag, transform them to a list of the relevant length
-    if not noCheck:
-        try:
-            np.shape(linestyle)[0]
-        except:
-            linestyle = [linestyle]*lx
-    try:
-        np.shape(marker)[0]
-    except:
-        marker = [marker]*lx
-    try:
-        np.shape(markerSize)[0]
-    except:
-        markerSize = [markerSize]*lx
-        
-    try: 
-        np.shape(legendMarkerFaceColor)[0]
-    except:
-        legendMarkerFaceColor = [legendMarkerFaceColor]*lx
-        
-    try: 
-        np.shape(legendMarkerEdgeColor)[0]
-    except:
-        legendMarkerEdgeColor = [legendMarkerEdgeColor]*lx
-        
-    try: 
-        np.shape(legendLineColor)[0]
-    except:
-        legendLineColor = [legendLineColor]*lx
-    
-    if len(color) ==  1:
-        color = [color]*lx
-     
-    if zorder is None:
-        zorder = range(1, lx+1)
-        
-    try:
-        np.shape(plotFlag)[0]
-    except:
-        plotFlag = [plotFlag]*lx
-    try:
-        np.shape(fillstyle)[0]
-    except:
-        fillstyle = [fillstyle]*lx
-    try:
-        np.shape(unfilledFlag)[0]
-    except:
-        unfilledFlag = [unfilledFlag]*lx
-    try:
-        np.shape(alpha)[0]
-    except:
-        alpha = [alpha]*lx
-    try:
-        np.shape(label)[0]
-    except:
-        if lx>1:
-            if showLegend:
-                print("Not enough labels were given compared to data dimension. Printing empty strings instead.")
-            label = ''
-        label = [label]*lx
-    
-#     print(color, marker, zorder, linestyle, plotFlag, label)
-        
-    #hiding labels if required
-    if hideXlabel:
-        ax1.axes.get_xaxis().set_ticklabels([])
-    else:
-        plt.xlabel(xlabel, size=textsize)    
-    if hideYticks:
-        ax1.axes.get_yaxis().set_ticklabels([])
-    if not hideYlabel:    
-        plt.ylabel(ylabel, size=textsize)
-    
-    #Place Y axis on the right if required
-    if placeYaxisOnRight:
-        ax1.yaxis.tick_right()
-        ax1.yaxis.set_label_position("right")
-
-    #Plotting
-    tmp     = []
-    sct     = None
-    
-    #list of handels for the legend
-    handles = []
-    
-    # Compute cmap minimum and maximum if there are any scatter plots (it is ineficient because color list contains lists and strings, so we cannot convert it easily to an array to use vectorized function)
-    tmp = []
-    for col, flag in zip(color, np.array(plotFlag)==False):
-        if flag:
-            tmp.append(col)
-    if len(tmp) > 0:
-        cmapMin = np.min(tmp)
-        cmapMax = np.max(tmp)
-    
-    for dtx, dty, mrkr, mrkrSz, clr, zrdr, lnstl, lbl, pltFlg, fllstl, lph, nflldFlg in zip(datax, datay, marker, markerSize, color, zorder, linestyle, label, plotFlag, fillstyle, alpha, unfilledFlag):
-        edgecolor = clr
-        if nflldFlg:
-            facecolor = "none"
-        else:
-            facecolor=clr
-        
-        if pltFlg:
-            tmp.append(plt.plot(dtx, dty, label=lbl, marker=mrkr, color=clr, zorder=zrdr, alpha=lph,
-                           linestyle=lnstl, markerfacecolor=facecolor, markeredgecolor=edgecolor,
-                           markersize=mrkrSz, linewidth=linewidth))
-            handles.append(copy(tmp[-1][0]))
-        else:
-            print(clr, cmap)
-            markerObject = MarkerStyle(marker=mrkr, fillstyle=fllstl)
-            sct = plt.scatter(dtx, dty, label=lbl, marker=markerObject, zorder=zrdr, 
-                              cmap=cmap, norm=norm, vmin=cmapMin, vmax=cmapMax, alpha=lph, c=clr, s=mrkrSz)
-            print(sct)
-            tmp.append(sct)
-            
-            if nflldFlg:
-                sct.set_facecolor('none')
-        
-    if np.any(np.logical_not(plotFlag)) and showColorbar:
-        col = plt.colorbar(sct, orientation=colorbarOrientation)
-        col.ax.tick_params(labelsize=colorbarTicksLabelsSize)
-        
-        if colorbarLabel is not None:
-            col.set_label(colorbarLabel, size=colorbarLabelSize)
-        if colorbarTicks is not None:
-            col.set_ticks(colorbarTicks)
-        if colorbarTicksLabels is not None:
-            if colorbarOrientation == 'vertical':
-                col.ax.set_yticklabels(colorbarTicksLabels, size=colorbarTicksLabelsSize)
-            elif colorbarOrientation == 'horizontal':
-                col.ax.set_xticklabels(colorbarTicksLabels, size=colorbarTicksLabelsSize)
-            
-    if showLegend:
-        
-        def setDefault(data, default):
-            for num, i in enumerate(data):
-                if i is None:
-                    data[num] = default
-            return data
-        
-        if pltFlg:
-            for h, mkfclr, mkeclr, lc, c in zip(handles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor, color):
-                mkfclr, mkeclr, lc = setDefault([mkfclr, mkeclr, lc], c)
-                
-                h.set_color(lc)
-                h.set_markerfacecolor(mkfclr)
-                h.set_markeredgecolor(mkeclr)
-            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, ncol=legendNcols, handles=handles)
-            
-        if not pltFlg:
-            leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=True, fancybox=True, ncol=legendNcols)
-            
-            for marker, mkfclr, mkeclr, lc in zip(leg.legendHandles, legendMarkerFaceColor, legendMarkerEdgeColor, legendLineColor):
-                mkfclr = setDefault([mkfclr], 'black')
-                
-                marker.set_color(mkfclr)
-                
-    if yscale is not None:
-        plt.yscale(yscale)
-    if xscale is not None:
-        plt.xscale(xscale)
-        
-    #Define Y limits if required
-    if ylim[0] is not None:
-        ax1.set_ylim(bottom=ylim[0])
-#     else:
-#         ax1.set_ylim(bottom=ax.get_ylim()[0])
-    if ylim[1] is not None:
-        ax1.set_ylim(top=ylim[1])
-#    else:
-#         ax1.set_ylim(top=ax1.get_ylim()[1])
-        
-    #define X limits if required
-    if xlim[0] is not None:
-        ax1.set_xlim(left=xlim[0])
-#     else:
-#         ax1.set_xlim(left=ax.get_xlim()[0])
-    if xlim[1] is not None:
-        ax1.set_xlim(right=xlim[1])
-#     else:
-#         ax1.set_xlim(right=ax.get_xlim()[1])
-
-    if outputName is not None:
-        #If we do not want to overwrite the file
-        f = None
-        if not overwrite:
-            #Try to open it to check if it exists
-            try:
-                f = open(outputName, 'r')
-            except:
-                pass
-            if f is not None:
-                print('File %s already exists but overwritting was disabled. Thus exiting without writing.' %outputName)
-                return ax1, tmp
-                
-        f = open(outputName, 'w')
-        
-        bbox_inches = None
-        if tightLayout:
-            bbox_inches = 'tight'
-            
-        plt.savefig(outputName, bbox_inches=bbox_inches)
-    
-    return ax1, tmp
-
-
-
+    return asManyPlots2(*args, **kwargs)
 
 
 def asManyPlots2(numPlot, datax, datay, 
@@ -1092,7 +859,7 @@ def asManyPlots2(numPlot, datax, datay,
                 'ticksLabelsSize' : int
                     size of the ticks labels on the plot and the colorbar. Default is 2 points below 'textsize' key value.
                 'ticksSize' : int
-                    size of the ticks on the plot and on the colorbar if ther is one. Default is 7.
+                    size of the ticks on the plot and on the colorbar if there is one. Default is 7.
                     
             Text properties
             ---------------
@@ -1824,12 +1591,14 @@ def asManyPlots2(numPlot, datax, datay,
         legend.marker.facecolor          = checkTypeAndChangeValueToList(legend.marker.facecolor, list, data.nplots)
         
         # Set default color to black for scatter plots in legend 
-        for pos, col, typ in zip(range(data.nplots), data.color, data.type):
+        for pos, col, typ, mkfclr in zip(range(data.nplots), data.color, data.type, legend.marker.facecolor):
             if typ == 'scatter':
                 col = 'black'
             legend.marker.edgecolor[pos] = col
-            legend.marker.facecolor[pos] = col
             legend.line.color[pos]       = col
+            
+            if mkfclr is None:
+                legend.marker.facecolor[pos] = col
             
         # If some text in legend is missing we add empty strings
         llt = len(legend.labels.text)
@@ -1998,11 +1767,13 @@ def asManyPlots2(numPlot, datax, datay,
         for h, mkfclr, mkeclr, lc, typ in zip(legend.handles, legend.marker.facecolor, legend.marker.edgecolor, legend.line.color, data.type):
             
             if h is not None:
-                print('coucou')
                 if typ in ['plot', 'mix']:
-                    h.set_color(lc)
-                    h.set_markerfacecolor(mkfclr)
-                    h.set_markeredgecolor(mkeclr)
+                    try:
+                        h.set_color(lc)
+                        h.set_markerfacecolor(mkfclr)
+                        h.set_markeredgecolor(mkeclr)
+                    except:
+                        pass
                 elif typ == 'scatter':
                     h.set_color(mkfclr)
                 
