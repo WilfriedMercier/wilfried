@@ -592,7 +592,7 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
 
 def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYlabel=False, hideYticks=False, hideXticks=False,
                 placeYaxisOnRight=False, xlabel="", ylabel='', color='black',
-                label='', zorder=0, textsize=24, showLegend=False, legendTextSize=24, shadow=True, fancybox=True, framealpha=1,
+                label='', zorder=0, textsize=24, showLegend=False, legendTextSize=24, shadow=True, fancybox=True, framealpha=1, legendEdgeColor=None, frameon=True,
                 xlim=[None, None], locLegend='best', tickSize=24, title='', titlesize=24,
                 outputName=None, overwrite=False, tightLayout=True, integralIsOne=None,
                 align='mid', histtype='stepfilled', alpha=1.0, cumulative=False, legendNcols=1, hatch=None, orientation='vertical', log=False, stacked=False, grid=True):
@@ -618,6 +618,8 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
         whether to draw a fancy legend or not
     framealpha : float
         alpha value of the legend background
+    frameon : bool
+        whether to draw the legend frame or not. Default is True.
     grid : bool
         whether to show the grid or not
     hatch : char
@@ -636,6 +638,8 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
         whether to normalize the integral of the histogram
     label : string
         legend label for the data
+    legendEdgeColor : str
+        color of the legend edges. Default is None so that there is no edge.
     legendNcols : int
         number of columns in the legend
     legendTextSize : int
@@ -721,7 +725,8 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
     #set hatching pattern if there is one
     
     if showLegend:
-        plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=shadow, fancybox=fancybox, framealpha=framealpha, ncol=legendNcols)
+        leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=shadow, fancybox=fancybox, edgecolor=legendEdgeColor, frameon=frameon,
+                         framealpha=framealpha, ncol=legendNcols)
         
     if outputName is not None:
         #If we do not want to overwrite the file
@@ -744,7 +749,7 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
             
         plt.savefig(outputName, bbox_inches=bbox_inches)
         
-    return ax1, n, bns, ptchs
+    return ax1, n, bns, ptchs, leg
 
                 
 def asManyPlots(*args, **kwargs):
