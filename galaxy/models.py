@@ -183,7 +183,7 @@ def analyticLuminosityFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, s
     return {'value':np.asarray(value), 'error':np.asarray(error)}
     
 
-def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
+def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
     """
     Computes the ratio of the bulge luminosity (B) over the disk one (D) of a two Sersic components galaxy up to radius r.
     
@@ -214,6 +214,8 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
             galaxy total integrated magnitude used to compute the bulge component Ie if not given
         magD : float
             galaxy total integrated magnitude used to compute the disk component Ie if not given
+        noError : bool
+            whether to not raise an error or not if one of the Ie values could not be computed correctly. Default is False. If set to True, np.nan is returned.
         offsetB : float
             magnitude offset in the magnitude system used for the bulge component
         offsetD : float
@@ -224,13 +226,16 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     
     #compute b1 and b4 if not given
     b1, b4 = check_bns([1, 4], [b1, b4])
-    Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD)
-    Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB)
+    Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD, noError=noError)
+    Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB, noError=noError)
+    
+    if None in [Ieb, Ied]:
+        return np.nan
         
     return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersic(r, 1, rd, bn=b1, Ie=Ied)['value']    
 
 
-def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
+def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
     """
     Computes the ratio of the bulge luminosity (B) over the total one (T=D+B) of a two Sersic components galaxy up to radius r.
     
@@ -261,6 +266,8 @@ def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
             galaxy total integrated magnitude used to compute the bulge component Ie if not given
         magD : float
             galaxy total integrated magnitude used to compute the disk component Ie if not given
+        noError : bool
+            whether to not raise an error or not if one of the Ie values could not be computed correctly. Default is False. If set to True, np.nan is returned.
         offsetB : float
             magnitude offset in the magnitude system used for the bulge component
         offsetD : float
@@ -271,8 +278,11 @@ def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     
     #compute b1 and b4 if not given
     b1, b4 = check_bns([1, 4], [b1, b4])
-    Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD)
-    Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB)
+    Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD, noError=noError)
+    Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB, noError=noError)
+    
+    if None in [Ied, Ieb]:    
+        return np.nan
         
     return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']    
 
@@ -1126,7 +1136,7 @@ def centralIntensity(n, re, Ie=None, mag=None, offset=None):
     
     return Ie*np.exp(bn)
 
-def checkAndComputeIe(Ie, n, bn, re, mag, offset):
+def checkAndComputeIe(Ie, n, bn, re, mag, offset, noError=False):
     """
     Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
     
@@ -1145,14 +1155,22 @@ def checkAndComputeIe(Ie, n, bn, re, mag, offset):
         re : float
             half-light/effective radius
     
-    Return Ie if it could be computed or already existed.
+    Optional parameters
+    -------------------
+        noError : boolean
+            whether to not raise an error or not when data is missing to compute the intensity. If True, None is returned. Default is False.
+    
+    Return Ie if it could be computed or already existed, or None if noError flag is set to True.
     """
     
     if Ie is None:
         if mag is not None and offset is not None:
             return intensity_at_re(n, mag, re, offset, bn=bn)
         else:
-            raise("Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one. Cheers !")
+            if noError:
+                return None
+            else:
+                raise ValueError("Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one. Cheers !")
     else:
         return Ie
 
