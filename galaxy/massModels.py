@@ -10,6 +10,7 @@ Test functions on Galaxy mass modelling.
 
 import numpy             as     np
 from   .models           import compute_bn, checkAndComputeIe, sersic_profile
+from   .kinematics       import Vprojection
 from   scipy.special     import gamma, gammainc
 from   math              import factorial
 from   astropy.constants import G
@@ -17,6 +18,159 @@ from   astropy.constants import G
 #######################################################################################
 #                           3D profiles and their functions                           #
 #######################################################################################
+
+class Multiple3DModels:
+    '''A master class used when combining two 3D models into a single object'''
+    
+    def __init__(self, model1, model2):
+        
+        if not hasattr(model1, '_dim') or not hasattr(model2, '_dim'):
+            raise AttributeError('One of the objects is not a valid model instance.')
+        
+        if model1._dim < 3 or model2._dim < 3:
+            raise ValueError('One of the models is not 3D or higher. Only 3D models can be combined. Cheers !')
+        else:
+            self._dim   = 3
+            
+        # We keep track of models in a list
+        if not isinstance(model1, Multiple3DModels) and not isinstance(model2, Multiple3DModels):
+            self.models = [model1, model2]
+        elif not isinstance(model1, Multiple3DModels) and isinstance(model2, Multiple3DModels):
+            self.models = model2.models
+            self.models.append(model1)
+        elif isinstance(model1, Multiple3DModels) and not isinstance(model2, Multiple3DModels):
+            self.models = model1.models
+            self.models.append(model2)
+        else:
+            self.models = model1.models + model2.models
+            
+            
+    ######################################################
+    #            Methods (alphabetical order)            #
+    ######################################################
+            
+    def __add__(self, other):
+        '''Add this instance with any other object. Only adding 3D models is allowed.'''
+        
+        return Multiple3DModels(self, other)
+    
+    def __checkArgs__(self, args, kwargs):
+        '''Check args and kwargs so that they have the same len'''
+        
+        if len(args) > len(kwargs):
+            for i in range(len(args) - len(kwargs)):
+                kwargs.append({})
+        else:
+            for i in range(len(kwargs) - len(args)):
+                args.append([])
+        
+        return args, kwargs
+            
+    
+    def gfield(self, args=[[]], kwargs=[{}]):
+        '''
+        Compute the full gravitational field at radius r.
+        
+        Notes: 
+            - Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.
+              Each element will be passed to the corresponding model. The order is the same as in models list variable.
+        
+        Parameters
+        ----------
+            args : list of list
+                arguments to pass to each model. Order is that of models list.
+            kwargs : list of dict
+                kwargs to pass to each model. Order is that of models list.
+        '''
+        
+        args, kwargs = self.__checkArgs__(args, kwargs)
+        return np.sum([i.gfield(*args[pos], **kwargs[pos]) for pos, i in enumerate(self.models)], axis=0)
+        
+        
+        
+    def luminosity(self, args=[], kwargs=[{}]):
+        '''
+        Compute the enclosed luminosity or mass at radius r.
+        
+        Notes: 
+            - Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.
+              Each element will be passed to the corresponding model. The order is the same as in models list variable.
+        
+        Parameters
+        ----------
+            args : list 
+                arguments to pass to each model. Order is that of models list.
+            kwargs : list of dict
+                kwargs to pass to each model. Order is that of models list.
+        '''
+        
+        args, kwargs = self.__checkArgs__(args, kwargs)
+        return np.sum([i.luminosity(*args[pos], **kwargs[pos]) for pos, i in enumerate(self.models)], axis=0)
+        
+            
+    def profile(self, args=[], kwargs=[{}]):
+        '''
+        Compute the light or mass profile at radius r.
+
+        Notes: 
+            - Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.
+              Each element will be passed to the corresponding model. The order is the same as in models list variable.
+        
+        Parameters
+        ----------
+            args : list 
+                arguments to pass to each model. Order is that of models list.
+            kwargs : list of dict
+                kwargs to pass to each model. Order is that of models list.
+        '''
+        
+        args, kwargs = self.__checkArgs__(args, kwargs)
+        return np.sum([i.profile(*args[pos], **kwargs[pos]) for pos, i in enumerate(self.models)], axis=0)
+    
+    
+    def velocity(self, args=[], kwargs=[{}]):
+        '''
+        Velocity profile for the 3D models against their own gravity through centripedal acceleration.
+
+        Notes: 
+            - Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.
+              Each element will be passed to the corresponding model. The order is the same as in models list variable.
+        
+        Parameters
+        ----------
+            args : list 
+                arguments to pass to each model. Order is that of models list.
+            kwargs : list of dict
+                kwargs to pass to each model. Order is that of models list.
+        '''
+        
+        args, kwargs = self.__checkArgs__(args, kwargs)
+        return np.sqrt(np.sum([i.velocity(*args[pos], **kwargs[pos])**2 for pos, i in enumerate(self.models)], axis=0))
+    
+    
+    def vprojection(self, s, D, R, which='edge-on'):
+        '''
+        Apply a projection of the velocity along the line of sight depending on the geometry used.
+
+        Mandatory parameters
+        --------------------
+            s : float/int or array of floats/int
+                distance from the point to our location (same unit as L and D)
+            D : float
+                cosmological angular diameter distance between the galaxy centre and us
+            R : float/int
+                projected distance of the point along the major axis relative to the galaxy centre
+                
+        Optional parameters
+        -------------------
+            which : str
+                which type of projection to do. Default is edge-on galaxy geometry.
+
+        Return the projected line of sight velocity.
+        '''
+        
+        return Vprojection(self.velocity).projection(s, D, R, which=which)
+
 
 class Hernquist:
     '''3D Hernquist model class with useful methods.'''
@@ -43,7 +197,13 @@ class Hernquist:
     #            Methods (alphabetical order)            #
     ######################################################
         
-    def gfield(self, r):
+    def __add__(self, other):
+        '''Add this instance with any other object. Only adding 3D models is allowed.'''
+        
+        return Multiple3DModels(self, other)
+        
+    
+    def gfield(self, r, *args, **kwargs):
         '''
         Compute the gravitational field of a single Hernquist profile at radius r.
 
@@ -61,7 +221,7 @@ class Hernquist:
         return (-G*self.luminosity(r)/r**2).value
         
     
-    def luminosity(self, r):
+    def luminosity(self, r, *args, **kwargs):
         '''
         Compute the enclosed luminosity or mass at radius r.
 
@@ -79,7 +239,7 @@ class Hernquist:
         return self.M*(1 - 1.0/(1+r/self.a)**2)
         
         
-    def profile(self, r):
+    def profile(self, r, *args, **kwargs):
         '''
         Compute the light or mass profile at radius r.
 
@@ -96,6 +256,31 @@ class Hernquist:
         
         return self.M/(2*np.pi*self.a**2) / (r * (1+r/self.a)**3)
     
+    
+    def vprojection(self, s, D, R, which='edge-on'):
+        '''
+        Apply a projection of the velocity along the line of sight depending on the geometry used.
+
+        Mandatory parameters
+        --------------------
+            s : float/int or array of floats/int
+                distance from the point to our location (same unit as L and D)
+            D : float
+                cosmological angular diameter distance between the galaxy centre and us
+            R : float/int
+                projected distance of the point along the major axis relative to the galaxy centre
+                
+        Optional parameters
+        -------------------
+            which : str
+                which type of projection to do. Default is edge-on galaxy geometry.
+
+        Return the projected line of sight velocity.
+        '''
+        
+        return Vprojection(self.velocity).projection(s, D, R, which=which)
+    
+    
     @property
     def toSersic(self):
         '''Create the best fit Sersic instance from this Hernquist instance.'''
@@ -107,7 +292,7 @@ class Hernquist:
         return Sersic(4, Re, Ie=Ie)
     
     
-    def velocity(self, r):
+    def velocity(self, r, *args, **kwargs):
         '''
         Velocity profile for a self-sustaining Hernquist 3D profile against its own gravity through centripedal acceleration.
 
@@ -163,11 +348,11 @@ class Sersic:
         if Re<0:
             raise ValueError('The effective radius Re must be positive valued. Cheers !')
         
-        self.n    = n
-        self.Re   = Re
-        self.bn   = compute_bn(self.n)
-        self.Ie   = checkAndComputeIe(Ie, n, self.bn, Re, mag, offset)
-        self.ndim = 2
+        self.n     = n
+        self.Re    = Re
+        self.bn    = compute_bn(self.n)
+        self.Ie    = checkAndComputeIe(Ie, n, self.bn, Re, mag, offset)
+        self._dim  = 2
         
 
     ######################################################
@@ -258,11 +443,17 @@ class ExponentialDisk(Sersic):
         """
         
         super().__init__(1, Re, Ie=Ie, mag=mag, offset=offset)
+        self._dim = 3
         
         
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
+        
+    def __add__(self, other):
+        '''Add this instance with any other object. Only adding 3D models is allowed.'''
+        
+        return Multiple3DModels(self, other)
         
     def gfield(self, r):
         '''
@@ -280,6 +471,30 @@ class ExponentialDisk(Sersic):
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
                 
         return (-2*G*self.luminosity(r)/r).value
+    
+    
+    def vprojection(self, s, D, R, which='edge-on'):
+        '''
+        Apply a projection of the velocity along the line of sight depending on the geometry used.
+
+        Mandatory parameters
+        --------------------
+            s : float/int or array of floats/int
+                distance from the point to our location (same unit as L and D)
+            D : float
+                cosmological angular diameter distance between the galaxy centre and us
+            R : float/int
+                projected distance of the point along the major axis relative to the galaxy centre
+                
+        Optional parameters
+        -------------------
+            which : str
+                which type of projection to do. Default is edge-on galaxy geometry.
+
+        Return the projected line of sight velocity.
+        '''
+        
+        return Vprojection(self.velocity).projection(s, D, R, which=which)
     
     
     def velocity(self, r):
