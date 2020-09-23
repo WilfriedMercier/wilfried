@@ -16,6 +16,97 @@ import astropy.constants as     ct
 from   ..utilities.coloredMessages import *
 from   .MUSE                       import compute_lsfw
 
+##############################################################################################
+#                                  Theoretical calculations                                  #
+##############################################################################################
+
+class Vprojection:
+    '''Class used to project along the line of sight a given velocity profile (function) .'''
+    
+    def __init__(self, velocity):
+        '''
+        Parameters
+        ----------
+            velocity : function
+                function describing the velocity profile to project (must be a function of the distance r to the centre)
+        '''
+        
+        self.func = velocity
+        
+    
+    #################################################
+    #                  Projections                  #
+    #################################################
+        
+    def projection(self, *args, which='edge-on', **kwargs):
+        '''
+        Wrapper to call the correct projection depending on the which parameter. *args and **kwargs are assumed to be correct.
+
+        Parameters
+        ----------
+            which : str
+                which type of projection to apply. Default si edge-on galaxy.
+
+        Return the computed projection (see exact method definition for more details).
+        '''
+        
+        if which.lower() == 'edge-on':
+            return self.edgeOnDisk(*args, **kwargs)
+        else:
+            raise ValueError('The given projection %s is not supported (yet). Cheers !')
+        
+        
+    def edgeOnDisk(self, s, D, R, *args, **kwargs):
+        '''
+        Compute the line of sight projected velocity at a distance s to us, at a projected distance R from the galaxy centre located at a distance D from us (cosmological angular diameter distance) for a galaxy seen edge-on.
+
+        Parameters
+        ----------
+            s : float/int or array of floats/int
+                distance from the point to our location (same unit as L and D)
+            D : float
+                cosmological angular diameter distance between the galaxy centre and us
+            R : float/int
+                projected distance of the point along the major axis relative to the galaxy centre
+
+        Return a numpy array with the line of sight projected velocity computed at every distance in s.
+        '''
+        
+        if np.any(s<0) or D<0 or R<0:
+            raise ValueError('One of the provided distances is negative.')
+            
+        if not isinstance(R, (float, int)) or not isinstance(D, (float, int)):
+            raise TypeError('Either R or D is neither float nor int.')
+            
+        theta              = np.arctan(R/D)
+        stheta             = np.sin(theta)
+        dist2              = D**2 + R**2
+        
+        # Depending on where we are (s in the foreground or background), the formula change
+        # So we split between foreground and background to reunite in the end
+        whereFor           = np.nonzero(s**2<dist2)
+        sFor               = s[whereFor]
+        
+        whereBac           = np.nonzero(s**2>=dist2)
+        sBac               = s[whereBac]
+        
+        # Compute distances from centre
+        dFor               = np.sqrt(D**2 - sFor**2 * np.cos(2*theta))
+        dBac               = np.sqrt(D**2 + sBac*(sBac + 2*R*stheta))
+        
+        # Compute velocity at d
+        vFor               = self.func(dFor) * np.sin(theta + np.arcsin( sFor*stheta/dFor ))
+        vBac               = self.func(dBac) * np.sqrt(1 - ( (sBac + R*stheta - np.sqrt(dist2))/dBac )**2)
+        
+        # Reunitting
+        velocity           = s.copy()
+        velocity[whereFor] = vFor
+        velocity[whereBac] = vBac
+        
+        return velocity
+            
+        
+
 ##########################################################################################################
 #                                         Kinematical properties                                         #
 ##########################################################################################################
