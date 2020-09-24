@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Sep 22 15:39:08 2020
@@ -8,12 +8,14 @@ Created on Tue Sep 22 15:39:08 2020
 Test functions on Galaxy mass modelling.
 """
 
+import scipy.integrate   as     integrate
 import numpy             as     np
 from   .models           import compute_bn, checkAndComputeIe, sersic_profile
 from   .kinematics       import Vprojection
 from   scipy.special     import gamma, gammainc
 from   math              import factorial
-from   astropy.constants import G
+from   astropy.constants import G, c
+
 
 #######################################################################################
 #                           3D profiles and their functions                           #
@@ -128,6 +130,50 @@ class Multiple3DModels:
         return np.sum([i.profile(*args[pos], **kwargs[pos]) for pos, i in enumerate(self.models)], axis=0)
     
     
+    ################################################################
+    #                          Velocities                          #
+    ################################################################
+    
+    def meanV(self, D, R, offsetFactor=0):
+        
+        def correctDistance(s, D, R):
+            '''Depending on the value of s, either return the radial distance for the foreground part or the background part'''
+            
+            dFor, dBac, theta = Vprojection(None).distance(s, D, R)
+            
+            if s**2 > D**2 + R**2:
+                return dBac
+            else:
+                return dFor
+        
+        def numerator(s, D, R):
+            '''Numerator to integrate'''
+            
+            velocity = self.vprojection(s, D, R)[0]
+            
+            return velocity*denominator(s, D, R)
+        
+        def denominator(s, D, R):
+            '''Denominator to integrate'''
+            
+            distance     = correctDistance(s, D, R)
+            density      = self.profile([distance]*len(self.models))
+            
+            return density
+        
+        if offsetFactor > 0:
+            offsetFactor = 1
+        if offsetFactor < 0:
+            offsetFactor = -1
+        
+        res1, err1       = integrate.quad(numerator, 0, np.inf, args=(D, R))
+        res2, err2       = integrate.quad(denominator, 0, np.inf, args=(D, R))
+        
+        cenVel           = abs(self.velocity([[0]]*len(self.models)))
+        
+        return (res1/res2 - offsetFactor*cenVel)/(1 + offsetFactor*cenVel/c.value)
+            
+    
     def velocity(self, args=[], kwargs=[{}]):
         '''
         Velocity profile for the 3D models against their own gravity through centripedal acceleration.
@@ -169,7 +215,11 @@ class Multiple3DModels:
         Return the projected line of sight velocity.
         '''
         
-        return Vprojection(self.velocity).projection(s, D, R, which=which)
+        # To overcome the issue with the args and kwargs definition we redefine the velocitys
+        def vel(x):
+            return self.velocity([x]*len(self.models))
+        
+        return Vprojection(vel).projection(s, D, R, which=which)
 
 
 class Hernquist:
@@ -306,8 +356,11 @@ class Hernquist:
         
         if np.any(r<0):
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
-        
-        return np.sqrt(G*self.luminosity(r)/r).value
+            
+        if r==0:
+            return np.sqrt(2*G*self.M/self.a).value
+        else:
+            return np.sqrt(G*self.luminosity(r)/r).value
 
 
 class Sersic:
@@ -512,6 +565,9 @@ class ExponentialDisk(Sersic):
         if np.any(r<0):
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
         
-        return np.sqrt(2*G*self.luminosity(r)).value
+        if r==0:
+            return 0
+        else:
+            return np.sqrt(2*G*self.luminosity(r)).value
 
 
