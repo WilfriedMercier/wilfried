@@ -34,6 +34,49 @@ class Vprojection:
         self.func = velocity
         
     
+    def distance(self, s, D, R, *args, **kwargs):
+        '''
+        Distance from centre for a point along the major axis for a galaxy at distance D, when this point is at a distance s of us and projected distance R of the centre.
+        
+        Parameters
+        ----------
+            s : float/int or array of floats/int
+                distance from the point to our location (same unit as L and D)
+            D : float
+                cosmological angular diameter distance between the galaxy centre and us
+            R : float/int
+                projected distance of the point along the major axis relative to the galaxy centre
+                
+        Return as a tuple the foreground distance, the background distance and the angle in radians of the point relative to the centre in this order.
+        '''
+        
+        if np.any(s<0) or D<0 or R<0:
+            raise ValueError('One of the provided distances is negative.')
+            
+        if not isinstance(R, (float, int)) or not isinstance(D, (float, int)):
+            raise TypeError('Either R or D is neither float nor int.')
+            
+        if isinstance(s, (float, int)):
+            s              = np.array([s])
+            
+        theta              = np.arctan(R/D)
+        dist2              = D**2 + R**2
+        
+        # Depending on where we are (s in the foreground or background), the formula change
+        # So we split between foreground and background to reunite in the end
+        whereFor           = np.nonzero(s**2<dist2)
+        sFor               = s[whereFor]
+        
+        whereBac           = np.nonzero(s**2>=dist2)
+        sBac               = s[whereBac]
+        
+        # Compute distances from centre
+        dFor               = np.sqrt(D**2 - sFor**2 * np.cos(2*theta))
+        dBac               = np.sqrt(D**2 + sBac*(sBac + 2*R*np.sin(theta)))
+        
+        return dFor, dBac, theta
+        
+    
     #################################################
     #                  Projections                  #
     #################################################
@@ -72,31 +115,31 @@ class Vprojection:
         Return a numpy array with the line of sight projected velocity computed at every distance in s.
         '''
         
-        if np.any(s<0) or D<0 or R<0:
-            raise ValueError('One of the provided distances is negative.')
+        if isinstance(s, (float, int)):
+            s              = np.array([s])
             
-        if not isinstance(R, (float, int)) or not isinstance(D, (float, int)):
-            raise TypeError('Either R or D is neither float nor int.')
-            
-        theta              = np.arctan(R/D)
-        stheta             = np.sin(theta)
-        dist2              = D**2 + R**2
-        
         # Depending on where we are (s in the foreground or background), the formula change
         # So we split between foreground and background to reunite in the end
+        dist2              = D**2 + R**2
         whereFor           = np.nonzero(s**2<dist2)
         sFor               = s[whereFor]
         
         whereBac           = np.nonzero(s**2>=dist2)
         sBac               = s[whereBac]
-        
-        # Compute distances from centre
-        dFor               = np.sqrt(D**2 - sFor**2 * np.cos(2*theta))
-        dBac               = np.sqrt(D**2 + sBac*(sBac + 2*R*stheta))
+            
+        dFor, dBac, theta  = self.distance(s, D, R)
+        stheta             = np.sin(theta)
         
         # Compute velocity at d
-        vFor               = self.func(dFor) * np.sin(theta + np.arcsin( sFor*stheta/dFor ))
-        vBac               = self.func(dBac) * np.sqrt(1 - ( (sBac + R*stheta - np.sqrt(dist2))/dBac )**2)
+        if len(dFor)>0:
+            vFor           = self.func(dFor) * np.sin(theta + np.arcsin( sFor*stheta/dFor ))
+        else:
+            vFor           = 0
+        
+        if len(dBac)>0:
+            vBac           = self.func(dBac) * np.sqrt(1 - ( (sBac + R*stheta - np.sqrt(dist2))/dBac )**2)
+        else:
+            vBac           = 0
         
         # Reunitting
         velocity           = s.copy()
