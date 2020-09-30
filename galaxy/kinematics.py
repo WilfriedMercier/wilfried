@@ -50,6 +50,9 @@ class Vprojection:
         Return as a tuple the foreground distance, the background distance and the angle in radians of the point relative to the centre in this order.
         '''
         
+        if not hasattr(s, 'unit'):
+            s = u.Quantity(s, unit='pc')
+        
         if np.any(s<0) or D<0 or R<0:
             raise ValueError('One of the provided distances is negative.')
             
@@ -112,7 +115,7 @@ class Vprojection:
             R : float/int
                 projected distance of the point along the major axis relative to the galaxy centre
 
-        Return a numpy array with the line of sight projected velocity computed at every distance in s.
+        Return a numpy array with the line of sight projected velocity computed at every distance in R.
         '''
         
         if isinstance(s, (float, int)):
