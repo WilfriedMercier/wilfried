@@ -10,7 +10,35 @@ A set of functions to easily compute standard calculations in extragalactic phys
 
 import cosmolopy.distance as cd
 
-COSMOLOGY = {'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72}
+COSMOLOGY = cd.set_omega_k_0({'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72})
+
+def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
+    '''
+    Compute the size of an object with extent theta at redshift z from the angular diameter distance as soze=theta*angular diameter distance.
+
+    Mandatory parameters
+    --------------------
+        z : float/int
+            redshift of the object
+        theta : float/int
+            angle subtended by the object. Ultimately unit should be in arcsec. If not, provide a scaling factor with scaleFactor.
+    
+    Optional parameters
+    -------------------
+        cosmology : dict
+            parameters of the desired cosmology. See cosmolopy help for more information. Default is {'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72}.
+        scaleFactor : float/int
+            if theta has a different unit, please provide a correct scale factor such that theta in radians = theta*scaleFactor
+
+    Return the physical size in kpc.
+    '''
+    
+    if cosmology is None:
+        cosmology = COSMOLOGY
+        
+    theta        *= scaleFactor
+    return cd.angular_diameter_distance(z, **cosmology)*theta*1000
+    
 
 def comoving_separation(z, theta, cosmology=None):
     '''
