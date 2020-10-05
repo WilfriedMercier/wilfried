@@ -36,8 +36,7 @@ def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
     if cosmology is None:
         cosmology = COSMOLOGY
         
-    theta        *= scaleFactor
-    return cd.angular_diameter_distance(z, **cosmology)*theta*1000
+    return cd.angular_diameter_distance(z, **cosmology)*theta*scaleFactor*1000
     
 
 def comoving_separation(z, theta, cosmology=None):
