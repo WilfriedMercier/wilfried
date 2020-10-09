@@ -8,13 +8,14 @@ Created on Mon May 11 15:37:49 2020
 Functions directly related to MUSE instrument and its observations.
 """
 
-import numpy         as np
-import astropy.units as u
-import astropy.wcs   as wcs
-import os.path       as opath
+import numpy         as     np
+import astropy.units as     u
+import astropy.wcs   as     wcs
+import os.path       as     opath
+from   astropy.io    import fits
 
 
-def centreFromHSTtoMUSE(X, Y, imHST, imMUSE):
+def centreFromHSTtoMUSE(X, Y, imHST, imMUSE, extHST=0, extMUSE=0, noError=False):
     '''
     Convert centre coordinates in pixels in HST image into pixel coordinates in MUSE image/cube.
 
@@ -28,22 +29,39 @@ def centreFromHSTtoMUSE(X, Y, imHST, imMUSE):
             file containing the HST image to generate wcs object
         imMUSE : str
             file containing a MUSE cube or image to generate wcs object
+            
+    Optional parameters
+    -------------------
+        extHST : int
+            extension to open in the HST fits file. Default is 0.
+        extMUSE : int
+            extension to open in the MUSE file. Default is 0.
+        noError : bool
+            whether to not throw an error or not when HST or MUSE file(s) is/are missing. If True, a tuple (np.nan, np.nan) is returned. Default is to throw an error.
 
     Return the new (MUSE) pixel coordinates.
     '''
     
     # Check files exist first
     if not opath.isfile(imHST):
-        raise IOError('HST image %s does not exist.' %imHST)
+        if not noError:
+            raise IOError('HST image %s does not exist.' %imHST)
+        print('HST image %s does not exist.' %imHST)
+        return np.nan, np.nan
     
     if not opath.isfile(imMUSE):
-        raise IOError('MUSE image/cube %s does not exist.' %imMUSE)
+        if not noError:
+            raise IOError('MUSE image/cube %s does not exist.' %imMUSE)
+        print('MUSE image/cube %s does not exist.' %imMUSE)
+        return np.nan, np.nan
     
     # HST wcs object
-    wh      = wcs.WCS(imHST)
+    with fits.open(imHST) as hdul:
+        wh  = wcs.WCS(hdul[extHST])
     
     # MUSE wcs object
-    wm      = wcs.WCS(imMUSE)
+    with fits.open(imMUSE) as hdul:
+        wm  = wcs.WCS(hdul[extMUSE])
     
     # Coordinates from HST
     ra, dec = wh.wcs_pix2world(X-1, Y-1, 0)
