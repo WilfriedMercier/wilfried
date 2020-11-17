@@ -9,6 +9,7 @@ Create recap morpho-kinematics plots for MUSE \& HST modelling.
 
 import copy
 import numpy                 as np
+import os.path               as opath
 import astropy.wcs           as wcs
 import astropy.io.fits       as fits
 import matplotlib            as     mpl
@@ -101,14 +102,14 @@ def plot_hst(gs, hstmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xm
     # Converting ticks values from arcsec to HST pixel and centre on HST centre
     xticks  = ticklabels/pixh + xch
     axhstmap.set_xticks(xticks)
-    axhstmap.set_xticklabels(-ticklabels)
+    axhstmap.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
     
     yticks  = ticklabels/pixh + ych
     axhstmap.set_yticks(yticks)
     axhstmap.set_yticklabels(ticklabels)
     
     # Setting minor ticks number between successive major ticks to 4
-    ml      = AutoMinorLocator(4)
+    ml      = AutoMinorLocator(5)
     axhstmap.xaxis.set_minor_locator(ml)
     axhstmap.yaxis.set_minor_locator(ml)
     
@@ -218,31 +219,35 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
         hstreshdu        = hsthdu[3]
     
         # HST image
-        hstimmap             = hstimhdu.data
-        hstimhdr             = hstimhdu.header
+        hstimmap         = hstimhdu.data
+        hstimhdr         = hstimhdu.header
         
         # Galfit HST model
-        hstmodmap            = hstmodhdu.data
-        hstmodhdr            = copy.deepcopy(hstimhdr)
+        hstmodmap        = hstmodhdu.data
+        hstmodhdr        = copy.deepcopy(hstimhdr)
         
         # Galfit HST residuals
-        hstresmap            = hstreshdu.data
-        hstreshdr            = copy.deepcopy(hstimhdr)
+        hstresmap        = hstreshdu.data
+        hstreshdr        = copy.deepcopy(hstimhdr)
         
     # If HST image is given, we replace the one found in Galfit output file
     if hstInput is not None:
         with fits.open(hstInput) as hsthdu:
-            hstimmap         = hsthdu[0].data
+            hstimmap            = hsthdu[0].data
+            hstimhdr            = hsthdu[0].header
+    
+            # Get and apply x and y offsets
+            hstimhdr['CRPIX1'] += offset[1]
+            hstimhdr['CRPIX2'] += offset[0]
     
     # Get and apply x and y offsets
-    offstr               = hstimhdr['OBJECT']
+    offstr               = hstmodhdr['OBJECT']
     boundaries           = offstr.replace('[', ' ').replace(',', ' ').replace(']', ' ').replace(':', ' ').split()
     offx                 = np.int(boundaries[0]) - 1
     offy                 = np.int(boundaries[2]) - 1
-    
-    hstimhdr['CRPIX1']  += offset[1] - offx
-    hstimhdr['CRPIX2']  += offset[0] - offy
-    
+    hstmodhdr['CRPIX1'] += offset[1] - offx
+    hstmodhdr['CRPIX2'] += offset[0] - offy    
+
     # Opening and combining MUSE flux maps
     if isinstance(flux, str):
         flux             = [flux]
@@ -295,57 +300,97 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     #########################################################
     
     # Defining wcs
-    fluxhdr['WCSAXES']   = 2
-    vfhdr['WCSAXES']     = 2
-    sighdr['WCSAXES']    = 2
-    snrhdr['WCSAXES']    = 2
-    hstimhdr['WCSAXES']  = 2
-    hstmodhdr['WCSAXES'] = 2
-    hstreshdr['WCSAXES'] = 2
-    fluxwcs              = wcs.WCS(fluxhdr)
-    snrwcs               = wcs.WCS(snrhdr)
+    fluxhdr['WCSAXES']    = 2
+    vfhdr['WCSAXES']      = 2
+    sighdr['WCSAXES']     = 2
+    snrhdr['WCSAXES']     = 2
+    hstimhdr['WCSAXES']   = 2
+    hstmodhdr['WCSAXES']  = 2
+    hstreshdr['WCSAXES']  = 2
+    vfwcs                 = wcs.WCS(vfhdr)
+    fluxwcs               = wcs.WCS(fluxhdr)
+    snrwcs                = wcs.WCS(snrhdr)
     
-    hstimwcs             = wcs.WCS(hstimhdr)
+    if hstInput is not None:
+        hstimwcs          = wcs.WCS(hstimhdr)
+    hstmodwcs             = wcs.WCS(hstmodhdr)
     
     # Get MUSE and HST pixel scales in arcsec as the geometric mean of the x and y pixel scales
-    pix                  = np.sqrt(fluxhdr['CD1_1']**2  + fluxhdr['CD1_2'] **2) * 3600
-    pixh                 = np.sqrt(hstimhdr['CD1_1']**2 + hstimhdr['CD1_2']**2) * 3600
+    pix                   = np.sqrt(fluxhdr['CD1_1']**2  + fluxhdr['CD1_2'] **2) * 3600
+    pixh                  = np.sqrt(hstimhdr['CD1_1']**2 + hstimhdr['CD1_2']**2) * 3600
     
     # Smoothing data
-    fluxcont             = gaussian_filter(fluxmap,  MUSE_smooth_sigma)
+    fluxcont              = gaussian_filter(fluxmap,  MUSE_smooth_sigma)
+    
+    # Get rid of negative and 0 values
+    fluxcont[fluxcont<=0] = np.nan
     
     # Major axis (in MUSE pixel)
-    r22m                 = r22 * pixh / pix
+    r22m                  = r22 * pixh / pix
     
     # Rlast in arcsec
-    rcas                 = rc * pix
+    rcas                  = rc * pix
     
     # X and y positions for the major axis, taking into account PA, given in MUSE pixel coordinates
-    xma1                 = xc + r22m * np.sin(np.radians(pa+deltapa))
-    yma1                 = yc - r22m * np.cos(np.radians(pa+deltapa))
-    xma2                 = xc - r22m * np.sin(np.radians(pa+deltapa))
-    yma2                 = yc + r22m * np.cos(np.radians(pa+deltapa))
+    xma1                  = xc + r22m * np.sin(np.radians(pa+deltapa))
+    yma1                  = yc - r22m * np.cos(np.radians(pa+deltapa))
+    xma2                  = xc - r22m * np.sin(np.radians(pa+deltapa))
+    yma2                  = yc + r22m * np.cos(np.radians(pa+deltapa))
     
     # Get world coordinates (ra, dec pairs) for the centre and the two end points of the PA line
-    ra0, dec0            = fluxwcs.wcs_pix2world([xc, xma1, xma2], [yc, yma1, yma2], 0)
+    ra0, dec0             = vfwcs.wcs_pix2world([xc, xma1, xma2], [yc, yma1, yma2], 0)
+    
+    # Recover the MUSE centre position and PA endpoints but in HST pixel coordinates this time
+    if hstInput is not None:
+        xhi, yhi  = hstimwcs.wcs_world2pix(ra0, dec0, 0)
+        xchi      = xhi[0]
+        ychi      = yhi[0]
+        xmah1i    = xhi[1]
+        xmah2i    = xhi[2]
+        ymah1i    = yhi[1]
+        ymah2i    = yhi[2]
+        
+    xh, yh        = hstmodwcs.wcs_world2pix(ra0, dec0, 0)
+    xch           = xh[0]
+    ych           = yh[0]
+    
+    xmah1         = xh[1]
+    xmah2         = xh[2]
+    ymah1         = yh[1]
+    ymah2         = yh[2]
     
     # Defining the size of images and ticks labels in arcsec
-    if rcas < 2.5:
-        szim       = 2.8
-        ticklabels = np.arange(-2, 3, 1)
+    if hstInput is not None:
+        szim   = np.nanmin([xchi, ychi, hstimhdr['NAXIS1']-ychi, hstimhdr['NAXIS2']-xchi]) * pixh
     else:
-        szim       = 3.1
-        ticklabels = np.arange(-3, 4, 1)
+        szim   = np.nanmin([xch, ych, hstmodhdr['NAXIS1']-ych, hstmodhdr['NAXIS2']-xch]) * pixh
+    if rcas < 2.5:
+        ticklabels = np.array([-1.5, 0, 1.5])
+    else:
+        ticklabels = np.array([-2.5, -1.5, 0, 1.5, 2.5])
     
     # Converting ticks into MUSE pixel values
     xticks         = ticklabels/pix + xc
     yticks         = ticklabels/pix + yc
     
-    # Defining lower and upper axes bounds in MUSE pixels (used for MUSE images)
+    # Defining lower and upper axes bounds in MUSE pixels
     xmin           = xc - szim / pix
     xmax           = xc + szim / pix
     ymin           = yc - szim / pix
     ymax           = yc + szim / pix
+    
+    # Axes limits in HST pixels
+    if hstInput is not None:
+        xminhi    = xchi - szim / pixh
+        xmaxhi    = xchi + szim / pixh
+        yminhi    = ychi - szim / pixh
+        ymaxhi    = ychi + szim / pixh
+        
+    # Axes limits in HST pixels
+    xminh         = xch - szim / pixh
+    xmaxh         = xch + szim / pixh
+    yminh         = ych - szim / pixh
+    ymaxh         = ych + szim / pixh
     
     
     ##########################################
@@ -359,7 +404,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     figy          = figx * (np.sum(height_ratios) + 0.075) / np.sum(width_ratios)
     fig           = plt.figure(figsize=(figx, figy))  # sums of width in gridspec + intervals in subplots_adjust, eventually multiply by some factor
             
-    plt.figtext(0.2, 1.01, name.replace('_', '-'),        fontsize=16)
+    plt.figtext(0.2, 1.01, name.replace('_', '-'),  fontsize=16)
     plt.figtext(0.4, 1.01, r'$z={:.5f}$'.format(z), fontsize=16)
     
     # Setting up the grid
@@ -374,39 +419,26 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     hstresmap    += vmin0
     vmin          = 1.5e1
     vmax          = 1.5e2
-    
-    # Recover the MUSE centre position and PA endpoints but in HST pixel coordinates this time
-    xh, yh        = hstimwcs.wcs_world2pix(ra0, dec0, 0)
-    xch           = xh[0]
-    ych           = yh[0]
-    
-    xmah1         = xh[1]
-    xmah2         = xh[2]
-    ymah1         = yh[1]
-    ymah2         = yh[2]
-    
-    # Axes limits in HST pixels
-    xminh         = xch - szim / pixh
-    xmaxh         = xch + szim / pixh
-    yminh         = ych - szim / pixh
-    ymaxh         = ych + szim / pixh
 
 
     #############################################################################
     #                    HST plots (image, model, residuals)                    #
     #############################################################################
     
-    axim, imim    = plot_hst(gs[0],             hstimmap,  xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=True,  title=True, fluxcont=fluxcont)
-    axmod, immod  = plot_hst(gs[0 + ncols],     hstmodmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
-    axres, imres  = plot_hst(gs[0 + 2 * ncols], hstresmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
+    if hstInput is not None:
+        axim, imim = plot_hst(gs[0],             hstimmap,  xc, yc, pix, xminhi, xmaxhi, yminhi, ymaxhi, xchi, xmah1i, xmah2i, ychi, ymah1i, ymah2i, pixh, ticklabels, vmin, vmax, pa=True,  title=True, fluxcont=fluxcont)
+    else:
+        axim, imim = plot_hst(gs[0],             hstimmap,  xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=True,  title=True, fluxcont=fluxcont)
+    axmod, immod   = plot_hst(gs[0 + ncols],     hstmodmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
+    axres, imres   = plot_hst(gs[0 + 2 * ncols], hstresmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xmah2, ych, ymah1, ymah2, pixh, ticklabels, vmin, vmax, pa=False, title=False)
     
     # HST colorbar
-    axcbhst       = plt.subplot(gs[0 + 3 * ncols])
-    pos_axres     = axres.get_position()
-    pos_axcbhst   = axcbhst.get_position()
+    axcbhst        = plt.subplot(gs[0 + 3 * ncols])
+    pos_axres      = axres.get_position()
+    pos_axcbhst    = axcbhst.get_position()
     axcbhst.set_position([pos_axres.bounds[0], pos_axcbhst.bounds[1], pos_axres.width, pos_axcbhst.height])
 
-    cb            = plt.colorbar(imres, orientation='horizontal', cax=axcbhst)
+    cb             = plt.colorbar(imres, orientation='horizontal', cax=axcbhst)
     cb.set_label(r'arbitrary (log)')
     cb.ax.set_xticklabels([], rotation=0)
     cb.ax.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=False)
@@ -429,11 +461,11 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
         
         # Setting ticks and ticks labels
         axflux.set_xticks(xticks)
-        axflux.set_xticklabels(-ticklabels)
+        axflux.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
         axflux.set_yticks(yticks)
         axflux.set_yticklabels(ticklabels)
         
-        ml                    = AutoMinorLocator(4)
+        ml                    = AutoMinorLocator(5)
         axflux.xaxis.set_minor_locator(ml)
         axflux.yaxis.set_minor_locator(ml)
         axflux.set_xlabel(r"$\Delta \alpha~('')$")
@@ -490,16 +522,15 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     axvf.set_ylim(ymin, ymax)
     
     # Plotting PSF on the bottom left corner
-    print('PSF FWHM: ', psf)
-    circle      = Circle(xy=(xmin + psf*1.4, ymin + psf*1.4), radius=psf, edgecolor='0.8', fc='0.8', lw=0.5, zorder=0)
+    circle      = Circle(xy=(xmin + psf*0.7, ymin + psf*0.7), radius=psf/2, edgecolor='0.8', fc='0.8', lw=0.5, zorder=0)
     axvf.add_patch(circle)
     
     axvf.imshow(vfmap - vsys, vmin=vmin, vmax=vmax, cmap=plt.cm.seismic, origin='lower', interpolation='nearest')
     
     # Setting ticks and ticks labels
     axvf.set_xticks(xticks)
-    axvf.set_xticklabels(-ticklabels)
-    ml          = AutoMinorLocator(4)
+    axvf.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
+    ml          = AutoMinorLocator(5)
     axvf.xaxis.set_minor_locator(ml)
     axvf.set_xlabel(r"$\Delta \alpha~('')$")
     
@@ -534,7 +565,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     
     # Set ticks and ticks labels
     axvfm.set_xticks(xticks)
-    axvfm.set_xticklabels(-ticklabels)
+    axvfm.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
     axvfm.xaxis.set_minor_locator(ml)
     
     axvfm.set_yticks(yticks)
@@ -558,7 +589,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     
     # Set ticks and ticks labels
     axvfr.set_xticks(xticks)
-    axvfr.set_xticklabels(-ticklabels)
+    axvfr.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
     axvfr.xaxis.set_minor_locator(ml)
     
     axvfr.set_yticks(yticks)
@@ -624,7 +655,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     
     # Setting ticks and ticks labels
     axsig.set_xticks(xticks)
-    axsig.set_xticklabels(-ticklabels)
+    axsig.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
     axsig.xaxis.set_minor_locator(ml)
     axsig.set_xlabel(r"$\Delta \alpha~('')$")
     
@@ -660,7 +691,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     
     # Ticks and ticks labels
     axsigm.set_xticks(xticks)
-    axsigm.set_xticklabels(-ticklabels)
+    axsigm.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
     axsigm.xaxis.set_minor_locator(ml)
     
     axsigm.set_yticks(yticks)
@@ -685,7 +716,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     
     # Ticks and ticks labels
     axsigr.set_xticks(xticks)
-    axsigr.set_xticklabels(-ticklabels)
+    axsigr.set_xticklabels([0.0 if i==0 else -i for i in ticklabels])
     axsigr.xaxis.set_minor_locator(ml)
     
     axsigr.set_yticks(yticks)
@@ -720,6 +751,6 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     fig.subplots_adjust(hspace=0.05, wspace=0.05, left=0.18, right=0.98, top=0.9, bottom=0.1)
     
     # Saving figure
-    plt.show()
-    #fig.savefig(pathout + grid + '-' + num + '.pdf', bbox_inches='tight')
+    #plt.show()
+    fig.savefig(opath.join(pathout, name + '.pdf'), bbox_inches='tight')
     plt.close()
