@@ -460,14 +460,14 @@ def effective_local_density(numPlot, X, Y, xerr, yerr, xmin=None, xmax=None, ymi
     xerrnan = np.isnan(xerr)
     yerrnan = np.isnan(yerr)
     
-    """
     if np.any(xerr0) or np.any(xerrnan):
         xerr[np.logical_or(xerr0, xerrnan)] = np.nanmin(xerr[np.logical_and(~xerrnan, ~xerr0)])
-    
+
     
     if np.any(yerr0) or np.any(yerrnan):
         yerr[np.logical_or(yerr0, yerrnan)] = np.nanmin(yerr[np.logical_and(~yerrnan, ~yerr0)])
-    """
+        
+    print('Minimum errors are %s and %s' %(np.nanmin(xerr), np.nanmin(yerr)))
     
     # Generate the Gaussians
     gaussians = [Gaussian2D(amplitude=1.0, x_mean=x, y_mean=y, x_stddev=xe, y_stddev=ye) for x, y, xe, ye in zip(X, Y, xerr, yerr)]
@@ -483,8 +483,8 @@ def effective_local_density(numPlot, X, Y, xerr, yerr, xmin=None, xmax=None, ymi
     
     XX, YY    = np.meshgrid(xarr, yarr)
     
-    # Compute the sum of Gaussians at each grid point
-    ZZ        = np.sum([i(XX, YY) for i in gaussians], axis=0)
+    # Compute the product of Gaussians at each grid point
+    ZZ        = np.sum([i(XX, YY) for i in gaussians], axis=0)/len(gaussians)
     
     # Compute the most likely path of Y given X
     YgX_x, YgX_y = np.asarray([[x[0], y[np.argmax(z)]] for x, y, z in zip(XX.T, YY.T, ZZ.T)]).T
@@ -493,7 +493,8 @@ def effective_local_density(numPlot, X, Y, xerr, yerr, xmin=None, xmax=None, ymi
     XgY_x, XgY_y = np.asarray([[x[np.argmax(z)], y[0]] for x, y, z in zip(XX, YY, ZZ)]).T
     
     # Plotting
-    ret       = plt.contourf(XX, YY, ZZ, levels=nx//2, cmap='hot')
+    ret       = plt.contourf(XX, YY, ZZ, levels=nx//2, cmap='hot', vmin=0)
+    col       = plt.colorbar(ret, label='Probability')
     
     plt.plot(YgX_x, YgX_y, linestyle='--', color='blue', linewidth=2, label=r'$\lbrace (x,y) | y(x) = \max_Y ( Z(X=x, Y) ) \rbrace$')
     plt.plot(XgY_x, XgY_y, linestyle='-', color='magenta', linewidth=2.5, label=r'$\lbrace (x,y) | x(y) = \max_X ( Z(X, Y=y) ) \rbrace$')
@@ -727,6 +728,8 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
     if showLegend:
         leg = plt.legend(loc=locLegend, prop={'size': legendTextSize}, shadow=shadow, fancybox=fancybox, edgecolor=legendEdgeColor, frameon=frameon,
                          framealpha=framealpha, ncol=legendNcols)
+    else:
+        leg = None
         
     if outputName is not None:
         #If we do not want to overwrite the file
@@ -1063,6 +1066,8 @@ def asManyPlots2(numPlot, datax, datay,
                 'ncols' : int
                     number of columns in the legend. Default is 1 so that every label will appear on a new line. 
                     For instance legendProperties={'numberColumns':3} will split labels into three columns.
+                'order' : int
+                    order of appearance of the legend (zorder). Default is 1000.
                     
             Text related keys
             -----------------
@@ -1120,9 +1125,7 @@ def asManyPlots2(numPlot, datax, datay,
                 'transparent' : bool
                     whether to have a transparent background or not. Default is False.
         
-    Ouputs
-    ------
-        Return the current subplot as well as a list of all the different plot outputs.
+    Return in this order: the current subplot, a list of all the different plots, the legend (None if no legend) and the colorbar (None if no colorbar).
     """
     
     ############################################################################################
@@ -1584,7 +1587,7 @@ def asManyPlots2(numPlot, datax, datay,
         else:
             legend.hide = False
      
-        legend.title, legend.titleSize = setListFromDict(legendProperties, keys=['title', 'titleSize'], default=['', layout.textsize])
+        legend.title, legend.titleSize, legend.order = setListFromDict(legendProperties, keys=['title', 'titleSize', 'order'], default=['', layout.textsize, 1000])
         legend.style.shadow, legend.style.fancy, legend.style.bg, legend.style.alpha = setListFromDict(legendProperties, keys=['shadow', 'fancy', 'background', 'transparency'], default=[True, True, None, 1])
         legend.loc, legend.ncols, legend.labels.size, legend.labels.text = setListFromDict(legendProperties, keys=['loc', 'ncols', 'labelSize', 'labels'], default=['best', 1, layout.textsize, ['']*data.nplots]) 
         legend.line.color, legend.marker.edgecolor, legend.marker.facecolor, legend.marker.position , legend.marker.scale = setListFromDict(legendProperties, keys=['lineColor', 'markerEdgeColor', 'markerFaceColor', 'markerPosition', 'markerScale'], default=[None, None, None, 'left', 1.0])
@@ -1642,12 +1645,6 @@ def asManyPlots2(numPlot, datax, datay,
     # Set x and y labels
     plt.xlabel(xaxis.label.text, size=xaxis.label.size) 
     plt.ylabel(yaxis.label.text, size=yaxis.label.size)
-    
-    # Hiding ticks labels if required
-    if xaxis.ticks.hideLabels:
-        ax1.axes.get_xaxis().set_ticklabels([])
-    if yaxis.ticks.hideLabels:
-        ax1.axes.get_yaxis().set_ticklabels([])   
     
     # Place axes to the correct position
     if yaxis.pos.lower() == "right":
@@ -1741,7 +1738,9 @@ def asManyPlots2(numPlot, datax, datay,
                 col.ax.set_yticklabels(colorbar.ticks.label.text, size=colorbar.ticks.label.size)
             elif colorbar.orientation == 'horizontal':
                 col.ax.set_xticklabels(colorbar.ticks.label.text, size=colorbar.ticks.label.size)
-       
+    else:
+        col = None
+        
     #######################################
     #           Deal with legend          #
     #######################################
@@ -1781,6 +1780,11 @@ def asManyPlots2(numPlot, datax, datay,
                         pass
                 elif typ == 'scatter':
                     h.set_color(mkfclr)
+        
+        # Set zorder
+        leg.set_zorder(legend.order)
+    else:
+        leg = None
                 
     # Set x and y scales        
     plt.yscale(yaxis.scale)
@@ -1795,6 +1799,12 @@ def asManyPlots2(numPlot, datax, datay,
         ax1.set_ylim(bottom=yaxis.min)
     if yaxis.max is not None:
         ax1.set_ylim(top=yaxis.max)
+        
+    # Hiding ticks labels if required
+    if xaxis.ticks.hideLabels:
+        ax1.axes.get_xaxis().set_ticklabels([])
+    if yaxis.ticks.hideLabels:
+        ax1.axes.get_yaxis().set_ticklabels([])
 
 
     #################################
@@ -1814,4 +1824,4 @@ def asManyPlots2(numPlot, datax, datay,
             plt.savefig(output.name, bbox_inches=bbox_inches, transparent=output.transparent)
     
     #plt.show()
-    return ax1, listPlots
+    return ax1, listPlots, leg, col
