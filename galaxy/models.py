@@ -913,7 +913,8 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
 
 
 def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=None, magB=None, Rd=None, Rb=None, normalise=True, stretch=5e-2,
-             integration=False, Ltot=None, Ie=None, offsetMagD=None, offsetMagB=None, xtol=1e-3, useZeroOrder=True, method='hybr', jacobian='numerical'):
+             integration=False, Ltot=None, Ie=None, offsetMagD=None, offsetMagB=None, xtol=1e-3, useZeroOrder=True, method='hybr', jacobian='numerical',
+             verbose=True):
     """
     This is meant to find the half-light radius of the sum of an exponential disc and a bulge, either via a semi-analitycal formula, or using numerical integration.
     
@@ -996,6 +997,8 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
             dilatation factor used to multiply re in order to smooth out the sharp transition around the 0 of the function
         useZeroOder : boolean
             whether to use the zero order analytical solution as a guess. If True, the value of guess will be used by the zero search algorithm.
+        verbose : bool
+            whether to print messaged on stdout (True) or not (False). Default is True.
         xtol : float
             relative error convergence factor
             
@@ -1012,9 +1015,18 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
     #            Compute bn, mag and radii values              #
     ############################################################
     
-    b1, b4 = check_bns([1, 4], [b1, b4])
+    # If only a single value is given, transform into numpy arrays
+    if isinstance(magD, (float, int)):
+        magD = np.array([magD])
+    if isinstance(magB, (float, int)):
+        magB = np.array([magB])
+    if isinstance(Rd, (float, int)):
+        Rd   = np.array([Rd])
+    if isinstance(Rb, (float, int)):
+        Rb   = np.array([Rb])
+    
+    b1, b4             = check_bns([1, 4], [b1, b4])
     magD, magB, Rd, Rb = fromStructuredArrayOrNot(gal, magD, magB, Rd, Rb, noStructuredArray)
-        
     
     #########################################
     #            Define a guess             #
@@ -1051,7 +1063,9 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
             
         # Check mag offset values
         if offsetMagB is None or offsetMagD is None:
-            print(brightMessage('At least one of the mag offset values was not provided. Assuming both are equal.'))
+            
+            if verbose:
+                print(brightMessage('At least one of the mag offset values was not provided. Assuming both are equal.'))
             offsetMagB = 0
             offsetMagD = 0
             
@@ -1060,6 +1074,8 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
             norm     = 0.5*(10**((offsetMagD-magD)/2.5) + 10**((offsetMagB-magB)/2.5))
         else:
             norm     = 1.0
+            
+        #print(magD, magB, Rd, Rb, guess, norm)
         
         #solve by finding the zero of the function
         for g, md, mb, rd, rb, nm in zip(guess, magD, magB, Rd, Rb, norm):
