@@ -98,6 +98,7 @@ myPDFViewer = 'okular'
 def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNames=[], constraintNames=[],
                pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/", pathLog="./log/", pathRecap='./recap/',
                constraints=None, forceConfig=False, noGalfit=False, noPDF=False, showRecapFiles=True, showLog=False,
+               divergingNorm=True,
                numThreads=8):
     """
     Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
@@ -116,6 +117,8 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                 
     Optional inputs
     ---------------
+        divergingNorm : bool
+            whether to use a diverging norm in the output pdf or not. Default is True.
         constraints : dict
             list of dictionaries used to generate the constraints. See below for an explanation on how to use it. Default is None (no constraint file shall be made).
         
@@ -232,7 +235,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             maxi     = i*maxImages
         
         try:
-            genMeThatPDF(outputFiles[mini:maxi], opath.join(pathRecap, 'recap%d.pdf' %i), log=False, diverging=True)
+            genMeThatPDF(outputFiles[mini:maxi], opath.join(pathRecap, 'recap%d.pdf' %i), log=False, diverging=divergingNorm)
             print(okMessage("Recap file number %d made." %i))
         except:
             pass
@@ -325,6 +328,10 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     ll               = len(outputFiles)
     maxImages        = 100
     splt             = ll // maxImages
+    
+    # If there are less figures than the maximum allowed, we want a single pdf file
+    if splt < 1:
+        splt         = 1
     
     if not noPDF:
         semaphore        = multiprocessing.Semaphore(numThreads)
