@@ -157,7 +157,7 @@ class Vprojection:
 #                                         Kinematical properties                                         #
 ##########################################################################################################
 
-def velocityAtR(radius, Vt, Rt, Rlast):
+def velocityAtR(radius, Vt, Rt, Rlast, verbose=True):
     '''
     Assuming a linear ramp model, try to compute the velocity at a single radius.
 
@@ -171,6 +171,11 @@ def velocityAtR(radius, Vt, Rt, Rlast):
             radius of transition between the inner linear slope and the outer plateau
         Rlast : float
             distance from the centre of the furthest pixel used in the fit
+            
+    Optional parameters
+    -------------------
+        verbose : bool
+            whether print error messages or not. Default is True.
 
     Return the computed velocity in units of Vt and a boolean value indicating whether the computed value is reliable or not.
     '''
@@ -183,7 +188,8 @@ def velocityAtR(radius, Vt, Rt, Rlast):
         else:
             velocity = Vt
     else:
-        print(errorMessage('Rt > Rlast by %.1f' %(Rt-Rlast)))
+        if verbose:
+            print(errorMessage('Rt > Rlast by %.1f' %(Rt-Rlast)))
         ok           = False
         velocity     = radius/Rt*Vt
         
