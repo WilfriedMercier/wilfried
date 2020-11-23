@@ -10,7 +10,6 @@ With the help of Issa Lina - OBSPM
 Functions meant to automatise as much as possible plotting of data of any kind.
 """
 
-import time
 import numpy                              as     np
 import matplotlib.pyplot                  as     plt
 import matplotlib.gridspec                as     gridspec
@@ -1518,7 +1517,7 @@ def asManyPlots2(numPlot, datax, datay,
         colorbar.hide, colorbar.orientation = setListFromDict(colorbarProperties, keys=["hide", "orientation"], default=[False, 'vertical'])
         
         # Cmap properties
-        colorbar.cmap.name, colorbar.cmap.min, colorbar.cmap.max = setListFromDict(colorbarProperties, keys=["cmap", "min", "max"], default=['Greys', 0, None, None])
+        colorbar.cmap.name, colorbar.cmap.min, colorbar.cmap.max = setListFromDict(colorbarProperties, keys=["cmap", "min", "max"], default=['Greys', None, None])
         
         # Ticks properties
         colorbar.ticks.values, colorbar.ticks.size, colorbar.ticks.color, colorbar.ticks.label.text, colorbar.ticks.label.size, colorbar.ticks.label.color, colorbar.ticks.label.rotation = setListFromDict(colorbarProperties, keys=["ticks", "ticksSize", "ticksColor", "ticksLabels", "ticksLabelsSize", "ticksLabelsColor", "ticksLabelsRotation"], default=[None,  layout.ticks.size, 'black', None, layout.ticks.labelSize, 'black', 0])
@@ -1554,7 +1553,6 @@ def asManyPlots2(numPlot, datax, datay,
         else:
             if colorbar.cmap.min > colorbar.cmap.max:
                 raise ValueError("Given minimum cmap value with key 'min' in colorbarProperties dict is larger than given maximum cmap value with key 'max'. Please provide value such that min <= max. Cheers !")
-        
         
         #####################################################
         #           Defining colorbar normalisation         #
