@@ -8,7 +8,8 @@ Created on Mon Aug 17 12:43:49 2020
 A set of functions to easily compute standard calculations in extragalactic physics using cosmology. This relies heavily on a custom, Python 3 adapted version of cosmolopy.
 """
 
-import cosmolopy.distance as cd
+from   astropy.coordinates import SkyCoord
+import cosmolopy.distance  as     cd
 
 COSMOLOGY = cd.set_omega_k_0({'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72})
 
@@ -88,3 +89,44 @@ def comoving_los(z1, z2, cosmology=None):
     
     cosmology     = cd.set_omega_k_0(cosmology)
     return cd.comoving_distance(z1, z0=z2, **cosmology)
+
+def separation(z, ra1, dec1, ra2, dec2, units=['deg', 'deg', 'deg', 'deg']):
+    '''
+    Compute the comoving separation between two objects at the same redshift given their position.
+
+    Parameters
+    ----------
+        z : float/int
+            redshift of the two objects
+        ra1 : float
+            Right ascension of the first object
+        dec1 : float
+            Declination of the first object
+        ra2 : float
+            Right ascension of the second object
+        dec2 : TYPE
+            Declination of the second object
+            
+    Optional parameters
+    -------------------
+        units : list of float/Astropy.units units or single str
+            units of the different coordinates in this order: ra1, dec1, ra2, dec2
+
+    Return the comoving separation in Mpc unit.
+    '''
+    
+    if isinstance(units, list):
+        units = tuple(units)
+    elif isinstance(units, str):
+        units = [units]*4
+        
+    if len(units) != 4:
+        raise ValueError('4 units should be given or a single one only. Cheers !')
+    
+    # Objects representing the coordinates
+    coord1 = SkyCoord(ra1, dec1, unit=units[:2])
+    coord2 = SkyCoord(ra2, dec2, unit=units[-2:])
+    
+    sep   = coord1.separation(coord2)
+    
+    return comoving_separation(z, sep)
