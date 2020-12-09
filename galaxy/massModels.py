@@ -8,32 +8,79 @@ Created on Tue Sep 22 15:39:08 2020
 Test functions on Galaxy mass modelling.
 """
 
-import scipy.integrate   as     integrate
-import numpy             as     np
-import astropy.units     as     u
-from   .models           import compute_bn, checkAndComputeIe, sersic_profile
-from   .kinematics       import Vprojection
-from   scipy.special     import gamma, gammainc
-from   math              import factorial
-from   astropy.constants import G
+import scipy.integrate    as     integrate
+import numpy              as     np
+import astropy.units      as     u
+from   astropy.units.core import UnitConversionError
+from   .models            import checkAndComputeIe, sersic_profile
+from   .misc              import compute_bn, realGammainc
+from   .kinematics        import Vprojection
+from   astropy.constants  import G
+from   scipy.special      import gamma, i0, i1, k0, k1
+
 
 
 #######################################################################################
 #                           3D profiles and their functions                           #
 #######################################################################################
 
-class Multiple3DModels:
+class MassModelBase:
+    '''Base class for the mass models.'''
+    
+    def __init__(self, dim, M_L, unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):
+        '''
+        Init function.
+
+        Parameter
+            ----------
+            dim : int
+                number of dimensions of the model
+            M_L : float
+                mass to light ratio. Refer to the specific mass model to know which unit to provide.
+        '''
+        
+        if not isinstance(dim, int) or dim < 1:
+            raise ValueError('Given dimension is not correct.')
+            
+        if not isinstance(M_L, (int, float)) or M_L <= 0:
+            raise ValueError('Mass to light ratio is not correct.')
+            
+        if hasattr(M_L, 'unit'):
+            self.M_L = M_L.to(unit_M_L)
+        else:
+            self.M_L = u.Quantity(M_L, unit=unit_M_L)
+        
+        self._dim = dim
+        
+        
+    def __add__(self, other):
+        '''Add this instance with any other object. Only adding 3D models is allowed.'''
+        
+        return Multiple3DModels(self, other)
+
+
+class Multiple3DModels(MassModelBase):
     '''A master class used when combining two 3D models into a single object'''
     
-    def __init__(self, model1, model2):
+    def __init__(self, model1, model2, *args, **kwargs):
+        '''
+        Init function
+        
+        Parameters
+        ----------
+            model1 : MassModelBase instance with _ndim = 3
+                first model
+            model2 : MassModelBase instance with _ndim = 3
+                second model
+        '''
         
         if not hasattr(model1, '_dim') or not hasattr(model2, '_dim'):
             raise AttributeError('One of the objects is not a valid model instance.')
         
         if model1._dim < 3 or model2._dim < 3:
             raise ValueError('One of the models is not 3D or higher. Only 3D models can be combined. Cheers !')
-        else:
-            self._dim   = 3
+        
+        super().__init__(3)
             
         # We keep track of models in a list
         if not isinstance(model1, Multiple3DModels) and not isinstance(model2, Multiple3DModels):
@@ -51,11 +98,6 @@ class Multiple3DModels:
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
-            
-    def __add__(self, other):
-        '''Add this instance with any other object. Only adding 3D models is allowed.'''
-        
-        return Multiple3DModels(self, other)
     
     def __checkArgs__(self, args, kwargs):
         '''Check args and kwargs so that they have the same len'''
@@ -135,7 +177,7 @@ class Multiple3DModels:
     #                          Velocities                          #
     ################################################################
     
-    def meanV(self, D, R):
+    def meanV(self, D, R, *args, **kwargs):
         '''
         Compute the mean velocity along the line of sight.
         
@@ -204,7 +246,7 @@ class Multiple3DModels:
         return np.sqrt(np.sum([i.velocity(*args[pos], **kwargs[pos])**2 for pos, i in enumerate(self.models)], axis=0))
     
     
-    def vprojection(self, s, D, R, which='edge-on'):
+    def vprojection(self, s, D, R, which='edge-on', **kwargs):
         '''
         Apply a projection of the velocity along the line of sight depending on the geometry used.
 
@@ -225,32 +267,38 @@ class Multiple3DModels:
         Return the projected line of sight velocity.
         '''
         
-        # To overcome the issue with the args and kwargs definition we redefine the velocitys
+        # To overcome the issue with the args and kwargs definition we redefine the velocity
         def vel(x):
             return self.velocity([x]*len(self.models))
         
         return Vprojection(vel).projection(s, D, R, which=which)
 
 
-class Hernquist:
+class Hernquist(MassModelBase):
     '''3D Hernquist model class with useful methods.'''
     
-    def __init__(self, a, M, unit_a='kpc', unit_M='erg/cm^2/s/Hz'):
+    def __init__(self, a, F, M_L, unit_a='kpc', unit_F='erg/(s.cm^2.A)', unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):
         '''
         Mandatory parameters
         --------------------
             a : float or int
                 scale factor
-            M : float or int
-               total "mass" (can also be understood as luminosity)
+            F : float or int
+               amplitude parameter (total flux)
+            M_L : float or int
+                mass to light ratio.
                
         Optional parameters
         -------------------
             unit_a : str
                 unit desired for the scale parameter a. This will be used when computing a value in a certain unit. Default is kpc.
-            unit_M : str
-                unit desired for the amplitude parameter M. Default is 
+            unit_F : str
+                unit desired for the amplitude parameter M. Default is 'erg/s/cm^2/A'.
+            unit_M_L : str
+                unit used to convert from light to mass profiles. Default is in Solar masses per unit of F, i.e. solMass/(erg/(s.cm^2.A)).
         '''
+        
+        super().__init__(3, M_L, unit_M_L=unit_M_L)
         
         # If parameters are already passed as Astropy Quantities, just convert them
         if hasattr(a, 'unit'):
@@ -258,28 +306,29 @@ class Hernquist:
         else:
             self.a  = u.Quantity(a, unit_a)
             
-        if hasattr(M, 'unit'):
-            self.M  = M.to(unit_M)
+        if hasattr(F, 'unit'):
+            self.F  = F.to(unit_F)
         else:
-            self.M  = u.Quantity(M, unit_M)
+            self.F  = u.Quantity(F, unit_F)
             
-        if not isinstance(self.a.value, (int, float)) or not isinstance(self.M.value, (int, float)):
+        if not isinstance(self.a.value, (int, float)) or not isinstance(self.F.value, (int, float)):
             raise TypeError('One of the parameters is neither int nor float.')
+            
+        try:
+            self.Vmax = 0.5*np.sqrt(G*self.M_L*self.F/self.a).to('km/s')
+        except UnitConversionError:
+            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of F, a and M_L parameters. Cheers !' %(np.sqrt(G*self.M_L*self.F/self.a).unit))
         
         # Other hidden properties
-        self._dim   = 3
-        self._beta  = 0.6468628627045541 # unitless (powerlaw)
-        self._alpha = u.Quantity(0.3514010020474344 * 10**(1-self._beta), unit='kpc(%s)' %(1-self._beta))
+        self._alpha_a = -0.454
+        self._beta_a  = 0.725
+        self._alpha_F = 1.495
+        self._beta_F  = 1.75
         
         
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
-        
-    def __add__(self, other):
-        '''Add this instance with any other object. Only adding 3D models is allowed.'''
-        
-        return Multiple3DModels(self, other)
     
     @property
     def __units__(self):
@@ -288,22 +337,25 @@ class Hernquist:
         print('Model: Hernquist, units\n\
               Parameters:\n\
                   a : %s\n\
-                  M : %s\n\n\
+                  F : %s\n\n\
               Functions:\n\
                   gfield     : %s\n\
                   luminosity : %s\n\
                   profile    : %s\n\
                   velocity   : %s\n\
-                  vprojection: %s\n' %(self.a.unit, self.M.unit, self.gfield(0).unit, self.luminosity(0).unit, 
-                                       self.profile(0).unit, self.velocity(0).unit, self.vprojection(10, 10, 0).unit))
+                  vprojection: %s\n\
+              Warning: functions units ultimately depends upon the choice of units for the variables. The given units are only for default variable units.\
+              ' %(self.a.unit, self.F.unit, self.gfield(0).unit, self.flux(0).unit, self.profile(0).unit, self.velocity(0).unit, self.vprojection(10, 10, 0).unit))
+        return
         
+    
     def gfield(self, r, *args, **kwargs):
         '''
         Compute the gravitational field of a single Hernquist profile at radius r.
         
         WARNING
         -------
-            UNIT OF r MUSE BE IDENTICAL TO THE SCALE PARAMETER a.
+            UNIT OF r MUST BE IDENTICAL TO THE SCALE PARAMETER a.
 
         Parameters
         ----------
@@ -313,19 +365,25 @@ class Hernquist:
         Return g(r) as an Astropy Quantity object.
         '''
         
-        if np.any(r<0):
+        if not isinstance(r, (int, float)):
+            raise TypeError('r should either be int or float.')
+        
+        if r<0:
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         # If r is without unit, we assume it is the zame as the scale parameter
         if not hasattr(r, 'unit'):
             r *= self.a.unit
-        
-        return -G*self.luminosity(r)/r**2
+            
+        if r == 0:
+            return -G*self.F/self.a**2
+        else:   
+            return -G*self.flux(r)*self.M_L/r**2
         
     
-    def luminosity(self, r, *args, **kwargs):
+    def flux(self, r, *args, **kwargs):
         '''
-        Compute the enclosed luminosity or mass at radius r.
+        Compute the enclosed flux at radius r.
         
         WARNING
         -------
@@ -336,22 +394,25 @@ class Hernquist:
             r : float or int
                 radius where to compute the luminosity
 
-        Return the luminosity or mass enclosed in a sphere of radius r as an astropy Quantity object.
+        Return the flux enclosed in a sphere of radius r as an astropy Quantity object.
         '''
         
-        if np.any(r<0):
+        if not isinstance(r, (int, float)):
+            raise TypeError('r should either be int or float.')
+        
+        if r<0:
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         # If r is without unit, we assume it is the zame as the scale parameter
         if not hasattr(r, 'unit'):
             r *= self.a.unit
         
-        return self.M*(1 - 1.0/(1+r/self.a)**2)
+        return self.F*(r/(r+self.a))**2
         
         
     def profile(self, r, *args, **kwargs):
         '''
-        Compute the light or mass profile at radius r.
+        Compute the light profile at radius r.
         
         WARNING
         -------
@@ -362,20 +423,23 @@ class Hernquist:
             r : float or int
                 radius where to compute the profile
 
-        Return the light or mass profile at radius r as an Astropy Quantity object.
+        Return the light profile at radius r as an Astropy Quantity object.
         '''
         
-        if np.any(r<0):
+        if not isinstance(r, (int, float)):
+            raise TypeError('r should either be int or float.')
+        
+        if r<0:
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         # If r is without unit, we assume it is the zame as the scale parameter
         if not hasattr(r, 'unit'):
             r *= self.a.unit
         
-        return self.M/(2*np.pi*self.a**2) / (r * (1+r/self.a)**3)
+        return self.F*self.a/(2*np.pi) / (r * (r + self.a)**3)
     
     
-    def vprojection(self, s, D, R, which='edge-on'):
+    def vprojection(self, s, D, R, which='edge-on', **kwargs):
         '''
         Apply a projection of the velocity along the line of sight depending on the geometry used.
         
@@ -417,11 +481,10 @@ class Hernquist:
     def toSersic(self):
         '''Create the best fit Sersic instance from this Hernquist instance.'''
         
-        Re = (self.a/self._alpha)**(1.0/self._beta)
-        bn = compute_bn(4)
-        Ie = self.M*bn**8 / (factorial(8)*np.pi*np.exp(bn)*Re**2)
+        Re = ((self.a.value/10**self._alpha_a)**(1.0/self._beta_a)) * self.a.unit
+        Ie = (self.F.value / (10**self._alpha_F * Re.value**self._beta_F)) * (self.F.unit/(Re.unit**2))
         
-        return Sersic(4, Re, Ie=Ie)
+        return Sersic(4, Re, Ie=Ie, unit_Re=str(Re.unit), unit_Ie=str(Ie.unit))
     
     
     def velocity(self, r, *args, **kwargs):
@@ -437,40 +500,32 @@ class Hernquist:
             r : float/int or numpy array of float/int
                 radius where the velocity profile is computed
 
-        Return V(r) in units of:
-            - (m^3 "M")/("a" kg s^2)
-            
-        with "M" and "a" the units of the corresponding parameters passed as input.
+        Return V(r) in units of G*M/L*F/sqrt(a).
         '''
+
+        if not isinstance(r, (int, float)):
+            raise TypeError('r should either be int or float.')
         
+        if r<0:
+            raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
+                    
         if not hasattr(r, 'unit'):
             r *= self.a.unit
         
-        if np.any(r<0):
-            raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
-            
-        try:
-            if r.value==0:
-                return np.sqrt(2*G*self.M/self.a)
-            else:
-                return np.sqrt(G*self.luminosity(r)/r)
-        except:
-            vel0            = np.sqrt(2*G*self.M/self.a)
-            velocity        = r.value * vel0.unit
-            mask            = r.value==0
-            velocity[mask]  = np.sqrt(2*G*self.M/self.a)
-            velocity[~mask] = np.sqrt(G*self.luminosity(r)/r)
-            return velocity
+        if r.value==0:
+            return 0
+        else:
+            return np.sqrt(G*self.M_L*self.F*r)/(self.a+r)
 
 
 class Sersic:
     '''
     2D Sersic profile class.
     
-    This class combines into a single objects useful functions related to Sersic profiles
+    This class combines into a single objects useful functions related to Sersic profiles.
     '''
     
-    def __init__(self, n, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/cm^2/s/Hz/kpc^2'):
+    def __init__(self, n, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/cm^2/s/A', **kwargs):
         """
         General Sersic profile. You can either provide n, Re and Ie, or instead n, Re, mag and offset.
         If neither Ie, nor mag and offset are provided a ValueError is raised.  
@@ -491,9 +546,9 @@ class Sersic:
             offset : float
                 magnitude offset in the magnitude system used. Default is None.
             unit_Ie : str
-                unit for the surface brightness. Default is similar to specfic flux/angular surface
+                unit for the surface brightness. Default is erg/cm^2/s/A. If Ie already has a unit, it is converted to this unit.
             unit_Re : str
-                unit for the scale radius Re. Default is kpc.
+                unit for the scale radius Re. Default is kpc. If Re already has a unit, it is converted to this unit.
         """
         
         if not isinstance(n, (float, int)) or not isinstance(Re, (float, int)):
@@ -505,31 +560,33 @@ class Sersic:
         if Re<0:
             raise ValueError('The effective radius Re must be positive valued. Cheers !')
             
-        self.n      = n
-        self.bn     = compute_bn(self.n)
+        self.n        = n
+        self.bn       = compute_bn(self.n)
         
         # If the parameters already are Astropy quantities, we just convert them to the required unit
         if hasattr(Re, 'unit'):
-            self.Re = self.Re.to(unit_Re)
+            self.Re   = self.Re.to(unit_Re)
         else:
-            self.Re = u.Quantity(Re, unit=unit_Re)
+            self.Re   = u.Quantity(Re, unit=unit_Re)
             
         if hasattr(Ie, 'unit'):
-            self.Ie = self.Ie.to(unit_Ie)
+            self.Ie   = self.Ie.to(unit_Ie)
         else:
-            self.Ie = u.Quantity(checkAndComputeIe(Ie, n, self.bn, Re, mag, offset), unit=unit_Ie)
+            self.Ie   = u.Quantity(checkAndComputeIe(Ie, n, self.bn, Re, mag, offset), unit=unit_Ie)
             
         # Other hidden properties
-        self._dim   = 2
-        self._beta  = 0.6468628627045541 # unitless (powerlaw)
-        self._alpha = u.Quantity(0.3514010020474344 * 10**(1-self._beta), unit='kpc(%s)' %(1-self._beta))
+        self._dim     = 2
+        self._alpha_a = -0.454
+        self._beta_a  = 0.725
+        self._alpha_F = 1.495
+        self._beta_F  = 1.75
         
 
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
         
-    def profile(self, r):
+    def profile(self, r, *args, **kwargs):
         '''
         Sersic profile at radius r.
         
@@ -545,7 +602,10 @@ class Sersic:
         Return the Sersic profiles computed at the radius r.
         '''
         
-        if np.any(r<0):
+        if not isinstance(r, (int, float)):
+            raise TypeError('r should either be int or float.')
+        
+        if r<0:
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         if not hasattr(r, 'unit'):
@@ -554,9 +614,9 @@ class Sersic:
         return sersic_profile(r, self.n, self.Re, Ie=self.Ie, bn=self.bn)
     
     
-    def luminosity(self, r):
+    def flux(self, r, *args, **kwargs):
         '''
-        Luminosity at radius r (encompassed within a disk since this is a 2D profile).
+        Flux at radius r (encompassed within a disk since this is a 2D profile).
         
         WARNING
         -------
@@ -570,43 +630,62 @@ class Sersic:
         Return the luminosity computed within a disk of radius r.
         '''
         
-        if np.any(r<0):
+        if not isinstance(r, (int, float)):
+            raise TypeError('r should either be int or float.')
+        
+        if r<0:
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         if not hasattr(r, 'unit'):
             r *= self.Re.unit
            
         n2 = 2*self.n
-        return n2*np.pi*self.Ie*np.exp(self.bn)*gammainc( n2, (self.bn*(r/self.Re)**(1.0/self.n)).value )*self.Re**2 / self.bn**n2
+        return n2*np.pi*self.Ie*np.exp(self.bn)*realGammainc(n2, (self.bn*(r/self.Re)**(1.0/self.n)).value)*self.Re**2 / self.bn**n2
     
     @property
     def Ltot(self):
         '''Total luminosity of the profile.'''
         
         n2 = 2*self.n
-        return np.pi*n2*self.Ie*np.exp(self.bn)*gamma(n2)*self.Re**2 / self.bn**(n2)
+        return n2*np.pi*self.Ie*np.exp(self.bn)*gamma(n2)*self.Re**2 / self.bn**n2
     
-    @property
-    def toHernquist(self):
-        '''Create the best-fit Hernquist instance from this Sersic instance (based on my own calculations).'''
+    def toHernquist(self, M_L, unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):
+        '''
+        Create the best-fit Hernquist instance from this Sersic instance (cf. Mercier et al., 2021).
+        
+        Parameters
+        ----------
+            M_L : float/int
+                mass to light ratio
+            unit_M_L : str
+                unit of the mass to light ratio. If M_L already has a unit, it is converted to this unit.
+        '''
+        
+        if not isinstance(M_L, (int, float)):
+            raise TypeError('Mass to light ratio must either be an int or a float.')
+            
+        if hasattr(M_L, 'unit'):
+            M_L = M_L.to(unit_M_L)
+        else:
+            M_L = u.Quantity(M_L, unit=unit_M_L)
         
         if self.n==4:
-            a = self._alpha*self.Re**self._beta
-            M = self.Ltot
+            a = self._alpha_a * self.Re.value**self._beta_a * self.Re.unit
+            F = self.Ie.value * self._alpha_F * self.Re.value**self._beta_F * (self.Ie.unit*self.Re.unit**2)
         else:
             raise ValueError('Only de Vaucouleurs profiles, i.e. Sersic with n=4, can be converted into Hernquist profiles.')
         
-        return Hernquist(a, M)
+        return Hernquist(a, F, M_L, unit_a=str(a.unit), unit_F=str(F.unit), unit_M_L=str(M_L.unit))
     
     
-class ExponentialDisk(Sersic):
+class ExponentialDisk(MassModelBase, Sersic):
     '''
     2D/3D Exponential disk profile class.
     
     This class combine into a single objects useful functions related to Sersic profiles
     '''
     
-    def __init__(self, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/cm^2/s/Hz/arcsec^2'):        
+    def __init__(self, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/cm^2/s/A', M_L=None, unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):        
         """
         You can either provide n, Re and Ie, or instead n, Re, mag and offset.
         If neither Ie, nor mag and offset are provided a ValueError is raised.  
@@ -630,23 +709,26 @@ class ExponentialDisk(Sersic):
                 unit for the scale radius Re. Default is kpc.
         """
         
-        super().__init__(1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
-        self._dim = 3
+        MassModelBase.__init__(self, 3, M_L, unit_M_L)
+        Sersic.__init__(       self, 1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
+        
+        b1        = compute_bn(1)
+        self.Rd   = self.Re/b1
+        
+        try:
+            self.Vmax = 2*np.sqrt(np.pi*G*Re*M_L*Ie*np.exp(b1)/b1).to('km/s')
+        except UnitConversionError:
+            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of F, a and M_L parameters. Cheers !' %np.sqrt(np.pi*G*Re*M_L*Ie*np.exp(b1)/b1).unit)
+        
         
         
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
-        
-    def __add__(self, other):
-        '''Add this instance with any other object. Only adding 3D models is allowed.'''
-        
-        return Multiple3DModels(self, other)
-        
     
     def gfield(self, r):
         '''
-        Compute the gravitational field of a single infinitely thin exponential disk profile at radius r.
+        Compute the gravitational field of a single infinitely thin exponential disk profile at radius r in the plane of the disk.
         
         WARNING
         -------
@@ -660,13 +742,18 @@ class ExponentialDisk(Sersic):
         Return g(r).
         '''
         
-        if np.any(r<0):
+        if not isinstance(r, (int, float)):
+            raise TypeError('r should either be int or float.')
+        
+        if r<0:
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         if not hasattr(r, 'unit'):
             r *= self.Re.unit
                 
-        return -2*G*self.luminosity(r)/r
+        print('Not implemented yet...')
+            
+        return 0
     
     
     def vprojection(self, s, D, R, which='edge-on'):
@@ -679,12 +766,14 @@ class ExponentialDisk(Sersic):
 
         Mandatory parameters
         --------------------
-            s : float/int or array of floats/int
-                distance from the point to our location (same unit as L and D)
             D : float
                 cosmological angular diameter distance between the galaxy centre and us
             R : float/int
                 projected distance of the point along the major axis relative to the galaxy centre
+            s : float/int or array of floats/int
+                distance from the point to our location (same unit as L and D)
+            velFunction : function
+                function used to compute the velocity
                 
         Optional parameters
         -------------------
@@ -726,23 +815,22 @@ class ExponentialDisk(Sersic):
         where "Luminosity" = "Ie" "Re"^2 and "Re" are the units of the parameters passed as inputs.
         '''
         
-        if np.any(r<0):
+        if r<0:
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         if not hasattr(r, 'unit'):
             r *= self.Re.unit
         
-        try:
-            if r.value==0:
-                return 0
-            else:
-                return np.sqrt(2*G*self.luminosity(r)).value
-        except:
-            vel0            = 0*np.sqrt(2*G*self.luminosity(1) / u.Quantity(1, unit=r.unit))
-            velocity        = r.value * vel0.unit
-            mask            = r.value==0
-            velocity[mask]  = vel0
-            velocity[~mask] = np.sqrt(2*G*self.luminosity(r) / u.Quantity(1, unit=r.unit))
-            return velocity
+        if r == 0:
+            return 0
+        else:
+            y = r/(2*self.Rd)
+            return (self.Vmax*r/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
 
+    
+    def toHernquist(self, *args, **kwargs):
+        '''Override the toHernquist method in Sersic.'''
+        
+        raise 
+        return
 
