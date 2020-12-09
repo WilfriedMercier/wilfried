@@ -180,8 +180,8 @@ def velocityAtR(radius, Vt, Rt, Rlast, verbose=True):
     Return the computed velocity in units of Vt and a boolean value indicating whether the computed value is reliable or not.
     '''
 
-    # If Rt<Rlast, there is no issue, but when Rt>Rlast, the value is much more unconstrained
-    if Rt <= Rlast:
+    # If Rt<Rlast or (Rt>Rlast and radius<Rlast), there is no issue, but when Rt>Rlast, the value is much more unconstrained
+    if Rt <= Rlast or radius <= Rlast:
         ok           = True
         if radius < Rt:
             velocity = radius/Rt*Vt
