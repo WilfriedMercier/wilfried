@@ -42,13 +42,20 @@ class MassModelBase:
         if not isinstance(dim, int) or dim < 1:
             raise ValueError('Given dimension is not correct.')
             
-        if not isinstance(M_L, (int, float)) or M_L <= 0:
-            raise ValueError('Mass to light ratio is not correct.')
-            
+        if M_L <= 0:
+            raise ValueError('Mass to light ratio is negative or null.')
+        
         if hasattr(M_L, 'unit'):
-            self.M_L = M_L.to(unit_M_L)
+            if not isinstance(M_L.value, (int, float)):
+                raise ValueError('Mass to light ratio must either be an int or a float.')
+            else:
+                self.M_L = M_L.to(unit_M_L)
+                
         else:
-            self.M_L = u.Quantity(M_L, unit=unit_M_L)
+            if not isinstance(M_L, (int, float)):
+                raise ValueError('Mass to light ratio must either be an int or a float.')
+            else:
+                self.M_L = u.Quantity(M_L, unit=unit_M_L)
         
         self._dim = dim
         
@@ -277,7 +284,7 @@ class Multiple3DModels(MassModelBase):
 class Hernquist(MassModelBase):
     '''3D Hernquist model class with useful methods.'''
     
-    def __init__(self, a, F, M_L, unit_a='kpc', unit_F='erg/(s.cm^2.A)', unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):
+    def __init__(self, a, F, M_L, unit_a='kpc', unit_F='erg/(s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):
         '''
         Mandatory parameters
         --------------------
@@ -525,7 +532,7 @@ class Sersic:
     This class combines into a single objects useful functions related to Sersic profiles.
     '''
     
-    def __init__(self, n, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/cm^2/s/A', **kwargs):
+    def __init__(self, n, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', **kwargs):
         """
         General Sersic profile. You can either provide n, Re and Ie, or instead n, Re, mag and offset.
         If neither Ie, nor mag and offset are provided a ValueError is raised.  
@@ -649,7 +656,7 @@ class Sersic:
         n2 = 2*self.n
         return n2*np.pi*self.Ie*np.exp(self.bn)*gamma(n2)*self.Re**2 / self.bn**n2
     
-    def toHernquist(self, M_L, unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):
+    def toHernquist(self, M_L, unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):
         '''
         Create the best-fit Hernquist instance from this Sersic instance (cf. Mercier et al., 2021).
         
@@ -670,8 +677,8 @@ class Sersic:
             M_L = u.Quantity(M_L, unit=unit_M_L)
         
         if self.n==4:
-            a = self._alpha_a * self.Re.value**self._beta_a * self.Re.unit
-            F = self.Ie.value * self._alpha_F * self.Re.value**self._beta_F * (self.Ie.unit*self.Re.unit**2)
+            a   = 10**self._alpha_a * self.Re.value**self._beta_a * self.Re.unit
+            F   = self.Ie.value * 10**self._alpha_F * self.Re.value**self._beta_F * (self.Ie.unit*self.Re.unit**2)
         else:
             raise ValueError('Only de Vaucouleurs profiles, i.e. Sersic with n=4, can be converted into Hernquist profiles.')
         
@@ -685,7 +692,7 @@ class ExponentialDisk(MassModelBase, Sersic):
     This class combine into a single objects useful functions related to Sersic profiles
     '''
     
-    def __init__(self, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/cm^2/s/A', M_L=None, unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):        
+    def __init__(self, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', M_L=None, unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
         """
         You can either provide n, Re and Ie, or instead n, Re, mag and offset.
         If neither Ie, nor mag and offset are provided a ValueError is raised.  
@@ -704,7 +711,9 @@ class ExponentialDisk(MassModelBase, Sersic):
             offset : float
                 magnitude offset in the magnitude system used. Default is None.
             unit_Ie : str
-                unit for the surface brightness. Default is similar to specfic flux/angular surface
+                unit for the surface brightness. Default is 'erg/(cm^2.s.A)'.
+            unit_M_L : str
+                unit of the mass to light ratio. Default is 'solMass.s.A.cm^2/(erg.kpc^2)'.
             unit_Re : str
                 unit for the scale radius Re. Default is kpc.
         """
@@ -712,13 +721,12 @@ class ExponentialDisk(MassModelBase, Sersic):
         MassModelBase.__init__(self, 3, M_L, unit_M_L)
         Sersic.__init__(       self, 1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
         
-        b1        = compute_bn(1)
-        self.Rd   = self.Re/b1
+        self.Rd   = self.Re/self.bn
         
         try:
-            self.Vmax = 2*np.sqrt(np.pi*G*Re*M_L*Ie*np.exp(b1)/b1).to('km/s')
+            self.Vmax = 2*np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).to('km/s')
         except UnitConversionError:
-            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of F, a and M_L parameters. Cheers !' %np.sqrt(np.pi*G*Re*M_L*Ie*np.exp(b1)/b1).unit)
+            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of F, a and M_L parameters. Cheers !' %np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).unit)
         
         
         
@@ -831,6 +839,5 @@ class ExponentialDisk(MassModelBase, Sersic):
     def toHernquist(self, *args, **kwargs):
         '''Override the toHernquist method in Sersic.'''
         
-        raise 
         return
 
