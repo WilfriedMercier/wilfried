@@ -15,6 +15,77 @@ import numpy                              as     np
 from   numpy.fft                          import fft2, ifft2
 from   scipy.special                      import gammaincinv, gamma, gammainc
 
+#####################################################################
+#                 Sersic profiles related functions                 #
+#####################################################################
+
+def checkAndComputeIe(Ie, n, bn, re, mag, offset, noError=False):
+    """
+    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
+    
+    Mandatory inputs
+    ---------------- 
+        bn : float
+            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$ 
+        Ie : float
+            intensity at effective radius
+        mag : float
+            total integrated magnitude
+        n : float/int
+            Sersic index
+        offset : float
+            magnitude offset
+        re : float
+            half-light/effective radius
+    
+    Optional parameters
+    -------------------
+        noError : boolean
+            whether to not raise an error or not when data is missing to compute the intensity. If True, None is returned. Default is False.
+    
+    Return Ie if it could be computed or already existed, or None if noError flag is set to True.
+    """
+    
+    if Ie is None:
+        if mag is not None and offset is not None:
+            return intensity_at_re(n, mag, re, offset, bn=bn)
+        else:
+            if noError:
+                return None
+            else:
+                raise ValueError("Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one. Cheers !")
+    else:
+        return Ie
+    
+def intensity_at_re(n, mag, re, offset, bn=None):
+    """
+    Computes the intensity of a given Sersic profile with index n at the position of the half-light radius re. This assumes to know the integrated magnitude of the profile, as well as the offset used for the magnitude definition.
+    
+    Mandatory inputs
+    ----------------       
+        mag : float
+            total integrated magnitude of the profile
+        n : float/int
+            Sersic index of the given profile
+        offset : float
+            magnitude offset used in the defition of the magnitude system
+        re : float
+            effective (half-light) radius
+
+    Optional inputs
+    ---------------
+        bn : float
+            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. By default, bn is None, and its value will be computed by the function using the value of n. To skip this computation, please give a value to bn when callling the function.
+        
+    Return the intensity at re
+    """
+ 
+    if bn is None:
+        bn = compute_bn(n)
+    
+    return 10**((offset - mag)/2.5 - 2.0*np.log10(re) + 2.0*n*np.log10(bn) - bn/np.log(10)) / (2.0*np.pi*n*gamma(2.0*n))
+
+
 def check_bns(listn, listbn):
     """
     Given a list of bn values, check those which are not given (i.e. equal to None), and compute their value using the related Sersic index.
@@ -50,6 +121,10 @@ def compute_bn(n):
         res = gammaincinv(2*n, 0.5)
     return res
 
+
+#####################################################
+#                       Other                       #
+#####################################################
 
 def realGammainc(a, x):
     ''''Unnormalised incomplete gamma function'''
