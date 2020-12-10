@@ -10,10 +10,15 @@ Useful functions for galaxy modelling and other related computation
 
 import numpy                              as     np
 from   astropy.modeling.functional_models import Sersic2D
-from   .morphology                        import checkAndComputeIe, intensity_at_re
-from   .misc                              import check_bns, compute_bn, PSFconvolution2D
-from   astropy.comoslogy                  import Planck18 as cosmo
+from   .misc                              import check_bns, compute_bn, PSFconvolution2D, checkAndComputeIe, intensity_at_re
 from   astropy.constants                  import G
+
+# If Planck18 not available we use Planck15
+try:
+    from astropy.cosmology                import Planck18 as cosmo
+except ImportError:
+    from astropy.cosmology                import Planck15 as cosmo
+
 
 
 ####################################################################################################################
