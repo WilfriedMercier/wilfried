@@ -13,8 +13,8 @@ from   scipy.special                      import gammainc, gamma
 from   scipy.optimize                     import root
 from   scipy.integrate                    import quad
 from   math                               import factorial, ceil
-from   .models                            import sersic_profile, bulgeDiskOnSky, fromStructuredArrayOrNot
-from   .misc                              import check_bns, compute_bn, realGammainc
+from   .models                            import sersic_profile, bulgeDiskOnSky
+from   .misc                              import check_bns, compute_bn, realGammainc, checkAndComputeIe, intensity_at_re, fromStructuredArrayOrNot
 from   ..utilities.coloredMessages        import errorMessage, brightMessage
 
 
@@ -57,22 +57,20 @@ def analyticLuminosityFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, s
     bn,       = check_bns([n], [bn])
     Ie        = checkAndComputeIe(Ie, n, bn, re, mag, offset)
     if Ie is None:
-        return None
+        raise ValueError('Either Ie must be given or mag and offset.')
     
-    #if r has no length (not a list), simply return the integral and its error
-    try:
-        lr    = len(r)
-    except TypeError:
+    if isinstance(r, (int, float)):
         value = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r/re)**(1.0/n)) / (bn**(2*n))
         return {'value':value, 'error':0}
-    
-    #else compute for each radius in the list
-    value     = np.zeros(lr)
-    error     = [0]*lr
-    for pos in range(lr):
-        value[pos] = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r[pos]/re)**(1.0/n)) / (bn**(2*n))
+    elif isinstance(r, list):
+        value     = []
+        error     = 0*r
+        for rval in r:
+            value.append(2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(rval/re)**(1.0/n)) / (bn**(2*n)))
         
-    return {'value':np.asarray(value), 'error':np.asarray(error)}
+        return {'value':np.asarray(value), 'error':np.asarray(error)}
+    else:
+        raise TypeError('r must either be an int/float or a list of int/float.')
     
 
 def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
@@ -322,8 +320,7 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
         if listMag is not None and listOffset is not None:
             listIe    = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
         else:
-            print("ValueError: listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.")
-            return None 
+            raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.")
     
     res         = 0
     err         = 0
@@ -982,44 +979,6 @@ def centralIntensity(n, re, Ie=None, mag=None, offset=None):
     
     return Ie*np.exp(bn)
 
-def checkAndComputeIe(Ie, n, bn, re, mag, offset, noError=False):
-    """
-    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
-    
-    Mandatory inputs
-    ---------------- 
-        bn : float
-            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$ 
-        Ie : float
-            intensity at effective radius
-        mag : float
-            total integrated magnitude
-        n : float/int
-            Sersic index
-        offset : float
-            magnitude offset
-        re : float
-            half-light/effective radius
-    
-    Optional parameters
-    -------------------
-        noError : boolean
-            whether to not raise an error or not when data is missing to compute the intensity. If True, None is returned. Default is False.
-    
-    Return Ie if it could be computed or already existed, or None if noError flag is set to True.
-    """
-    
-    if Ie is None:
-        if mag is not None and offset is not None:
-            return intensity_at_re(n, mag, re, offset, bn=bn)
-        else:
-            if noError:
-                return None
-            else:
-                raise ValueError("Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one. Cheers !")
-    else:
-        return Ie
-
 
 def compute_R22(Red, dRed=None, b1=None):
     '''
@@ -1046,35 +1005,6 @@ def compute_R22(Red, dRed=None, b1=None):
         return 2.2*Red/b1
     else:
         return 2.2*Red/b1, 2.2*dRed/b1
-
-
-def intensity_at_re(n, mag, re, offset, bn=None):
-    """
-    Computes the intensity of a given Sersic profile with index n at the position of the half-light radius re. This assumes to know the integrated magnitude of the profile, as well as the offset used for the magnitude definition.
-    
-    Mandatory inputs
-    ----------------       
-        mag : float
-            total integrated magnitude of the profile
-        n : float/int
-            Sersic index of the given profile
-        offset : float
-            magnitude offset used in the defition of the magnitude system
-        re : float
-            effective (half-light) radius
-
-    Optional inputs
-    ---------------
-        bn : float
-            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. By default, bn is None, and its value will be computed by the function using the value of n. To skip this computation, please give a value to bn when callling the function.
-        
-    Return the intensity at re
-    """
- 
-    if bn is None:
-        bn = compute_bn(n)
-    
-    return 10**((offset - mag)/2.5 - 2.0*np.log10(re) + 2.0*n*np.log10(bn) - bn/np.log(10)) / (2.0*np.pi*n*gamma(2.0*n))
     
 
 def ratioIntensitiesAtRe(listn, listRe, listMag, listOffset, simplify=False):
