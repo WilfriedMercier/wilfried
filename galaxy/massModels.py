@@ -11,7 +11,7 @@ Test functions on Galaxy mass modelling.
 import scipy.integrate       as     integrate
 import numpy                 as     np
 import astropy.units         as     u
-from   astropy.units.core    import UnitConversionError
+from   astropy.units.core    import UnitConversionError, UnitsError
 from   .models               import checkAndComputeIe, sersic_profile
 from   .misc                 import compute_bn, realGammainc
 from   .kinematics           import Vprojection
@@ -763,7 +763,7 @@ class NFW(MassModelBase):
                 
             self.delta_c  = self.Vmax**2/(4*np.pi*G*self._factor*cosmo.critical_density(0)*self.Rs**2)
             if self.delta_c.unit() != u.dimensionless_unscaled:
-                raise u.UnitsError('delta_c parameter could not be computed as a dimensionless quantity.')
+                raise UnitsError('delta_c parameter could not be computed as a dimensionless quantity.')
             
         super().__init__(self, 3, 1, unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)')
       
