@@ -702,7 +702,7 @@ class Hernquist(MassModelBase):
         Re = ((self.a.value/10**self._alpha_a)**(1.0/self._beta_a)) * self.a.unit
         Ie = (self.F.value / (10**self._alpha_F * Re.value**self._beta_F)) * (self.F.unit/(Re.unit**2))
         
-        return Sersic(4, Re, Ie=Ie, unit_Re=str(Re.unit), unit_Ie=str(Ie.unit))
+        return deVaucouleur(Re, Ie=Ie, unit_Re=str(Re.unit), unit_Ie=str(Ie.unit))
         
         
 class NFW(MassModelBase):
