@@ -11,7 +11,7 @@ Test functions on Galaxy mass modelling.
 import scipy.integrate       as     integrate
 import numpy                 as     np
 import astropy.units         as     u
-from   astropy.units.core    import UnitConversionError, UnitsError
+from   astropy.units.core    import UnitConversionError
 from   .models               import checkAndComputeIe, sersic_profile
 from   .misc                 import compute_bn, realGammainc
 from   .kinematics           import Vprojection
@@ -760,12 +760,13 @@ class NFW(MassModelBase):
                 self.Vmax = self.Vmax.to(unit_Vmax) 
             else:
                 self.Vmax = u.Quantity(Vmax, unit_Vmax)
-                
-            self.delta_c  = self.Vmax**2/(4*np.pi*G*self._factor*cosmo.critical_density(0)*self.Rs**2)
-            if self.delta_c.unit() != u.dimensionless_unscaled:
-                raise UnitsError('delta_c parameter could not be computed as a dimensionless quantity.')
             
-        super().__init__(self, 3, 1, unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)')
+            try:
+                self.delta_c  = (self.Vmax**2/(4*np.pi*G*self._factor*cosmo.critical_density(0)*self.Rs**2)).to('')
+            except UnitConversionError:
+                raise UnitConversionError('delta_c parameter could not be computed as a dimensionless quantity.')
+            
+        super().__init__(3, 1, unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)')
       
         
     ######################################################
@@ -951,12 +952,18 @@ class Sersic:
         if not isinstance(n, (float, int)) or not isinstance(Re, (float, int)):
             raise TypeError('Either n or Re is neither int nor float.')
             
-        if n<0:
+        if Ie is None and (mag is None or offset is None):
+            raise ValueError('Ie is None but no magnitude and no offset is given.')
+            
+        if n<=0:
             raise ValueError('n must be positive valued. Cheers !')
             
-        if Re<0:
+        if Re<=0:
             raise ValueError('The effective radius Re must be positive valued. Cheers !')
             
+        if Ie is not None and Ie<=0:
+            raise ValueError('The effective radius Re must be positive valued. Cheers !')
+        
         self._dim     = 2
         self.n        = n
         self.bn       = compute_bn(self.n)
@@ -970,7 +977,7 @@ class Sersic:
         if hasattr(Ie, 'unit'):
             self.Ie   = self.Ie.to(unit_Ie)
         else:
-            self.Ie   = u.Quantity(checkAndComputeIe(Ie, n, self.bn, Re, mag, offset), unit=unit_Ie)
+            self.Ie   = u.Quantity(checkAndComputeIe(Ie, self.n, self.bn, self.Re.value, mag, offset), unit=unit_Ie)
         
 
     ######################################################
@@ -1052,7 +1059,7 @@ class deVaucouleur(Sersic):
                 unit for the scale radius Re. Default is kpc.
         """
         
-        super().__init__(self, 4, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
+        super().__init__(4, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie, **kwargs)
         
         # Other hidden properties
         self._alpha_a = -0.454
@@ -1087,7 +1094,7 @@ class deVaucouleur(Sersic):
         return Hernquist(a, F, M_L, unit_a=str(a.unit), unit_F=str(F.unit), unit_M_L=str(M_L.unit))
     
 
-class ExponentialDisk(MassModelBase, Sersic):
+class ExponentialDisk(Sersic, MassModelBase):
     '''
     2D/3D Exponential disk profile class.
     Some functions such as the light profile correspond to the 2D Sersic profiles, while others such as the velocity assume a 3D infinitely thin disk.
@@ -1136,7 +1143,6 @@ class ExponentialDisk(MassModelBase, Sersic):
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
-    
     
     def velocity(self, r, *args, **kwargs):
         '''
