@@ -1134,10 +1134,13 @@ class ExponentialDisk(Sersic, MassModelBase):
         # Disk scale length
         self.Rd       = self.Re/self.bn
         
+        # Position of maximum velocity
+        self.Rmax     = 2.15*self.Rd
+        
         try:
-            self.Vmax = 2*np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).to('km/s')
+            self.Vmax = 0.8798243*np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).to('km/s')
         except UnitConversionError:
-            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of F, a and M_L parameters. Cheers !' %np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).unit)
+            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of Ie, Re and M_L parameters. Cheers !' %np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).unit)
         
         
     ######################################################
