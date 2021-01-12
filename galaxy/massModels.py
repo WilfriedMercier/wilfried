@@ -1170,3 +1170,112 @@ class ExponentialDisk(Sersic, MassModelBase):
         else:
             y = r/(2*self.Rd)
             return (self.Vmax*r/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
+        
+class DoubleExponentialDisk(Sersic, MassModelBase):
+    '''
+    Double exponential disk profile class:
+    
+    rho(R, z) = \Sigma_0 / (2 hz) e^{-R/Re - |z|/hz}
+    
+    with \Sigma_0 = Ie e^{b_1} the central surface density, Re the disk effective radius in the plane of symmetry and hz the vertical scale height.
+    '''
+    
+    def __init__(self, Re, hz, M_L, Ie=None, mag=None, offset=None, 
+                 unit_Re='kpc', unit_hz='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
+        """
+        You can either provide n, Re, hz and Ie, or instead n, Re, hz, mag and offset.
+        If neither Ie, nor mag and offset are provided a ValueError is raised.  
+        
+        Mandatory parameters
+        --------------------
+            hz : int.float
+                vertical scale height
+            M_L : int/float
+                mass to light ratio
+            re : int/float
+                half-light radius
+                
+        Optional parameters
+        -------------------
+            Ie : float
+                intensity at half-light radius. Default is None.
+            mag : float
+                galaxy total integrated magnitude used to compute Ie if not given. Default is None.
+            offset : float
+                magnitude offset in the magnitude system used. Default is None.
+            unit_Ie : str
+                unit for the surface brightness. Default is 'erg/(cm^2.s.A)'.
+            unit_M_L : str
+                unit of the mass to light ratio. Default is 'solMass.s.A.cm^2/(erg.kpc^2)'.
+            unit_Re : str
+                unit for the scale radius Re. Default is kpc.
+        """
+        
+        MassModelBase.__init__(self, 3, M_L, unit_M_L)
+        Sersic.__init__(       self, 1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
+        
+        self.hz       = hz
+        
+        # Disk scale length
+        self.Rd       = self.Re/self.bn
+        
+        # Position of maximum velocity
+        self.Rmax     = 2.15*self.Rd
+        
+        try:
+            self.Vmax = np.sqrt().to('km/s')
+        except UnitConversionError:
+            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of Ie, Re and M_L parameters. Cheers !' %np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).unit)
+        
+    ######################################################
+    #            Methods (alphabetical order)            #
+    ######################################################
+        
+    def profile(self, R, z, *args, **kwargs):
+        '''
+        Sersic profile at radius r.
+        
+        WARNING
+        -------
+            UNIT OF R MUST BE GIVEN, OTHERWISE IT IS ASSUMED IDENTICAL TO THE SCALE PARAMETER Re.
+            UNIT OF R MUST BE GIVEN, OTHERWISE IT IS ASSUMED IDENTICAL TO THE SCALE PARAMETER hz.
+
+        Parameters
+        ----------
+            R : int/float
+                radial position in the plane of symmetry
+            z : int/float
+                vertical position
+
+        Return the double exponential profile computed at position (R, z).
+        '''
+        
+        R = self._checkR(R, self.Re)
+        z = self._checkR(z, self.hz)
+        return sersic_profile(R, self.n, self.Re, Ie=self.Ie, bn=self.bn) * np.exp(-np.abs(z)/self.hz) / (2*self.hz)
+    
+    
+    def velocity(self, R, *args, **kwargs):
+        '''
+        Velocity profile for a self-sustaining 3D double exponential disk against its own gravity through centripedal acceleration.
+        This formula is an approximation for a thin (but non-zero thickness) disk.
+        
+        WARNING
+        -------
+            UNIT OF R MUSE BE IDENTICAL TO THE SCALE PARAMETER Re.
+
+        Parameters
+        ----------
+            R : float/int or numpy array of float/int
+                radius where the velocity profile is computed
+
+        Return V(R, z=0).
+        '''
+        
+        R = self._checkR(R, self.Re)
+        
+        if R.value == 0:
+            return 0
+        else:
+            y = r/(2*self.Rd)
+            return (self.Vmax*r/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
