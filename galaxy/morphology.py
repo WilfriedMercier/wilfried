@@ -9,7 +9,7 @@ Computation relative to galaxy morphological information.
 """
 
 import numpy                              as     np
-from   scipy.special                      import gammainc, gamma
+from   scipy.special                      import gammainc
 from   scipy.optimize                     import root
 from   scipy.integrate                    import quad
 from   math                               import factorial, ceil
@@ -22,19 +22,19 @@ from   ..utilities.coloredMessages        import errorMessage, brightMessage
 #                                           Sersic luminosities                                                 #
 #################################################################################################################
 
-def analyticLuminosityFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
+def analyticFluxFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
     """
-    Analytically compute the integrated luminosity from 0 up to radius r for a Sersic profile of index n.
+    Analytically compute the integrated flux from 0 up to radius r for a Sersic profile of index n.
     
     How to use
     ----------
-        If no Ie is given, values for mag and offset must be given instead for the corresponding component(s). 
+        If no Ie is given, values for mag and offset must be given instead for the corresponding component. 
     
     Mandatory inputs
     ----------------
         n : float/int
             Sersic index of the profile
-        r : float
+        r : float/list of floats
             radius up to the integral will be computed.
         re : float
             half-light radius
@@ -50,32 +50,31 @@ def analyticLuminosityFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, s
         offset : float
             magnitude offset in the magnitude system used
             
-    Return the analytically derived luminosity from 0 to r.
+    Return the analytically derived flux from 0 to r.
     """
     
-    #compute b1 and b4 if not given
+    # Compute bn and Ie
     bn,       = check_bns([n], [bn])
     Ie        = checkAndComputeIe(Ie, n, bn, re, mag, offset)
     if Ie is None:
         raise ValueError('Either Ie must be given or mag and offset.')
     
     if isinstance(r, (int, float)):
-        value = 2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r/re)**(1.0/n)) / (bn**(2*n))
+        value = 2*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(r/re)**(1.0/n)) / (bn**(2*n))
         return {'value':value, 'error':0}
-    elif isinstance(r, list):
+    
+    else:
         value     = []
-        error     = 0*r
+        error     = [0]*len(r)
         for rval in r:
             value.append(2.0*np.pi*n*Ie*re**2 * np.exp(bn) * realGammainc(2*n, bn*(rval/re)**(1.0/n)) / (bn**(2*n)))
         
-        return {'value':np.asarray(value), 'error':np.asarray(error)}
-    else:
-        raise TypeError('r must either be an int/float or a list of int/float.')
+        return {'value':value, 'error':error}
     
 
 def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
     """
-    Computes the ratio of the bulge luminosity (B) over the disk one (D) of a two Sersic components galaxy up to radius r.
+    Computes the ratio of the bulge flux (B) over the disk one (D) of a two Sersic components galaxy up to radius r.
     
     How to use
     ----------
@@ -111,7 +110,7 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
         offsetD : float
             magnitude offset in the magnitude system used for the disk component
             
-    Returns the B/D ratio at all the given positions.
+    Returns the B/D ratio at all the given positions or NaN if one of the intensities could not be computed correctly..
     """
     
     #compute b1 and b4 if not given
@@ -122,12 +121,12 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     if None in [Ieb, Ied]:
         return np.nan
         
-    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersic(r, 1, rd, bn=b1, Ie=Ied)['value']    
+    return fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / fluxSersic(r, 1, rd, bn=b1, Ie=Ied)['value']    
 
 
 def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
     """
-    Computes the ratio of the bulge luminosity (B) over the total one (T=D+B) of a two Sersic components galaxy up to radius r.
+    Computes the ratio of the bulge flux (B) over the total one (T=D+B) of a two Sersic components galaxy up to radius r.
     
     How to use
     ----------
@@ -163,7 +162,7 @@ def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
         offsetD : float
             magnitude offset in the magnitude system used for the disk component
             
-    Returns the B/T ratio at all the given positions.
+    Returns the B/T ratio at all the given positions or NaN if one of the intensities could not be computed correctly.
     """
     
     #compute b1 and b4 if not given
@@ -174,12 +173,12 @@ def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     if None in [Ied, Ieb]:    
         return np.nan
         
-    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']    
+    return fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']    
 
 
 def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
     """
-    Computes the ratio of the disk luminosity (D) over the total one (T=D+B) of a two Sersic components galaxy up to radius r.
+    Computes the ratio of the disk flux (D) over the total one (T=D+B) of a two Sersic components galaxy up to radius r.
     
     How to use
     ----------
@@ -213,20 +212,23 @@ def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
         offsetD : float
             magnitude offset in the magnitude system used for the disk component
             
-    Returns the D/T ratio at all the given positions.
+    Returns the D/T ratio at all the given positions or NaN if one of the intensities could not be computed correctly..
     """
     
     #compute b1 and b4 if not given
     b1, b4 = check_bns([1, 4], [b1, b4])
     Ied    = checkAndComputeIe(Ied, 1, b1, rd, magD, offsetD)
     Ieb    = checkAndComputeIe(Ieb, 4, b4, rb, magB, offsetB)
+    
+    if None in [Ied, Ieb]:    
+        return np.nan
         
-    return luminositySersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / luminositySersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']   
+    return fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']   
 
     
-def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
+def fluxSersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
     """
-    Compute the luminosity of a single Sersic profile of index n up to radius r.
+    Compute the flux of a single Sersic profile of index n up to radius r using raw integration.
     
     How to use
     ----------
@@ -254,10 +256,11 @@ def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.
         start : float
             starting point of the integration
             
-    Returns the integrated luminosity up to radius r and an estimation of its absolute error as a dictionary. If a list of radii is given, it returns a list of luminosities and a list of absolute errors.
+    Return the integrated flux up to radius r and an estimation of its absolute error as a dictionary. 
+    If a list of radii is given, it returns a list of luminosities and a list of absolute errors.
     """
     
-    #the integral we need to compute to have the luminosity
+    # The integral we need to compute to have the flux
     def the_integral(r, n, re, Ie=None, bn=None, mag=None, offset=None):
         return 2*np.pi*sersic_profile(r, n, re, Ie=Ie, bn=bn, mag=mag, offset=offset)*r
     
@@ -266,25 +269,23 @@ def luminositySersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.
     if Ie is None:
         return None
         
-    #if r has no length (not a list), simply return the integral and its error
-    try:
-        lr=len(r)
-    except TypeError:
+    if isinstance(r, (int, float)):
         integral, error = quad(the_integral, start, r, args=(n, re, Ie, bn, mag, offset))
         return {'value':integral, 'error':error}
     
-    #else compute for each radius in the list
-    integral = np.zeros(lr)
-    error    = np.zeros(lr)
-    for pos in range(lr):
-        integral[pos],  error[pos] = quad(the_integral, start, r[pos], args=(n, re, Ie, bn, mag, offset))
+    integral = []
+    error    = []
+    for pos in range(len(r)):
+        inte,  err = quad(the_integral, start, r[pos], args=(n, re, Ie, bn, mag, offset))
+        integral.append(inte)
+        error.append(err)
         
     return {'value':integral, 'error':error}
 
 
-def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=False):
+def fluxSersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=False):
     """
-    Compute the luminosity of a sum of Sersic profiles up to radius r (starting from 0).
+    Compute the flux of a sum of Sersic profiles up to radius r (starting from 0).
     
     Mandatory inputs
     ----------------
@@ -308,10 +309,10 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
         listOffset : list of floats
              list of magnitude offsets used in the magnitude system for each profile
          
-    Return the integrated luminosity of the sum of all the given Sersic profiles and an estimation of the error
+    Return the integrated flux of the sum of all the given Sersic profiles and an estimation of the error as a dictionary.
     """
     
-    #if no list of bn values is given, compute them all
+    # If no list of bn values is given, compute them all
     if listbn is None:
         listbn        = [compute_bn(n) for n in listn]
     listbn            = check_bns(listn, listbn)
@@ -326,25 +327,25 @@ def luminositySersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, 
     err         = 0
     for n, re, ie, bn in zip(listn, listRe, listIe, listbn):
         if not analytical:
-            lum = luminositySersic(r, n, re, bn=bn, Ie=ie)
+            lum = fluxSersic(r, n, re, bn=bn, Ie=ie)
         else:
-            lum = analyticLuminosityFrom0(r, n, re, bn=bn, Ie=ie)
+            lum = analyticFluxFrom0(r, n, re, bn=bn, Ie=ie)
         res    += lum['value']
         err    += lum['error']
         
     return {'value':np.asarray(res), 'error':np.asarray(err)}
 
 
-def ratioLuminosities1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=True):
+def ratioFlux1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=True):
     """
-    Compute the ratio of the luminosity of the sum of different Sersic profiles for a single galaxy at two different positions in the galaxy plane only.
-    This function computes the ratio from the 1D profiles, either integrating (analytical=False) or via an analytical solution (analytical=True).ds
+    Compute the ratio of the flux of the sum of different Sersic profiles for a single galaxy at two different positions in the galaxy plane only.
+    This function computes the ratio from the 1D profiles, either integrating (analytical=False) or via an analytical solution (analytical=True).
     
     How to use
     ----------
     
         Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. For instance, a ratio at radii 1" and 3" for a disk (n=1, Re=10") + bulge (n=4, Re=20") decomposition would give something like
-            >> ratioLuminosities(1, 3, [1, 4], [10, 20], listMag=[25, 30], listOffset=[30, 30])
+            >> ratioFlux1D(1, 3, [1, 4], [10, 20], listMag=[25, 30], listOffset=[30, 30])
         Radii should be given with the same unit as the effective radii.
 
     Mandatory inputs
@@ -371,9 +372,10 @@ def ratioLuminosities1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag
         listOffset : list of floats
              list of magnitude offsets used in the magnitude system for each profile
          
-    Return the integrated luminosity of the sum of all the given Sersic profiles and an estimation of the error.
+    Return the ratio of fluxes at the two different positions.
     """    
-    #if no list of bn values is given, compute them all
+    
+    # If no list of bn values is given, compute them all
     if listbn is None:
         listbn         = [compute_bn(n) for n in listn]
     listbn             = check_bns(listn, listbn)
@@ -382,11 +384,10 @@ def ratioLuminosities1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag
         if listMag is not None and listOffset is not None:
             listIe     = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset), bn=np.array(listbn))
         else:
-            print("ValueError: listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.")
-            return None 
+            raise ValueError("listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.")
     
-    lum1           = luminositySersics(r1, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)['value']
-    lum2           = luminositySersics(r2, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)['value']
+    lum1           = fluxSersics(r1, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)['value']
+    lum2           = fluxSersics(r2, listn, listRe, listbn=listbn, listIe=listIe, analytical=analytical)['value']
 
     if lum2 == 0:
         raise ValueError("The luminosity computed at radius %f is 0. This is unlikely and the ratio cannot be computed." %lum2)
@@ -394,13 +395,13 @@ def ratioLuminosities1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag
     return lum1/lum2
 
 
-def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False, False], 
+def ratioFlux2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False, False], 
                         Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0.0, PA=0.0,
                         arcsecToGrid=0.03, fineSampling=81,
                         PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'},
                         verbose=True):
     """
-    Compute the ratio of the luminosity of a bulge+disk model between two radii either in the galaxy plane or in the sky plane.
+    Compute the ratio of the flux of a bulge+disk model between two radii either in the galaxy plane or in the sky plane.
     This function computes the ratio from 2D models (projected on the sky plane or not) with or without PSF convolution.
     
     How to use
@@ -408,14 +409,14 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
     
         Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. 
         For instance, a ratio for a radius of 1 pixel (in galaxy plane) over 3 pixels (in sky plane) for a disk (n=1, Re=10 pixels, inclination=23°, PA=40°) + bulge (n=4, Re=20 pixels) decomposition would give something like
-            >> ratioLuminosities(1, 3, 10, 20, magD=25, magB=30, offsetD=30, offsetB=30, inclination=23, PA=40, where=['galaxy', 'sky']})
+            >> ratioFlux2D(1, 3, 10, 20, magD=25, magB=30, offsetD=30, offsetB=30, inclination=23, PA=40, where=['galaxy', 'sky']})
     
    Caution
     -------
         To avoid problems, provide all radii in the same pixel unit (e.g. HST or MUSE) and update the arcsecToGrid conversion factor for the PSF if necessary.
         By default, the arcsecToGrid is tuned for HST resolution, so that the default PSF FWHM values (corresponding to MUSE PSF) will be converted into HST pixel values.
         
-        If radii are given in say MUSE pixel values, then the MUSE conversion factor must be given for arcsecToGrid.
+        If radii are given in MUSE pixel values, then the MUSE conversion factor must be given for arcsecToGrid.
         If radii are given in arcsec, then we are considering a grid with pixel size = 1", so that the conversion factor should be set to 1.
         
         The PSF FWHM and sigma values can be given in any relevant unit (arcsec, arcmin, degrees, radians, etc.). Please update the 'unit' key in the PSF dictionnary if you are providing values in arcsec.
@@ -423,8 +424,6 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
         
     Mandatory inputs
     ----------------
-        listn : list of float/int
-            list of Sersic index for each profile
         r1 : float
             first radius where the luminosity will be computed
         r2 : float
@@ -445,28 +444,31 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
         Id : float
             disk intensity at Rd. Default is None so that it is computed from the bulge magnitude and magnitude offset.
         inclination : float/int
-            inclination of the galaxy. Only useful if the 2D method is used. Default is 0.0.
+            inclination of the galaxy in degrees. Default is 0.0.
         magB : float
             bulge total magnitude. If Ib is not provided, it must be given instead.
         magD : float
             disk total magnitude. If Id is not provided, it must be given instead.
         noPSF : list of two bool
-            whether to not perform PSF convolution at each radius or not. Default is to do convolution for each radius.
+            whether to not perform PSF convolution or not. Default is to do convolution for each radius.
         offsetB : float
             bulge magnitude offset. If Ib is not provided, it must be given instead.
         offsetD : float
             disk magnitude offset. If Id is not provided, it must be given instead.
         PA : float/int
-            position angle on sky. Only useful if the 2D method is used. Default is 0.0.
+            position angle on sky in degrees. Default is 0.0.
         PSF : dict
             Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
             For now, only 2D Gaussians are accepted as PSF.
         verbose : bool
-            whether to print info on stdout or not
+            whether to print info on stdout or not. Default is True.
         where : list of 2 str
-            where the luminosity is computed. For each radius two values are possible: either 'galaxy' if the luminosity is to be computed in the galaxy plane or 'sky' if it is to be computed in the sky plane. Default is 'galaxy' for both radius.
+            where the flux is computed. For each radius two values are possible: 
+                - 'galaxy' if the flux is to be computed in the galaxy plane
+                - 'sky' if it is to be computed in the sky plane. 
+            Default is 'galaxy' for both radii.
          
-    Return the ratio of the two luminosities.
+    Return the ratio of the two fluxes.
     """
     
     #########################################
@@ -474,24 +476,24 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
     #########################################
     
     if not isinstance(where, (list, tuple)):
-        raise TypeError('where parameter should be either a list of a tuple.')
+        raise TypeError('where parameter should be either a list or a tuple.')
         
     if len(where) != 2:
-        raise ValueError('where list should be of length 2.')
+        raise ValueError('where parameter should be of length 2 but current length is %d.' %(len(where)))
     
     for value in where:
         if value.lower() not in ['galaxy', 'sky']:
-            raise ValueError("At least one of the values in where list is neither 'galaxy' nor 'sky'.")
+            raise ValueError("At least one of the values in where parameter is neither 'galaxy' nor 'sky'.")
             
     if not isinstance(noPSF, (list, tuple)):
-        raise TypeError('noPSF parameter should be either a list of a tuple.')
+        raise TypeError('noPSF parameter should be either a list or a tuple.')
         
     if len(noPSF) != 2:
-        raise ValueError('noPSF list should be of length 2.')
+        raise ValueError('noPSF list should be of length 2 but current length is %d.' %(len(noPSF)))
     
     for value in noPSF:
         if not isinstance(value, bool):
-            raise ValueError("At least one of the values in noPSF list is not a boolean.")
+            raise ValueError("At least one of the values in noPSF parameter is not boolean.")
     
     ##################################
     #       Compute the ratio        #
@@ -501,15 +503,13 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
         if magB is not None and offsetB is not None:
             Ib       = intensity_at_re(4, magB, Rb, offsetB)
         else:
-            print("ValueError: Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.")
-            return None 
+            raise ValueError("Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.")
 
     if Id is None:
         if magD is not None and offsetD is not None:
             Id       = intensity_at_re(1, magD, Rd, offsetD)
         else:
-            print("ValueError: Id is None, but magD or offsetD is also None. If no Id is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.")
-            return None 
+            raise ValueError("Id is None, but magD or offsetD is also None. If no Id is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.")
     
     # Set inclination and PA according to where we compute the luminosity
     inc              = [0, 0]
@@ -548,7 +548,7 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
                                       fineSampling=fineSampling, PSF=PSF, noPSF=noPSF[1], arcsecToGrid=arcsecToGrid,
                                       samplingZone=samplingZone, verbose=verbose)
     
-    # We compute the luminosities then
+    # We compute the fluxes
     where1           = X1**2+Y1**2 <= r1**2
     where2           = X2**2+Y2**2 <= r2**2
     
@@ -561,26 +561,23 @@ def ratioLuminosities2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False
     return lum1/lum2
     
 
-def total_luminosity(mag, offset, factor=1.0):
+def total_flux(mag, offset):
     """
-    Gives the total integrated luminosity of galaxies from their magnitude and magnitude offset
+    Compute the integrated flux up to infinity. The flux and magnitude are related by the equation
+    
+    mag = -2.5 \log_{10}(F_tot) + offset
     
     Mandatory inputs
     ----------------
         offset : float/list of floats
-            magnitude offset used in the definition of the magnitude system
+            magnitude offset
         mag : float/list of floats
-            magnitude of the galaxies
+            total magnitude
             
-    Optional inputs
-    ---------------
-        factor : float/list of floats
-            a multiplicative factor before the power of 10. This can be useful as the definition used for the magnitude is -2.5\log_{10} (L_{tot}), but sometimes, the definition -2.5\log_{10} (F_{tot}) with F_{tot} = L_{tot} /(4\pi D^2) (the total flux), and D the luminosity distance, is used instead. In this case, a multiplicative factor of 4\pi D^2 must be present before the power of 10 to compute the real luminosity.
-        
-    Returns the total luminosity
+    Return the total flux.
     """
     
-    return np.array(factor) * 10**((np.array(offset)-np.array(mag))/2.5)
+    return 10**((np.asarray(offset)-np.asarray(mag))/2.5)
 
 
 ############################################################################################
@@ -837,9 +834,9 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
     Return the value of re for all the galaxies, as well as a 
     """
     
-    #to solve numerically we find the zero of the difference between the integral we want to solve and half the total luminosity
+    # To solve numerically we find the zero of the difference between the integral we want to solve and half the total luminosity
     def integral_to_solve(r, listn, listRe, listbn, listIe, listMag, listOffset, Ltot):
-        res, err     = luminositySersics(r, listn, listRe, listbn=listbn, listIe=listIe, listMag=listMag, listOffset=listOffset)
+        res, err     = fluxSersics(r, listn, listRe, listbn=listbn, listIe=listIe, listMag=listMag, listOffset=listOffset)
         return res-Ltot/2.0
      
         
@@ -926,7 +923,7 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
         
         #if no total luminosity given, compute it
         if Ltot is None:
-            Ltot     = total_luminosity(magD, offsetMagD) + total_luminosity(magB, offsetMagB)
+            Ltot     = total_flux(magD, offsetMagD) + total_flux(magB, offsetMagB)
             
         #setting redundant arrays to defaults values
         listn        = [1, 4]
@@ -1005,64 +1002,3 @@ def compute_R22(Red, dRed=None, b1=None):
         return 2.2*Red/b1
     else:
         return 2.2*Red/b1, 2.2*dRed/b1
-    
-
-def ratioIntensitiesAtRe(listn, listRe, listMag, listOffset, simplify=False):
-    '''
-    Compute the ratio of intensities between two sersic profiles et their respective half-light radii.
-    
-    Info
-    ----
-        If the bulge and disk components have the same effective radii, total magnitudes and magnitude offsets, a simplified equation can be used instead with simplify keyword.
-        
-    Mandatory inputs
-    ----------------
-        listMag : list/tuple of two floats
-            total magnitudes of the two profiles
-        listOffset : float
-            magnitude offset of the two profiles
-        listRe : float
-            half-light radius of the two profiles
-    
-    Optional inputs
-    ---------------
-        simplify : bool
-            whether to use a simplified equation to compute the ratio (only if magD===magB and Rd==Rb and offsetD==offsetB) or not. Default is False.
-            
-    Return the ratio of the two profiles intensities at their respective half-light radii (first profile/second profile).
-    '''
-    
-    listbn = check_bns(listn, [None, None])
-    
-    if not simplify:
-        ratio = intensity_at_re(listn[0], listMag[0], listRe[0], listOffset[0], bn=listbn[0])/intensity_at_re(listn[1], listMag[1], listRe[1], listOffset[1], bn=listbn[1])
-    else:
-        ratio = (listn[1]*gamma(2.0*listn[1]))/(listn[0]*gamma(2.0*listn[0])) * (listbn[0]**listn[0] / listbn[1]**listn[1])**2 * (np.exp(listbn[1]) / np.exp(listbn[0]))
-        
-    return ratio
-
-
-def whereCentralIntensityDrops(n, Re, factor=1.0, bn=None):
-    '''
-    Compute the distance from a Sersic profile centre where the intensity has dropped by some factor relative to the central intensity.
-
-    Mandatory inputs
-    ----------------
-        n : int/float
-            Sersic index
-        Re : float
-            Half-light (effective) radius. The distance will have the same unit as Re.
-    
-    Optional inputs
-    ---------------
-        bn : float
-            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. By default, bn is None, and its value will be computed by the function using the value of n. To skip this computation, please give a value to bn when callling the function.
-        factor : float
-            factor dividing I0. The distance is such that I(distance) = I0 / factor. Default is 1.0.
-
-    Return the distance where I(distance) = I0/factor.
-    '''
-    
-    bn = compute_bn(n)
-    
-    return Re*(np.log(factor)/bn)**n
