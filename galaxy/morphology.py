@@ -674,6 +674,34 @@ def computePAs(image, method='minmax', num=100, returnThresholds=False):
     else:
         return theta
     
+    
+##################################################{#######################################################
+#                                 Thickness prescription                                                 #
+##########################################################################################################
+
+def disk_thickness(z):
+    '''
+    Return the thickness of MS disk-like galaxies from Mercier et al., 2021 prescription as a function of redshift.
+
+    Parameters
+    ----------
+        z : float/numpy array of floats
+            redshift
+
+    Return the thickness as a float (if z is a float) or as a numpy array.
+    '''
+    
+    if isinstance(z, (int, float, np.float16, np.float32, np.float64)):
+        lq0        = 0.48 if z > 0.85 else 0.48 + 0.4*z
+    elif isinstance(z, np.ndarray):
+        lq0        = np.zeros(z.shape) + 0.48
+        mask       = z <= 0.85
+        lq0[mask] += 0.4*z[mask]
+    else:
+        raise TypeError('z array has type %s but it must either be float or a numpy array' %type(z))
+        
+    return 10**(-lq0)
+    
 
 #################################################################################################################
 #                                 Half-light radius computation                                                 #
