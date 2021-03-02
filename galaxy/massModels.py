@@ -8,7 +8,6 @@ Created on Tue Sep 22 15:39:08 2020
 Test functions on Galaxy mass modelling.
 """
 
-import scipy.integrate       as     integrate
 import numpy                 as     np
 import astropy.units         as     u
 from   astropy.units.core    import UnitConversionError
@@ -50,13 +49,13 @@ class MassModelBase:
             raise ValueError('Mass to light ratio is negative or null.')
         
         if hasattr(M_L, 'unit'):
-            if not isinstance(M_L.value, (int, float)):
-                raise ValueError('Mass to light ratio must either be an int or a float.')
+            if not isinstance(M_L.value, (int, float, np.float16, np.float32, np.float64)):
+                raise ValueError('Mass to light ratio must either be an int, float, np.float16, np.float32 or np.float64.')
             else:
                 self.M_L = M_L.to(unit_M_L)
                 
         else:
-            if not isinstance(M_L, (int, float)):
+            if not isinstance(M_L, (int, float, np.float16, np.float32, np.float64)):
                 raise ValueError('Mass to light ratio must either be an int or a float.')
             else:
                 self.M_L = u.Quantity(M_L, unit=unit_M_L)
@@ -419,56 +418,7 @@ class Multiple3DModels(MassModelBase):
     
     ################################################################
     #                          Velocities                          #
-    ################################################################
-    
-    def meanV(self, D, R, *args, **kwargs):
-        '''
-        Compute the mean velocity along the line of sight.
-        
-        Warning
-        -------
-            BE SURE THAT THE MODELS ALL HAVE UNITS WHICH ARE SIMILAR SO THAT ADDIND VELOCITIES^2 IS DONE WITH THE SAME VELOCITY UNITS.
-
-        Parameters
-        ----------
-            D : TYPE
-                DESCRIPTION.
-            R : TYPE
-                DESCRIPTION.
-
-        Return the compute velocity value (unit will be the same as the velocities computed for each model).
-        '''
-        
-        def correctDistance(s, D, R):
-            '''Depending on the value of s, either return the radial distance for the foreground part or the background part'''
-            
-            dFor, dBac, theta = Vprojection(None).distance(s, D, R)
-            
-            if s**2 > D**2 + R**2:
-                return dBac
-            else:
-                return dFor
-        
-        def numerator(s, D, R):
-            '''Numerator to integrate'''
-            
-            velocity     = self.vprojection(s, D, R)[0]
-            
-            return velocity*denominator(s, D, R)
-        
-        def denominator(s, D, R):
-            '''Denominator to integrate'''
-            
-            distance     = correctDistance(s, D, R)
-            density      = self.profile([distance]*len(self.models))
-            
-            return density
-        
-        res1, err1       = integrate.quad(numerator, 0, np.inf, args=(D, R))
-        res2, err2       = integrate.quad(denominator, 0, np.inf, args=(D, R))
-        
-        return res1/res2
-            
+    ################################################################            
     
     def velocity(self, args=[], kwargs=[{}]):
         '''
@@ -488,34 +438,6 @@ class Multiple3DModels(MassModelBase):
         
         args, kwargs = self.__checkArgs__(args, kwargs)
         return np.sqrt(np.sum([i.velocity(*args[pos], **kwargs[pos])**2 for pos, i in enumerate(self.models)], axis=0))
-    
-    
-    def vprojection(self, s, D, R, which='edge-on', **kwargs):
-        '''
-        Apply a projection of the velocity along the line of sight depending on the geometry used.
-
-        Mandatory parameters
-        --------------------
-            s : float/int or array of floats/int
-                distance from the point to our location (same unit as L and D)
-            D : float
-                cosmological angular diameter distance between the galaxy centre and us
-            R : float/int
-                projected distance of the point along the major axis relative to the galaxy centre
-                
-        Optional parameters
-        -------------------
-            which : str
-                which type of projection to do. Default is edge-on galaxy geometry.
-
-        Return the projected line of sight velocity.
-        '''
-        
-        # To overcome the issue with the args and kwargs definition we redefine the velocity
-        def vel(x):
-            return self.velocity([x]*len(self.models))
-        
-        return Vprojection(vel).projection(s, D, R, which=which)
     
     
     ##############################
@@ -572,8 +494,8 @@ class Hernquist(MassModelBase):
         else:
             self.F  = u.Quantity(F, unit_F)
             
-        if not isinstance(self.a.value, (int, float)) or not isinstance(self.F.value, (int, float)):
-            raise TypeError('One of the parameters is neither int nor float.')
+        if not isinstance(self.a.value, (int, float, np.float16, np.float32, np.float64)) or not isinstance(self.F.value, (int, float, np.float16, np.float32, np.float64)):
+            raise TypeError('One of the parameters is not an int, float, np.float16, np.float32 or np.float64.')
             
         try:
             self.Vmax = 0.5*np.sqrt(G*self.M_L*self.F/self.a).to('km/s')
@@ -949,8 +871,11 @@ class Sersic:
                 unit for the scale radius Re. Default is kpc. If Re already has a unit, it is converted to this unit.
         """
         
-        if not isinstance(n, (float, int)) or not isinstance(Re, (float, int)):
-            raise TypeError('Either n or Re is neither int nor float.')
+        if not isinstance(n, (int, float, np.float16, np.float32, np.float64)):
+            raise TypeError('n is not an int, float, np.float16, np.float32 or np.float64.')
+            
+        if not isinstance(Re, (int, float, np.float16, np.float32, np.float64, u.quantity.Quantity)):
+            raise TypeError('Re is not an int, float, np.float16, np.float32 or np.float64.')
             
         if Ie is None and (mag is None or offset is None):
             raise ValueError('Ie is None but no magnitude and no offset is given.')
@@ -970,14 +895,17 @@ class Sersic:
         
         # If the parameters already are Astropy quantities, we just convert them to the required unit
         if hasattr(Re, 'unit'):
-            self.Re   = self.Re.to(unit_Re)
+            self.Re   = Re.to(unit_Re)
         else:
             self.Re   = u.Quantity(Re, unit=unit_Re)
             
         if hasattr(Ie, 'unit'):
-            self.Ie   = self.Ie.to(unit_Ie)
+            self.Ie   = Ie.to(unit_Ie)
         else:
             self.Ie   = u.Quantity(checkAndComputeIe(Ie, self.n, self.bn, self.Re.value, mag, offset), unit=unit_Ie)
+            
+        # Central intensity
+        self.I0       = self.Ie*np.exp(self.bn)
         
 
     ######################################################
@@ -1080,8 +1008,8 @@ class deVaucouleur(Sersic):
                 unit of the mass to light ratio. If M_L already has a unit, it is converted to this unit.
         '''
         
-        if not isinstance(M_L, (int, float)):
-            raise TypeError('Mass to light ratio must either be an int or a float.')
+        if not isinstance(M_L, (int, float, np.float16, np.float32, np.float64, u.quantity.Quantity)):
+            raise TypeError('Mass to light ratio must either be an int, float, np.float16, np.float32 or np.float64.')
             
         if hasattr(M_L, 'unit'):
             M_L = M_L.to(unit_M_L)
@@ -1138,7 +1066,7 @@ class ExponentialDisk(Sersic, MassModelBase):
         self.Rmax     = 2.15*self.Rd
         
         try:
-            self.Vmax = 0.8798243*np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).to('km/s')
+            self.Vmax = 0.8798243*np.sqrt(np.pi*G*self.Rd*self.M_L*self.I0).to('km/s')
         except UnitConversionError:
             raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of Ie, Re and M_L parameters. Cheers !' %np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).unit)
         
@@ -1180,7 +1108,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
     with \Sigma_0 = Ie e^{b_1} the central surface density, Re the disk effective radius in the plane of symmetry and hz the vertical scale height.
     '''
     
-    def __init__(self, Re, hz, M_L, Ie=None, mag=None, offset=None, 
+    def __init__(self, Re, hz, M_L, q0=None, Ie=None, mag=None, offset=None, 
                  unit_Re='kpc', unit_hz='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
         """
         You can either provide n, Re, hz and Ie, or instead n, Re, hz, mag and offset.
@@ -1203,6 +1131,8 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
                 galaxy total integrated magnitude used to compute Ie if not given. Default is None.
             offset : float
                 magnitude offset in the magnitude system used. Default is None.
+            q0 : float between 0 and 1
+                axis ratio equal to hz/Rd with Rd the disk scale length. If this value is different from None, it overrides the hz value. Default is None.
             unit_Ie : str
                 unit for the surface brightness. Default is 'erg/(cm^2.s.A)'.
             unit_M_L : str
@@ -1214,22 +1144,79 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         MassModelBase.__init__(self, 3, M_L, unit_M_L)
         Sersic.__init__(       self, 1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
         
-        self.hz       = hz
-        
         # Disk scale length
         self.Rd       = self.Re/self.bn
         
-        # Position of maximum velocity
-        self.Rmax     = 2.15*self.Rd
+        if q0 is not None:
+            if q0 >= 0 and q0 <= 1:
+                self.q0 = q0
+                self.hz = self.q0*self.Rd
+            else:
+                raise ValueError('q0 is equal to %s, but it must be between 0 and 1.' %q0)
+        else:
+            self.hz     = hz
+            self.q0     = self.hz/self.Rd
         
-        try:
-            self.Vmax = np.sqrt().to('km/s')
-        except UnitConversionError:
-            raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of Ie, Re and M_L parameters. Cheers !' %np.sqrt(np.pi*G*self.Rd*self.M_L*self.Ie*np.exp(self.bn)).unit)
         
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
+    
+    def _velocity_correction(self, R, *args, **kwargs):
+        '''
+        Velocity correction necessary for the rotation curve.
+        
+        WARNING
+        -------
+            UNIT OF R MUST BE IDENTICAL TO THE SCALE PARAMETER Re.
+
+        Parameters
+        ----------
+            R : float or numpy array of float
+                radius where the velocity correction is computed
+
+        Return the velocity correction.
+        '''
+        
+        R = self._checkR(R, self.Re)
+        return self._Vmax_correction * np.sqrt(R * np.exp(1-R/self.Rd) / self.Rd)
+    
+    
+    def _velocity_razor_thin(self, R, *args, **kwargs):
+        '''
+        Velocity if the disk was razor thin.
+        
+        WARNING
+        -------
+            UNIT OF R MUSE BE IDENTICAL TO THE SCALE PARAMETER Re.
+
+        Parameters
+        ----------
+            R : float or numpy array of float
+                radius where the velocity is computed
+
+        Return the velocity if the disk was razor thin.
+        '''
+        
+        R       = self._checkR(R, self.Re)
+        disk_RT = ExponentialDisk(self.Re, self.M_L, Ie=self.Ie)
+        return disk_RT.velocity(R)
+        
+    
+    @property
+    def _Vmax_correction(self):
+        '''Maximum of the velocity correction.'''
+        
+        return np.sqrt(2*np.pi*G*self.hz*self.M_L*self.I0/np.exp(1))
+    
+    
+    @property
+    def _Vmax_razor_thin(self):
+        '''Maximum velocity if the disk was razor thin.'''
+        
+        disk_RT = ExponentialDisk(self.Re, self.M_L, Ie=self.Ie)
+        return disk_RT.Vmax
+        
         
     def profile(self, R, z, *args, **kwargs):
         '''
@@ -1273,9 +1260,24 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         '''
         
         R = self._checkR(R, self.Re)
+    
+        v_RT2   = self.velocity_razor_thin(R)**2
+        v_corr2 = self.velocity_correction(R)**2
         
-        if R.value == 0:
-            return 0
+        if isinstance(R.value, (int, float, np.float16, np.float32, np.float64)):
+            if v_RT2 < v_corr2:
+                vr = 0
+            else:
+                vr = np.sqrt(v_RT2 - v_corr2)
+            
+        elif isinstance(R.value, np.ndarray):
+            vr       = np.zeros(np.shape(R))
+            mask     = v_corr2 < v_RT2
+            vr[mask] = np.sqrt(v_RT2 - v_corr2)
+        
         else:
-            y = r/(2*self.Rd)
-            return (self.Vmax*r/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
+            raise TypeError('R array has type %s but only float and numpy array are expected.' %type(R))
+        
+        return vr
+            
+    
