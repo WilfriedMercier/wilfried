@@ -476,7 +476,7 @@ class Hernquist(MassModelBase):
             unit_a : str
                 unit desired for the scale parameter a. This will be used when computing a value in a certain unit. Default is kpc.
             unit_F : str
-                unit desired for the amplitude parameter M. Default is 'erg/s/cm^2/A'.
+                unit desired for the amplitude parameter M. Default is 'erg/s/A'.
             unit_M_L : str
                 unit used to convert from light to mass profiles. Default is in Solar masses per unit of F, i.e. solMass/(erg/(s.cm^2.A)).
         '''
