@@ -505,7 +505,7 @@ class Hernquist(MassModelBase):
         # Other hidden properties
         self._alpha_a = -0.454
         self._beta_a  = 0.725
-        self._alpha_F = 1.495
+        self._alpha_F = 1.194
         self._beta_F  = 1.75
         
         
@@ -911,6 +911,17 @@ class Sersic:
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
+    
+    def _checkR(self, r, against):
+        '''Check whether radial distance is positive and has a unit.'''
+        
+        if r<0:
+            raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
+            
+        if not hasattr(r, 'unit'):
+            r *= against.unit
+
+        return r
         
     def profile(self, r, *args, **kwargs):
         '''
@@ -992,7 +1003,7 @@ class deVaucouleur(Sersic):
         # Other hidden properties
         self._alpha_a = -0.454
         self._beta_a  = 0.725
-        self._alpha_F = 1.495
+        self._alpha_F = 1.194
         self._beta_F  = 1.75
         
         
@@ -1161,6 +1172,12 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
     ######################################################
     #            Methods (alphabetical order)            #
     ######################################################
+    
+    @property
+    def _Rmax_razor_thin(self):
+        '''Position of the maximum of the razor-thin disk curve'''
+        
+        return 2.2*self.Rd
     
     def _velocity_correction(self, R, *args, **kwargs):
         '''
