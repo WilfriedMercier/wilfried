@@ -1,37 +1,41 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Aug 17 12:43:49 2020
+*Author:* Wilfried Mercier - IRAP
 
-@author: Wilfried Mercier - IRAP
+A set of functions to easily compute standard calculations in extragalactic physics using cosmology. 
 
-A set of functions to easily compute standard calculations in extragalactic physics using cosmology. This relies heavily on a custom, Python 3 adapted version of cosmolopy.
+.. note::
+    This relies heavily on a custom, Python 3 adapted version of `cosmolopy <https://roban.github.io/CosmoloPy/>`_.
 """
 
 from   astropy.coordinates import SkyCoord
 import cosmolopy.distance  as     cd
 
+#: Default cosmology
 COSMOLOGY = cd.set_omega_k_0({'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72})
 
 def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
-    '''
+    r'''
     Compute the size of an object with extent theta at redshift z from the angular diameter distance as size=theta*angular diameter distance.
 
-    Mandatory parameters
-    --------------------
-        z : float/int
-            redshift of the object
-        theta : float/int
-            angle subtended by the object. Ultimately unit should be in radians. If not, provide a scaling factor with scaleFactor.
+    :param z: redshift of the object
+    :type z: int or float
+    :param theta: angle subtended by the object. Unit should be in radians. If not, provide a scaling factor with **scaleFactor**.
+    :type theta: int or float
     
-    Optional parameters
-    -------------------
-        cosmology : dict
-            parameters of the desired cosmology. See cosmolopy help for more information. Default is {'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72}.
-        scaleFactor : float/int
-            if theta has a different unit, please provide a correct scale factor such that theta in radians = theta*scaleFactor
-
-    Return the physical size in kpc.
+    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy <https://roban.github.io/CosmoloPy/>`_ for more information.
+    :param scaleFactor: (**Optional**)  if theta is not in radian, please provide a correct scale factor (see below)
+    :type scaleFactor: int or float
+    
+    :returns: physical size in **kpc**
+    :rtype: int or float
+        
+    .. note::
+        The scaleFactor is defined such that we have 
+        
+        .. math::
+            \theta [\rm{rad}] = \theta [\rm{your~unit}] \times scaleFactor [\rm{rad/your~unit}].
     '''
     
     if cosmology is None:
@@ -44,19 +48,15 @@ def comoving_separation(z, theta, cosmology=None):
     '''
     Compute the tranverse distance (at fixed redshift) between objects separated by an angle theta on the sky in comoving units.
 
-    Mandatory parameters
-    --------------------
-        z : float/int
-            redshift of the two objects (must be identical)
-        theta : float/int
-            angular separation (in radians only) between the two objects
-            
-    Optional parameters
-    -------------------
-        cosmology : dict
-            parameters of the desired cosmology. See cosmolopy help for more information. Default is {'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72}.
-
-    Return the comoving separation in Mpc unit.
+    :param z: redshift of the object
+    :type z: int or float
+    :param theta: angle subtended by the object. Unit should be in radians. If not, provide a scaling factor with **scaleFactor**.
+    :type theta: int or float
+    
+    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy <https://roban.github.io/CosmoloPy/>`_ for more information.
+    
+    :returns: comoving separation in **Mpc**
+    :rtype: int or float
     '''
     
     if cosmology is None:
@@ -69,19 +69,15 @@ def comoving_los(z1, z2, cosmology=None):
     '''
     Compute the line of sight comoving distance between objects.
 
-    Mandatory parameters
-    --------------------
-        z1 : float/int
-            redshift of the first object
-        z2 : float/int
-            redshift of the second object
-            
-    Optional parameters
-    -------------------
-        cosmology : dict
-            parameters of the desired cosmology. See cosmolopy help for more information. Default is {'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72}.
-
-    Return the comoving distance in Mpc unit.
+    :param z1: redshift of the 1st object
+    :type z1: int or float
+    :param z2: redshift of the 2nd object
+    :type z2: int or float
+    
+    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy <https://roban.github.io/CosmoloPy/>`_ for more information.
+    
+    :returns: comoving distance in **Mpc**
+    :rtype: int or float
     '''
     
     if cosmology is None:
@@ -94,25 +90,20 @@ def separation(z, ra1, dec1, ra2, dec2, units=['deg', 'deg', 'deg', 'deg']):
     '''
     Compute the comoving separation between two objects at the same redshift given their position.
 
-    Parameters
-    ----------
-        z : float/int
-            redshift of the two objects
-        ra1 : float
-            Right ascension of the first object
-        dec1 : float
-            Declination of the first object
-        ra2 : float
-            Right ascension of the second object
-        dec2 : TYPE
-            Declination of the second object
-            
-    Optional parameters
-    -------------------
-        units : list of float/Astropy.units units or single str
-            units of the different coordinates in this order: ra1, dec1, ra2, dec2
+    :param z: redshift of the two objects
+    :type z: int or float
 
-    Return the comoving separation in Mpc unit.
+    :param float ra1: right ascension of the first object
+    :param float dec1: declination of the first object
+    :param float ra2: right ascension of the second object
+    :param float dec2: declination of the second object
+    
+    :param units: units of the different coordinates in this order: ra1, dec1, ra2, dec2
+    :type units:  list[float] or list[astropy unit] or str
+
+    :returns: comoving separation in **Mpc**
+    :rtype: float
+    :raises ValueError: if units is neither an iterable of length 4 or a str
     '''
     
     if isinstance(units, list):
@@ -121,7 +112,7 @@ def separation(z, ra1, dec1, ra2, dec2, units=['deg', 'deg', 'deg', 'deg']):
         units = [units]*4
         
     if len(units) != 4:
-        raise ValueError('4 units should be given or a single one only. Cheers !')
+        raise ValueError('4 units should be given nor a single one only. Cheers !')
     
     # Objects representing the coordinates
     coord1 = SkyCoord(ra1, dec1, unit=units[:2])
