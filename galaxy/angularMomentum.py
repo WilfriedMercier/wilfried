@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Nov 24 15:46:39 2020
-
-@author: wilfried
+*Author:* Wilfried Mercier - IRAP
 
 Computations related to angular momenta of galaxies.
 """
@@ -13,28 +11,29 @@ from   scipy.special import gammainc, gamma
 from   .models       import compute_bn
 
 def sersic_kthMoment(k, vmin, vmax, n=1, Re=10, Ie=10):
-    '''
-    Compute the kth radial moment for a Sérsic profile: \int_vmin^max \Sigma r^k dr.
+    r'''
+    Compute the kth radial moment for a Sérsic profile
+    
+    .. math::
+        \int_{v_{\rm{min}}}^{v_{\rm{max}}} dr~r^k \Sigma(r)
 
-    Parameters
-    ----------
-        k : int/float
-            order of the moment
-        vmin: int/float
-            lower bound to compute the kth moment. Must be greater than 0 and less than vmax. Should be the same unit as Re.
-        vmax : int/float
-            upper bound to compute the kth moment. Must be greater than 0 and more than vmin. Should be the same unit as Re.
-        
-    Optional parameters
-    -------------------
-        Ie : int/float
-            flux at Re
-        n : int/float
-            Sérsic index
-        Re : int/float
-            effective radius
-
-    Return the kth order moment.
+    :param k: order of the moment
+    :type k: int or float
+    :param vmin: lower bound to compute the kth moment. Must be greater than 0 and less than vmax. Should be the same unit as Re.
+    :type vmin: int or float
+    :param vmax: upper bound to compute the kth moment. Must be greater than 0 and more than vmin. Should be the same unit as Re.
+    :type vmax: int or float
+    
+    :param Ie: (**Optional**) flux at Re
+    :type Ie: int or float
+    :param n: (**Optional**) Sérsic index
+    :type n: int or float
+    :param Re: (**Optional**) effective radius
+    :type Re: int or float
+    
+    :returns: kth order moment
+    :rtype: int or float
+    :raises ValueError: if vmin<0 or vmin >= vmax
     '''
     
     if vmin < 0 or vmin >= vmax:
@@ -49,28 +48,40 @@ def sersic_kthMoment(k, vmin, vmax, n=1, Re=10, Ie=10):
     return prefactor*gamma(prod)*(gamma1 - gamma2)
 
 def momentum(rt, vt, n=1, Re=10, Ie=10, normalise=True):
-    '''
-    Compute the analytical angular momentum for a single Sérsic profile and a ramp model rotation curve.
-
-    Parameters
-    ----------
-        rt : int/float
-            kinematical transition radius
-        vt : int/float
-            kinematical plateau velocity (must be positive)
-            
-    Optional parameters
-    -------------------
-        Ie : int/float
-            flux at Re
-        n : int/float
-            Sérsic index
-        normalise : bool
-            whether to normalise by the first order moment of the light distribution
-        Re : int/float
-            effective radius. Must have the same unit as rt.
-
-    Return the central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.
+    r'''
+    Compute the analytical angular momentum for a single Sérsic profile and a ramp model rotation curve in the **unnormalised** case
+    
+    .. math::
+        J_z = 2\pi \int_0^\infty dR~R^2 \Sigma (R) V(R),
+        
+    and, in the **normalised** case
+    
+    .. math::
+        j = \frac{\int_0^\infty dR~R^2 \Sigma (R) V(R)}{\int_0^\infty dR~R \Sigma (R)},
+        
+    where 
+    
+    .. math::
+        \Sigma(R) &= Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]}
+        
+        V(R) &= V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t
+        
+    :param rt: kinematical transition radius
+    :type rt: int or float
+    :param vt: kinematical plateau velocity (must be positive)
+    :type vt: int or float
+    
+    :param Ie: (**Optional**) flux at Re
+    :type Ie: int or float
+    :param n: (**Optional**) Sérsic index
+    :type n: int or float
+    :param bool normalise: (**Optional**) whether to normalise by the first order moment of the light distribution. Default is True
+    :param Re: (**Optional**) effective radius. Must have the same unit as rt. Default is 10.
+    :type Re: int or float
+    
+    :returns: central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.
+    :rtype: int or float
+    :raises ValueError: if rt <= 0 or vt <= 0
     '''
     
     if rt<=0:
