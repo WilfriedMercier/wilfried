@@ -6,7 +6,6 @@
 Miscellaneous functions related to galaxy computations.
 """
 
-
 import scipy.ndimage                      as     nd
 import astropy.units                      as     u
 import numpy                              as     np
@@ -98,8 +97,12 @@ def check_bns(listn, listbn):
 
 
 def compute_bn(n):
-    """
-    Compute the value of bn used in the definition of a Sersic profile (see below).
+    r"""
+    Compute the value of bn used in the definition of a Sersic profile
+    
+    .. math::
+            
+        2\gamma(2n, b_n) = \Gamma(2n)
     
     *Author:* Wilfried Mercier - IRAP
 
@@ -357,6 +360,10 @@ def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=0):
     '''
     Project onto the sky a 2D model of a galaxy viewed face-on.
     
+    .. warning::
+        
+        This function is deprecated and may be removed soon.
+    
     .. note::
         
         Sky projection is used with scipy ndimage functions. Two projections are applied (in this order):
@@ -405,6 +412,10 @@ def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=0):
 def tiltGalaxy(model, inclination=0, splineOrder=3, fillVal=np.nan):
     '''
     Tilt a galaxy image around the South-North axis (assumed vertical) passing through the image centre.
+    
+    .. warning::
+        
+        This function is deprecated and may be removed soon.
 
     :param model: intensity map of the galaxy model
     :type model: 2D ndarray
@@ -440,6 +451,10 @@ def tiltGalaxy(model, inclination=0, splineOrder=3, fillVal=np.nan):
 def rotateGalaxy(model, PA=0, splineOrder=3, fitIn=False, fillVal=np.nan):
     '''
     Apply PA rotation to a galaxy image.
+    
+    .. warning::
+        
+        This function is deprecated and may be removed soon.
 
     :param model: intensity map of the galaxy model
     :type model: 2D ndarray
