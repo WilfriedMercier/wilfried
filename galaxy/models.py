@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Sep 30 22:09:08 2019
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
-@author: Wilfried Mercier - IRAP
-
-Useful functions for galaxy modelling and other related computation
+Useful functions for galaxy modelling and other related computation.
 """
 
 import numpy                              as     np
@@ -26,28 +24,27 @@ except ImportError:
 ####################################################################################################################
 
 def bulge(r, re, b4=None, Ie=None, mag=None, offset=None):
-    """
-    Computes the value of the intensity of a bulge (Sersic index n=4) at position r.
+    r"""
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        r : float
-            the position at which the profile is computed
-        re : float
-            half-light radius
+    Computes the value of the intensity of a de Vaucouleur bulge at position r defined as
+    
+    .. math::
+        
+        \Sigma(r) = I_{\rm{e}} e^{\left [ \left (r/R_{\rm{e}} \right )^{1/4} - 1 \right ]},
+    
+    with :math:`R_{\rm{e}}` the effective radius and :math:`I_{\rm{e}}` the surface brightness at the effective radius.
+
+    :param float r: position at which the profile is computed
+    :param float re: half-light radius
                 
-    Optional inputs
-    ---------------
-        b4 : float
-            b4 factor appearing in the Sersic profile defined as $2\gamma(8, b4) = 7!$. By default, b4 is None, and its value will be computed. To skip this computation, please give a value to bn when callling the function.
-        Ie : float
-            intensity at half-light radius
-        mag : float
-            galaxy total integrated magnitude used to compute Ie if not given
-        offset : float
-            magnitude offset in the magnitude system used
-            
-    Returns I(r) for a bulge.
+    :param float b4: (**Optional**) b4 factor appearing in the Sersic profile. If None, its value will be computed.
+    :param float Ie: (**Optional**) surface brightness at half-light radius
+    :param float mag: (**Optional**) total integrated magnitude used to compute Ie if not given
+    :param float offset: (**Optional**) magnitude offset in the magnitude system used
+        
+    :returns: surface brightness
+    :rtype: float
     """
     
     b4, = check_bns([4], [b4])
@@ -57,28 +54,27 @@ def bulge(r, re, b4=None, Ie=None, mag=None, offset=None):
 
 
 def exponential_disk(r, re, b1=None, Ie=None, mag=None, offset=None):
-    """
-    Computes the value of the intensity of an expoential at position r.
+    r"""
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        r : float
-            the position at which the profile is computed
-        re : float
-            half-light radius
+    Computes the value of the intensity of an exponential disk at position r defined as
+    
+    .. math::
+        
+        \Sigma(r) = I_{\rm{e}} e^{\left [ r/R_{\rm{e}} - 1 \right ]},
+    
+    with :math:`R_{\rm{e}}` the effective radius and :math:`I_{\rm{e}}` the surface brightness at the effective radius.
+    
+    :param float r: position at which the profile is computed
+    :param float re: half-light radius
                 
-    Optional inputs
-    ---------------
-        b1 : float
-            b1 factor appearing in the Sersic profile defined as $\gamma(2, b1) = 1/2$. By default, b1 is None, and its value will be computed. To skip this computation, please give a value to bn when callling the function.
-        Ie : float
-            intensity at half-light radius
-        mag : float
-            galaxy total integrated magnitude used to compute Ie if not given
-        offset : float
-            magnitude offset in the magnitude system used
-                
-    Return the profile value at position r.
+    :param float b1: (**Optional**) b1 factor appearing in the Sersic profile. If None, its value will be computed.
+    :param float Ie: (**Optional**) surface brightness at half-light radius
+    :param float mag: (**Optional**) total integrated magnitude used to compute Ie if not given
+    :param float offset: (**Optional**) magnitude offset in the magnitude system used
+        
+    :returns: surface brightness
+    :rtype: float
     """
     
     b1, = check_bns([1], [b1])
@@ -88,19 +84,29 @@ def exponential_disk(r, re, b1=None, Ie=None, mag=None, offset=None):
 
 
 def hernquist(r, a, M):
-    '''
-    Hernquist profile (mass 3D distribution).
+    r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Hernquist profile defined as
+    
+    .. math::
+        
+        \rho(r) = \frac{M_{\rm{b}}}{2\pi} \frac{a}{r} (r + a)^{-3},
+    
+    with :math:`M_{\rm{b}}` the total mass and :math:`a` the scale radius.
 
-    Parameters
-    ----------
-        a : float/int
-            scale radius
-        M : float/int
-            total "mass"
-        r : float/int or array of floats/int
-            radial distance(s) where to compute the Hernquist profile. Unit must be the same as a.
+    :param a: scale radius
+    :type a: int or float
+    :param M: total mass
+    :type M: int or float
+    :param r: radial distance(s) where to compute the Hernquist profile. Unit must be the same as **a**.
+    :type r: int or float or ndarray[int] or ndarray[float]
 
-    Return the Hernquist profile evaluated at the given distance(s). Unit is that of M/a^3.
+    :returns: Hernquist profile evaluated at the given distance(s). Unit is that of **M**/**a^3**.
+    :rtype: float or ndarray[float]
+    
+    :raises TypeError: if **r**, **M** and **a** are neither int, nor float
+    :raises ValueError: if np.any(**r**) < 0, if **a** <= 0 or if **M** < 0
     '''
     
     # Checking dtypes and values
@@ -140,19 +146,29 @@ def hernquist(r, a, M):
 
 
 def nfw(r, c, rs):
-    '''
-    NFW profile (mass 3D distribution).
-
-    Parameters
-    ----------
-        c : float/int
-            halo concentration
-        r : float/int or array of floats/int
-            radial distance(s) where to compute the Hernquist profile. Unit must be the same as rs.
-        rs : float/int
-            scale radius
+    r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    NFW profile defined as
+    
+    .. math::
         
-    Return the NFW profile evaluated at the given distance. Unit is that of a 3D mass density in SI (i.e. kg/m^3).
+        \rho(r) = \delta_{\rm{c}} \rho_{\rm{crit}} (r/r_{\rm{s}})^{-1} (1 + r/r_{\rm{s}})^{-2},
+    
+    with :math:`r_{\rm{s}} = r_{200} / c` the halo scale radius, with :math:`r_{200}` the virial radius where the mean overdensity is equal to 200, :math:`c` the halo concentration, :math:`\rho_{\rm{crit}} = 3 H_0^2 / (8\pi G)` the Universe closure density, and :math:`\delta_{\rm{c}}` the halo overdensity.
+
+    :param c: halo concentration
+    :type c: int or float
+    :param r: radial distance(s) where to compute the profile. Unit must be the same as rs.
+    :type r: int or float or ndarray[int] or ndarray[float]
+    :param rs: scale radius
+    :type rs: int or float
+        
+    :returns: NFW profile evaluated at the given distance. Unit is that of a 3D mass density in SI (i.e. kg/m^3).
+    :rtype: float or ndarray[float]
+    
+    :raises TypeError: if **r**, **c** and **rs** are neither int, nor float
+    :raises ValueError: if np.any(**r**)<0, if c<=0, or if rs<=0
     '''
     
     # Checking dtypes and values
@@ -190,30 +206,34 @@ def nfw(r, c, rs):
 
 
 def sersic_profile(r, n, re, Ie=None, bn=None, mag=None, offset=None):
-    """
-    General Sersic profile. Either computes it with n, re and Ie, or if Ie is not known but the total magnitude and the offset are, computes Ie from them and then return the profile.
+    r"""
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    General Sersic profile defined as 
+    
+    .. math::
         
-    Mandatory inputs
-    ----------------
-        n : float/int
-            Sersic index
-        r : float
-            the position at which the profile is computed
-        re : float
-            half-light radius
+        \Sigma(r) = I_{\rm{e}} e^{\left [ \left (r/R_{\rm{e}} \right )^{1/n} - 1 \right ]},
+    
+    with :math:`R_{\rm{e}}` the effective radius, :math:`I_{\rm{e}}` the surface brightness at the effective radius and :math:`n` the Sersic index.
+    
+    .. note::
+        
+        Compute it with:
             
-    Optional inputs
-    ---------------
-        bn : float
-            bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. By default, bn is None, and its value will be computed by the function using the value of n. To skip this computation, please give a value to bn when callling the function.
-        Ie : float
-            intensity at half-light radius
-        mag : float
-            galaxy total integrated magnitude used to compute Ie if not given
-        offset : float
-            magnitude offset in the magnitude system used
+            * n, re and Ie
+            * n, re, mag and offset
+            
+    :param float r: position at which the profile is computed
+    :param float re: half-light radius
                 
-    Return the profile value at position r.
+    :param float bn: (**Optional**) bn factor appearing in the Sersic profile. If None, its value will be computed.
+    :param float Ie: (**Optional**) surface brightness at half-light radius
+    :param float mag: (**Optional**) total integrated magnitude used to compute Ie if not given
+    :param float offset: (**Optional**) magnitude offset in the magnitude system used
+        
+    :returns: surface brightness
+    :rtype: float
     """
     
     bn, = check_bns([n], [bn])
@@ -230,76 +250,65 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
                    PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, noPSF=False, arcsecToGrid=0.03,
                    fineSampling=1, samplingZone={'where':'centre', 'dx':2, 'dy':2}, skipCheck=False, verbose=True):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Generate a bulge + (sky projected) disk 2D model (with PSF convolution).
     
-    How to use
-    ----------
-        Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (Id, Ib), or if not known, a total magnitude value for each profile (magD, magB) and their corresponding magnitude offset (to convert from magnitudes to intensities).
+    .. note::
+        
+        **How to use**
+        
+        Apart from the mandatory inputs, it is necessary to provide:
+        
+            * an intensity at Re for each profile
+            * a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)
        
-    Caution
-    -------
-        Rd and Rb should be given in pixel units. If you provide them in arcsec, you must update the arcsecToGrid value to 1 (since 1 pixel will be equal to 1 arcsec). 
+       **Infos about sampling** 
+       
+        **fineSampling** parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:
+            
+            * if the sampling is performed everywhere ('where' keyword in **samplingZone** equal to 'all'), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)
+            * if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        
+       
+    .. warning::
         
-    Infos about sampling
-    --------------------
-        fineSampling parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:
-            - if the sampling is performed everywhere ('where' keyword in samplingZone equal to 'all'), the final image will have dimensions (nx*fineSampling, ny*fineSampling)
-            - if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (nx, ny).        
+        **Rd** and **Rb** should be given in pixel units. 
+        If you provide them in arcsec, you must update the **arcsecToGrid** value to 1 (since 1 pixel will be equal to 1 arcsec). 
+    
+    :param int nx: size of the model for the x-axis
+    :param int ny: size of the model for the y-axis
+    :param float Rb: bulge half-light radius. Best practice is to provide it in pixels.
+    :param float Rd: disk half-light radius. Best practice is to provide it in pixels.
 
-    Mandatory inputs
-    ----------------
-        nx : int
-            size of the model for the x-axis
-        ny : int
-            size of the model for the y-axis
-        Rb : float
-            bulge half-light radius. Best practice is to provide it in pixels (see Caution section).
-        Rd : float
-            disk half-light radius. Best practice is to provide it in pixels (see Caution section).
-        
-    Optional inputs
-    ---------------
-        arcsecToGrid : float
-            pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel. Default is HST-ACS resolution of 0.03"/px.         
-        Ib : float
-            bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.
-        Id : float
-            disk intensity at (disk) half-light radius. If not provided, magnitude and magnitude offset must be given instead.
-        inclination : int/float
-            disk inclination on sky. Generally given between -90° and +90°. Value must be given in degrees. Default is 0° so that no projection is performed.
-        magB : float
-            bulge total magnitude
-        magD: float
-            disk total magnitude
-        offsetB : float
-            bulge magnitude offset
-        offsetD : float
-            disk magnitude offset
-        noPSF : bool
-            whether to not perform PSF convolution or not. Default is to do convolution.
-        PA : int/float
-            disk position angle (in degrees). Default is 0° so that no rotation if performed.
-        fineSampling : positive int
-            fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels. Default is 1.
-        PSF : dict
-            Dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels).
-            For now, only 2D Gaussians are accepted as PSF. 
-        samplingZone : dict
-            where to perform the over sampling. Default is everywhere. Dictionnaries should have the following keys:
-                - 'where' : str; either 'all' to perform everywhere or 'centre' to perform around the centre
-                - 'dx'    : int; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.
-                - 'dy'    : int; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.
+    :param float arcsecToGrid: (**Optional**) pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel      
+    :param float Ib: (**Optional**) bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.
+    :param float Id: (**Optional**) disk intensity at (disk) half-light radius. If not provided, magnitude and magnitude offset must be given instead.
+    :param inclination: (**Optional**) disk inclination on sky. Generally given between -90° and +90°. Value must be given in degrees.
+    :type inclination: (**Optional**) int or float
+    :param float magB: (**Optional**) bulge total magnitude
+    :param float magD: (**Optional**) disk total magnitude
+    :param float offsetB: (**Optional**) bulge magnitude offset
+    :param float offsetD: (**Optional**) disk magnitude offset
+    :param bool noPSF: (**Optional**) whether to not perform PSF convolution or not
+    :param PA: disk position angle (in degrees)
+    :type PA: int or float
+    :param int(>0) fineSampling: fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.
+    :param dict PSF: (**Optional**) Dictionnary of the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF. 
+    :param dict samplingZone: where to perform the over sampling. Dictionnaries should have the following keys:
+    
+        * 'where' (type str) -> either 'all' to perform everywhere or 'centre' to perform around the centre
+        * 'dx'    (type int) -> x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.
+        * 'dy'    (type int) -> y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.
                
-        skipCheck : bool
-            whether to skip the checking part or not. Default is False.
-        x0 : float/int
-            x-axis centre position. Default is None so that nx//2 will be used.
-        y0 : float/int
-            y-axis centre position. Default is None so that ny//2 will be used.
-        verbose : bool
-            whether to print text on stdout or not. Default is True.
-        
-    Return X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition.
+    :param bool skipCheck: whether to skip the checking part or not
+    :param x0: x-axis centre position. Default is None so that nx//2 will be used.
+    :type x0: int or float
+    :param y0: y-axis centre position. Default is None so that ny//2 will be used.
+    :type y0: int or float
+    :param bool verbose: whether to print text on stdout or not
+    
+    :returns: X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition
+    :rtype: 2D ndarray, 2D ndarray, 2D ndarray
     '''
     
     ##############################################
@@ -373,62 +382,59 @@ def bulgeDiskOnSky(nx, ny, Rd, Rb, x0=None, y0=None, Id=None, Ib=None, magD=None
 def model2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None, listOffset=None, listInclination=None, listPA=None, combine=True, 
             fineSampling=1, samplingZone={'where':'centre', 'dx':5, 'dy':5}, skipCheck=False):
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.
     
-    How to use
-    ----------
-        Apart from the mandatory inputs, it is necessary to provide either an intensity at Re for each profile (listIe), or if not known, a total magnitude value for each profile (listMag) and their corresponding magnitude offset (to convert from magnitudes to intensities).
-        The 'combine' keywork can be set to False to recover the model of each component separately.
-    
-    Infos about sampling
-    --------------------
-        fineSampling parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:
-            - if the sampling is performed everywhere ('where' keyword in samplingZone equal to 'all'), the final image will have dimensions (nx*fineSampling, ny*fineSampling)
-            - if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (nx, ny).
-    
-    Mandatory inputs
-    ----------------
-        listn : list of float/int
-            list of Sersic index for each profile
-        listRe : list of float
-            list of half-light radii for each profile
-        nx : int
-            size of the model for the x-axis
-        ny : int
-            size of the model for the y-axis
+    .. note::
         
-    Optional inputs
-    ---------------v      
-        combine : bool
-            whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists. Default is to combine all the components into a single image.
-        listIe : list of floats
-            list of intensities at re for each profile
-        listInclination : list of float/int
-            lsit of inclination of each Sersic component on the sky in degrees. Default is None so that each profile is viewed face-on.
-        listMag : list of floats
-            list of total integrated magnitudes for each profile
-        listOffset : list of floats
-             list of magnitude offsets used in the magnitude system for each profile
-        listPA : list of float/int
-            list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°. Default is None, so that no rotation is applied to any component.
-        fineSampling : positive int
-            fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels. Default is 1.
-        samplingZone : dict
-            where to perform the sampling. Default is everywhere. Dictionnaries should have the following keys:
-                - 'where' : either 'all' to perform everywhere or 'centre' to perform around the centre
-                - 'dx' : int, x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.
-                - 'dy' : int, y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.
+        **How to use**
+        
+        Apart from the mandatory inputs, it is necessary to provide:
+        
+            * an intensity at Re for each profile
+            * a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)
+       
+       **Infos about sampling** 
+  
+        **fineSampling** parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:
+            
+            * if the sampling is performed everywhere ('where' keyword in **samplingZone** equal to 'all'), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)
+            * if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        
+       
+    :param listn: list of Sersic index for each profile
+    :type listn: list[int] or list[float]
+    :param list[float] listRe: list of half-light radii for each profile
+    :param int nx: size of the model for the x-axis
+    :param int ny: size of the model for the y-axis
+    
+    :param bool combine: (**Optional**) whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists
+    :param list[float] listIe: (**Optional**) list of intensities at re for each profile
+    :param listInclination: (**Optional**) list of inclination of each Sersic component on the sky in degrees
+    :type listInclination: list[int] or list[float]
+    :type list[float] listMag: (**Optional**) list of total integrated magnitudes for each profile
+    :type list[float] listOffset: (**Optional**) list of magnitude offsets used in the magnitude system for each profile
+    :param listPA: (**Optional**) list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°.
+    :type listPA: list[int] or list[float]
+    :param int(>0) fineSampling: (**Optional**) fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.
+    :param dict samplingZone: (**Optional**) where to perform the sampling. Default is everywhere. Dictionnaries should have the following keys:
+       
+        * 'where' (type str) -> either 'all' to perform everywhere or 'centre' to perform around the centre
+        * 'dx'    (type int) -> x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.
+        * 'dy'    (type int) -> y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.
           
-        skipCheck : bool
-            whether to skip the checking part or not. Default is False.
-        x0 : float/int
-            x-axis centre position. Default is None so that nx//2 will be used.
-        y0 : float/int
-            y-axis centre position. Default is None so that ny//2 will be used.
+    :param bool skipCheck: (**Optional**) whether to skip the checking part or not
+    :param x0: (**Optional**) x-axis centre position. Default is None so that **nx**//2 will be used.
+    :type x0: int or float
+    :param y0: (**Optional**) y-axis centre position. Default is None so that **ny**//2 will be used.
+    :type y0: int or float
         
-    Return:
-        - if combine is True: X, Y grids and the intensity map
-        - if combine is False: X, Y grids and a list of intensity maps for each component
+    :returns: 
+        - X, Y grids and the intensity map if **combine** is True
+        - X, Y grids and a listof intensity maps for each component if **combine** is False
+        
+    :raises TypeError: if 'dx' and 'dy' keys not in **samplingZone**, if **fineSampling**, **nx** and **ny** are neither int, nor np.integer
+    :raises ValueError: if 'where' key value in **samplingZone** is neither 'all', nor 'centre', if **fineSampling** < 1, if at least one PA is not in the range [-90, 90] deg, or if Ie and mag and offset are None
     """
     
     def computeSersic(X, Y, nbModels, listn, listRe, listIe, listInclination, listPA):
