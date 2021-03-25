@@ -35,8 +35,6 @@ class MassModelBase:
     
     def __init__(self, dim, M_L, unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):
         '''
-        Init function.
-        
         .. note::
             
             Units must be given such that they are recognised by astropy.units module.
@@ -236,8 +234,6 @@ class Multiple3DModels(MassModelBase):
     
     def __init__(self, model1, model2, *args, **kwargs):
         '''
-        Init function.
-    
         :param model1: 1st model
         :type model1: MassModelBase[_dim = 3]
         :param model2: 2nd model
@@ -432,8 +428,6 @@ class Hernquist(MassModelBase):
     
     def __init__(self, a, F, M_L, unit_a='kpc', unit_F='erg/(s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):
         '''
-        Init instance.
-    
         :param a: scale factor
         :type a: int or float
         :param F: amplitude parameter (total flux)
@@ -601,13 +595,12 @@ class NFW(MassModelBase):
     
     def __init__(self, Rs, c=None, Vmax=None, unit_Rs='kpc', unit_Vmax='km/s'):
         '''
-        Init NFW profile. 
-        
         .. note::
             
             Two pairs of parameters can be passed:
-                - **Rs** and **c** 
-                - **Rs** and **Vmax**
+                
+                * **Rs** and **c** 
+                * **Rs** and **Vmax**
 
         :param Rs: scale parameter
         :type Rs: int or float or astropy.units Quantity with distance unit
@@ -818,13 +811,12 @@ class Sersic:
     
     def __init__(self, n, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', **kwargs):
         """
-        Init mass model.
-        
         .. note::
             
             You can either provide:
-                - **n**, **Re** and **Ie**
-                - **n**, **Re**, **mag** and **offset**
+                
+                * **n**, **Re** and **Ie**
+                * **n**, **Re**, **mag** and **offset**
         
         :param n: Sersic index
         :type n: int or flat
@@ -958,13 +950,12 @@ class deVaucouleur(Sersic):
     
     def __init__(self, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', **kwargs):
         """
-        Init mass model.
-        
         .. note::
             
             You can either provide:
-                - **Re** and **Ie**
-                - **Re**, **mag** and **offset**
+                
+                * **Re** and **Ie**
+                * **Re**, **mag** and **offset**
         
         :param Re: half-light radius
         :type Re: int or float
@@ -1022,7 +1013,7 @@ class deVaucouleur(Sersic):
 
 class ExponentialDisk(Sersic, MassModelBase):
     '''
-    2D/3D Exponential disk profile class.
+    2D/3D exponential disk profile class (razor-thin).
     
     .. note::
         
@@ -1035,8 +1026,6 @@ class ExponentialDisk(Sersic, MassModelBase):
     
     def __init__(self, Re, M_L, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
         """
-         Init mass model.
-        
         .. note::
             
             You can either provide:
@@ -1052,7 +1041,7 @@ class ExponentialDisk(Sersic, MassModelBase):
         :param float mag: (**Optional**) galaxy total integrated magnitude used to compute Ie if not given
         :param float offset: (**Optional**) magnitude offset in the magnitude system used
         :param str unit_Ie: (**Optional**) unit for the surface brightness. If **Ie** already has a unit, it is converted to this unit.
-        :param str unit_M_L: unit of the mass to light ratio
+        :param str unit_M_L: (**Optional**) unit of the mass to light ratio
         :param str unit_Re: (**Optional**) unit for the scale radius **Re**. If **Re** already has a unit, it is converted to this unit.
         
         :raises astropy.units.core.UnitConversionError: if **Vmax** could not be broadcast to km/s unit
@@ -1116,13 +1105,12 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
     def __init__(self, Re, hz, M_L, q0=None, Ie=None, mag=None, offset=None, 
                  unit_Re='kpc', unit_hz='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
         """
-         Init mass model.
-        
         .. note::
             
             You can either provide:
-                - **M_L**, **hz**, **Re** and **Ie**
-                - **M_L**, **hz**, **Re**, **mag** and **offset**
+                
+                * **M_L**, **hz**, **Re** and **Ie**
+                * **M_L**, **hz**, **Re**, **mag** and **offset**
                 
             You can also provide **q0** instead of **hz** (which must be None in this case).
             
@@ -1178,7 +1166,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         
         .. math::
         
-            V_{\rm{corr}} (r) = V_{\rm{c, max}} \times \sqrt{\frac{r e^{1-r/R_{\rm{d}}}}{R_{\rm{d}}}},
+            V_{\rm{corr}} (r) = V_{\rm{c, max}} \times \sqrt{\frac{r~e^{1-r/R_{\rm{d}}}}{R_{\rm{d}}}},
         
         where :math:`R_{\rm{d}}` is the disk scale length, and :math:`V_{\rm{c, max}}` is the maximum of the velocity correction.
 
@@ -1238,7 +1226,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         
     def profile(self, R, z, *args, **kwargs):
         r'''
-        Light density profile at radius r
+        Light density profile at radius **R** and height **z**
         
         .. math::
             
