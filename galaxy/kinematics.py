@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-*Author:* Benoit Epinat - LAM & Wilfried Mercier - IRAP
+.. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 Fonctions related to kinematical modelling of galaxies.
 """
@@ -20,13 +20,13 @@ from   .MUSE                       import compute_lsfw
 
 def velocityAtR(radius, Vt, Rt, Rlast, verbose=True):
     r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Assuming a linear ramp model, try to compute the velocity at a single radius
     
     .. math::
         
         V(R) = V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t.
-    
-    *Author:* Wilfried Mercier - IRAP
 
     :param radius: position where the velocity must be computed (in the same units as Rt and Rlast)
     :type radius: int or float
@@ -61,11 +61,9 @@ def velocityAtR(radius, Vt, Rt, Rlast, verbose=True):
 
 def apply_mask(mask, image):
     '''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     This function applies a mask to an image and puts nan in the masked area.
-    
-    *Author:* Benoit Epinat - LAM
-    
-    *modified by Wilfried Mercier - IRAP*
 
     :param ndarray mask: array containing the indices of the pixels to be masked
     :param ndarray image: image to be masked
@@ -81,11 +79,9 @@ def apply_mask(mask, image):
 
 def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='snr', thrl=None, thru=None, option='_ssmooth', line='_OII3729'):
     '''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     This function cleans the maps created by CAMEL for a given galaxy.
-    
-    *Author:* Benoit Epinat - LAM
-    
-    *modified by Wilfried Mercier - IRAP*
 
     :param float fraction: fraction for a lower threshold on the velocity dispersion map
     :param float lsfw: spectral resolution in *km/s* (sigma)
@@ -257,11 +253,9 @@ def clean_galaxy(path, outputpath, name, lsfw, fraction, clean=None, data_mask='
 
 def clean_setofgalaxies(path, filename='galsList.input', logFile='folderList.list', fraction=1., data_mask='snr', thrl=None, thru=None, option='_ssmooth', line='_OII3729', clean=None):
     '''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Clean maps created by camel for a list of galaxies.
-    
-    *Authors:* Benoit Epinat - LAM
-    
-    *modified by Wilfried Mercier - IRAP*
         
     .. note::
         **How to use**
@@ -323,13 +317,13 @@ def clean_setofgalaxies(path, filename='galsList.input', logFile='folderList.lis
 
 def compute_velres(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
     r'''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
+    
     Compute the spectral resolution in terms of velocity sigma from the line restframe wavelength, the redshift of the source and from MUSE LSF model
     
     .. math::
         
         {\rm{FWHM}}(\lambda) = a2 \times \lambda^2 + a1 \times \lambda + a0
-    
-    *Author:* Benoit Epinat - LAM
 
     :param float lbda0: rest frame wavelength of the line used to infer kinematics in **Angstroms**
     :param float z: redshift of the galaxy
@@ -350,11 +344,9 @@ def compute_velres(z, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
 
 def velres_setofgalaxies(inname, outname, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
     '''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the resolution in velocity for a list of galaxies and write it into an output file along the corresponding file name.
-    
-    *Authors:* Benoit Epinat - LAM
-    
-    *modified by Wilfried Mercier - IRAP*
         
     .. note::
         
@@ -386,11 +378,9 @@ def velres_setofgalaxies(inname, outname, lbda0, a2=5.835e-8, a1=-9.080e-4, a0=5
 
 def create_mask(image, thrl=None, thru=None):
     '''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     This function creates a mask from an image using a lower and an upper threshold.
-    
-    *Authors:* Benoit Epinat - LAM
-    
-    *modified by Wilfried Mercier - IRAP*
 
     :param ndarray image: image used to create the mask
     

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-*Author:* Wilfried Mercier - IRAP
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 Miscellaneous functions related to galaxy computations.
 """
@@ -18,9 +18,9 @@ from   scipy.special                      import gammaincinv, gamma, gammainc
 
 def checkAndComputeIe(Ie, n, bn, re, mag, offset, noError=False):
     r"""
-    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    *Author:* Wilfried Mercier - IRAP
+    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
 
     :param float bn: bn factor appearing in the Sersic profile (see below)
     :param float Ie: intensity at effective radius
@@ -59,9 +59,9 @@ def checkAndComputeIe(Ie, n, bn, re, mag, offset, noError=False):
     
 def intensity_at_re(n, mag, re, offset, bn=None):
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the intensity of a given Sersic profile with index n at the position of the half-light radius re. This assumes to know the integrated magnitude of the profile, as well as the offset used for the magnitude definition.
-      
-    *Author:* Wilfried Mercier - IRAP
     
     :param float mag: total integrated magnitude of the profile
     :param n: Sersic index of the given profile
@@ -82,9 +82,9 @@ def intensity_at_re(n, mag, re, offset, bn=None):
 
 def check_bns(listn, listbn):
     """
-    Given a list of bn values, check those which are not given (i.e. equal to None), and compute their value using the related Sersic index.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    *Author:* Wilfried Mercier - IRAP
+    Given a list of bn values, check those which are not given (i.e. equal to None), and compute their value using the related Sersic index.
 
     :param list[float] listbn: list of bn values
     :param listn: list of Sersic indices
@@ -98,13 +98,13 @@ def check_bns(listn, listbn):
 
 def compute_bn(n):
     r"""
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the value of bn used in the definition of a Sersic profile
     
     .. math::
             
         2\gamma(2n, b_n) = \Gamma(2n)
-    
-    *Author:* Wilfried Mercier - IRAP
 
     :param n: Sersic index of the profile
     :type n: int or float
@@ -125,13 +125,13 @@ def compute_bn(n):
 
 def realGammainc(a, x):
     ''''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Unnormalised lower incomplete gamma function
     
     .. math::
         
         \gamma(a, x) = \int_0^x dt~t^{a-1} e^{-t}
-        
-    *Author:* Wilfried Mercier - IRAP
     
     :param a: power of the gamma function
     :type a: int or float
@@ -146,9 +146,9 @@ def realGammainc(a, x):
 
 def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'}, verbose=True):
     '''
-    Convolve using fast FFT a 2D array with a pre-defined (2D) PSF.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    *Author:* Wilfried Mercier
+    Convolve using fast FFT a 2D array with a pre-defined (2D) PSF.
     
     .. note::
 
@@ -229,6 +229,8 @@ def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX
     
 def fromStructuredArrayOrNot(gal, magD, magB, Rd, Rb, noStructuredArray):
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Store values of the disk magnitude, the bulge magnitude, the disk effective radius and the bulge effective radius either directly from the given values or from a numpy structured array.
 
     :param gal: structured array with data for all the galaxies. The required column names are 'R_d_GF' (re for the disk component), 'R_b_GF' (re for the bulge component), 'Mag_d_GF' (the total integrated magnitude for the disk component), 'Mag_b_GF' (the total integrated magnitude for the bulge component).
@@ -272,9 +274,11 @@ def fromStructuredArrayOrNot(gal, magD, magB, Rd, Rb, noStructuredArray):
 
 def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=None, ylim=None):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Sum the contribution of different models with distorted X and Y grids into a single image with a regular grid.
     
-    .. warning::
+    .. deprecated::
         
         This function is deprecated and may be removed soon.
     
@@ -358,9 +362,11 @@ def mergeModelsIntoOne(listX, listY, listModels, pixWidth, pixHeight, xlim=None,
 
 def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=0):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Project onto the sky a 2D model of a galaxy viewed face-on.
     
-    .. warning::
+    .. deprecated::
         
         This function is deprecated and may be removed soon.
     
@@ -411,9 +417,11 @@ def projectModel2D(model, inclination=0, PA=0, splineOrder=3, fillVal=0):
 
 def tiltGalaxy(model, inclination=0, splineOrder=3, fillVal=np.nan):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Tilt a galaxy image around the South-North axis (assumed vertical) passing through the image centre.
     
-    .. warning::
+    .. deprecated::
         
         This function is deprecated and may be removed soon.
 
@@ -450,9 +458,11 @@ def tiltGalaxy(model, inclination=0, splineOrder=3, fillVal=np.nan):
 
 def rotateGalaxy(model, PA=0, splineOrder=3, fitIn=False, fillVal=np.nan):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Apply PA rotation to a galaxy image.
     
-    .. warning::
+    .. deprecated::
         
         This function is deprecated and may be removed soon.
 

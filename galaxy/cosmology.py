@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-*Author:* Wilfried Mercier - IRAP
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 A set of functions to easily compute standard calculations in extragalactic physics using cosmology. 
 
@@ -17,6 +17,8 @@ COSMOLOGY = cd.set_omega_k_0({'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0
 
 def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
     r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the size of an object with extent theta at redshift z from the angular diameter distance as size=theta*angular diameter distance.
 
     :param z: redshift of the object
@@ -25,17 +27,15 @@ def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
     :type theta: int or float
     
     :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy <https://roban.github.io/CosmoloPy/>`_ for more information.
-    :param scaleFactor: (**Optional**)  if theta is not in radian, please provide a correct scale factor (see below)
+    :param scaleFactor: (**Optional**)  if theta is not in radian, please provide a correct scale factor following the formula
+    
+        .. math::
+            \theta [\rm{rad}] = \theta [\rm{your~unit}] \times scaleFactor [\rm{rad/your~unit}].
+            
     :type scaleFactor: int or float
     
     :returns: physical size in **kpc**
     :rtype: int or float
-        
-    .. note::
-        The scaleFactor is defined such that we have 
-        
-        .. math::
-            \theta [\rm{rad}] = \theta [\rm{your~unit}] \times scaleFactor [\rm{rad/your~unit}].
     '''
     
     if cosmology is None:
@@ -46,6 +46,8 @@ def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
 
 def comoving_separation(z, theta, cosmology=None):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the tranverse distance (at fixed redshift) between objects separated by an angle theta on the sky in comoving units.
 
     :param z: redshift of the object
@@ -67,6 +69,8 @@ def comoving_separation(z, theta, cosmology=None):
 
 def comoving_los(z1, z2, cosmology=None):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the line of sight comoving distance between objects.
 
     :param z1: redshift of the 1st object
@@ -88,6 +92,8 @@ def comoving_los(z1, z2, cosmology=None):
 
 def separation(z, ra1, dec1, ra2, dec2, units=['deg', 'deg', 'deg', 'deg']):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the comoving separation between two objects at the same redshift given their position.
 
     :param z: redshift of the two objects
