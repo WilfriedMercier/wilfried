@@ -1,7 +1,7 @@
     #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-*Author:* Wilfried Mercier - IRAP
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 3D and 2D mass models for different mass and light profiles.
 """
@@ -26,6 +26,8 @@ except ImportError:
 
 class MassModelBase:
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Base class for mass models.
     
     .. warning::
@@ -230,7 +232,11 @@ class MassModelBase:
 
 
 class Multiple3DModels(MassModelBase):
-    '''A master class used when combining two 3D models into a single object.'''
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    A master class used when combining two 3D models into a single object.
+    '''
     
     def __init__(self, model1, model2, *args, **kwargs):
         '''
@@ -419,11 +425,9 @@ class Multiple3DModels(MassModelBase):
 
 class Hernquist(MassModelBase):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     3D Hernquist model class.
-    
-    .. warning::
-    
-        When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.
     '''
     
     def __init__(self, a, F, M_L, unit_a='kpc', unit_F='erg/(s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):
@@ -586,11 +590,9 @@ class Hernquist(MassModelBase):
         
 class NFW(MassModelBase):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Navarro Frenk and White profile.
-    
-    .. warning::
-    
-        When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.
     '''
     
     def __init__(self, Rs, c=None, Vmax=None, unit_Rs='kpc', unit_Vmax='km/s'):
@@ -802,6 +804,8 @@ class NFW(MassModelBase):
 
 class Sersic:
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     2D Sersic profile class.
     
     .. warning::
@@ -941,11 +945,9 @@ class Sersic:
     
 class deVaucouleur(Sersic):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     2D de Vaucouleur profile.
-
-    .. warning::
-
-        When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.
     '''
     
     def __init__(self, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', **kwargs):
@@ -1013,15 +1015,13 @@ class deVaucouleur(Sersic):
 
 class ExponentialDisk(Sersic, MassModelBase):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     2D/3D exponential disk profile class (razor-thin).
     
     .. note::
         
         Some functions such as the light profile correspond to the 2D Sersic profiles, while others such as the velocity assume a 3D **razor-thin disk**.
-        
-    .. warning::
-    
-        When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.
     '''
     
     def __init__(self, Re, M_L, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
@@ -1094,12 +1094,9 @@ class ExponentialDisk(Sersic, MassModelBase):
 
 class DoubleExponentialDisk(Sersic, MassModelBase):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Double exponential disk profile class implementing Bovy rotation curve.
-    
-    .. warning::
-    
-        When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.
-    
     '''
     
     def __init__(self, Re, hz, M_L, q0=None, Ie=None, mag=None, offset=None, 
