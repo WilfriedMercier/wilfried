@@ -1,0 +1,1391 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.massModels &#8212; wilfried library 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for galaxy.massModels</h1><div class="highlight"><pre>
+<span></span>    <span class="c1">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">3D and 2D mass models for different mass and light profiles.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>                 <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span>         <span class="k">as</span>     <span class="nn">u</span>
+<span class="kn">from</span>   <span class="nn">astropy.units.core</span>    <span class="kn">import</span> <span class="n">UnitConversionError</span>
+<span class="kn">from</span>   <span class="nn">.models</span>               <span class="kn">import</span> <span class="n">checkAndComputeIe</span><span class="p">,</span> <span class="n">sersic_profile</span>
+<span class="kn">from</span>   <span class="nn">.misc</span>                 <span class="kn">import</span> <span class="n">compute_bn</span><span class="p">,</span> <span class="n">realGammainc</span>
+<span class="kn">from</span>   <span class="nn">astropy.constants</span>     <span class="kn">import</span> <span class="n">G</span>
+<span class="kn">from</span>   <span class="nn">scipy.special</span>         <span class="kn">import</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">i0</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span>   <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">Planck18</span> <span class="k">as</span> <span class="n">cosmo</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span>   <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">Planck15</span> <span class="k">as</span> <span class="n">cosmo</span>
+    
+
+<span class="c1">#######################################################################################</span>
+<span class="c1">#                           3D profiles and their functions                           #</span>
+<span class="c1">#######################################################################################</span>
+
+<div class="viewcode-block" id="MassModelBase"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase">[docs]</a><span class="k">class</span> <span class="nc">MassModelBase</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Base class for mass models.</span>
+<span class="sd">    </span>
+<span class="sd">    .. warning::</span>
+<span class="sd">    </span>
+<span class="sd">        When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="MassModelBase.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="s1">&#39;solMass.s.cm^2.A/erg)&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            Units must be given such that they are recognised by astropy.units module.</span>
+
+<span class="sd">        :param int dim: number of dimensions of the model</span>
+<span class="sd">        :param float M_L: mass to light ratio</span>
+<span class="sd">        :param str unit_M_L: unit of the mass to light ratio. Refer to the specific mass model to know which unit to provide.</span>
+<span class="sd">        :raises ValueError: if **dim** is neither an int or **dim** &lt; 1, if **M_L** &lt;= 0, if **M_L** is neither an int or float or np.float16 or np.float32 or np.float64</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dim</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Given dimension is not correct.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">M_L</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Mass to light ratio is negative or null.&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">M_L</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M_L</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Mass to light ratio must either be an int, float, np.float16, np.float32 or np.float64.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">M_L</span> <span class="o">=</span> <span class="n">M_L</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_M_L</span><span class="p">)</span>
+                
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M_L</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Mass to light ratio must either be an int or a float.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">M_L</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">M_L</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit_M_L</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="n">dim</span></div>
+        
+        
+<div class="viewcode-block" id="MassModelBase.__add__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Add this instance with any other object. Only adding 3D models is allowed.&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="n">Multiple3DModels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="MassModelBase._checkR"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase._checkR">[docs]</a>    <span class="k">def</span> <span class="nf">_checkR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">against</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Check whether radial distance is positive and has a unit.</span>
+<span class="sd">        </span>
+<span class="sd">        :param r: radial distance</span>
+<span class="sd">        :type r: int or float or astropy.units Quantity</span>
+<span class="sd">        :param against: parameter to retrieve the unit from</span>
+<span class="sd">        :type against: astropy.unit Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: the radial distance</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: if **r** &lt; 0</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Radial distance is &lt; 0. Please provide a positive valued distance.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">*=</span> <span class="n">against</span><span class="o">.</span><span class="n">unit</span>
+
+        <span class="k">return</span> <span class="n">r</span></div>
+    
+    
+    <span class="c1">###########################################################</span>
+    <span class="c1">#       Default methods (some need to be overriden)       #</span>
+    <span class="c1">###########################################################</span>
+    
+<div class="viewcode-block" id="MassModelBase.flux"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the enclosed flux at radius r</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            F(&lt;r) = 4\pi \int_0^r dx~x^2 \rho (&lt;x),</span>
+<span class="sd">            </span>
+<span class="sd">        with :math:`\rho(r)` the light density profile.</span>
+
+<span class="sd">        :param r: radius where to compute the luminosity</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: flux enclosed in a sphere of radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :raises NotImplementedError: This method needs be implemented in a subclass first in order to be used</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;flux method not implemented yet.&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+    
+    
+<div class="viewcode-block" id="MassModelBase.gfield"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.gfield">[docs]</a>    <span class="k">def</span> <span class="nf">gfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the gravitational field at radius r.</span>
+
+<span class="sd">        :param r: radius where the gravitational field is computed</span>
+<span class="sd">        :type r: int or float</span>
+
+<span class="sd">        :returns: g(r)</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :raises NotImplementedError: This method needs be implemented in a subclass first in order to be used</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;gfield method not implemented yet.&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+    
+    
+<div class="viewcode-block" id="MassModelBase.mass"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.mass">[docs]</a>    <span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the enclosed (integrated) mass at radius r.</span>
+
+<span class="sd">        :param r: radius where to compute the mass</span>
+<span class="sd">        :returns: mass enclosed in a sphere of radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :raises NotImplementedError: This method needs be implemented in a subclass first in order to be used</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">flux</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="MassModelBase.mass_profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.mass_profile">[docs]</a>    <span class="k">def</span> <span class="nf">mass_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the **mass density** profile at radius r.</span>
+
+<span class="sd">        :param r: radius where to compute the profile</span>
+<span class="sd">        :type r: int or float</span>
+
+<span class="sd">        :returns: mass density profile at radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="MassModelBase.profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the light density profile at radius r.</span>
+
+<span class="sd">        :param r: radius where to compute the profile</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: light profile at radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :raises NotImplementedError: This method needs be implemented in a subclass first in order to be used</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;profile method not implemented yet.&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+    
+    
+<div class="viewcode-block" id="MassModelBase.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.MassModelBase.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity profile for a self-sustaining 3D profile against its own gravity through centripedal acceleration</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            V(r) = \sqrt{\frac{G M(&lt;r)}{r}},</span>
+<span class="sd">            </span>
+<span class="sd">        where :math:`G` is the gravitational constant and :math:`M(&lt;r)` is the enclosed mass.</span>
+
+<span class="sd">        :param r: radius where the velocity profile is computed</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: V(r)</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="n">r</span><span class="p">)</span></div>
+    
+    
+    <span class="c1">################################</span>
+    <span class="c1">#          Properties          #</span>
+    <span class="c1">################################</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Ftot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Total flux of the profile.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises NotImplementedError: This property needs be implemented in a subclass first in order to be used</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Ftot method not implemented yet.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Mtot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Total mass of the profile.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises NotImplementedError: This property needs be implemented in a subclass first in order to be used</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Ftot</span></div>
+
+
+<div class="viewcode-block" id="Multiple3DModels"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels">[docs]</a><span class="k">class</span> <span class="nc">Multiple3DModels</span><span class="p">(</span><span class="n">MassModelBase</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    A master class used when combining two 3D models into a single object.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="Multiple3DModels.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param model1: 1st model</span>
+<span class="sd">        :type model1: MassModelBase[_dim = 3]</span>
+<span class="sd">        :param model2: 2nd model</span>
+<span class="sd">        :type model2: MassModelBase[_dim = 3]</span>
+<span class="sd">        </span>
+<span class="sd">        :raises AttributeError: if **model1** or **model2** does not have a **_dim** attribute</span>
+<span class="sd">        :raises ValueError: if **model1** or **model2** do not have **_dim** = 3</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model1</span><span class="p">,</span> <span class="s1">&#39;_dim&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model2</span><span class="p">,</span> <span class="s1">&#39;_dim&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;One of the objects is not a valid model instance.&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">model1</span><span class="o">.</span><span class="n">_dim</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">model2</span><span class="o">.</span><span class="n">_dim</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;One of the models is not 3D or higher. Only 3D models can be combined. Cheers !&#39;</span><span class="p">)</span>
+        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            
+        <span class="c1"># We keep track of models in a list</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model1</span><span class="p">,</span> <span class="n">Multiple3DModels</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model2</span><span class="p">,</span> <span class="n">Multiple3DModels</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">model1</span><span class="p">,</span> <span class="n">model2</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model1</span><span class="p">,</span> <span class="n">Multiple3DModels</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model2</span><span class="p">,</span> <span class="n">Multiple3DModels</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">models</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model1</span><span class="p">,</span> <span class="n">Multiple3DModels</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model2</span><span class="p">,</span> <span class="n">Multiple3DModels</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">models</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">models</span> <span class="o">+</span> <span class="n">model2</span><span class="o">.</span><span class="n">models</span></div>
+            
+            
+    <span class="c1">######################################################</span>
+    <span class="c1">#            Methods (alphabetical order)            #</span>
+    <span class="c1">######################################################</span>
+    
+    <span class="k">def</span> <span class="nf">__checkArgs__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Check args and kwargs so that they have the same len.&#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)):</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        
+        <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
+            
+    
+<div class="viewcode-block" id="Multiple3DModels.gfield"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels.gfield">[docs]</a>    <span class="k">def</span> <span class="nf">gfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[[]],</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">[{}]):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the full gravitational field at radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        .. note:: </span>
+<span class="sd">            </span>
+<span class="sd">            Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.</span>
+<span class="sd">            Each element will be passed to the corresponding model. The order is the same as in models list variable.</span>
+<span class="sd">    </span>
+<span class="sd">        :param list[list] args: (**Optional**) arguments to pass to each model. Order is that of models list.</span>
+<span class="sd">        :param list[list] kwargs: (**Optional**) kwargs to pass to each model. Order is that of models list.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: sum of the gravitational fields for each model</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkArgs__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">gfield</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+        
+        
+        
+<div class="viewcode-block" id="Multiple3DModels.flux"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">[{}]):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the enclosed flux at radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        .. note:: </span>
+<span class="sd">            </span>
+<span class="sd">            Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.</span>
+<span class="sd">            Each element will be passed to the corresponding model. The order is the same as in models list variable.</span>
+<span class="sd">    </span>
+<span class="sd">        :param list[list] args: (**Optional**) arguments to pass to each model. Order is that of models list.</span>
+<span class="sd">        :param list[list] kwargs: (**Optional**) kwargs to pass to each model. Order is that of models list.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: sum of the flux for each model</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkArgs__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+        
+    
+<div class="viewcode-block" id="Multiple3DModels.mass"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels.mass">[docs]</a>    <span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">[{}]):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the enclosed mass at radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        .. note:: </span>
+<span class="sd">            </span>
+<span class="sd">            Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.</span>
+<span class="sd">            Each element will be passed to the corresponding model. The order is the same as in models list variable.</span>
+<span class="sd">    </span>
+<span class="sd">        :param list[list] args: (**Optional**) arguments to pass to each model. Order is that of models list.</span>
+<span class="sd">        :param list[list] kwargs: (**Optional**) kwargs to pass to each model. Order is that of models list.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: sum of the mass for each model</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkArgs__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="Multiple3DModels.mass_profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels.mass_profile">[docs]</a>    <span class="k">def</span> <span class="nf">mass_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">[{}]):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the mass profile at radius r.</span>
+
+<span class="sd">        .. note:: </span>
+<span class="sd">            </span>
+<span class="sd">            Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.</span>
+<span class="sd">            Each element will be passed to the corresponding model. The order is the same as in models list variable.</span>
+<span class="sd">    </span>
+<span class="sd">        :param list[list] args: (**Optional**) arguments to pass to each model. Order is that of models list.</span>
+<span class="sd">        :param list[list] kwargs: (**Optional**) kwargs to pass to each model. Order is that of models list.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: sum of the mass density profile for each model</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkArgs__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">mass_profile</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+    
+            
+<div class="viewcode-block" id="Multiple3DModels.profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">[{}]):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the light profile at radius r.</span>
+
+<span class="sd">        .. note:: </span>
+<span class="sd">            </span>
+<span class="sd">            Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.</span>
+<span class="sd">            Each element will be passed to the corresponding model. The order is the same as in models list variable.</span>
+<span class="sd">    </span>
+<span class="sd">        :param list[list] args: (**Optional**) arguments to pass to each model. Order is that of models list.</span>
+<span class="sd">        :param list[list] kwargs: (**Optional**) kwargs to pass to each model. Order is that of models list.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: sum of the light profile for each model</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkArgs__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">profile</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+    
+    
+    <span class="c1">################################################################</span>
+    <span class="c1">#                          Velocities                          #</span>
+    <span class="c1">################################################################            </span>
+    
+<div class="viewcode-block" id="Multiple3DModels.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Multiple3DModels.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">[{}]):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity profile for the 3D models against their own gravity through centripedal acceleration.</span>
+
+<span class="sd">        .. note:: </span>
+<span class="sd">            </span>
+<span class="sd">            Because models can require different arguments (for instance 3D radial distance r for one and 2D R in disk plane for the other), these are separated in lists.</span>
+<span class="sd">            Each element will be passed to the corresponding model. The order is the same as in models list variable.</span>
+<span class="sd">    </span>
+<span class="sd">        :param list[list] args: (**Optional**) arguments to pass to each model. Order is that of models list.</span>
+<span class="sd">        :param list[list] kwargs: (**Optional**) kwargs to pass to each model. Order is that of models list.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: sum of the velocity profile for each model</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkArgs__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span></div>
+    
+    
+    <span class="c1">##############################</span>
+    <span class="c1">#         Properties         #</span>
+    <span class="c1">##############################</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Ftot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Total flux of the profiles.&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">Ftot</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Mtot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Total mass of the profiles.&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">Mtot</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Hernquist"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Hernquist">[docs]</a><span class="k">class</span> <span class="nc">Hernquist</span><span class="p">(</span><span class="n">MassModelBase</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    3D Hernquist model class.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="Hernquist.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Hernquist.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">unit_a</span><span class="o">=</span><span class="s1">&#39;kpc&#39;</span><span class="p">,</span> <span class="n">unit_F</span><span class="o">=</span><span class="s1">&#39;erg/(s.A)&#39;</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="s1">&#39;solMass.s.A.cm^2/(erg.kpc^2)&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param a: scale factor</span>
+<span class="sd">        :type a: int or float</span>
+<span class="sd">        :param F: amplitude parameter (total flux)</span>
+<span class="sd">        :type F: int or float</span>
+<span class="sd">        :param M_L: mass to light ratio</span>
+<span class="sd">        :type M_L: int or float</span>
+<span class="sd">               </span>
+<span class="sd">        :param str unit_a: unit of the scale parameter a</span>
+<span class="sd">        :param str unit_F: unit of the amplitude parameter M</span>
+<span class="sd">        :param str unit_M_L: unit used to convert from light to mass profiles</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if **a** or **F** are neither int, float, np.foat16, np.float32 or np.float64</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="n">unit_M_L</span><span class="p">)</span>
+        
+        <span class="c1"># If parameters are already passed as Astropy Quantities, just convert them</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a</span>  <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a</span>  <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">unit_a</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F</span>  <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_F</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">F</span>  <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">unit_F</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;One of the parameters is not an int, float, np.float16, np.float32 or np.float64.&#39;</span><span class="p">)</span>
+            
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">UnitConversionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnitConversionError</span><span class="p">(</span><span class="s1">&#39;The unit of Vmax (</span><span class="si">%s</span><span class="s1">) could not be converted to km/s. Please check carefully the units of F, a and M_L parameters. Cheers !&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span>
+        
+        <span class="c1">#: Offset parameter to make the conversion Re (Sersic) &lt;-&gt; a (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_a</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.454</span>
+        
+        <span class="c1">#: Slope parameter to make the conversion Re (Sersic) &lt;-&gt; a (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta_a</span>  <span class="o">=</span> <span class="mf">0.725</span>
+        
+        <span class="c1">#: Offset parameter to make the conversion Ie (Sersic) &lt;-&gt; F (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_F</span> <span class="o">=</span> <span class="mf">1.194</span>
+        
+        <span class="c1">#: Slope parameter to make the conversion Ie (Sersic) &lt;-&gt; F (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta_F</span>  <span class="o">=</span> <span class="mf">1.75</span></div>
+        
+        
+    <span class="c1">######################################################</span>
+    <span class="c1">#            Methods (alphabetical order)            #</span>
+    <span class="c1">######################################################    </span>
+    
+<div class="viewcode-block" id="Hernquist.flux"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Hernquist.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the enclosed flux at radius r.</span>
+
+<span class="sd">        :param r: radius where to compute the luminosity</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: flux enclosed in a sphere of radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span></div>
+    
+    
+<div class="viewcode-block" id="Hernquist.gfield"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Hernquist.gfield">[docs]</a>    <span class="k">def</span> <span class="nf">gfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the gravitational field of a single Hernquist profile at radius r.</span>
+
+<span class="sd">        :param r: radius where the gravitational field is computed</span>
+<span class="sd">        :type r: int or float</span>
+
+<span class="sd">        :returns: g(r)</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>   
+            <span class="k">return</span> <span class="o">-</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">flux</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">/</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span></div>
+        
+        
+<div class="viewcode-block" id="Hernquist.profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Hernquist.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the light density profile at radius r.</span>
+
+<span class="sd">        :param r: radius where to compute the profile</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: light profile at radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="Hernquist.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Hernquist.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity profile for a self-sustaining Hernquist 3D profile against its own gravity through centripedal acceleration.</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            V(r) = \sqrt{\frac{G M(&lt;r)}{r}},</span>
+<span class="sd">            </span>
+<span class="sd">        where :math:`G` is the gravitational constant and :math:`M(&lt;r)` is the enclosed mass.</span>
+
+<span class="sd">        :param r: radius where the velocity profile is computed</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: V(r) in units of G*M/L*F/sqrt(a)</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">value</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">*</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">+</span><span class="n">r</span><span class="p">)</span></div>
+    
+    
+    <span class="c1">################################</span>
+    <span class="c1">#          Properties          #</span>
+    <span class="c1">################################</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Ftot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Total flux of the profile.&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">todeVaucouleur</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Alias of :py:attr:`toSersic`.&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toSersic</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">toSersic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Create the best fit Sersic instance from this Hernquist instance.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: Best-fit Sersic instance (see Mercier et al., 2021)</span>
+<span class="sd">        :rtype: Sersic</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">Re</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_alpha_a</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta_a</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">unit</span>
+        <span class="n">Ie</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_alpha_F</span> <span class="o">*</span> <span class="n">Re</span><span class="o">.</span><span class="n">value</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta_F</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="o">.</span><span class="n">unit</span><span class="o">/</span><span class="p">(</span><span class="n">Re</span><span class="o">.</span><span class="n">unit</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">deVaucouleur</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">,</span> <span class="n">unit_Re</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">Re</span><span class="o">.</span><span class="n">unit</span><span class="p">),</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">Ie</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span></div>
+        
+        
+<div class="viewcode-block" id="NFW"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW">[docs]</a><span class="k">class</span> <span class="nc">NFW</span><span class="p">(</span><span class="n">MassModelBase</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Navarro Frenk and White profile.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="NFW.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit_Rs</span><span class="o">=</span><span class="s1">&#39;kpc&#39;</span><span class="p">,</span> <span class="n">unit_Vmax</span><span class="o">=</span><span class="s1">&#39;km/s&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            Two pairs of parameters can be passed:</span>
+<span class="sd">                </span>
+<span class="sd">                * **Rs** and **c** </span>
+<span class="sd">                * **Rs** and **Vmax**</span>
+
+<span class="sd">        :param Rs: scale parameter</span>
+<span class="sd">        :type Rs: int or float or astropy.units Quantity with distance unit</span>
+<span class="sd">        </span>
+<span class="sd">        :param c: (**Optional**)  concentration parameter. If None, **Vmax** must be given.</span>
+<span class="sd">        :type c: int or float</span>
+<span class="sd">        :param Vmax: (**Optional**) maximum circular velocity at 2.15*Rs. If None, **c** must be given. If not given as an astropy Quantity, provide the correct unit with **unit_Vmax**.</span>
+<span class="sd">        :type Vmax: int or float or astropy.units Quantity with velocity unit</span>
+<span class="sd">        :param str unit_Rs: (**Optional**) unit of **Rs**</span>
+<span class="sd">        :param str unit_Vmax: (**Optional**) unit of **Vmax**</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: if both **Vmax** and **c** are None or if both are not None</span>
+<span class="sd">        :raises TypeError: if **c** is not dimensionless</span>
+<span class="sd">        :raises astropy.units.core.UnitConversionError: if **Vmax** could not be broadcast to km/s unit</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_factor</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">3.15</span><span class="p">)</span><span class="o">/</span><span class="mf">2.15</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mf">3.15</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="n">Vmax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">Vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either Vmax or c must be None.&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Rs</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>       <span class="o">=</span> <span class="n">Rs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_Rs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span>       <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">Rs</span><span class="p">,</span> <span class="n">unit_Rs</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">Vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">unit</span> <span class="o">!=</span> <span class="n">u</span><span class="o">.</span><span class="n">dimensionless_unscaled</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;concentration parameter must have no unit.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">c</span>    <span class="o">=</span> <span class="n">c</span>
+                
+            <span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span>  <span class="o">=</span> <span class="mi">200</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)))</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">critical_density</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_factor</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">UnitConversionError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">UnitConversionError</span><span class="p">(</span><span class="s1">&#39;The unit of Vmax (</span><span class="si">%s</span><span class="s1">) could not be converted to km/s. Please check carefully the units of Rs. Cheers !&#39;</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">critical_density</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span>        <span class="o">=</span> <span class="n">c</span>
+            
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Vmax</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_Vmax</span><span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">Vmax</span><span class="p">,</span> <span class="n">unit_Vmax</span><span class="p">)</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span>  <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_factor</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">critical_density</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">UnitConversionError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">UnitConversionError</span><span class="p">(</span><span class="s1">&#39;delta_c parameter could not be computed as a dimensionless quantity.&#39;</span><span class="p">)</span>
+            
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="s1">&#39;solMass.s.A.cm^2/(erg.kpc^2)&#39;</span><span class="p">)</span></div>
+      
+        
+    <span class="c1">######################################################</span>
+    <span class="c1">#            Methods (alphabetical order)            #</span>
+    <span class="c1">######################################################</span>
+    
+<div class="viewcode-block" id="NFW.flux"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the enclosed flux at radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            The flux returned is 0 since this is a DM profile.</span>
+
+<span class="sd">        :param r: radius where to compute the luminosity</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: flux enclosed in a sphere of radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="n">r</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s.A)&#39;</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="NFW.gfield"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW.gfield">[docs]</a>    <span class="k">def</span> <span class="nf">gfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the gravitational field of a single NFW profile at radius r.</span>
+
+<span class="sd">        :param r: radius where the gravitational field is computed</span>
+<span class="sd">        :type r: int or float</span>
+
+<span class="sd">        :returns: g(r)</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :raises NotImplementedError: This method needs be implemented</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;gfield not implemented for a NFW profile&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+    
+    
+<div class="viewcode-block" id="NFW.mass"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW.mass">[docs]</a>    <span class="k">def</span> <span class="nf">mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+         <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the enclosed (integrated) mass at radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        :param r: radius where to compute the mass</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: mass enclosed in a sphere of radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity&#39;&#39;&#39;</span>
+        
+         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">)</span>
+         <span class="k">return</span> <span class="n">r</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">G</span></div>
+
+    
+<div class="viewcode-block" id="NFW.mass_profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW.mass_profile">[docs]</a>    <span class="k">def</span> <span class="nf">mass_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the **mass density** profile at radius r.</span>
+
+<span class="sd">        :param r: radius where to compute the profile</span>
+<span class="sd">        :type r: int or float</span>
+
+<span class="sd">        :returns: mass density profile at radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_factor</span> <span class="o">*</span> <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">r</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="NFW.profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the light density profile at radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            The light density profile returned is 0 since this is a DM profile.</span>
+
+<span class="sd">        :param r: radius where to compute the profile</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: light profile at radius r</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">0</span><span class="o">*</span><span class="n">r</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s.A.cm^2)&#39;</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="NFW.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.NFW.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity profile for a self-sustaining 3D profile against its own gravity through centripedal acceleration</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            V(r) = \sqrt{\frac{G M(&lt;r)}{r}},</span>
+<span class="sd">            </span>
+<span class="sd">        where :math:`G` is the gravitational constant and :math:`M(&lt;r)` is the enclosed mass.</span>
+
+<span class="sd">        :param r: radius where the velocity profile is computed</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: V(r)</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">value</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">.</span><span class="n">unit</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">r</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">)</span><span class="o">/</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_factor</span><span class="p">)</span></div>
+    
+    <span class="c1">################################</span>
+    <span class="c1">#          Properties          #</span>
+    <span class="c1">################################</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Ftot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Total flux (infinite).&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Mvir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Virial mass.&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="p">(</span><span class="mi">800</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">critical_density</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rvir</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+
+    <span class="nd">@property</span>    
+    <span class="k">def</span> <span class="nf">Rvir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Virial radius.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: if **c** is None</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Virial radius cannot be computed if the concentration parameter is not provided.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rs</span></div>
+        
+
+<span class="c1">#################################################################################</span>
+<span class="c1">#                                Sersic profiles                                #</span>
+<span class="c1">#################################################################################</span>
+
+<div class="viewcode-block" id="Sersic"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Sersic">[docs]</a><span class="k">class</span> <span class="nc">Sersic</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    2D Sersic profile class.</span>
+<span class="sd">    </span>
+<span class="sd">    .. warning::</span>
+<span class="sd">    </span>
+<span class="sd">        When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="Sersic.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Sersic.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit_Re</span><span class="o">=</span><span class="s1">&#39;kpc&#39;</span><span class="p">,</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="s1">&#39;erg/(cm^2.s.A)&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            You can either provide:</span>
+<span class="sd">                </span>
+<span class="sd">                * **n**, **Re** and **Ie**</span>
+<span class="sd">                * **n**, **Re**, **mag** and **offset**</span>
+<span class="sd">        </span>
+<span class="sd">        :param n: Sersic index</span>
+<span class="sd">        :type n: int or flat</span>
+<span class="sd">        :param Re: half-light radius</span>
+<span class="sd">        :type Re: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :param float Ie: (**Optional**) intensity at half-light radius</span>
+<span class="sd">        :param float mag: (**Optional**) galaxy total integrated magnitude used to compute Ie if not given</span>
+<span class="sd">        :param float offset: (**Optional**) magnitude offset in the magnitude system used</span>
+<span class="sd">        :param str unit_Ie: (**Optional**) unit for the surface brightness. If **Ie** already has a unit, it is converted to this unit.</span>
+<span class="sd">        :param str unit_Re: (**Optional**) unit for the scale radius **Re**. If **Re** already has a unit, it is converted to this unit.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if n or Re are neither int, float, np.float16, np.float32 or np.float64</span>
+<span class="sd">        :raises ValueError: if Ie and mag and offset are None, if n &lt;= 0, if Re &lt;= 0 or if Ie &lt;= 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;n is not an int, float, np.float16, np.float32 or np.float64.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Re is not an int, float, np.float16, np.float32 or np.float64.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">Ie</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">mag</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Ie is None but no magnitude and no offset is given.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">n</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;n must be positive valued. Cheers !&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">Re</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The effective radius Re must be positive valued. Cheers !&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">Ie</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">Ie</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The effective radius Re must be positive valued. Cheers !&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span>     <span class="o">=</span> <span class="mi">2</span>
+        
+        <span class="c1">#: Sersic index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span>        <span class="o">=</span> <span class="n">n</span>
+        
+        <span class="c1">#: Sersic :math:`b_n` factor defined as :math:`2\gamma(2n, b_n) = \Gamma(2n)`</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bn</span>       <span class="o">=</span> <span class="n">compute_bn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        
+        <span class="c1"># If the parameters already are Astropy quantities, we just convert them to the required unit</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="c1">#: Effective (half-light) radius</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Re</span>   <span class="o">=</span> <span class="n">Re</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_Re</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Re</span>   <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit_Re</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Ie</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="c1">#: Surface brightness at Re</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Ie</span>   <span class="o">=</span> <span class="n">Ie</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_Ie</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Ie</span>   <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ie</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit_Ie</span><span class="p">)</span>
+            
+        <span class="c1">#: Central intensity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I0</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">)</span></div>
+        
+
+    <span class="c1">######################################################</span>
+    <span class="c1">#            Methods (alphabetical order)            #</span>
+    <span class="c1">######################################################</span>
+    
+<div class="viewcode-block" id="Sersic._checkR"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Sersic._checkR">[docs]</a>    <span class="k">def</span> <span class="nf">_checkR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">against</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Check whether radial distance is positive and has a unit.</span>
+<span class="sd">        </span>
+<span class="sd">        :param r: radial distance</span>
+<span class="sd">        :type r: int or float or astropy.units Quantity</span>
+<span class="sd">        :param against: parameter to retrieve the unit from</span>
+<span class="sd">        :type against: astropy.unit Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: the radial distance</span>
+<span class="sd">        :rtype: astropy.units Quantity</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: if **r** &lt; 0</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Radial distance is &lt; 0. Please provide a positive valued distance.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">*=</span> <span class="n">against</span><span class="o">.</span><span class="n">unit</span>
+
+        <span class="k">return</span> <span class="n">r</span></div>
+        
+<div class="viewcode-block" id="Sersic.profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Sersic.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Sersic surface brightness profile at radius r.</span>
+
+<span class="sd">        :param r: radius where the profile is computed</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: Sersic profile computed at the radius r</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sersic_profile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="Sersic.flux"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.Sersic.flux">[docs]</a>    <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Flux at radius r (encompassed within a disk since this is a 2D profile).</span>
+
+<span class="sd">        :param r: radius where the profile is computed</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: flux computed within a disk of radius r</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">return</span> <span class="n">n2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">)</span><span class="o">*</span><span class="n">realGammainc</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="o">**</span><span class="n">n2</span></div>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Ftot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Total flux of the profile.&#39;&#39;&#39;</span>
+        
+        <span class="n">n2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="k">return</span> <span class="n">n2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">)</span><span class="o">*</span><span class="n">gamma</span><span class="p">(</span><span class="n">n2</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="o">**</span><span class="n">n2</span></div>
+    
+    
+<div class="viewcode-block" id="deVaucouleur"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.deVaucouleur">[docs]</a><span class="k">class</span> <span class="nc">deVaucouleur</span><span class="p">(</span><span class="n">Sersic</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    2D de Vaucouleur profile.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="deVaucouleur.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.deVaucouleur.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit_Re</span><span class="o">=</span><span class="s1">&#39;kpc&#39;</span><span class="p">,</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="s1">&#39;erg/(cm^2.s.A)&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            You can either provide:</span>
+<span class="sd">                </span>
+<span class="sd">                * **Re** and **Ie**</span>
+<span class="sd">                * **Re**, **mag** and **offset**</span>
+<span class="sd">        </span>
+<span class="sd">        :param Re: half-light radius</span>
+<span class="sd">        :type Re: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :param float Ie: (**Optional**) intensity at half-light radius</span>
+<span class="sd">        :param float mag: (**Optional**) galaxy total integrated magnitude used to compute Ie if not given</span>
+<span class="sd">        :param float offset: (**Optional**) magnitude offset in the magnitude system used</span>
+<span class="sd">        :param str unit_Ie: (**Optional**) unit for the surface brightness. If **Ie** already has a unit, it is converted to this unit.</span>
+<span class="sd">        :param str unit_Re: (**Optional**) unit for the scale radius **Re**. If **Re** already has a unit, it is converted to this unit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">unit_Re</span><span class="o">=</span><span class="n">unit_Re</span><span class="p">,</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="n">unit_Ie</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="c1">#: Offset parameter to make the conversion Re (Sersic) &lt;-&gt; a (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_a</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.454</span>
+        
+        <span class="c1">#: Slope parameter to make the conversion Re (Sersic) &lt;-&gt; a (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta_a</span>  <span class="o">=</span> <span class="mf">0.725</span>
+        
+        <span class="c1">#: Offset parameter to make the conversion Ie (Sersic) &lt;-&gt; F (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_F</span> <span class="o">=</span> <span class="mf">1.194</span>
+        
+        <span class="c1">#: Slope parameter to make the conversion Ie (Sersic) &lt;-&gt; F (Hernquist) (see Mercier et al., 2021)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta_F</span>  <span class="o">=</span> <span class="mf">1.75</span></div>
+        
+        
+<div class="viewcode-block" id="deVaucouleur.toHernquist"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.deVaucouleur.toHernquist">[docs]</a>    <span class="k">def</span> <span class="nf">toHernquist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="s1">&#39;solMass.s.A.cm^2/(erg.kpc^2)&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Create the best-fit Hernquist instance from this de Vaucouleur instance (see Mercier et al., 2021).</span>
+<span class="sd">    </span>
+<span class="sd">        :param M_L: mass to light ratio</span>
+<span class="sd">        :type M_L: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :param str unit_M_L: unit of the mass to light ratio. If M_L already has a unit, it is converted to this unit.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: best-fit Hernquist instance (see Mercier et al., 2021)</span>
+<span class="sd">        :rtype: Hernquist</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if M_L is neither an int, float, float16, float32, float64 or astropy.units Quantity</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M_L</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">quantity</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Mass to light ratio must either be an int, float, np.float16, np.float32 or np.float64.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">M_L</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="n">M_L</span> <span class="o">=</span> <span class="n">M_L</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">unit_M_L</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">M_L</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">M_L</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit_M_L</span><span class="p">)</span>
+    
+        <span class="n">a</span>       <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_alpha_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">.</span><span class="n">value</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">.</span><span class="n">unit</span>
+        <span class="n">F</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_alpha_F</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">.</span><span class="n">value</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta_F</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="o">.</span><span class="n">unit</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">.</span><span class="n">unit</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">Hernquist</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">unit_a</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">unit</span><span class="p">),</span> <span class="n">unit_F</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">unit</span><span class="p">),</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">M_L</span><span class="o">.</span><span class="n">unit</span><span class="p">))</span></div></div>
+    
+
+<div class="viewcode-block" id="ExponentialDisk"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.ExponentialDisk">[docs]</a><span class="k">class</span> <span class="nc">ExponentialDisk</span><span class="p">(</span><span class="n">Sersic</span><span class="p">,</span> <span class="n">MassModelBase</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    2D/3D exponential disk profile class (razor-thin).</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        Some functions such as the light profile correspond to the 2D Sersic profiles, while others such as the velocity assume a 3D **razor-thin disk**.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="ExponentialDisk.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.ExponentialDisk.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit_Re</span><span class="o">=</span><span class="s1">&#39;kpc&#39;</span><span class="p">,</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="s1">&#39;erg/(cm^2.s.A)&#39;</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="s1">&#39;solMass.s.A.cm^2/(erg.kpc^2)&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            You can either provide:</span>
+<span class="sd">                - **M_L**, **Re** and **Ie**</span>
+<span class="sd">                - **M_L**, **Re**, **mag** and **offset**</span>
+<span class="sd">        </span>
+<span class="sd">        :param M_L: mass to light ratio</span>
+<span class="sd">        :type M_L: int or float</span>
+<span class="sd">        :param Re: half-light radius</span>
+<span class="sd">        :type Re: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :param float Ie: (**Optional**) intensity at half-light radius</span>
+<span class="sd">        :param float mag: (**Optional**) galaxy total integrated magnitude used to compute Ie if not given</span>
+<span class="sd">        :param float offset: (**Optional**) magnitude offset in the magnitude system used</span>
+<span class="sd">        :param str unit_Ie: (**Optional**) unit for the surface brightness. If **Ie** already has a unit, it is converted to this unit.</span>
+<span class="sd">        :param str unit_M_L: (**Optional**) unit of the mass to light ratio</span>
+<span class="sd">        :param str unit_Re: (**Optional**) unit for the scale radius **Re**. If **Re** already has a unit, it is converted to this unit.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises astropy.units.core.UnitConversionError: if **Vmax** could not be broadcast to km/s unit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">MassModelBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="p">)</span>
+        <span class="n">Sersic</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>       <span class="bp">self</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">unit_Re</span><span class="o">=</span><span class="n">unit_Re</span><span class="p">,</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="n">unit_Ie</span><span class="p">)</span>
+        
+        <span class="c1">#: Disk scale length :math:`R_{\rm{d}} = R_{\rm{e}} / b_n`</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rd</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span>
+        
+        <span class="c1">#: Position of maximum velocity :math:`2.15 \times R_{\rm{d}}`</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rmax</span>     <span class="o">=</span> <span class="mf">2.15</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#: Maximum velocity :math:`0.8798243 \times \sqrt{\pi G R_{\rm{d}} \Sigma_0 \Upsilon }` with :math:`\Sigma_0` the central surface brightness and :math:`\Upsilon` the mass to light ratio</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span> <span class="o">=</span> <span class="mf">0.8798243</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">I0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">UnitConversionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UnitConversionError</span><span class="p">(</span><span class="s1">&#39;The unit of Vmax (</span><span class="si">%s</span><span class="s1">) could not be converted to km/s. Please check carefully the units of Ie, Re and M_L parameters. Cheers !&#39;</span> <span class="o">%</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">))</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span></div>
+        
+        
+    <span class="c1">######################################################</span>
+    <span class="c1">#            Methods (alphabetical order)            #</span>
+    <span class="c1">######################################################</span>
+    
+<div class="viewcode-block" id="ExponentialDisk.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.ExponentialDisk.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity profile for a self-sustaining 3D inifinitely thin disk against its own gravity through centripedal acceleration</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            V(r) = V_{\rm{max}} \frac{r}{0.8798243 \times R_{\rm{d}}} \sqrt{I_0(y) K_0(y) - I_1 (y) K_1 (y)}</span>
+<span class="sd">            </span>
+<span class="sd">        where :math:`I_i, K_i` are the modified Bessel functions of the first and second kind, respectively, of order i, and  :math:`y = r/(2 R_{\rm{d}})`.</span>
+
+<span class="sd">        :param r: radius where the velocit profile is computed</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :returns: velocity profile at a radius **r**</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">*</span><span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="mf">0.8798243</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">i0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">i1</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k1</span><span class="p">(</span><span class="n">y</span><span class="p">))</span></div></div>
+        
+
+<div class="viewcode-block" id="DoubleExponentialDisk"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk">[docs]</a><span class="k">class</span> <span class="nc">DoubleExponentialDisk</span><span class="p">(</span><span class="n">Sersic</span><span class="p">,</span> <span class="n">MassModelBase</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Double exponential disk profile class implementing Bovy rotation curve.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="DoubleExponentialDisk.__init__"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">hz</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                 <span class="n">unit_Re</span><span class="o">=</span><span class="s1">&#39;kpc&#39;</span><span class="p">,</span> <span class="n">unit_hz</span><span class="o">=</span><span class="s1">&#39;kpc&#39;</span><span class="p">,</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="s1">&#39;erg/(cm^2.s.A)&#39;</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="o">=</span><span class="s1">&#39;solMass.s.A.cm^2/(erg.kpc^2)&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            You can either provide:</span>
+<span class="sd">                </span>
+<span class="sd">                * **M_L**, **hz**, **Re** and **Ie**</span>
+<span class="sd">                * **M_L**, **hz**, **Re**, **mag** and **offset**</span>
+<span class="sd">                </span>
+<span class="sd">            You can also provide **q0** instead of **hz** (which must be None in this case).</span>
+<span class="sd">            </span>
+<span class="sd">        :param hz: vertical scale height</span>
+<span class="sd">        :type hz: int or float</span>
+<span class="sd">        :param M_L: mass to light ratio</span>
+<span class="sd">        :type M_L: int or float</span>
+<span class="sd">        :param Re: half-light radius in the plane of symmetry</span>
+<span class="sd">        :type Re: int or float</span>
+<span class="sd">                </span>
+<span class="sd">        :param float Ie: (**Optional**) intensity at half-light radius</span>
+<span class="sd">        :param float mag: (**Optional**) galaxy total integrated magnitude used to compute **Ie** if not given</span>
+<span class="sd">        :param float offset: (**Optional**) magnitude offset in the magnitude system used</span>
+<span class="sd">        :param float q0: (**Optional**) axis ratio equal to hz/Rd with Rd the disk scale length. If this value is different from None, it overrides **hz**.</span>
+<span class="sd">        :param str unit_Ie: (**Optional**) unit for the surface brightness</span>
+<span class="sd">        :param str unit_M_L: (**Optional**) unit of the mass to light ratio</span>
+<span class="sd">        :param str unit_Re: (**Optional**) unit for the scale radius **Re**</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">MassModelBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">M_L</span><span class="p">,</span> <span class="n">unit_M_L</span><span class="p">)</span>
+        <span class="n">Sersic</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>       <span class="bp">self</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">unit_Re</span><span class="o">=</span><span class="n">unit_Re</span><span class="p">,</span> <span class="n">unit_Ie</span><span class="o">=</span><span class="n">unit_Ie</span><span class="p">)</span>
+        
+        <span class="c1">#: Disk scale length :math:`R_{\rm{d}} = R_{\rm{e}} / b_n`</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rd</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span>
+        
+        <span class="k">if</span> <span class="n">q0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">q0</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">q0</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1">#: Axis ratio</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">q0</span> <span class="o">=</span> <span class="n">q0</span>
+                
+                <span class="c1">#: Scale height</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;q0 is equal to </span><span class="si">%s</span><span class="s1">, but it must be between 0 and 1.&#39;</span> <span class="o">%</span><span class="n">q0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hz</span>     <span class="o">=</span> <span class="n">hz</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q0</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hz</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span></div>
+        
+        
+    <span class="c1">######################################################</span>
+    <span class="c1">#            Methods (alphabetical order)            #</span>
+    <span class="c1">######################################################</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_Rmax_razor_thin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Position of the maximum of the razor-thin disk curve&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="mf">2.2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span>
+    
+<div class="viewcode-block" id="DoubleExponentialDisk._velocity_correction"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk._velocity_correction">[docs]</a>    <span class="k">def</span> <span class="nf">_velocity_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity correction necessary for the rotation curve</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">        </span>
+<span class="sd">            V_{\rm{corr}} (r) = V_{\rm{c, max}} \times \sqrt{\frac{r~e^{1-r/R_{\rm{d}}}}{R_{\rm{d}}}},</span>
+<span class="sd">        </span>
+<span class="sd">        where :math:`R_{\rm{d}}` is the disk scale length, and :math:`V_{\rm{c, max}}` is the maximum of the velocity correction.</span>
+
+<span class="sd">        :param R: radius where the velocity correction is computed</span>
+<span class="sd">        :type R: float or ndarray[float]</span>
+<span class="sd">        :returns: velocity correction</span>
+<span class="sd">        :rtype: float or ndarray[float]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Vmax_correction</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">R</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="DoubleExponentialDisk._velocity_razor_thin"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk._velocity_razor_thin">[docs]</a>    <span class="k">def</span> <span class="nf">_velocity_razor_thin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity if the disk was razor thin.</span>
+<span class="sd">                </span>
+<span class="sd">        :param R: radius where the velocity is computed</span>
+<span class="sd">        :type R: float or ndarray[float]</span>
+<span class="sd">        :returns: velocity if the disk was razor thin</span>
+<span class="sd">        :rtype: float or ndarray[float]</span>
+<span class="sd">        </span>
+<span class="sd">        .. seealso:: :py:meth:`ExponentialDisk.velocity`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">R</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        <span class="n">disk_RT</span> <span class="o">=</span> <span class="n">ExponentialDisk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">disk_RT</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">R</span><span class="p">)</span></div>
+        
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_Vmax_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Maximum of the velocity correction</span>
+<span class="sd">        </span>
+<span class="sd">        .. math ::</span>
+<span class="sd">            </span>
+<span class="sd">            V_{\rm{c, max}} = \sqrt{2\pi G h_z \Upsilon \Sigma_0 / \exp\lbrace 1 \rbrace},</span>
+<span class="sd">            </span>
+<span class="sd">        with :math:`\Sigma_0` the central surface brightness if the disk was seen face-on, and :math:`\Upsilon` the mass to light ratio.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">G</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hz</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">I0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_Vmax_razor_thin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Maximum velocity if the disk was razor thin.</span>
+<span class="sd">        </span>
+<span class="sd">        .. seealso:: :py:meth:`ExponentialDisk.velocity`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">disk_RT</span> <span class="o">=</span> <span class="n">ExponentialDisk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">M_L</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">disk_RT</span><span class="o">.</span><span class="n">Vmax</span>
+        
+        
+<div class="viewcode-block" id="DoubleExponentialDisk.profile"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.profile">[docs]</a>    <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Light density profile at radius **R** and height **z**</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            \rho(R, z) = \frac{\Sigma_0}{2 h_z} e^{-R/R_{\rm{e}} - |z|/h_z}</span>
+<span class="sd">    </span>
+<span class="sd">        with :math:`\Sigma_0 = I_{\rm{e}} e^{b_1}` the central surface density in the plane of the disk, :math:`R_{\rm{e}}` the disk effective radius in the plane of symmetry and :math:`h_z` the vertical scale height.</span>
+
+<span class="sd">        :param R: radial position in the plane of symmetry</span>
+<span class="sd">        :type R: int or float</span>
+<span class="sd">        :param z: vertical position</span>
+<span class="sd">        :type z: int or float</span>
+<span class="sd">        :returns: double exponential profile computed at position (**R**, **z**)</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hz</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sersic_profile</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">hz</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hz</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="DoubleExponentialDisk.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Velocity profile for a self-sustaining 3D double exponential disk against its own gravity through centripedal acceleration</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">        </span>
+<span class="sd">            V(r) = \sqrt{V_{\rm{RT}}^2 (r) - V_{\rm{corr}}^2 (r)},</span>
+<span class="sd">        </span>
+<span class="sd">        where :math:`V_{\rm{RT}}` is the rotation curve of a similar razor-thin disk, and :math:`V_{\rm{corr}}` is the correction to apply to take into account the finite thickness of the disk.</span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            This formula is a `Bovy rotation curve &lt;http://astro.utoronto.ca/~bovy/AST1420/notes-2017/notebooks/05.-Flattened-Mass-Distributions.html#Potentials-for-disks-with-finite-thickness&gt;`_, i.e. an approximation for a thin (but non-zero thickness) disk.</span>
+<span class="sd">                </span>
+<span class="sd">        :param R: radius where the velocity is computed</span>
+<span class="sd">        :type R: float or ndarray[float]</span>
+<span class="sd">        :returns: velocity if the disk was razor thin</span>
+<span class="sd">        :rtype: float or ndarray[float]</span>
+<span class="sd">        :raises TypeError: if **R** is neither int, float, np.float16, np.float32, np.foat64 or ndarray</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+    
+        <span class="n">v_RT2</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_razor_thin</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">v_corr2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_correction</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">v_RT2</span> <span class="o">&lt;</span> <span class="n">v_corr2</span><span class="p">:</span>
+                <span class="n">vr</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_RT2</span> <span class="o">-</span> <span class="n">v_corr2</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">vr</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+            <span class="n">mask</span>     <span class="o">=</span> <span class="n">v_corr2</span> <span class="o">&lt;</span> <span class="n">v_RT2</span>
+            <span class="n">vr</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_RT2</span> <span class="o">-</span> <span class="n">v_corr2</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;R array has type </span><span class="si">%s</span><span class="s1"> but only float and numpy array are expected.&#39;</span> <span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">vr</span></div></div>
+            
+    
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">wilfried library</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galaxy/index.html">Galaxy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galfit/index.html">Galfit module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Wilfried Mercier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

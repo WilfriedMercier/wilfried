@@ -1,0 +1,1173 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.morphology &#8212; wilfried library 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for galaxy.morphology</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">Computations relative to galaxies morphology.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>                              <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">from</span>   <span class="nn">scipy.special</span>                      <span class="kn">import</span> <span class="n">gammainc</span>
+<span class="kn">from</span>   <span class="nn">scipy.optimize</span>                     <span class="kn">import</span> <span class="n">root</span>
+<span class="kn">from</span>   <span class="nn">scipy.integrate</span>                    <span class="kn">import</span> <span class="n">quad</span>
+<span class="kn">from</span>   <span class="nn">math</span>                               <span class="kn">import</span> <span class="n">factorial</span><span class="p">,</span> <span class="n">ceil</span>
+<span class="kn">from</span>   <span class="nn">.models</span>                            <span class="kn">import</span> <span class="n">sersic_profile</span><span class="p">,</span> <span class="n">bulgeDiskOnSky</span>
+<span class="kn">from</span>   <span class="nn">.misc</span>                              <span class="kn">import</span> <span class="n">check_bns</span><span class="p">,</span> <span class="n">compute_bn</span><span class="p">,</span> <span class="n">realGammainc</span><span class="p">,</span> <span class="n">checkAndComputeIe</span><span class="p">,</span> <span class="n">intensity_at_re</span><span class="p">,</span> <span class="n">fromStructuredArrayOrNot</span>
+<span class="kn">from</span>   <span class="nn">.symlinks.coloredMessages</span>          <span class="kn">import</span> <span class="n">errorMessage</span><span class="p">,</span> <span class="n">brightMessage</span>
+
+
+<span class="c1">#################################################################################################################</span>
+<span class="c1">#                                           Sersic luminosities                                                 #</span>
+<span class="c1">#################################################################################################################</span>
+
+<div class="viewcode-block" id="analyticFluxFrom0"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.analyticFluxFrom0">[docs]</a><span class="k">def</span> <span class="nf">analyticFluxFrom0</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Analytically compute the integrated flux from 0 up to radius r for a Sersic profile of index n.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">    </span>
+<span class="sd">        If no Ie is given, values for mag and offset must be given instead. </span>
+
+<span class="sd">    :param n: Sersic index of the profile</span>
+<span class="sd">    :type n: int or float</span>
+<span class="sd">    :param r: radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</span>
+<span class="sd">    :type r: float or list[float]</span>
+<span class="sd">    :param float re: half-light radius</span>
+<span class="sd">        </span>
+<span class="sd">    :param float bn: (**Optional**) bn factor appearing in the Sersic profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(2n, b_n) = \Gamma(2n).</span>
+<span class="sd">            </span>
+<span class="sd">    :param float Ie: (**Optional**) intensity at half-light radius</span>
+<span class="sd">    :param float mag: (**Optional**) total magnitude used to compute Ie if not given</span>
+<span class="sd">    :param float offset: (**Optional**) magnitude offset in the magnitude system used</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: analytical flux from 0 to r (value (value) and its error (err) as the dictionary {&#39;value&#39;:value, &#39;error&#39;:err})</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: if **r** is neither int, nor float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Compute bn and Ie</span>
+    <span class="n">bn</span><span class="p">,</span>       <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="n">n</span><span class="p">],</span> <span class="p">[</span><span class="n">bn</span><span class="p">])</span>
+    <span class="n">Ie</span>        <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ie</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">bn</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Ie</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either Ie must be given or mag and offset.&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">Ie</span><span class="o">*</span><span class="n">re</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">bn</span><span class="p">)</span> <span class="o">*</span> <span class="n">realGammainc</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="n">bn</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">re</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">n</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">bn</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value</span>     <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">error</span>     <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">rval</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">Ie</span><span class="o">*</span><span class="n">re</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">bn</span><span class="p">)</span> <span class="o">*</span> <span class="n">realGammainc</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="n">bn</span><span class="o">*</span><span class="p">(</span><span class="n">rval</span><span class="o">/</span><span class="n">re</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">n</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">bn</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)))</span>
+        
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">}</span></div>
+    
+
+<div class="viewcode-block" id="BoverD"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.BoverD">[docs]</a><span class="k">def</span> <span class="nf">BoverD</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ied</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ieb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noError</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the ratio of the bulge flux (B) over the disk one (D) for a bulge-disk galaxy up to radius r.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">    </span>
+<span class="sd">        If no Ie is given, values for mag and offset must be given instead. </span>
+<span class="sd">    </span>
+<span class="sd">    :param r: radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</span>
+<span class="sd">    :type r: float or list[float]</span>
+<span class="sd">    :param float rb: half-light radius of the bulge</span>
+<span class="sd">    :param float rd: half-light radius of the disk</span>
+<span class="sd">                </span>
+<span class="sd">    :param float b1: (**Optional**) b1 factor appearing in the disk profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(2, b_1) = 1.</span>
+<span class="sd">            </span>
+<span class="sd">    :param float b4: (**Optional**) b4 factor appearing in the disk profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(8, b_4) = 7!.</span>
+
+<span class="sd">    :param float Ied: (**Optional**) intensity of the disk at half-light radius</span>
+<span class="sd">    :param float Ied: (**Optional**) intensity of the bulge at half-light radius</span>
+<span class="sd">    :param float magD: (**Optional**) total magnitude of the disk used to compute Ied if not given</span>
+<span class="sd">    :param float magB: (**Optional**) total magnitude of the bulge used to compute Ieb if not given</span>
+<span class="sd">    :param bool noError: (**Optional**) whether to not raise an error or not if one of the Ie values could not be computed correctly. If set to True, np.nan is returned.</span>
+<span class="sd">    :param float offsetB: (**Optional**) magnitude offset in the magnitude system used for the bulge component</span>
+<span class="sd">    :param float offsetD: (**Optional**) magnitude offset in the magnitude system used for the disk component</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: B/D ratio at all the given positions or np.nan if one of the intensities could not be computed correctly</span>
+<span class="sd">    :rtype: float or list[float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#compute b1 and b4 if not given</span>
+    <span class="n">b1</span><span class="p">,</span> <span class="n">b4</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">])</span>
+    <span class="n">Ied</span>    <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ied</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">offsetD</span><span class="p">,</span> <span class="n">noError</span><span class="o">=</span><span class="n">noError</span><span class="p">)</span>
+    <span class="n">Ieb</span>    <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ieb</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">offsetB</span><span class="p">,</span> <span class="n">noError</span><span class="o">=</span><span class="n">noError</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ieb</span><span class="p">,</span> <span class="n">Ied</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+    <span class="k">return</span> <span class="n">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">b4</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ieb</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">b1</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ied</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>    </div>
+
+
+<div class="viewcode-block" id="BoverT"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.BoverT">[docs]</a><span class="k">def</span> <span class="nf">BoverT</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ied</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ieb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noError</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Computes the ratio of the bulge flux (B) over the total one (T=D+B) for a bulge-disk galaxy up to radius r.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">    </span>
+<span class="sd">        If no Ie is given, values for mag and offset must be given instead. </span>
+<span class="sd">    </span>
+<span class="sd">    :param r: radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</span>
+<span class="sd">    :type r: float or list[float]</span>
+<span class="sd">    :param float rb: half-light radius of the bulge</span>
+<span class="sd">    :param float rd: half-light radius of the disk</span>
+<span class="sd">                </span>
+<span class="sd">    :param float b1: (**Optional**) b1 factor appearing in the disk profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(2, b_1) = 1.</span>
+<span class="sd">            </span>
+<span class="sd">    :param float b4: (**Optional**) b4 factor appearing in the disk profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(8, b_4) = 7!.</span>
+
+<span class="sd">    :param float Ied: (**Optional**) intensity of the disk at half-light radius</span>
+<span class="sd">    :param float Ied: (**Optional**) intensity of the bulge at half-light radius</span>
+<span class="sd">    :param float magD: (**Optional**) total magnitude of the disk used to compute Ied if not given</span>
+<span class="sd">    :param float magB: (**Optional**) total magnitude of the bulge used to compute Ieb if not given</span>
+<span class="sd">    :param bool noError: (**Optional**) whether to not raise an error or not if one of the Ie values could not be computed correctly. If set to True, np.nan is returned.</span>
+<span class="sd">    :param float offsetB: (**Optional**) magnitude offset in the magnitude system used for the bulge component</span>
+<span class="sd">    :param float offsetD: (**Optional**) magnitude offset in the magnitude system used for the disk component</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: B/T ratio at all the given positions or np.nan if one of the intensities could not be computed correctly</span>
+<span class="sd">    :rtype: float or list[float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#compute b1 and b4 if not given</span>
+    <span class="n">b1</span><span class="p">,</span> <span class="n">b4</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">])</span>
+    <span class="n">Ied</span>    <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ied</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">offsetD</span><span class="p">,</span> <span class="n">noError</span><span class="o">=</span><span class="n">noError</span><span class="p">)</span>
+    <span class="n">Ieb</span>    <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ieb</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">offsetB</span><span class="p">,</span> <span class="n">noError</span><span class="o">=</span><span class="n">noError</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ied</span><span class="p">,</span> <span class="n">Ieb</span><span class="p">]:</span>    
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+    <span class="k">return</span> <span class="n">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">b4</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ieb</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">fluxSersics</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">],</span> <span class="n">listbn</span><span class="o">=</span><span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">],</span> <span class="n">listIe</span><span class="o">=</span><span class="p">[</span><span class="n">Ied</span><span class="p">,</span> <span class="n">Ieb</span><span class="p">])[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>    </div>
+
+
+<div class="viewcode-block" id="DoverT"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.DoverT">[docs]</a><span class="k">def</span> <span class="nf">DoverT</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ied</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ieb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetB</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Computes the ratio of the disk flux (D) over the total one (T=D+B) for a bulge-disk galaxy up to radius r.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">    </span>
+<span class="sd">        If no Ie is given, values for mag and offset must be given instead. </span>
+<span class="sd">    </span>
+<span class="sd">    :param r: radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</span>
+<span class="sd">    :type r: float or list[float]</span>
+<span class="sd">    :param float rb: half-light radius of the bulge</span>
+<span class="sd">    :param float rd: half-light radius of the disk</span>
+<span class="sd">                </span>
+<span class="sd">    :param float b1: (**Optional**) b1 factor appearing in the disk profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(2, b_1) = 1.</span>
+<span class="sd">            </span>
+<span class="sd">    :param float b4: (**Optional**) b4 factor appearing in the disk profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(8, b_4) = 7!.</span>
+
+<span class="sd">    :param float Ied: (**Optional**) intensity of the disk at half-light radius</span>
+<span class="sd">    :param float Ied: (**Optional**) intensity of the bulge at half-light radius</span>
+<span class="sd">    :param float magD: (**Optional**) total magnitude of the disk used to compute Ied if not given</span>
+<span class="sd">    :param float magB: (**Optional**) total magnitude of the bulge used to compute Ieb if not given</span>
+<span class="sd">    :param bool noError: (**Optional**) whether to not raise an error or not if one of the Ie values could not be computed correctly. If set to True, np.nan is returned.</span>
+<span class="sd">    :param float offsetB: (**Optional**) magnitude offset in the magnitude system used for the bulge component</span>
+<span class="sd">    :param float offsetD: (**Optional**) magnitude offset in the magnitude system used for the disk component</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: D/T ratio at all the given positions or np.nan if one of the intensities could not be computed correctly</span>
+<span class="sd">    :rtype: float or list[float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#compute b1 and b4 if not given</span>
+    <span class="n">b1</span><span class="p">,</span> <span class="n">b4</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">])</span>
+    <span class="n">Ied</span>    <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ied</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">offsetD</span><span class="p">)</span>
+    <span class="n">Ieb</span>    <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ieb</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">offsetB</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ied</span><span class="p">,</span> <span class="n">Ieb</span><span class="p">]:</span>    
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+    <span class="k">return</span> <span class="n">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">b4</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ieb</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">fluxSersics</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">],</span> <span class="n">listbn</span><span class="o">=</span><span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">],</span> <span class="n">listIe</span><span class="o">=</span><span class="p">[</span><span class="n">Ied</span><span class="p">,</span> <span class="n">Ieb</span><span class="p">])[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>   </div>
+
+    
+<div class="viewcode-block" id="fluxSersic"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.fluxSersic">[docs]</a><span class="k">def</span> <span class="nf">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the flux of a single Sersic profile of index n up to radius r using raw integration.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">    </span>
+<span class="sd">        If no Ie is given, values for mag and offset must be given instead. </span>
+<span class="sd">    </span>
+
+<span class="sd">    :param n: Sersic index of the profile</span>
+<span class="sd">    :type n: int or float</span>
+<span class="sd">    :param r: radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</span>
+<span class="sd">    :type r: float or list[float]</span>
+<span class="sd">    :param float re: half-light radius</span>
+<span class="sd">        </span>
+<span class="sd">    :param float bn: (**Optional**) bn factor appearing in the Sersic profile defined as </span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            2 \gamma(2n, b_n) = \Gamma(2n).</span>
+<span class="sd">            </span>
+<span class="sd">    :param float Ie: (**Optional**) intensity at half-light radius</span>
+<span class="sd">    :param float mag: (**Optional**) total magnitude used to compute Ie if not given</span>
+<span class="sd">    :param float offset: (**Optional**) magnitude offset in the magnitude system used</span>
+<span class="sd">    :param float start: (**Optional**) starting point of the integration</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: integrated flux up to radius r (value) and an estimation of its absolute error (err) as the dictionary {&#39;value&#39;:value, &#39;error&#39;:err}</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># The integral we need to compute to have the flux</span>
+    <span class="k">def</span> <span class="nf">the_integral</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">sersic_profile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">bn</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span><span class="o">*</span><span class="n">r</span>
+    
+    <span class="n">bn</span><span class="p">,</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="n">n</span><span class="p">],</span> <span class="p">[</span><span class="n">bn</span><span class="p">])</span>
+    <span class="n">Ie</span> <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ie</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">bn</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Ie</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+        
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">integral</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">the_integral</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">Ie</span><span class="p">,</span> <span class="n">bn</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">integral</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">}</span>
+    
+    <span class="n">integral</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">error</span>    <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)):</span>
+        <span class="n">inte</span><span class="p">,</span>  <span class="n">err</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">the_integral</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="n">pos</span><span class="p">],</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">Ie</span><span class="p">,</span> <span class="n">bn</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">))</span>
+        <span class="n">integral</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inte</span><span class="p">)</span>
+        <span class="n">error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">integral</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="fluxSersics"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.fluxSersics">[docs]</a><span class="k">def</span> <span class="nf">fluxSersics</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listbn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listIe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listMag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listOffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">analytical</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the flux of a sum of Sersic profiles up to radius r (starting from 0).</span>
+
+<span class="sd">    :param listn: list of Sersic index for each profile</span>
+<span class="sd">    :type listn: list[int] or list[float]</span>
+<span class="sd">    :param r: position at which the profiles are integrated. If a list if given, the position will be computed at each radius in the list.</span>
+<span class="sd">    :type r: float or list[float]</span>
+<span class="sd">    :param list[float] listRe: list of half-light radii for each profile</span>
+<span class="sd">    </span>
+<span class="sd">    :param bool analytical: (**Optional**) whether to use the analytical solution or integrate the profile</span>
+<span class="sd">    :param list[float] listbn: (**Optional**) list of bn factors appearing in Sersic profiles</span>
+<span class="sd">    :param list[float] listIe: (**Optional**) list of intensities at re for each profile</span>
+<span class="sd">    :param list[float] listMag: (**Optional**) list of total integrated magnitudes for each profile</span>
+<span class="sd">    :param list[float] listOffset: (**Optional**) list of magnitude offsets used in the magnitude system for each profile</span>
+<span class="sd">         </span>
+<span class="sd">    :returns: integrated flux of the sum of all the given Sersic profiles (value) and an estimation of the error (err) as the dictionary {&#39;value&#39;:value, &#39;error&#39;err}</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: if **listIe** and **listMag** and **listOffset** are None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># If no list of bn values is given, compute them all</span>
+    <span class="k">if</span> <span class="n">listbn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">listbn</span>        <span class="o">=</span> <span class="p">[</span><span class="n">compute_bn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">listn</span><span class="p">]</span>
+    <span class="n">listbn</span>            <span class="o">=</span> <span class="n">check_bns</span><span class="p">(</span><span class="n">listn</span><span class="p">,</span> <span class="n">listbn</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">listIe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">listMag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">listOffset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">listIe</span>    <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listn</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listMag</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listRe</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listOffset</span><span class="p">),</span> <span class="n">bn</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listbn</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.&quot;</span><span class="p">)</span>
+    
+    <span class="n">res</span>         <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">err</span>         <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">ie</span><span class="p">,</span> <span class="n">bn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listIe</span><span class="p">,</span> <span class="n">listbn</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">analytical</span><span class="p">:</span>
+            <span class="n">lum</span> <span class="o">=</span> <span class="n">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">bn</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">ie</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lum</span> <span class="o">=</span> <span class="n">analyticFluxFrom0</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">bn</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">ie</span><span class="p">)</span>
+        <span class="n">res</span>    <span class="o">+=</span> <span class="n">lum</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">err</span>    <span class="o">+=</span> <span class="n">lum</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span>
+        
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">err</span><span class="p">)}</span></div>
+
+
+<div class="viewcode-block" id="ratioFlux1D"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.ratioFlux1D">[docs]</a><span class="k">def</span> <span class="nf">ratioFlux1D</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listbn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listIe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listMag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listOffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">analytical</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the ratio of the flux of the sum of different Sersic profiles for a single galaxy at two different positions in the galaxy plane only.</span>
+<span class="sd">    </span>
+<span class="sd">    This function computes the ratio from the 1D profiles, either integrating (analytical=False) or via an analytical solution (analytical=True).</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        **How to use**</span>
+<span class="sd">    </span>
+<span class="sd">        Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters. </span>
+<span class="sd">        </span>
+<span class="sd">        For instance, a ratio at radii 1&quot; and 3&quot; for a disk (n=1, Re=10&quot;) + bulge (n=4, Re=20&quot;) decomposition would give something like</span>
+<span class="sd">        </span>
+<span class="sd">            &gt;&gt;&gt; ratioFlux1D(1, 3, [1, 4], [10, 20], listMag=[25, 30], listOffset=[30, 30])</span>
+<span class="sd">            </span>
+<span class="sd">        Radii should be given with the same unit as the effective radii.</span>
+
+<span class="sd">    :param listn: list of Sersic index for each profile</span>
+<span class="sd">    :type listn: list[int] or list[float]</span>
+
+<span class="sd">    :param float r1: first radius where the flux is computed</span>
+<span class="sd">    :param float r2: second radius where the flux is computed</span>
+<span class="sd">    :param list[float] listRe: list of half-light radii for each profile</span>
+
+<span class="sd">    :param bool analytical: (**Optional**) whether to use the analytical solution or integrate the profile</span>
+<span class="sd">    :param list[float] listbn: (**Optional**) list of bn factors appearing in Sersic profiles</span>
+<span class="sd">    :param list[float] listIe: (**Optional**) list of intensities at re for each profile</span>
+<span class="sd">    :param list[float] listMag: (**Optional**) list of total integrated magnitudes for each profile</span>
+<span class="sd">    :param list[float] listOffset: (**Optional**) list of magnitude offsets used in the magnitude system for each profile</span>
+<span class="sd">     </span>
+<span class="sd">    :returns: ratio of fluxes at the two different positions</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError:</span>
+<span class="sd">        </span>
+<span class="sd">        * if **listIe** and **listMag** and **listOffset** are None</span>
+<span class="sd">        * if the 2nd computed flux is 0</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    
+    <span class="c1"># If no list of bn values is given, compute them all</span>
+    <span class="k">if</span> <span class="n">listbn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">listbn</span>         <span class="o">=</span> <span class="p">[</span><span class="n">compute_bn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">listn</span><span class="p">]</span>
+    <span class="n">listbn</span>             <span class="o">=</span> <span class="n">check_bns</span><span class="p">(</span><span class="n">listn</span><span class="p">,</span> <span class="n">listbn</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">listIe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">listMag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">listOffset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">listIe</span>     <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listn</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listMag</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listRe</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listOffset</span><span class="p">),</span> <span class="n">bn</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listbn</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities.&quot;</span><span class="p">)</span>
+    
+    <span class="n">lum1</span>           <span class="o">=</span> <span class="n">fluxSersics</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listbn</span><span class="o">=</span><span class="n">listbn</span><span class="p">,</span> <span class="n">listIe</span><span class="o">=</span><span class="n">listIe</span><span class="p">,</span> <span class="n">analytical</span><span class="o">=</span><span class="n">analytical</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+    <span class="n">lum2</span>           <span class="o">=</span> <span class="n">fluxSersics</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listbn</span><span class="o">=</span><span class="n">listbn</span><span class="p">,</span> <span class="n">listIe</span><span class="o">=</span><span class="n">listIe</span><span class="p">,</span> <span class="n">analytical</span><span class="o">=</span><span class="n">analytical</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">lum2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The luminosity computed at radius </span><span class="si">%f</span><span class="s2"> is 0. This is unlikely and the ratio cannot be computed.&quot;</span> <span class="o">%</span><span class="n">lum2</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">lum1</span><span class="o">/</span><span class="n">lum2</span></div>
+
+
+<div class="viewcode-block" id="ratioFlux2D"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.ratioFlux2D">[docs]</a><span class="k">def</span> <span class="nf">ratioFlux2D</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;galaxy&#39;</span><span class="p">,</span> <span class="s1">&#39;galaxy&#39;</span><span class="p">],</span> <span class="n">noPSF</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> 
+                        <span class="n">Id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inclination</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">PA</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                        <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span>
+                        <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Gaussian2D&#39;</span><span class="p">,</span> <span class="s1">&#39;FWHMX&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;FWHMY&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;sigmaX&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;sigmaY&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="s1">&#39;arcsec&#39;</span><span class="p">},</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the ratio of the flux of a bulge+disk model between two radii either in the galaxy plane or in the sky plane.</span>
+<span class="sd">    This function computes the ratio from 2D models (projected on the sky plane or not) with or without PSF convolution.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        **How to use**</span>
+<span class="sd">    </span>
+<span class="sd">        Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters.</span>
+<span class="sd">        </span>
+<span class="sd">        For instance, a ratio for a radius of 1 pixel (in galaxy plane) over 3 pixels (in sky plane) for a disk (n=1, Re=10 pixels, inclination=23°, PA=40°) + bulge (n=4, Re=20 pixels) decomposition would give something like</span>
+<span class="sd">            </span>
+<span class="sd">            &gt;&gt;&gt; ratioFlux2D(1, 3, 10, 20, magD=25, magB=30, offsetD=30, offsetB=30, inclination=23, PA=40, where=[&#39;galaxy&#39;, &#39;sky&#39;]})</span>
+<span class="sd">    </span>
+<span class="sd">   .. warning:</span>
+<span class="sd">       </span>
+<span class="sd">       To avoid problems:</span>
+<span class="sd">        </span>
+<span class="sd">       * provide all radii in the same pixel unit (e.g. HST or MUSE) </span>
+<span class="sd">       * update the **arcsecToGrid** conversion factor for the PSF if necessary.</span>
+<span class="sd">        </span>
+<span class="sd">       By default, the **arcsecToGrid** is tuned for HST resolution, so that the default PSF FWHM values (corresponding to MUSE PSF) will be converted into HST pixel values:</span>
+<span class="sd">        </span>
+<span class="sd">       * If radii are given in MUSE pixel values, then the MUSE conversion factor must be given for **arcsecToGrid**.</span>
+<span class="sd">       * If radii are given in arcsec, then we are considering a grid with pixel size = 1&quot;, so that the conversion factor should be set to 1.</span>
+<span class="sd">        </span>
+<span class="sd">       The PSF FWHM and sigma values can be given in any relevant unit (arcsec, arcmin, degrees, radians, etc.). Please update the &#39;unit&#39; key in the PSF dictionnary if you are providing values in arcsec.</span>
+<span class="sd">       Astropy will apply the corresponding conversion from the given unit to pixel values, so it is important to always give **arcsecToGrid** in units of arcsec/pixel and nothing else.</span>
+<span class="sd">        </span>
+<span class="sd">    :param float r1: first radius where the flux is computed</span>
+<span class="sd">    :param flaot r2: second radius where the flux is computed</span>
+<span class="sd">    :param float Rb: disk half-light radius (same unit as r1)</span>
+<span class="sd">    :param float Rd: bulge half-light radius (same unit as r1)</span>
+<span class="sd">    </span>
+<span class="sd">    :param float arcsecToGrid: (**Optional**) pixel size conversion in arcsec/pixel, used to convert the PSF FWHM (or sigma) from arcsec to pixel       </span>
+<span class="sd">    :param int(&gt;0) fineSampling: (**Optional**) fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</span>
+<span class="sd">    :param float Ib: (**Optional**) bulge intensity at Rb</span>
+<span class="sd">    :param float Id: (**Optional**) disk intensity at Rd</span>
+<span class="sd">    :param inclination: inclination of the galaxy in degrees</span>
+<span class="sd">    :type inclination: int or float</span>
+<span class="sd">    :param float magB: (**Optional**) bulge total magnitude</span>
+<span class="sd">    :param float magD: (**Optional**) disk total magnitude</span>
+<span class="sd">    :param [bool, bool] noPSF : (**Optional**) whether to not perform PSF convolution or not</span>
+<span class="sd">    :param float offsetB: (**Optional**) bulge magnitude offset</span>
+<span class="sd">    :param float offsetD: (**Optional**) disk magnitude offset</span>
+<span class="sd">    :param PA: (**Optional**) position angle on sky in degrees</span>
+<span class="sd">    :type PA: int or float</span>
+<span class="sd">    :param dict PSF: (**Optional**) Dictionnary for the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF.</span>
+<span class="sd">    :param bool verbose: (**Optional**) whether to print info on stdout or not</span>
+<span class="sd">    :param [str, str] where: (**Optional**) where the flux is computed. For each radius two values are possible: </span>
+<span class="sd">            </span>
+<span class="sd">        * &#39;galaxy&#39; if the flux is to be computed in the galaxy plane</span>
+<span class="sd">        * &#39;sky&#39; if it is to be computed in the sky plane. </span>
+<span class="sd">        </span>
+<span class="sd">    :returns: ratio of the two fluxes</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :raises TypeError: </span>
+<span class="sd">        </span>
+<span class="sd">        * if **where** is neither a list, nor a tuple</span>
+<span class="sd">        * if **noPSF** is neither a list, nor a tuple</span>
+<span class="sd">        </span>
+<span class="sd">    :raises ValueError:</span>
+<span class="sd">        </span>
+<span class="sd">        * if **where** is not of length 2</span>
+<span class="sd">        * if one of the values in **where** is neither &#39;galaxy&#39;, nor &#39;sky&#39;</span>
+<span class="sd">        * if **noPSF** is not of length 2</span>
+<span class="sd">        * if one of the values in **noPSF** is not a bool</span>
+<span class="sd">        * if **Ib** and **magB** and **offsetB** are None</span>
+<span class="sd">        * if **Id** and **magD** and **offsetD** are None</span>
+<span class="sd">        * if the 2nd computed flux is 0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#########################################</span>
+    <span class="c1">#       Checking input parameters       #</span>
+    <span class="c1">#########################################</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">where</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;where parameter should be either a list or a tuple.&#39;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">where</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;where parameter should be of length 2 but current length is </span><span class="si">%d</span><span class="s1">.&#39;</span> <span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">where</span><span class="p">)))</span>
+    
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">where</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;galaxy&#39;</span><span class="p">,</span> <span class="s1">&#39;sky&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one of the values in where parameter is neither &#39;galaxy&#39; nor &#39;sky&#39;.&quot;</span><span class="p">)</span>
+            
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">noPSF</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;noPSF parameter should be either a list or a tuple.&#39;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">noPSF</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;noPSF list should be of length 2 but current length is </span><span class="si">%d</span><span class="s1">.&#39;</span> <span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">noPSF</span><span class="p">)))</span>
+    
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">noPSF</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one of the values in noPSF parameter is not boolean.&quot;</span><span class="p">)</span>
+    
+    <span class="c1">##################################</span>
+    <span class="c1">#       Compute the ratio        #</span>
+    <span class="c1">##################################</span>
+    
+    <span class="k">if</span> <span class="n">Ib</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">magB</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offsetB</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Ib</span>       <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">offsetB</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">Id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">magD</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offsetD</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Id</span>       <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">offsetD</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Id is None, but magD or offsetD is also None. If no Id is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity.&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Set inclination and PA according to where we compute the luminosity</span>
+    <span class="n">inc</span>              <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">pa</span>               <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">where</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;sky&#39;</span><span class="p">:</span>
+            <span class="n">inc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>   <span class="o">=</span> <span class="n">inclination</span>
+            <span class="n">pa</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>    <span class="o">=</span> <span class="n">PA</span>
+    
+    <span class="c1"># We compute both models: we generate models in grids of shape (2r1, 2r1) or (2r2, 2r2) since we will keep pixels within r1 and r2 to compute the flux.</span>
+    <span class="c1"># We make the size uneven because we want the center to fall exactly on the central pixel (to be sure we are not missing any pixel flux in the sum)</span>
+    <span class="n">size</span>             <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">ceil</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">size</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">size</span>        <span class="o">+=</span> <span class="mi">1</span>
+        
+    <span class="c1"># If the box size (x or y) is below 31 (radius of 15 pixels from the central pixel) we perform the sampling on the whole image, otherwise we just do it in a box of size [2*15+1, 2*15+1]</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">31</span><span class="p">:</span>
+        <span class="n">samplingZone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;all&#39;</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">samplingZone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">}</span>
+    
+    <span class="n">X1</span><span class="p">,</span> <span class="n">Y1</span><span class="p">,</span> <span class="n">mod1</span>     <span class="o">=</span> <span class="n">bulgeDiskOnSky</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">Id</span><span class="o">=</span><span class="n">Id</span><span class="p">,</span> <span class="n">Ib</span><span class="o">=</span><span class="n">Ib</span><span class="p">,</span> <span class="n">inclination</span><span class="o">=</span><span class="n">inc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PA</span><span class="o">=</span><span class="n">pa</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                      <span class="n">fineSampling</span><span class="o">=</span><span class="n">fineSampling</span><span class="p">,</span> <span class="n">PSF</span><span class="o">=</span><span class="n">PSF</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="n">noPSF</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="n">arcsecToGrid</span><span class="p">,</span>
+                                      <span class="n">samplingZone</span><span class="o">=</span><span class="n">samplingZone</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    
+    <span class="n">size</span>             <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">ceil</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">size</span><span class="o">%</span><span class="mi">2</span>  <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">size</span>        <span class="o">+=</span> <span class="mi">1</span>
+        
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span><span class="mi">31</span><span class="p">:</span>
+        <span class="n">samplingZone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;all&#39;</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">samplingZone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">}</span>
+        
+    <span class="n">X2</span><span class="p">,</span> <span class="n">Y2</span><span class="p">,</span> <span class="n">mod2</span>     <span class="o">=</span> <span class="n">bulgeDiskOnSky</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">Id</span><span class="o">=</span><span class="n">Id</span><span class="p">,</span> <span class="n">Ib</span><span class="o">=</span><span class="n">Ib</span><span class="p">,</span> <span class="n">inclination</span><span class="o">=</span><span class="n">inc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">PA</span><span class="o">=</span><span class="n">pa</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                      <span class="n">fineSampling</span><span class="o">=</span><span class="n">fineSampling</span><span class="p">,</span> <span class="n">PSF</span><span class="o">=</span><span class="n">PSF</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="n">noPSF</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="n">arcsecToGrid</span><span class="p">,</span>
+                                      <span class="n">samplingZone</span><span class="o">=</span><span class="n">samplingZone</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    
+    <span class="c1"># We compute the fluxes</span>
+    <span class="n">where1</span>           <span class="o">=</span> <span class="n">X1</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">Y1</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">r1</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">where2</span>           <span class="o">=</span> <span class="n">X2</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">Y2</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">r2</span><span class="o">**</span><span class="mi">2</span>
+    
+    <span class="n">lum1</span>             <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">mod1</span><span class="p">[</span><span class="n">where1</span><span class="p">])</span>
+    <span class="n">lum2</span>             <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">mod2</span><span class="p">[</span><span class="n">where2</span><span class="p">])</span>
+    
+    <span class="k">if</span> <span class="n">lum2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The luminosity computed at radius </span><span class="si">%f</span><span class="s2"> is 0. This is unlikely and the ratio cannot be computed.&quot;</span> <span class="o">%</span><span class="n">lum2</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">lum1</span><span class="o">/</span><span class="n">lum2</span></div>
+    
+
+<div class="viewcode-block" id="total_flux"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.total_flux">[docs]</a><span class="k">def</span> <span class="nf">total_flux</span><span class="p">(</span><span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the integrated flux up to infinity. The flux and magnitude are related by the equation</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        m = -2.5 \log_{10} F_{\rm{tot}} + \rm{offset}</span>
+
+<span class="sd">    :param offset: magnitude offset</span>
+<span class="sd">    :type offset: float or list[float] or ndarray[float]</span>
+<span class="sd">    :param mag: total magnitude</span>
+<span class="sd">    :type mag: float or list[float] or ndarray[float]</span>
+<span class="sd">    :returns: total flux</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mag</span><span class="p">))</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span></div>
+
+
+<span class="c1">############################################################################################</span>
+<span class="c1">#                                 Morphological parameters                                 #</span>
+<span class="c1">############################################################################################</span>
+
+<div class="viewcode-block" id="computePAs"><a class="viewcode-back" href="../../galaxy/morphology/Morpho.html#galaxy.morphology.computePAs">[docs]</a><span class="k">def</span> <span class="nf">computePAs</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;minmax&#39;</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">returnThresholds</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute a set of PA values for a galaxy using different minimum threshold values.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        **How it works**</span>
+<span class="sd">        </span>
+<span class="sd">        A set of threshold values are generated between the minimum and the maximum of the image, e.g. </span>
+<span class="sd">        </span>
+<span class="sd">        * [0, 1, 2] for a galaxy with a minimum of 0 and a maximum of 2 (using num=3)</span>
+<span class="sd">        </span>
+<span class="sd">        These values are applied one after another onto the image as a minmum threshold, that is data points with value&lt;threshold are masked. We get what we call a &#39;slice&#39;.</span>
+<span class="sd">        For each slice, we compute its PA (angle starting from the vertical axis, counting anti clockwise).</span>
+<span class="sd">        </span>
+<span class="sd">    .. warning::</span>
+<span class="sd">    </span>
+<span class="sd">        * PA angles are given between -90° and +90° so that there is a degeneracy between these two bounds.</span>
+<span class="sd">        * If the &#39;minmax&#39; method is used, a galaxy with a PA close to 90° will not have a good PA estimation as different slices will have values oscillating around +90° and -90°, yielding a median value of approximately 0°...</span>
+<span class="sd"> </span>
+<span class="sd">    :param im: image of a galaxy</span>
+<span class="sd">    :type im: 2D ndarray</span>
+<span class="sd">    :param method: (**Optional**) method to use</span>
+<span class="sd">        </span>
+<span class="sd">        - if &#39;minmax&#39; the PA of each slice is computed as the angle between the min and the max within the slice (not very efficient)</span>
+<span class="sd">        - if &#39;furthest&#39; the PA of each slice is computed as the angle between the max and the furthest point relative to it (much more efficient)</span>
+<span class="sd">        </span>
+<span class="sd">    :type method: &#39;minmax&#39; or &#39;furthest&#39;</span>
+<span class="sd">    :param int num: (**Optional**) how many slices must be made</span>
+<span class="sd">    :param bool returnThresholds: (**Optional**) whether to return the threshold values as well as the PAs</span>
+<span class="sd">        </span>
+<span class="sd">    :returns: PA list (and the threshold values if returnThresholds is True)</span>
+<span class="sd">    :rtype: list (and list f returnThresholds is True)</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: if the method is neither &#39;minmax&#39;, nor &#39;furthest&#39;</span>
+<span class="sd">    :raises TypeError: if num is not an int, or if returnThresholds is not a bool</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;minmax&#39;</span><span class="p">,</span> <span class="s1">&#39;furthest&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Given method is not correct. Please provide either minmax or furthest. Cheers !&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">method</span>    <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Given num parameter should only be an integer.&#39;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">returnThresholds</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Given returnThresholds parameter should only be a bool.&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Get size and generate an X and Y coordinates grid</span>
+    <span class="n">sizeY</span><span class="p">,</span> <span class="n">sizeX</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sizeX</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sizeY</span><span class="p">))</span>
+    
+    <span class="n">maxi</span>          <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># Get min, max and their position</span>
+    <span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">image</span><span class="o">==</span><span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">])</span>
+    <span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]]</span>
+    <span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]]</span>
+    
+    <span class="c1"># Compute distance to max</span>
+    <span class="n">distance</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">X</span><span class="o">-</span><span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">Y</span><span class="o">-</span><span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="c1"># Generate an evenly spaced range of values betwwen min and max </span>
+    <span class="n">valRange</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">image</span><span class="p">),</span> <span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">],</span> <span class="n">num</span><span class="p">)</span>
+    <span class="n">theta</span>         <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># We avoid the first value as there won&#39;t be pixels removed below this threshold, as well as the max since there will only remain one pixel, i.e. the max itself (in most cases)</span>
+    <span class="n">imCopy</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">point2</span>        <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">valRange</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="c1"># Set to nan values below the threshold</span>
+        <span class="n">whereLess</span>          <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">imCopy</span><span class="o">&lt;</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">imCopy</span><span class="p">[</span><span class="n">whereLess</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+        <span class="k">if</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;minmax&#39;</span><span class="p">:</span>
+            <span class="n">point2</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">imCopy</span><span class="p">)</span>
+            <span class="n">point2</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">imCopy</span><span class="o">==</span><span class="n">point2</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">method</span><span class="o">==</span><span class="s1">&#39;furthest&#39;</span><span class="p">:</span>
+            <span class="n">distance</span><span class="p">[</span><span class="n">whereLess</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">point2</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distance</span><span class="o">==</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">distance</span><span class="p">))</span>
+            
+        <span class="c1"># If there are multiple points, we select the first one</span>
+        <span class="n">point2</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>             <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">point2</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">point2</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>             <span class="o">=</span> <span class="n">Y</span><span class="p">[</span><span class="n">point2</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Set new theta value</span>
+        <span class="k">if</span> <span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]:</span>
+            <span class="n">theta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">point2</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">maxi</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">point2</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]))[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">theta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">returnThresholds</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">theta</span><span class="p">,</span> <span class="n">valRange</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">theta</span></div>
+    
+    
+<span class="c1">##################################################{#######################################################</span>
+<span class="c1">#                                 Thickness prescription                                                 #</span>
+<span class="c1">##########################################################################################################</span>
+
+<div class="viewcode-block" id="disk_thickness"><a class="viewcode-back" href="../../galaxy/morphology/Thickness.html#galaxy.morphology.disk_thickness">[docs]</a><span class="k">def</span> <span class="nf">disk_thickness</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Return the thickness of MS disk-like galaxies (see Mercier et al., 2021) prescription as a function of redshift.</span>
+
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    :returns: disk thickness</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :raises TypeError: if z is not an int, float, np.float16, np.float32, np.float64 or a ndarray</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+        <span class="n">lq0</span>        <span class="o">=</span> <span class="mf">0.48</span> <span class="k">if</span> <span class="n">z</span> <span class="o">&gt;</span> <span class="mf">0.85</span> <span class="k">else</span> <span class="mf">0.48</span> <span class="o">+</span> <span class="mf">0.4</span><span class="o">*</span><span class="n">z</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">lq0</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.48</span>
+        <span class="n">mask</span>       <span class="o">=</span> <span class="n">z</span> <span class="o">&lt;=</span> <span class="mf">0.85</span>
+        <span class="n">lq0</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.4</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;z array has type </span><span class="si">%s</span><span class="s1"> but it must either be float or a numpy array&#39;</span> <span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        
+    <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">lq0</span><span class="p">)</span></div>
+    
+
+<span class="c1">#################################################################################################################</span>
+<span class="c1">#                                 Half-light radius computation                                                 #</span>
+<span class="c1">#################################################################################################################</span>
+
+<div class="viewcode-block" id="the_re_equation_for_2_Sersic_profiles"><a class="viewcode-back" href="../../galaxy/morphology/Morpho.html#galaxy.morphology.the_re_equation_for_2_Sersic_profiles">[docs]</a><span class="k">def</span> <span class="nf">the_re_equation_for_2_Sersic_profiles</span><span class="p">(</span><span class="n">re</span><span class="p">,</span> <span class="n">gal</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noStructuredArray</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetMagD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetMagB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                                          <span class="n">norm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    A semi-analytical equation whose zero should give the value of the half-light radius for a bulge-disk decomposition defined as</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        \Sigma (r) = I_{\rm{b}} e^{-b_4 \left [ \left (r/R_{\rm{b}} \right ) -1 \right ]} + I_{\rm{d}} e^{-b_1 \left [ \left (r/R_{\rm{d}} \right ) -1 \right ]},</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`R_{\rm{b}}, R_{\rm{d}}` are the bulge and disk effective radii, and :math:`I_{\rm{b}}, I_{\rm{d}}` are the bulge and disk surface brightness at their effective radii, respectively.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+
+<span class="sd">        This is meant to be used with a zero search algorithm (dichotomy or anything else).</span>
+
+<span class="sd">    :param gal: structured array with data for all the galaxies. The required column names are:</span>
+<span class="sd">        </span>
+<span class="sd">        * &#39;R_d_GF&#39; for the effective radius of the disk</span>
+<span class="sd">        * &#39;R_b_GF&#39; for the effective radius of the bulge</span>
+<span class="sd">        * &#39;Mag_d_GF&#39; for the total integrated magnitude of the disk</span>
+<span class="sd">        * &#39;Mag_b_GF&#39; the total integrated magnitude of the bulge</span>
+<span class="sd">        </span>
+<span class="sd">    :type gal: structured ndarray</span>
+<span class="sd">    :param re: value of the half-light radius of the sum of the two components. This is the value which shall be returned by a zero search algorithm.</span>
+<span class="sd">    :type re: float or list[float]</span>
+<span class="sd">            </span>
+<span class="sd">    :param float b1: b1 factor appearing in the Sersic profile of an exponential disk</span>
+<span class="sd">    :param float b4: b4 factor appearing in the Sersic profile of a bulge</span>
+<span class="sd">    :param magB: total magnitude of the bulge</span>
+<span class="sd">    :type magB: float or list[float]</span>
+<span class="sd">    :param magD: total magnitude of the disk</span>
+<span class="sd">    :type magD: float or list[float]</span>
+<span class="sd">    :param float norm: normalisation factor to divide the equation (used to improve convergence)</span>
+<span class="sd">    :param bool noStructuredArray: if False, the structured array gal will be used. If False, values of the magnitudes and half-light radii of the two components must be given.</span>
+<span class="sd">    :param offsetMagD: magnitude offset used in the magnitude system for the disk</span>
+<span class="sd">    :type offsetMagD: int or float</span>
+<span class="sd">    :param offsetMagB: magnitude offset used in the magnitude system for the bulge</span>
+<span class="sd">    :type offsetMagB: int or float</span>
+<span class="sd">    :param Rb: half-light radius of the bulge</span>
+<span class="sd">    :type Rb: float or list[float]</span>
+<span class="sd">    :param Rd: half-light radius of the disk</span>
+<span class="sd">    :type Rd: float or list[float]</span>
+<span class="sd">    :param float stretch: dilatation factor used to multiply re in order to smooth out the sharp slope around the 0 of the function</span>
+<span class="sd">        </span>
+<span class="sd">    :returns: value of the left-hand side of the equation. If re is correct, the returned value should be close to 0.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :raises TypeError: if offsetMagD and offsetMagB are given but are neither float, nor int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">b1</span><span class="p">,</span> <span class="n">b4</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">])</span>
+    <span class="n">magD</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span> <span class="o">=</span> <span class="n">fromStructuredArrayOrNot</span><span class="p">(</span><span class="n">gal</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">noStructuredArray</span><span class="p">)</span>
+    
+    <span class="c1"># Check mag offsets first</span>
+    <span class="k">if</span> <span class="n">offsetMagD</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offsetMagB</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offsetMagD</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offsetMagD</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">(</span><span class="s1">&#39;Disk magnitude is neither float not int. &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;Please provide a correct type. Cheers !&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offsetMagB</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offsetMagB</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">(</span><span class="s1">&#39;Bulge magnitude is neither float not int. &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;Please provide a correct type. Cheers !&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">brightMessage</span><span class="p">(</span><span class="s1">&#39;At least one of the mag offset was not given. Assuming both are equal.&#39;</span><span class="p">))</span>
+        <span class="n">offsetMagB</span>     <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">offsetMagD</span>     <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c1"># Convert strecth factor to float to avoid numpy casting operation errors</span>
+    <span class="n">re</span> <span class="o">=</span> <span class="n">re</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">stretch</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">re</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">else</span> <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">re</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">re</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">return</span> <span class="p">(</span> <span class="mi">10</span><span class="o">**</span><span class="p">((</span><span class="n">offsetMagD</span><span class="o">-</span><span class="n">magD</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">gammainc</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">b1</span><span class="o">*</span><span class="p">(</span><span class="n">re</span><span class="o">/</span><span class="n">Rd</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="o">**</span><span class="p">((</span><span class="n">offsetMagB</span><span class="o">-</span><span class="n">magB</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">gammainc</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">b4</span><span class="o">*</span><span class="p">(</span><span class="n">re</span><span class="o">/</span><span class="n">Rb</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">4.0</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="n">norm</span></div>
+
+
+<div class="viewcode-block" id="solve_re"><a class="viewcode-back" href="../../galaxy/morphology/Morpho.html#galaxy.morphology.solve_re">[docs]</a><span class="k">def</span> <span class="nf">solve_re</span><span class="p">(</span><span class="n">gal</span><span class="p">,</span> <span class="n">guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noStructuredArray</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="mf">5e-2</span><span class="p">,</span>
+             <span class="n">integration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Ltot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetMagD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetMagB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">useZeroOrder</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;hybr&#39;</span><span class="p">,</span>
+             <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    This is meant to find the half-light radius of the sum of an exponential disk and a de Vaucouleur bulge, either via a semi-analytical formula, or using numerical integration.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        **How to use**</span>
+<span class="sd">        </span>
+<span class="sd">        There are two ways to use this function: </span>
+<span class="sd">            </span>
+<span class="sd">            * using numerical integration of the light profiles</span>
+<span class="sd">            * by finding the zero of a specific equation. </span>
+
+<span class="sd">        In both cases, the parameter **gal** is mandatory. This corresponds to a numpy structured array with the following fields: </span>
+<span class="sd">            </span>
+<span class="sd">            * &#39;Mag_d_GF&#39;, &#39;Mag_b_GF&#39;, &#39;R_d_GF&#39; and &#39;R_b_GF&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        **HOWEVER**, if the flag **noStructuredArray** is True, this array will not be used (so just cast anything into this parameter, it will not matter) but instead, the optional parameters **magD**, **magB**, **Rd** and **Rb** must be provided.</span>
+<span class="sd">        </span>
+<span class="sd">        The guess can be ignored, though the result may not converge.</span>
+<span class="sd">        </span>
+<span class="sd">        **b1** and **b4** values do not necessarily need to be provided if you only call this function very few times. If not, they will be computed once at the beginning and propagated in subsequent function calls.</span>
+<span class="sd">            </span>
+<span class="sd">        Solving methods:</span>
+<span class="sd">            </span>
+<span class="sd">            a) **Numerical integration**</span>
+<span class="sd">    </span>
+<span class="sd">               This method will find the zero of the following function </span>
+<span class="sd">               </span>
+<span class="sd">               .. math::</span>
+
+<span class="sd">                   f(r) = 2\pi \int_0^r dr~r \Sigma (r) - L_{\rm{tot}}, </span>
+<span class="sd">                   </span>
+<span class="sd">              where :math:`L_{\rm{tot}}` is the total integrated luminosity of the sum of the disk and bulge. The **Ltot** parameter is not mandatory, as it will be computed if not provided. </span>
+<span class="sd">              </span>
+<span class="sd">              **However, if not provided, this requires to give magnitude values (this is mandatory in any case) AND a magnitude offset value in order to compute it**.</span>
+<span class="sd">                </span>
+<span class="sd">              The **Ie** parameter can be given or can be ignored. In the latter case, it will be computed using the magnitudes and magnitude offset, so this last parameter should be provided as well in this case.</span>
+<span class="sd">            </span>
+<span class="sd">            b) **Semi-analytical solution**</span>
+<span class="sd">    </span>
+<span class="sd">               .. warning::</span>
+<span class="sd">                   </span>
+<span class="sd">                   This is an experimental feature. It follows from analytically computing the equation for re using its definition as well as the sum of an exponential disk and a bulge.</span>
+<span class="sd">                </span>
+<span class="sd">               In this case, the **integration** parameter must be set to False.</span>
+<span class="sd">                </span>
+<span class="sd">               **THE FOLLOWING PARAMETERS ARE NOT REQUIRED FOR THIS METHOD:** </span>
+<span class="sd">               </span>
+<span class="sd">               * **Ltot**, **Ie** and **offset**</span>
+<span class="sd">                </span>
+<span class="sd">        **Additional information**</span>
+<span class="sd">        </span>
+<span class="sd">            For only one galaxy, only a scalar value may be provided for each parameter you would like to pass. However, for more than one galaxy, a list must be given instead.</span>
+<span class="sd">        </span>
+<span class="sd">    Basically, the simplest way to solve re is to call the function the following way:</span>
+<span class="sd">         </span>
+<span class="sd">         &gt;&gt;&gt; solve_re(array)</span>
+<span class="sd">         </span>
+<span class="sd">     where array is a numpy structured array with the relevant columns.</span>
+<span class="sd">    </span>
+<span class="sd">    :param gal: structured array with data for all the galaxies. The required column names are &#39;R_d_GF&#39; (re for the disk component), &#39;R_b_GF&#39; (re for the bulge component), &#39;Mag_d_GF&#39; (the total integrated magnitude for the disk component), &#39;Mag_b_GF&#39; (the total integrated magnitude for the bulge component).</span>
+<span class="sd">    :type gal: structured ndarray</span>
+
+<span class="sd">    :param float b1: (**Optional**) b1 factor appearing in the Sersic profile of an exponential disk</span>
+<span class="sd">    :param float b4: (**Optional**) b4 factor appearing in the Sersic profile of a bulge        </span>
+<span class="sd">    :param guess: (**Optional**) guess for the value of re for all the galaxies</span>
+<span class="sd">    :type guess: float or list[float]</span>
+<span class="sd">    :param Ie: (**Optional**) intensity at half-light radius for all the galaxies (including both profiles)</span>
+<span class="sd">    :type Ie: float or list[float]</span>
+<span class="sd">    :param bool integration: (**Optional**) whether to find re integrating the light profiles or not (i.e. solving the re equation)</span>
+<span class="sd">    :param Ltot: (**Optional**) total luminosity of the galaxies. This parameter is used when finding re using numerical integration of the light profiles. If integration is True and no Ltot is provided, it will be computed using the total magnitude of each component and the offset value.</span>
+<span class="sd">    :type Ltot: float or list[float]</span>
+<span class="sd">    :param magB: (**Optional**) total magnitude of the bulge</span>
+<span class="sd">    :type magB: float or list[float]</span>
+<span class="sd">    :param magD: (**Optional**) total magnitude of the disk</span>
+<span class="sd">    :type magD: float or list[float]</span>
+<span class="sd">    :param str method: (**Optional**) method to use to find the zero of the re equation function or the integral to solve</span>
+<span class="sd">    :param bool normalise: (**Optional**) whether to normalise the equation or not. It is recommended to do so to improve the convergence.</span>
+<span class="sd">    :param bool noStructuredArray: (**Optional**) if False, the structured array gal will be used. If False, values of the magnitudes and half-light radii of the two components must be given.</span>
+<span class="sd">    :param offsetMagD: (**Optional**) magnitude offset used in the magnitude system for the disk</span>
+<span class="sd">    :type offsetMagD: int or float</span>
+<span class="sd">    :param offsetMagB: (**Optional**) magnitude offset used in the magnitude system for the bulge</span>
+<span class="sd">    :type offsetMagB: int or float</span>
+<span class="sd">    :param Rb: (**Optional**) half-light radius of the bulge</span>
+<span class="sd">    :type Rb: float or list[float]</span>
+<span class="sd">    :param Rd: (**Optional**) half-light radius of the disk</span>
+<span class="sd">    :type Rd: float or list[float]</span>
+<span class="sd">    :param float stretch: (**Optional**) dilatation factor used to multiply re in order to smooth out the sharp slope around the 0 of the function</span>
+<span class="sd">    :param bool useZeroOder: (**Optional**) whether to use the zero order analytical solution as a guess. If True, the value of guess will be used by the zero search algorithm.</span>
+<span class="sd">    :param bool verbose: (**Optional**) whether to print messaged on stdout (True) or not (False)</span>
+<span class="sd">    :param float xtol: (**Optional**) relative error convergence factor</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: value of re, as well as a convergence flag and a debug dict</span>
+<span class="sd">    :rtype: float or list[float], float or list[float], dict or list[dict]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># To solve numerically we find the zero of the difference between the integral we want to solve and half the total luminosity</span>
+    <span class="k">def</span> <span class="nf">integral_to_solve</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listbn</span><span class="p">,</span> <span class="n">listIe</span><span class="p">,</span> <span class="n">listMag</span><span class="p">,</span> <span class="n">listOffset</span><span class="p">,</span> <span class="n">Ltot</span><span class="p">):</span>
+        <span class="n">res</span><span class="p">,</span> <span class="n">err</span>     <span class="o">=</span> <span class="n">fluxSersics</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listbn</span><span class="o">=</span><span class="n">listbn</span><span class="p">,</span> <span class="n">listIe</span><span class="o">=</span><span class="n">listIe</span><span class="p">,</span> <span class="n">listMag</span><span class="o">=</span><span class="n">listMag</span><span class="p">,</span> <span class="n">listOffset</span><span class="o">=</span><span class="n">listOffset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">-</span><span class="n">Ltot</span><span class="o">/</span><span class="mf">2.0</span>
+     
+        
+    <span class="c1"># ##########################################################</span>
+    <span class="c1">#            Compute bn, mag and radii values              #</span>
+    <span class="c1">############################################################</span>
+    
+    <span class="c1"># If only a single value is given, transform into numpy arrays</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">magD</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="n">magD</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">magD</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">magB</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="n">magB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">magB</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Rd</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="n">Rd</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Rd</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Rb</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+        <span class="n">Rb</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Rb</span><span class="p">])</span>
+    
+    <span class="n">b1</span><span class="p">,</span> <span class="n">b4</span>             <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">])</span>
+    <span class="n">magD</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span> <span class="o">=</span> <span class="n">fromStructuredArrayOrNot</span><span class="p">(</span><span class="n">gal</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">noStructuredArray</span><span class="p">)</span>
+    
+    <span class="c1">#########################################</span>
+    <span class="c1">#            Define a guess             #</span>
+    <span class="c1">#########################################</span>
+    
+    <span class="c1">#use the zero order solution as a guess if the flag if trigerred</span>
+    <span class="k">if</span> <span class="n">useZeroOrder</span><span class="p">:</span>
+        <span class="n">md10</span>         <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">magD</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span>
+        <span class="n">mb10</span>         <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">magB</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span>
+        <span class="n">numerator</span>    <span class="o">=</span> <span class="n">md10</span> <span class="o">+</span> <span class="n">mb10</span> 
+        <span class="n">denominator</span>  <span class="o">=</span> <span class="n">md10</span><span class="o">*</span><span class="p">(</span><span class="n">b1</span><span class="o">/</span><span class="n">Rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="n">factorial</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span><span class="o">*</span><span class="n">mb10</span><span class="o">*</span><span class="p">(</span> <span class="p">(</span><span class="n">b4</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span><span class="o">/</span><span class="n">Rb</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">guess</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numerator</span><span class="o">/</span><span class="n">denominator</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#if no guess given, set default to 10px</span>
+        <span class="k">if</span> <span class="n">guess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">guess</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">Rd</span><span class="p">)</span><span class="o">*</span><span class="mi">0</span><span class="o">+</span><span class="mi">10</span>
+    
+    <span class="c1">#################################################</span>
+    <span class="c1">#            Declare output arrays              #</span>
+    <span class="c1">#################################################</span>
+    
+    <span class="c1">#set ouput arrays empty</span>
+    <span class="n">solution</span>         <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="n">convFlag</span>         <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">debug</span>            <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    
+    <span class="c1">#compute re from the re equation instead of integrating</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">integration</span><span class="p">:</span>
+            
+        <span class="c1"># Check mag offset values</span>
+        <span class="k">if</span> <span class="n">offsetMagB</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">offsetMagD</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">brightMessage</span><span class="p">(</span><span class="s1">&#39;At least one of the mag offset values was not provided. Assuming both are equal.&#39;</span><span class="p">))</span>
+            <span class="n">offsetMagB</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">offsetMagD</span> <span class="o">=</span> <span class="mi">0</span>
+            
+        <span class="c1">#define the normalisation of the equation</span>
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">norm</span>     <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">((</span><span class="n">offsetMagD</span><span class="o">-</span><span class="n">magD</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="o">**</span><span class="p">((</span><span class="n">offsetMagB</span><span class="o">-</span><span class="n">magB</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">norm</span>     <span class="o">=</span> <span class="mf">1.0</span>
+            
+        <span class="c1">#print(magD, magB, Rd, Rb, guess, norm)</span>
+        
+        <span class="c1">#solve by finding the zero of the function</span>
+        <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">md</span><span class="p">,</span> <span class="n">mb</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">nm</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">guess</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">norm</span><span class="p">):</span>
+            <span class="n">sol</span>      <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">the_re_equation_for_2_Sersic_profiles</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> 
+                            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">md</span><span class="p">,</span> <span class="n">mb</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">offsetMagD</span><span class="p">,</span> <span class="n">offsetMagB</span><span class="p">,</span> <span class="n">nm</span><span class="p">,</span> <span class="n">stretch</span><span class="p">),</span>
+                            <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;xtol&#39;</span><span class="p">:</span><span class="n">xtol</span><span class="p">,</span> <span class="s1">&#39;maxfev&#39;</span><span class="p">:</span><span class="mi">200</span><span class="p">})</span>
+            
+            <span class="c1"># solution tested in the_re_equation is multiplied by the stretch factor, so that the best-solution*stretch gives the_re_equation \approx 0</span>
+            <span class="c1"># thus the best-solution needs to be multiplied by the stretch factor at the end to recover the true values</span>
+            <span class="n">solution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">stretch</span><span class="p">)</span>
+            <span class="n">convFlag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">convFlag</span><span class="p">,</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">==</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">debug</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">debug</span><span class="p">,</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
+            
+    <span class="c1">#computes re by integrating the light profiles instead</span>
+    <span class="k">else</span><span class="p">:</span>
+        
+        <span class="c1">#first check that offsets are provided</span>
+        <span class="k">if</span> <span class="n">offsetMagB</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">offsetMagD</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ValueEror: a None was found. One of the inputs in the list offsetMagD, offsetMagD was not provided. If you are using the integration method, you must provide offset values for all galaxies and for both profiles (exponential disk and bulge)&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        
+        <span class="c1">#if no total luminosity given, compute it</span>
+        <span class="k">if</span> <span class="n">Ltot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Ltot</span>     <span class="o">=</span> <span class="n">total_flux</span><span class="p">(</span><span class="n">magD</span><span class="p">,</span> <span class="n">offsetMagD</span><span class="p">)</span> <span class="o">+</span> <span class="n">total_flux</span><span class="p">(</span><span class="n">magB</span><span class="p">,</span> <span class="n">offsetMagB</span><span class="p">)</span>
+            
+        <span class="c1">#setting redundant arrays to defaults values</span>
+        <span class="n">listn</span>        <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+        <span class="n">listbn</span>       <span class="o">=</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">md</span><span class="p">,</span> <span class="n">mb</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">offsetd</span><span class="p">,</span> <span class="n">offsetb</span><span class="p">,</span> <span class="n">ltot</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">guess</span><span class="p">,</span> <span class="n">magD</span><span class="p">,</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">offsetMagD</span><span class="p">,</span> <span class="n">offsetMagB</span><span class="p">,</span> <span class="n">Ltot</span><span class="p">):</span>
+            <span class="c1">#we do not provide the list of intensities at re but instead the magnitudes and offset for each component</span>
+            <span class="n">sol</span>      <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">integral_to_solve</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span>
+                            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">listn</span><span class="p">,</span> <span class="p">[</span><span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">],</span> <span class="n">listbn</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">md</span><span class="p">,</span> <span class="n">mb</span><span class="p">],</span> <span class="p">[</span><span class="n">offsetd</span><span class="p">,</span> <span class="n">offsetb</span><span class="p">],</span> <span class="n">ltot</span><span class="p">),</span>
+                            <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;xtol&#39;</span><span class="p">:</span><span class="n">xtol</span><span class="p">,</span> <span class="s1">&#39;maxfev&#39;</span><span class="p">:</span><span class="mi">200</span><span class="p">})</span>
+            
+            <span class="n">solution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span>
+            <span class="n">convFlag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">convFlag</span><span class="p">,</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">==</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">debug</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">debug</span><span class="p">,</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
+            
+    <span class="k">return</span> <span class="n">solution</span><span class="p">,</span> <span class="n">convFlag</span><span class="p">,</span> <span class="n">debug</span></div>
+
+
+<span class="c1">#################################################################################################################</span>
+<span class="c1">#                                Other related Sersic functions                                                 #</span>
+<span class="c1">#################################################################################################################</span>
+    
+<div class="viewcode-block" id="centralIntensity"><a class="viewcode-back" href="../../galaxy/morphology/Other.html#galaxy.morphology.centralIntensity">[docs]</a><span class="k">def</span> <span class="nf">centralIntensity</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the central intensity of a given Sersic profile.</span>
+
+<span class="sd">    :param n: Sersic index of the profile</span>
+<span class="sd">    :type n: int or float</span>
+<span class="sd">    :param float re: half-light radius</span>
+<span class="sd">    </span>
+<span class="sd">    :param float Ie: (**Optional**) intensity at Re. If None, values for mag and offset must be given instead.</span>
+<span class="sd">    :param float mag: (**Optional**) total magnitude. If None, Ie must be given instead.</span>
+<span class="sd">    :param float offset: (**Optional**) magnitude offset. If None, Ie must be given instead</span>
+
+<span class="sd">    :returns: central intensity of the Sersic profile</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: if **Ie** and **mag** and **offset** are None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">compute_bn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">Ie</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Ie</span> <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">bn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ie value is None, but mag and/or offset is/are also None. If no Ie is given, please provide a value for the total magnitude and magnitude offset in order to compute the former one. Cheers !&quot;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">Ie</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">bn</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compute_R22"><a class="viewcode-back" href="../../galaxy/morphology/Other.html#galaxy.morphology.compute_R22">[docs]</a><span class="k">def</span> <span class="nf">compute_R22</span><span class="p">(</span><span class="n">Red</span><span class="p">,</span> <span class="n">dRed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute R22 (and its error) given an array of disk effective radii defined as</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        R_{22} = 2.2 \times R_{\rm{d}} / b_1,</span>
+<span class="sd">        </span>
+<span class="sd">    where :math:`R_{\rm{d}}` is the disk effective radius.</span>
+
+<span class="sd">    :param Red: disk effective radii</span>
+<span class="sd">    :type Red: float or ndarray[float]</span>
+<span class="sd">        </span>
+<span class="sd">    :param float b1: (**Optional**) b1 factor appearing in the exponential disk profile</span>
+<span class="sd">    :param dRed: (**Optional**) error estimate on the effective radii</span>
+<span class="sd">    :type dRed: float or ndarray[foat]</span>
+
+<span class="sd">    :returns: R22 (and its error)</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">b1</span><span class="p">,</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">b1</span><span class="p">])</span>
+    
+    <span class="k">if</span> <span class="n">dRed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">Red</span><span class="o">/</span><span class="n">b1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">Red</span><span class="o">/</span><span class="n">b1</span><span class="p">,</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">dRed</span><span class="o">/</span><span class="n">b1</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">wilfried library</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galaxy/index.html">Galaxy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galfit/index.html">Galfit module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Wilfried Mercier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

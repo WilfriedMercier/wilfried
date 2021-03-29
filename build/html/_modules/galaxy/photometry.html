@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.photometry &#8212; wilfried library 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for galaxy.photometry</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">Photometry functions related to galaxies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>             <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span>     <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span>   <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">FlatLambdaCDM</span>
+
+<span class="c1">#: Cosmology used inthe functions</span>
+<span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<div class="viewcode-block" id="calzetti_law"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.calzetti_law">[docs]</a><span class="k">def</span> <span class="nf">calzetti_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">4.05</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">2.659</span><span class="p">,</span> <span class="n">b1</span><span class="o">=-</span><span class="mf">1.857</span><span class="p">,</span> <span class="n">c1</span><span class="o">=</span><span class="mf">1.040</span><span class="p">,</span> <span class="n">d1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b2</span><span class="o">=-</span><span class="mf">2.156</span><span class="p">,</span> <span class="n">c2</span><span class="o">=</span><span class="mf">1.509</span><span class="p">,</span> <span class="n">d2</span><span class="o">=-</span><span class="mf">0.198</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mf">0.011</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input. In principle, this law is valid from 0.12 to 2.2 microns.</span>
+<span class="sd">    </span>
+<span class="sd">    The relation is </span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">        k = a \times (b + c/\lambda + d/\lambda^2 + e/\lambda^3),</span>
+<span class="sd">        </span>
+<span class="sd">    with :math:`\lambda` the wavelength.</span>
+
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+<span class="sd">    :param float a: (**Optional**) multiplicative coefficient</span>
+<span class="sd">    :param float bi: (**Optional**) coefficients for the relation above 0.63 microns</span>
+<span class="sd">    :param float bi: (**Optional**) coefficients for the relation below 0.63 microns</span>
+<span class="sd">        </span>
+<span class="sd">    :returns: Calzetti attenuation</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">lbda</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lbda</span><span class="p">)</span>
+    
+    <span class="c1"># Law is different below and beyond this threshold</span>
+    <span class="n">cond1</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span> <span class="mf">0.63</span><span class="p">)</span>
+    <span class="n">cond2</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mf">0.63</span><span class="p">)</span>
+    
+    <span class="n">k</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    <span class="n">k</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">b1</span> <span class="o">+</span> <span class="n">c1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">+</span> <span class="n">d1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">e1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">rv</span>
+    <span class="n">k</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">b2</span> <span class="o">+</span> <span class="n">c2</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">+</span> <span class="n">d2</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">e2</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">rv</span>
+    <span class="k">return</span> <span class="n">k</span></div>
+
+<div class="viewcode-block" id="dust_attenuation_calzetti"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.dust_attenuation_calzetti">[docs]</a><span class="k">def</span> <span class="nf">dust_attenuation_calzetti</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">4.05</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    . codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the dust attenuation using the Calzetti attenuation curve (could be more general adding a function name) from the colour excess.</span>
+
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    :param float ebv: colour excess</span>
+
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+
+<span class="sd">    :returns: dust attenuation in mag</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">return</span> <span class="n">ebv</span> <span class="o">*</span> <span class="n">calzetti_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="n">rv</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="cardelli_law"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.cardelli_law">[docs]</a><span class="k">def</span> <span class="nf">cardelli_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">3.1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Attenuation curve from Cardelli et al. (1989). The coefficients can be modified in input. </span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        In principle, this law is valid from 0.1 to 3.3 microns. For MW, Rv~3.1.</span>
+<span class="sd">    </span>
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: cardelli attenuation</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># Need to be sure we work with numpy arrays to have the right behaviour for the bineary operators</span>
+    <span class="n">lbda</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lbda</span><span class="p">)</span>
+    
+    <span class="n">condfuv</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">8.</span><span class="p">)</span>  <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span>
+    <span class="n">condnuv</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">3.3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">8.</span><span class="p">)</span>
+    <span class="n">condnuv1</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">5.9</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">8.</span><span class="p">)</span>
+    <span class="n">condnuv2</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">3.3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">5.9</span><span class="p">)</span>
+    <span class="n">condopt</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">1.1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">3.3</span><span class="p">)</span>
+    <span class="n">condnir</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">0.3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">1.1</span><span class="p">)</span>
+    
+    <span class="n">a</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    <span class="n">b</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    <span class="n">y</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    
+    <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">-</span> <span class="mi">8</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condnuv1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">5.9</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condnuv2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">-</span> <span class="mf">1.82</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>
+    
+    <span class="n">a</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">1.073</span> <span class="o">-</span> <span class="mf">0.628</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.137</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.070</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.752</span> <span class="o">-</span> <span class="mf">0.316</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.104</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">4.67</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.341</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.04473</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.009779</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">0.17699</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.50447</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.02427</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">+</span> <span class="mf">0.72085</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">+</span> <span class="mf">0.01979</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">5</span> <span class="o">-</span> <span class="mf">0.77530</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">6</span> <span class="o">+</span> <span class="mf">0.32999</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">7</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">0.574</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span> <span class="o">**</span> <span class="mf">1.61</span>
+    
+    <span class="n">b</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">13.670</span> <span class="o">+</span> <span class="mf">4.257</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.420</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.374</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">3.090</span> <span class="o">+</span> <span class="mf">1.825</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1.206</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">4.62</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.263</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.2130</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.1207</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.41338</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.28305</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.07233</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="mf">5.38434</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">-</span> <span class="mf">0.62251</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">5</span> <span class="o">+</span> <span class="mf">5.30260</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">6</span> <span class="o">-</span> <span class="mf">2.09002</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">7</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">0.527</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span> <span class="o">**</span> <span class="mf">1.61</span>
+    
+    <span class="n">al_av</span>       <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">/</span> <span class="n">rv</span>
+    <span class="n">k</span>           <span class="o">=</span> <span class="n">al_av</span> <span class="o">*</span> <span class="n">rv</span>
+    
+    <span class="k">return</span> <span class="n">k</span></div>
+
+<div class="viewcode-block" id="dust_attenuation_cardelli"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.dust_attenuation_cardelli">[docs]</a><span class="k">def</span> <span class="nf">dust_attenuation_cardelli</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">3.1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the dust attenuation using the Cardelli attenuation curve from the colour excess.</span>
+
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    :param float ebv: colour excess</span>
+
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: dust attenuation in mag</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">return</span> <span class="n">ebv</span> <span class="o">*</span> <span class="n">cardelli_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="n">rv</span><span class="p">)</span> </div>
+
+<div class="viewcode-block" id="flux_to_lum"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.flux_to_lum">[docs]</a><span class="k">def</span> <span class="nf">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert a flux into a luminosity.</span>
+
+<span class="sd">    :param floii: flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: luminosity in :math:`\rm{erg/s}`</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+        <span class="n">floii</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s.cm^2)&#39;</span><span class="p">)</span>
+    
+    <span class="n">dl</span>   <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">loii</span> <span class="o">=</span> <span class="p">(</span><span class="n">floii</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">dl</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;erg/s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">return</span> <span class="n">loii</span></div>
+
+
+<div class="viewcode-block" id="correct_extinction"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.correct_extinction">[docs]</a><span class="k">def</span> <span class="nf">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Correct for both galactic extinction and internal extinction.</span>
+
+<span class="sd">    :param av_fast: attenuation from FAST</span>
+<span class="sd">    :type av_fast: float or ndarray[float]</span>
+<span class="sd">    :param ebv: colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param floii: ionised gas flux</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: flux corrected of extinction</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+        <span class="n">lbda</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;micron&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="n">lbda_obs</span>       <span class="o">=</span> <span class="n">lbda</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+    
+    <span class="c1"># Galactic extinction at the observed wavelength</span>
+    <span class="n">abs_gal</span>        <span class="o">=</span> <span class="n">dust_attenuation_cardelli</span><span class="p">(</span><span class="n">lbda_obs</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">3.1</span><span class="p">)</span>
+    
+    <span class="c1"># Convert the extinction from FAST to the observed wavelength</span>
+    <span class="n">ext_fast</span>       <span class="o">=</span> <span class="n">av_fast</span> <span class="o">/</span> <span class="n">calzetti_law</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">.</span><span class="mi">550</span><span class="p">))</span>
+    <span class="n">abs_fast</span>       <span class="o">=</span> <span class="n">dust_attenuation_calzetti</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">ext_fast</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">4.05</span><span class="p">)</span>
+    
+    <span class="c1"># Apply the flux correction from the Milky Way and the intrinsic extinction</span>
+    <span class="n">flux_corr_gal</span>  <span class="o">=</span> <span class="n">floii</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">abs_gal</span><span class="p">)</span>
+    <span class="n">flux_corr_fast</span> <span class="o">=</span> <span class="n">flux_corr_gal</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">abs_fast</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">flux_corr_fast</span></div>
+
+
+<span class="c1">####################################################</span>
+<span class="c1">#             Infer gas masses and SFR             #</span>
+<span class="c1">#################################################### </span>
+
+<div class="viewcode-block" id="mass_gas_sfr"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.mass_gas_sfr">[docs]</a><span class="k">def</span> <span class="nf">mass_gas_sfr</span><span class="p">(</span><span class="n">sfr</span><span class="p">,</span> <span class="n">rd</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert the SFR into a gas mass assuming it is uniformly distributed in :math:`2.2 \times R_{\rm{d}}`, with :math:`R_{\rm{d}}` the disk scale length.</span>
+
+<span class="sd">    :param sfr: SFR in :math:`M_{\odot}/{\rm{yr}}`. Optionally, if given as an astropy Quantity, it will be converted to :math:`M_{\odot}/{\rm{yr}}`.</span>
+<span class="sd">    :type sfr: float or ndarray[float]</span>
+<span class="sd">    :param rd: disk scale length in :math:`\rm{pc}`. Optionally, if given as an astropy Quantity, it will be converted to :math:`\rm{pc}`.</span>
+<span class="sd">    :type rd: float or ndarray[float]</span>
+
+<span class="sd">    :returns: gas mass in :math:`M_{\odot}`</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># Astropy Quantities</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">rd</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+        <span class="n">rd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;pc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sfr</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+        <span class="n">sfr</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;solMass/yr&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sfr</span> <span class="o">/</span> <span class="mf">2.5e-10</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mass_gas_kennicutt"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.mass_gas_kennicutt">[docs]</a><span class="k">def</span> <span class="nf">mass_gas_kennicutt</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert the ionised gas flux into a gas mass assuming it is uniformly distributed in 2.2*rd.</span>
+<span class="sd">    </span>
+<span class="sd">    :param floii: ionised gas flux in :math:`\rm{erg/s/cm2}`</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param rd: disk scale length in :math:`\rm{pc}`. Optionally, if given as an astropy Quantity, it will be converted to :math:`\rm{pc}`.</span>
+<span class="sd">    :type rd: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: gas mass using the Kennicutt law and its error in :math:`M_{\odot}`</span>
+<span class="sd">    :rtype: float or ndarray[float], float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">rd</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+        <span class="n">rd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;pc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="n">loii</span>  <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">mgas</span>  <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">4.7564e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">dmgas</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.9438e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">return</span> <span class="n">mgas</span><span class="p">,</span> <span class="n">dmgas</span></div>
+
+
+<div class="viewcode-block" id="sfr_kennicutt_oii"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.sfr_kennicutt_oii">[docs]</a><span class="k">def</span> <span class="nf">sfr_kennicutt_oii</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the SFR from the ionised gas flux.</span>
+<span class="sd">    </span>
+<span class="sd">    :param floii: ionised gas flux</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: SFR in :math:`M_{\odot}/{\rm{yr}}` and its error.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">loii</span> <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">sfr</span>  <span class="o">=</span> <span class="mf">1.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
+    <span class="n">dsfr</span> <span class="o">=</span> <span class="mf">0.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
+    
+    <span class="k">return</span> <span class="n">sfr</span><span class="p">,</span> <span class="n">dsfr</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">wilfried library</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galaxy/index.html">Galaxy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galfit/index.html">Galfit module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Wilfried Mercier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

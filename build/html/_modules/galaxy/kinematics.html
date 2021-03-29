@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.kinematics &#8212; wilfried library 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for galaxy.kinematics</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">Fonctions related to kinematical modelling of galaxies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">numpy</span>             <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.io.ascii</span>  <span class="k">as</span>     <span class="nn">asci</span>
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span>   <span class="k">as</span>     <span class="nn">fits</span>
+<span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span>     <span class="nn">ct</span>
+<span class="kn">from</span>   <span class="nn">.symlinks.coloredMessages</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span>   <span class="nn">.MUSE</span>                       <span class="kn">import</span> <span class="n">compute_lsfw</span>
+
+<span class="c1">##########################################################################################################</span>
+<span class="c1">#                                         Kinematical properties                                         #</span>
+<span class="c1">##########################################################################################################</span>
+
+<div class="viewcode-block" id="velocityAtR"><a class="viewcode-back" href="../../galaxy/kinematics.html#galaxy.kinematics.velocityAtR">[docs]</a><span class="k">def</span> <span class="nf">velocityAtR</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">Vt</span><span class="p">,</span> <span class="n">Rt</span><span class="p">,</span> <span class="n">Rlast</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Assuming a linear ramp model, try to compute the velocity at a single radius</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        V(R) = V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t.</span>
+
+<span class="sd">    :param radius: position where the velocity must be computed (in the same units as Rt and Rlast)</span>
+<span class="sd">    :type radius: int or float</span>
+<span class="sd">    :param float Vt: plateau velocity</span>
+<span class="sd">    :param float Rt: radius of transition between the inner linear slope and the outer plateau</span>
+<span class="sd">    :param float Rlast: distance from the centre of the furthest pixel used in the fit</span>
+<span class="sd">    </span>
+<span class="sd">    :param bool verbose: (**Optional**) whether print error messages or not</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: the computed velocity in units of Vt and a boolean value indicating whether the computed value is reliable or not</span>
+<span class="sd">    :rtype: int or float and bool</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># If Rt&lt;Rlast or (Rt&gt;Rlast and radius&lt;Rlast), there is no issue, but when Rt&gt;Rlast, the value is much more unconstrained</span>
+    <span class="k">if</span> <span class="n">Rt</span> <span class="o">&lt;=</span> <span class="n">Rlast</span> <span class="ow">or</span> <span class="n">radius</span> <span class="o">&lt;=</span> <span class="n">Rlast</span><span class="p">:</span>
+        <span class="n">ok</span>           <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">radius</span> <span class="o">&lt;</span> <span class="n">Rt</span><span class="p">:</span>
+            <span class="n">velocity</span> <span class="o">=</span> <span class="n">radius</span><span class="o">/</span><span class="n">Rt</span><span class="o">*</span><span class="n">Vt</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">velocity</span> <span class="o">=</span> <span class="n">Vt</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">(</span><span class="s1">&#39;Rt &gt; Rlast by </span><span class="si">%.1f</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">Rt</span><span class="o">-</span><span class="n">Rlast</span><span class="p">)))</span>
+        <span class="n">ok</span>           <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">velocity</span>     <span class="o">=</span> <span class="n">radius</span><span class="o">/</span><span class="n">Rt</span><span class="o">*</span><span class="n">Vt</span>
+        
+    <span class="k">return</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">ok</span></div>
+
+<span class="c1">####################################################################################################################</span>
+<span class="c1">#                                                Analysis part                                                     #</span>
+<span class="c1">####################################################################################################################</span>
+
+<div class="viewcode-block" id="apply_mask"><a class="viewcode-back" href="../../galaxy/kinematics.html#galaxy.kinematics.apply_mask">[docs]</a><span class="k">def</span> <span class="nf">apply_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    This function applies a mask to an image and puts nan in the masked area.</span>
+
+<span class="sd">    :param ndarray mask: array containing the indices of the pixels to be masked</span>
+<span class="sd">    :param ndarray image: image to be masked</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: the masked image</span>
+<span class="sd">    :rtype: ndarray</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">newImage</span>       <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">newImage</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">return</span> <span class="n">newImage</span></div>
+
+
+<div class="viewcode-block" id="clean_galaxy"><a class="viewcode-back" href="../../galaxy/kinematics.html#galaxy.kinematics.clean_galaxy">[docs]</a><span class="k">def</span> <span class="nf">clean_galaxy</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">outputpath</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">lsfw</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_mask</span><span class="o">=</span><span class="s1">&#39;snr&#39;</span><span class="p">,</span> <span class="n">thrl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thru</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="s1">&#39;_ssmooth&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;_OII3729&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    This function cleans the maps created by CAMEL for a given galaxy.</span>
+
+<span class="sd">    :param float fraction: fraction for a lower threshold on the velocity dispersion map</span>
+<span class="sd">    :param float lsfw: spectral resolution in *km/s* (sigma)</span>
+<span class="sd">    :param str name: name of the galaxy</span>
+<span class="sd">    :param str ouputpath: path where the ouput data will be stored</span>
+<span class="sd">    :param str path: path where the input data are stored</span>
+
+<span class="sd">    :param str clean: (**Optional**) name of the manually cleaned map. If None, no cleaned map is used to add an additional mask.</span>
+<span class="sd">    :param data_mask: (**Optional**) basename of the map used for the threshold (e.g. &#39;snr&#39; to use the signal to noise ratio map)</span>
+<span class="sd">    :type data_mask: str or list[str]</span>
+<span class="sd">    :param str line: (**Optional**)  line used (suffixe, e.g. &#39;_Ha&#39;)</span>
+<span class="sd">    :param str option: (**Optional**) option of CAMEL to find the files to clean (e.g. &#39;_ssmooth&#39;)</span>
+<span class="sd">    :param thrl: (**Optional**)  lower threshold for cleaning. Is None, the minimum (apart from nan) will be used.</span>
+<span class="sd">    :type thrl: float or list[float]</span>
+<span class="sd">    :param thru: (**Optional**)  upper threshold for cleaning. Is None, the maximum (apart from nan) will be used.</span>
+<span class="sd">    :type thru: float or list[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1">#Checking path exists</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: path </span><span class="si">% s</span><span class="s1"> does not exist&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
+        <span class="n">answer</span>      <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Should we skip this galaxy ? [Y or N] &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">()</span>
+ 
+    <span class="c1">#Checking output path exists</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outputpath</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: path </span><span class="si">% s</span><span class="s1"> does not exist&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">outputpath</span><span class="p">)))</span>
+        <span class="n">answer</span>      <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Should we skip this galaxy ? [Y or N] &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">()</span>
+    
+    <span class="c1"># Dispersion threshold</span>
+    <span class="n">smin</span>            <span class="o">=</span> <span class="n">lsfw</span> <span class="o">*</span> <span class="n">fraction</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: dispersion threshold </span><span class="si">% s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">smin</span><span class="p">)))</span>
+    
+    <span class="c1"># Correct path name if wrongly provided</span>
+    <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+        <span class="n">path</span>       <span class="o">+=</span> <span class="s1">&#39;/&#39;</span>
+        
+    <span class="k">if</span> <span class="n">outputpath</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+        <span class="n">outputpath</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span>
+        
+    <span class="c1"># Set data_mask to a list if it is only a string</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_mask</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">data_mask</span>   <span class="o">=</span> <span class="p">[</span><span class="n">data_mask</span><span class="p">]</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thrl</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">thrl</span>        <span class="o">=</span> <span class="p">[</span><span class="n">thrl</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thru</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">thru</span>        <span class="o">=</span> <span class="p">[</span><span class="n">thru</span><span class="p">]</span>
+    
+    <span class="c1"># Get file in path with given name and option + dispersion map + map used for the mask (generally snr)</span>
+    <span class="n">files</span>           <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="n">option</span> <span class="o">+</span> <span class="s1">&#39;*.fits&#39;</span><span class="p">)</span>
+    <span class="n">fim0</span>            <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="n">option</span> <span class="o">+</span> <span class="s1">&#39;_disp_*[pn].fits&#39;</span><span class="p">)</span>
+    <span class="n">fim1</span>            <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name_mask</span> <span class="ow">in</span> <span class="n">data_mask</span><span class="p">:</span>
+        <span class="n">fim1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="n">option</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">name_mask</span> <span class="o">+</span> <span class="s1">&#39;_*[pn].fits&#39;</span><span class="p">))</span>
+    
+    <span class="c1"># Try to open the dispersion file (first extension)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fim0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">as</span> <span class="n">hdul0</span><span class="p">:</span>
+            <span class="n">im0</span>     <span class="o">=</span> <span class="n">hdul0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: using </span><span class="si">% s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fim0</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: </span><span class="si">% s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="n">option</span> <span class="o">+</span> <span class="s1">&#39;_disp_*[pn].fits&#39;</span><span class="p">)))</span>
+        <span class="n">answer</span>      <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Should we skip this galaxy ? [Y or N] &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">()</span>
+        
+    <span class="c1"># Try to open the map used for the mask (first extension for each map in fim1 list)</span>
+    <span class="n">im1</span>             <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fi1</span><span class="p">,</span> <span class="n">name_mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fim1</span><span class="p">,</span> <span class="n">data_mask</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fi1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">as</span> <span class="n">hdul1</span><span class="p">:</span>
+                <span class="n">im1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hdul1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: using </span><span class="si">% s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fi1</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: </span><span class="si">% s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="n">option</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">name_mask</span> <span class="o">+</span> <span class="s1">&#39;_*[pn].fits&#39;</span><span class="p">)))</span>
+            <span class="n">answer</span>  <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Should we skip this galaxy ? [Y or N] &#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">]:</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">()</span>
+    
+    <span class="c1">##################################################################</span>
+    <span class="c1">#                         Creating masks                         #</span>
+    <span class="c1">##################################################################</span>
+    
+    <span class="c1"># Dispersion mask: True where im0&gt;=smin</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: making dispersion mask&#39;</span><span class="p">)</span>
+    <span class="n">mask0</span>     <span class="o">=</span> <span class="n">create_mask</span><span class="p">(</span><span class="n">im0</span><span class="p">,</span> <span class="n">thrl</span><span class="o">=</span><span class="n">smin</span><span class="p">)</span>
+    
+    <span class="c1"># Provided masks: True where thrl&lt;=im1&lt;=thru</span>
+    <span class="n">mask1</span>     <span class="o">=</span> <span class="n">mask0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">*</span> <span class="kc">False</span> <span class="o">+</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">im</span><span class="p">,</span> <span class="n">tl</span><span class="p">,</span> <span class="n">tu</span><span class="p">,</span> <span class="n">name_mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">im1</span><span class="p">,</span> <span class="n">thrl</span><span class="p">,</span> <span class="n">thru</span><span class="p">,</span> <span class="n">data_mask</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: making an additional mask (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span><span class="n">name_mask</span><span class="p">)</span>
+        <span class="n">mask1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">mask1</span><span class="p">,</span> <span class="n">create_mask</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">thrl</span><span class="o">=</span><span class="n">tl</span><span class="p">,</span> <span class="n">thru</span><span class="o">=</span><span class="n">tu</span><span class="p">))</span>
+    
+    <span class="c1"># Keep positions where the values are out of bounds</span>
+    <span class="n">mask</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask0</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask1</span><span class="p">)))</span>
+    
+    <span class="c1">##############################################################</span>
+    <span class="c1">#               Using the manually cleaned map               #</span>
+    <span class="c1">##############################################################</span>
+    
+    <span class="k">if</span> <span class="n">clean</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fcl</span>          <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">clean</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get data and generate a mask wherever data is not None (neither upper nor lower threshold applied)</span>
+            <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fcl</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">as</span> <span class="n">hducl</span><span class="p">:</span>
+                <span class="n">imcl</span> <span class="o">=</span> <span class="n">hducl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+                
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: using </span><span class="si">% s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fcl</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="p">)</span>    
+            <span class="n">maskcl</span>   <span class="o">=</span> <span class="n">create_mask</span><span class="p">(</span><span class="n">imcl</span><span class="p">,</span> <span class="n">thrl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thru</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">mask2</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask0</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask1</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">maskcl</span><span class="p">)))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;clean_galaxy: </span><span class="si">% s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">clean</span><span class="p">))</span> <span class="p">)</span>
+            <span class="n">clean</span>    <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1">#################################################</span>
+    <span class="c1">#             Updating all the maps             #</span>
+    <span class="c1">#################################################</span>
+    
+    <span class="k">for</span> <span class="n">fim</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        
+        <span class="c1"># We skip files which are already cleaned (either manually or automatically). This assumes that cleaned files have a &#39;clean&#39; keyword in their name</span>
+        <span class="k">if</span> <span class="s1">&#39;clean&#39;</span> <span class="ow">in</span> <span class="n">fim</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fim</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">im</span>           <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+            
+        <span class="c1"># We skip datacubes</span>
+        <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Setting up the threshold value that will appear in the output file name</span>
+        <span class="n">thr</span>              <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">notNonethrl</span>      <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">thrl</span><span class="p">))</span>
+        <span class="n">notNonethru</span>      <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">thru</span><span class="p">))</span>
+        <span class="k">if</span>  <span class="nb">len</span><span class="p">(</span><span class="n">notNonethrl</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="n">thr</span>          <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">notNonethrl</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">notNonethru</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">thr</span>          <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">notNonethru</span><span class="p">)</span>
+
+        <span class="c1"># Directly modify the file data by applying the master mask (velocity dispersion + any other mask used such as snr)</span>
+        <span class="k">if</span> <span class="n">clean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">apply_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">im</span><span class="p">)</span>
+            <span class="n">fimcl</span>        <span class="o">=</span> <span class="n">fim</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_clean</span><span class="si">%3.1f</span><span class="s1">.fits&#39;</span> <span class="o">%</span><span class="n">thr</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">apply_mask</span><span class="p">(</span><span class="n">mask2</span><span class="p">,</span> <span class="n">im</span><span class="p">)</span>
+            <span class="n">fimcl</span>        <span class="o">=</span> <span class="n">fim</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_mclean</span><span class="si">%3.1f</span><span class="s1">.fits&#39;</span> <span class="o">%</span><span class="n">thr</span>
+            
+        <span class="n">hdul</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">outputpath</span> <span class="o">+</span> <span class="n">fimcl</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;output written in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">outputpath</span><span class="o">+</span><span class="n">fimcl</span><span class="p">))</span>
+    
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="clean_setofgalaxies"><a class="viewcode-back" href="../../galaxy/kinematics.html#galaxy.kinematics.clean_setofgalaxies">[docs]</a><span class="k">def</span> <span class="nf">clean_setofgalaxies</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;galsList.input&#39;</span><span class="p">,</span> <span class="n">logFile</span><span class="o">=</span><span class="s1">&#39;folderList.list&#39;</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">data_mask</span><span class="o">=</span><span class="s1">&#39;snr&#39;</span><span class="p">,</span> <span class="n">thrl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thru</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="s1">&#39;_ssmooth&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s1">&#39;_OII3729&#39;</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Clean maps created by camel for a list of galaxies.</span>
+<span class="sd">        </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        **How to use**</span>
+<span class="sd">        </span>
+<span class="sd">        Provide:</span>
+<span class="sd">            - a filename containing two columns: the absolute file name of every galaxy config file (thus ending with .config) and their corresponding spectral resolution in km/s (e.g. /home/wilfried/CGr114_s/o2/CGr114_101_o2.config 30).</span>
+<span class="sd">            - a keyword for the additional mask (apart from the spectral width criterion), or a list of keywords</span>
+<span class="sd">            - thresholds if necessary</span>
+<span class="sd">            - a clean map if there is one. The same name will be used for every galaxy. Best practice would be to use an identical name for all the galaxies (located in different folders), such as &#39;clean.fits&#39;.</span>
+<span class="sd">    </span>
+<span class="sd">    :param str filename: name of the input file containing two columns: the list of galaxies and the associated spectral resolution in *km/s* (sigma)</span>
+<span class="sd">    :param str path: path where the input file is stored</span>
+<span class="sd">    :param str logFile: name of of the file containing the list of the output folder names</span>
+<span class="sd">            </span>
+<span class="sd">    :param str clean: (**Optional**) name of the manually cleaned map.If None, no clean file is used to add an another manual mask.</span>
+<span class="sd">    :param data_mask: (**Optional**) basename of the map used for threshold (e.g. &#39;snr&#39; for signal to noise ratio map)</span>
+<span class="sd">    :type data_mask: str or list[str]</span>
+<span class="sd">    :param float fraction: (**Optional**) fraction for a lower threshold on the velocity dispersion map</span>
+<span class="sd">    :param float thrl: (**Optional**) lower threshold for cleaning. Is None, the minimum (apart from nan) will be used.</span>
+<span class="sd">    :param float thru: (**Optional**) upper threshold for cleaning. If None, the maximum (apart from nan) will be used.</span>
+<span class="sd">    :param str option: (**Optional**) option from camel to find the files to clean (e.g. &#39;_ssmooth&#39;)</span>
+<span class="sd">    :param str line: (**Optional**) line used (suffixe, e.g. &#39;_Ha&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># If the user provides o2 as line we change it to the correct value</span>
+    <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;o2&#39;</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;_OII3729&#39;</span>
+    
+    <span class="n">cat</span>                     <span class="o">=</span> <span class="n">asci</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    
+    <span class="c1"># Generating a new name if the given file name already exsits</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">logFile</span><span class="p">):</span>
+        <span class="n">splt</span>                <span class="o">=</span> <span class="n">logFile</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">splt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">splt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">num</span>             <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">splt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">splt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>         <span class="o">=</span> <span class="n">splt</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">num</span>             <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">logFile</span>             <span class="o">=</span> <span class="n">splt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="n">end</span>
+        
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">logFile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">cat</span><span class="p">:</span>
+            <span class="c1"># Get name without the extension at the end and path</span>
+            <span class="n">name</span>            <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.config&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">galPath</span>         <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.config&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="n">clean_galaxy</span><span class="p">(</span><span class="n">galPath</span><span class="p">,</span> <span class="n">galPath</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">data_mask</span><span class="o">=</span><span class="n">data_mask</span><span class="p">,</span> <span class="n">thru</span><span class="o">=</span><span class="n">thru</span><span class="p">,</span> <span class="n">thrl</span><span class="o">=</span><span class="n">thrl</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="n">option</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="n">clean</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">galPath</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="compute_velres"><a class="viewcode-back" href="../../galaxy/kinematics.html#galaxy.kinematics.compute_velres">[docs]</a><span class="k">def</span> <span class="nf">compute_velres</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">lbda0</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="mf">5.835e-8</span><span class="p">,</span> <span class="n">a1</span><span class="o">=-</span><span class="mf">9.080e-4</span><span class="p">,</span> <span class="n">a0</span><span class="o">=</span><span class="mf">5.983</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the spectral resolution in terms of velocity sigma from the line restframe wavelength, the redshift of the source and from MUSE LSF model</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        {\rm{FWHM}}(\lambda) = a2 \times \lambda^2 + a1 \times \lambda + a0</span>
+
+<span class="sd">    :param float lbda0: rest frame wavelength of the line used to infer kinematics in **Angstroms**</span>
+<span class="sd">    :param float z: redshift of the galaxy</span>
+
+<span class="sd">    :param float a0: (**Optional**) lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    :param float a1: (**Optional**) lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    :param float a2: (**Optional**) lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: the observed (redshifted) wavelength, the LSF FWHM in **Angstroms** and the LSF dispersion in **km/s**, assuming a Gaussian shape for the LSF profile.</span>
+<span class="sd">    :rtype: float and float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">lbda</span>   <span class="o">=</span> <span class="n">lbda0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">fwhm</span>   <span class="o">=</span> <span class="n">compute_lsfw</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">lbda0</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="mf">5.835e-8</span><span class="p">,</span> <span class="n">a1</span><span class="o">=-</span><span class="mf">9.080e-4</span><span class="p">,</span> <span class="n">a0</span><span class="o">=</span><span class="mf">5.983</span><span class="p">)</span>
+    <span class="n">velsig</span> <span class="o">=</span> <span class="n">fwhm</span> <span class="o">/</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span> <span class="o">*</span> <span class="n">ct</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="mf">1e-3</span>
+    <span class="k">return</span> <span class="n">lbda</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">velsig</span></div>
+
+
+<div class="viewcode-block" id="velres_setofgalaxies"><a class="viewcode-back" href="../../galaxy/kinematics.html#galaxy.kinematics.velres_setofgalaxies">[docs]</a><span class="k">def</span> <span class="nf">velres_setofgalaxies</span><span class="p">(</span><span class="n">inname</span><span class="p">,</span> <span class="n">outname</span><span class="p">,</span> <span class="n">lbda0</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="mf">5.835e-8</span><span class="p">,</span> <span class="n">a1</span><span class="o">=-</span><span class="mf">9.080e-4</span><span class="p">,</span> <span class="n">a0</span><span class="o">=</span><span class="mf">5.983</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the resolution in velocity for a list of galaxies and write it into an output file along the corresponding file name.</span>
+<span class="sd">        </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        **How to use**</span>
+<span class="sd">        </span>
+<span class="sd">        Provide an input and output file names and the line rest-frame wavelength in Angstroms. The input file shoudl contain the following columns:</span>
+<span class="sd">            - galaxy file names</span>
+<span class="sd">            - redshift of the galaxies</span>
+
+<span class="sd">    :param str inname: input file name containing the list of galaxies and their redshift. In this version, the redshift is in the name itself, as well as the line used.</span>
+<span class="sd">    :param str outname: output file name containing the list of galaxies and the spectral resolution</span>
+
+<span class="sd">    :param float a0: (**Optional**) lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    :param float a1: (**Optional**) lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    :param float a2: (**Optional**) lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">cat</span>                        <span class="o">=</span> <span class="n">asci</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">inname</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">cat</span><span class="p">:</span>
+            <span class="n">z</span>                  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">lbda</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">velsig</span> <span class="o">=</span> <span class="n">compute_velres</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">lbda0</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="n">a2</span><span class="p">,</span> <span class="n">a1</span><span class="o">=</span><span class="n">a1</span><span class="p">,</span> <span class="n">a0</span><span class="o">=</span><span class="n">a0</span><span class="p">)</span>
+            <span class="n">line</span>               <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:100}</span><span class="s1"> </span><span class="si">{1:5.1f}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">velsig</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="create_mask"><a class="viewcode-back" href="../../galaxy/kinematics.html#galaxy.kinematics.create_mask">[docs]</a><span class="k">def</span> <span class="nf">create_mask</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">thrl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thru</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    This function creates a mask from an image using a lower and an upper threshold.</span>
+
+<span class="sd">    :param ndarray image: image used to create the mask</span>
+<span class="sd">    </span>
+<span class="sd">    :param float thrl: (**Optional**) lower threshold</span>
+<span class="sd">    :param float thru: (**Optional**) upper threshold</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: boolean mask (True everywhere thrl&lt;=image&lt;=thru)</span>
+<span class="sd">    :rtype: ndarray(bool)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">thrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">thrl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">thru</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">thru</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">It seems that no maximum value can be found. Please check that your .fits file is not corrupted.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;create_mask: lower threshold </span><span class="si">% s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">thrl</span><span class="p">))</span> <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;create_mask: upper threshold </span><span class="si">% s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">thru</span><span class="p">))</span> <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">((</span><span class="n">image</span> <span class="o">&lt;=</span> <span class="n">thru</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">image</span> <span class="o">&gt;=</span> <span class="n">thrl</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">wilfried library</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galaxy/index.html">Galaxy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galfit/index.html">Galfit module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Wilfried Mercier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
