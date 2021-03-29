@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct 10 13:29:00 2019
-
-@author: Wilfried Mercier - IRAP
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 Functions related to automating galfit modelling.
 """
@@ -27,7 +25,7 @@ col.init()
 #          Global variables              #
 ##########################################
 
-# If you change a parameter name in a function declaration, you must also change the name here
+# keys allowed per model. If you change a parameter name in a function declaration, you must also change the name here
 fullKeys = {'header': {'parameters':['outputImage', 'xmin', 'xmax', 'ymin', 'ymax', 'inputImage', 'sigmaImage', 'psfImage', 'maskImage', 'couplingFile', 'psfSamplingFactor', 'zeroPointMag', 'arcsecPerPixel', 'sizeConvX', 'sizeConvY', 'displayType', 'option'], 
                        'default':['output.fits', 0, 100, 0, 100, "none", "none", "none", "none", "none", 1, 30.0, [0.03, 0.03], None, None, "regular", 0]},
                                    
@@ -71,7 +69,7 @@ for i in [fullKeys[name]['parameters'] for name in fullKeys]:
     everyParam += i
 everyParam = unique(everyParam)
             
-# Keeping track of the model functions
+#: Recognised models
 modelFunctions = {  'deVaucouleur': gendeVaucouleur, 
                     'edgeOnDisk'  : genEdgeOnDisk,     
                     'expDisk'     : genExpDisk,    
@@ -88,10 +86,10 @@ modelFunctions = {  'deVaucouleur': gendeVaucouleur,
                     'boxyness'    : boxy_diskyness
                 }
 
-# Additional tag functions
+#: Additional tag functions
 tags = ['fourier', 'bending', 'boxyness']
 
-# Default pdf viewer
+#: Default pdf viewer
 myPDFViewer = 'okular'
 
 
@@ -101,97 +99,171 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
                divergingNorm=True,
                numThreads=8):
     """
-    Run galfit after creating config files if necessary. If the .feedme files already exist, just provide run_galfit(yourList) to run galfit on all the galaxies.
-    If some or all of the .feedme files do not exist, at least a header, a list of profiles and input names must be provided in addition to the .feedme files names.
-    See writeConfigs function for more information.
     
-    It is possible to skip a few steps if it has already been done. Specifically one can skip
-            - .feedme and .constraint files creation (setting forceConfig keyword to False). This is done by default in order to avoid to destroy already existing input files
-            - galfit modelling (setting noGalfit to True). This can be useful if one only wants to make the pdf recap files when the modelling has already been done
-            - opening of the recap files at the end of the program (setting showRecapFiles to False)
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory input
-    ----------------
-        feedmeFiles : list of str
-            name of the galfit .feedme files to run galfit onto
-                
-    Optional inputs
-    ---------------
-        divergingNorm : bool
-            whether to use a diverging norm in the output pdf or not. Default is True.
-        constraints : dict
-            list of dictionaries used to generate the constraints. See below for an explanation on how to use it. Default is None (no constraint file shall be made).
+    Run GALFIT given some models and a header. If necessary, it creates GALFIT config files. 
+    
+    If the FEEDME and CONSTRAINT files already exist, just use the following command to run GALFIT on all the galaxies
+    
+    >>> run_galfit(yourList)
+    
+    where yourList is a list of FEEDME files.
+    
+    .. note ::
+    
+        If at least one FEEDME file does not exist, the following information must be provided
         
-            Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
-                
-                Dictionaries keys
-                -----------------
-                
-                'constraint' : dict with keys 'type' and 'value'
-                    set the type of constraint one wants to use and potentially the related range. 
-                    The possible 'type' of constraint are:
-                        - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
-                        - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
-                        - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
-                        - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
-                        - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
-                        - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
-                    
-                    And the corresponding values are:
-                        - 'offset' for an offset and 'ratio' for a ratio
-                        - a list of two float to define bounds for the other types
-                
-                'components' : int/list of int
-                    number (of appearance in the listProfiles) of the galfit models one wants to constrain.:
-                        - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
-                        - for both relative and absolute ranges, a single profile number (int) must be given
-                        - for component wise ranges or ratios, a list of two numbers (int) must be provided
-                        
-                'parameter' : str
-                    name of the parameter to contrain
+        * a header
+        * a list of profiles (models) 
+        * input (HST) file names
         
-        forceConfig : bool
-            whether to make all the configuration files no matter if they exist or not. Default is False (configuration files shall not be modified).
-        header : dict
-            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file.
-            You do not need to provide an input and an output image file name as this is given with the inputNames keyword.
+        **See** :py:func:`writeConfigs` **function for more information.**
+    
+        Using the correct optional arguments, one can **skip** the following steps:
             
-        inputNames : list of str
-            list of galaxies .fits files input names in the header
+        * FEEDME and CONSTRAINT files creation by setting **forceConfig** to False. This is done by default in order to avoid to destroy already existing input files.
+        * GALFIT modelling by setting **noGalfit** to True. This can be useful if one only wants to make the pdf recap files when the modelling has already been done.
+        * generating pdf recap files at the end of the program by setting **noPDF** to True
+        * opening of the recap files at the end of the program by setting **showRecapFiles** to False
+        * showing the content of the LOG file once the fit is complete by setting **showLog** to False. By default, LOG files are not shown.
+
+    :param list[str] feedmeFiles: name of the GALFIT FILES to run galfit onto
+                
+    :param bool divergingNorm: (**Optional**) whether to use a diverging norm in the output pdf figure or not
+    :param list[dict] constraints: (**Optional**)
+        
+        list of dictionaries used to generate the constraints. If None, no constraints are applied. 
+    
+        Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint' (see below for use cases):
             
-        listProfiles : list of dict
-            list of dictionaries. Each dictionnary corresponds to a profile:
-                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
-                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
-                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
-                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
+        * 'constraint' : dict with keys 'type' and 'value'
             
+            This sets the type of constraint one wants and its range. The possible 'type' of constraints are:
+                
+            * 'offset' to set the value of some parameter between different profiles relative to one another (based on the initial values provided in the FEEDME file)
+            * 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the FEEDME file)
+            * 'absoluteRange' to set an asbolute range of values for some parameter
+            * 'relativeRange' to set a range of possible values around the initial value given in the FEEDME file
+            * 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but from another component
+            * 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
+        
+            And the corresponding values are:
+            
+            * single value for 'offset' and 'ratio' types
+            * a list of two floats to define bounds for the other types
+    
+        * 'components' : int or list[int]
+        
+            The number(s) associated to the model(s) one wants to constrain:
+            
+            * for 'offset' and 'ratio' types a list of an indefinite number of int can be given
+            * for both relative and absolute ranges, a single profile number (int) must be given
+            * for component wise ranges or ratios, a list of two numbers (int) must be provided
+            
+        * 'parameter' : str
+        
+            Name of the parameter to contrain.
+        
+        .. rubric:: **Example**
+                
+        Let us assume we want to model two Sersic components such that we have :samp:`listProfiles=[sersic1, sersic2]` where
+        
+        >>> sersic1 = {'name':'sersic', 'x':81, 'y':60, 'n':1, 'fixedParams':['n'],                 're':10, 'mag':25, 'PA':40}
+        >>> sersic2 = {'name':'sersic', 'x':81, 'y':60, 'n':4, 'fixedParams':['n', 'PA', 'bOvera'], 're':2,  'mag':25}
+        
+        Assume we want to constrain the X coordinate of :samp:`sersic1` and :samp:`sersic2` to always be similar, then we can do
+        
+        >>> c1 = {'components':[1, 2], 'parameter':'x', 'constraint':{'type':'offset', 'value':0.0}}
+        
+        Similarly, for the Y coordinate, we can do
+        
+        >>> c2 = {'components':[1, 2], 'parameter':'y', 'constraint':{'type':'offset', 'value':0.0}}
+        
+        In both cases, the number 1 refers to the first model appearing in listProfiles (i.e. :samp:`sersic1`), and the number 2 to :samp:`sersic2`.
+        
+        Additionnaly, let us say we want to force the X and Y coordinates to be allowed to change by :math:`\pm 10` relative to the initial value. This can be done with
+        
+        >>> c3 = {'components':1, 'parameter':'x', 'constraint':{'type':'relativeRange', 'value':[-10, 10]}}
+        >>> c4 = {'components':1, 'parameter':'y', 'constraint':{'type':'relativeRange', 'value':[-10, 10]}}
+        
+        Now, it still remains to build the constraint list, so that we write
+        
+        >>> constraint = [c1, c2, c3, c4]
+        
+        And we provide :samp:`constraints=constraint` when calling :func:`run_galfit`.
+            
+    :param bool forceConfig: (**Optional**) whether to make all the configuration files no matter if they exist or not
+    :param dict header: (**Optional**) dictionnary with key names corresponding to input parameter names in :py:func:`genHeader` function
+        
+        .. note::
+            
+            You do not need to provide an input and an output image files as this is given with the inputNames keyword.
+        
+    :param list[str] inputNames: (**Optional**) list of galaxies input .fits files
+    
+    :param list[dict] listProfiles: (**Optional**) list of profiles (models). Each dictionnary corresponds to a profile:
+    
+        * A key 'name' is mandatory to indentify the profile. Its value is one of the following:
+            
+            * 'deVaucouleur' for a de Vaucouleur profile
+            * 'edgeOnDisk' for an edge-on (razor-thin) disk
+            * 'expDisk' for an exponential disk
+            * 'ferrer' for a Ferrer profile
+            * 'gaussian' for a Gaussian 
+            * 'king' for a King profile
+            * 'moffat' for a Moffat profile
+            * 'nuker' for a Nuker profile
+            * 'psf'
+            * 'sersic' for a Sersic profile
+            * 'sky' for a sky gradient
+            
+        * Other keys correspond to the parameters corresponding to each profile. **See each profile description, to know which key to use**. Only mandatory parameters can be provided as keys if the default values seem fine to you
+        
+        .. note::
+
             You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
-                'fourier', 'bending', 'boxyness'
-            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
-                    
-        noGalfit : bool
-            whether to not run galfit or not. Default is False (galfit shall be run).
-        noPDF : bool
-            whether to make the pdf recap files or not. Default is False (recap file shall be made).
-        numThreads : int
-            number of threads used to parallelise. Default is 8.
-        outputNames: list of str
-            list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
-        pathFeedme : str
-            location of the feedme file names relative to the current folder or in absolute
-        pathIn : str
-            location of the input file names relative to the current folder or in absolute
-        pathLog : str
-            location of the log file names relative to the current folder or in absolute
-        pathOut : str
-            location of the output file names relative to the current folder or in absolute
-        pathRecap : str
-            location of the pdf recap files relative to the current folder or in absolute
-        showLog : bool
-            whether to show log files or not. Default is False.
-        showRecapFiles : bool
-            whether to show the recap files made at the end or not. Default is True.
+            
+            * 'fourier'
+            * 'bending'
+            * 'boxyness'
+                
+            These keys must also contain dictionnaries whose keys are the parameters of the functions :py:func:`fourierModes`, :py:func:`bendingModes` and :py:func:`boxy_diskyness`.
+            
+        .. rubric:: **Example**
+                       
+        Let us assume we want to model two Sersic components such that we have :samp:`listProfiles=[sersic1, sersic2]`, where :samp:`sersic1` is an exponential disk (Sersic with n=1), and :samp:`sersic2` is a de Vaucouleurs bulge (Sersic n=4) with fixed axis ratio and PA.
+        
+        If we look at the function declaration for the :py:func:`genSersic` function we find the following parameters
+        
+        .. code::
+            
+            def genSersic(x=50, y=50, mag=25.0, re=10.0, n=4, bOvera=1.0, PA=0.0, skipComponentInResidual=False, fixedParams=[], comments=None, noComments=False):
+                       
+        For the exponential disk, we only need the Sersic index to be fixed, and we can plug typical values for the other parameters
+        
+        >>> sersic1 = {'name':'sersic', 'x':81, 'y':60, 'n':1, 'fixedParams':['n'], 're':10, 'mag':25, 'PA':40}
+        
+        For the de Vaucouleur bulge, we use the same centre, a slightly smaller bulge, and we also fix the :samp:`PA` and :samp:`bOvera`
+        
+        >>> sersic2 = {'name':'sersic', 'x':81, 'y':60, 'n':4, 'fixedParams':['n', 'PA', 'bOvera'], 're':2, 'mag':25}
+        
+        We do not provide the :samp:`'bOvera'` and :samp:`'PA'` values because default values are :samp:`bOvera=1` and :samp:`PA=0` which is perfect for this example.
+            
+                
+    :param bool noGalfit: (**Optional**) whether to not run galfit or not
+    :param bool noPDF: (**Optional**) whether to make the pdf recap files or not
+    :param int numThreads: (**Optional**) number of threads used to parallelise
+    :param list[str] outputNames: (**Optional**) list of galaxies output .fits files. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
+    :param str pathFeedme: (**Optional**) location of the feedme files relative to the current folder or as an absolute path
+    :param str pathIn: (**Optional**) location of the input files relative to the current folder or as an absolute path
+    :param str pathLog: (**Optional**) location of the log files relative to the current folder or as an absolute path
+    :param str pathOut: (**Optional**) location of the output files relative to the current folder or as an absolute path
+    :param str pathRecap: (**Optional**) location of the pdf recap files relative to the current folder or as an absolute path
+    :param bool showLog: (**Optional**) whether to show log files or not
+    :param bool showRecapFiles: (**Optional**) whether to show the recap files made at the end or not
+    
+    :raises TypeError: if feedmeFiles is not a list
     """
     
     # Enabling colored text
@@ -404,107 +476,30 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
     # Disabling future colored text
     col.deinit()
     return True
-                    
-                
-                    
-                
-    
-
+     
 
 def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[], constraintNames=[], constraints=None,
                  pathFeedme="./feedme/", pathIn="./inputs/", pathOut="./outputs/", pathConstraints="./constraints/"):
     """
-    Make galfit .feedme and .constraints files using the same profiles.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        header : dict
-            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file.
-            You do not need to provide an input and an output image file name as this is given with the inputNames keyword.
-            
-        inputNames : list of str
-            list of galaxies .fits files input names in the header
-            
-        listProfiles : list of dict
-            list of dictionaries. Each dictionnary corresponds to a profile:
-                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
-                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
-                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
-                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
-            
-            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
-                'fourier', 'bending', 'boxyness'
-            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
-            
-            Example
-            -------
-                Say one wants to make a galfit configuration for the galaxies gal1.fits, gal2.fits and galaxy.fits with a:
-                    - output image output.fits and a zeroPointMag = 25.4 mag
-                    - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
-                    - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
-                    - bending modes 1 and 3 with values 0.2 and 0.4 respectively added to the Nuker profile
-                    
-                Then one may write something like
-                    >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
-                    >>> sersic  = {'name':'sersic', 'x':45, 'y':56, 'mag':25, 're':10, 'n':1, 'PA':100, 'fixedParams':['n']}
-                    
-                    >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
-                    >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
-                    >>> galaxies = ["gal1.fits", "gal2.fits", "galaxy.fits"]
-                    
-                    >>> writeFeedmes(header, [sersic, nuker], galaxies)
-                
-    Optional inputs
-    ---------------
-        constraintNames : list of str
-            list of .constraints galfit configuration files. If not provided, the constraint files will have the same name as the input ones but with a .constraints extension at the end.
-        feedmeNames : list of str
-            list of .feedme galfit configuration files. If not provided, the feedme files will have the same name as the input ones but with .feedme extensions at the end.    
-        outputNames: list of str
-            list of galaxies .fits files output names in the header. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
-        pathFeedme : str
-            location of the feedme file names relative to the current folder or in absolute
-        pathIn : str
-            location of the input file names relative to the current folder or in absolute
-        pathOut : str
-            location of the output file names relative to the current folder or in absolute
-            
-    Additional input
-    ----------------
-        This additional parameter can be used to set constraints between components parameters (such as fixing some parameter range).
+    Make galfit FEEDME and CONSTRAINT files using the same profiles.
     
-        constraints : dict
-            list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
-            
-            Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
-                
-                Dictionaries keys
-                -----------------
-                
-                'constraint' : dict with keys 'type' and 'value'
-                    set the type of constraint one wants to use and potentially the related range. 
-                    The possible 'type' of constraint are:
-                        - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
-                        - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
-                        - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
-                        - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
-                        - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
-                        - 'componentWiseRatio' to set a range of possible values for the ratio of the same parameter in two components
-                    
-                    And the corresponding values are:
-                        - 'offset' for an offset and 'ratio' for a ratio
-                        - a list of two float to define bounds for the other types
-                
-                'components' : int/list of int
-                    number (of appearance in the listProfiles) of the galfit models one wants to constrain.:
-                        - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
-                        - for both relative and absolute ranges, a single profile number (int) must be given
-                        - for component wise ranges or ratios, a list of two numbers (int) must be provided
-                        
-                'parameter' : str
-                    name of the parameter to contrain
+    :param dict header: dictionnary with key names corresponding to input parameter names in genHeader function. **See :py:func:run_galfit for more information**.
+    :param list[str] inputNames: list of galaxies input .fits files
+    :param list[dict] listProfiles: list of profiles (models). **See :py:func:run_galfit for more information**.
     
-    Write full galfit.feedme configuration files for many galaxies.
+    :param list[str] constraintNames: (**Optional**) list of CONSTRAINT files. If not provided, the constraint files will have the same name as the input ones but with a .constraints extension at the end.
+    :param list[str] feedmeNames: (**Optional**) list of FEEDME files. If not provided, the feedme files will have the same name as the input ones but with .feedme extensions at the end.
+    :param list[str] outputNames: (**Optional**) list of galaxies output .fits files. If not provided, the output files will have the same name as the input ones with _out appended before the .fits extension.
+    :param str pathFeedme: (**Optional**) location of the feedme files relative to the current folder or as an absolute path
+    :param str pathIn: (**Optional**) location of the input files relative to the current folder or as an absolute path
+    :param str pathOut: (**Optional**) location of the output files relative to the current folder or as an absolute path
+    
+    :param dict constraints: (**Optional**) list of dictionaries used to generate the constraints. If None, no constraints are applied. **See :py:func:run_galfit for more information**.
+    
+    :raises ValueError: if inputNames, outputName, feedmeNames and constraintNames are not iterables of the same length
+    :raises OSError: if pathIn, pathOut, pathFeedme or pathConstraints are not correct path
     """
     
     ################################################
@@ -577,42 +572,28 @@ def writeConfigs(header, listProfiles, inputNames, outputNames=[], feedmeNames=[
 
 def genConstraint(dicts):
     """
-    Make a galfit .constraint file.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    -----------------
-        dicts : list of dictionariesbesoin d'
-            list of dictionaries used to generate the constraints. See below for an explanation on how to use it.
-            
-            Each dictionary must contain three keys, namely 'components', 'parameter' and 'constraint'
-                
-                Dictionaries keys
-                -----------------
-                
-                'constraint' : dict with keys 'type' and 'value'
-                    set the type of constraint one wants to use and potentially the related range. 
-                    The possible 'type' of constraint are:
-                        - 'offset' to fix the value of some parameter between different profiles relative to one another (based on the initial values provided in the .feedme file)
-                        - 'ratio' to fix the ratio of some parameter between different profiles (based on the initial values provided in the .feedme file)
-                        - 'absoluteRange' to set an asbolute range of values for some parameter of a single profile
-                        - 'relativeRange' to set a range of possible values around the initial value given in the .feedme file
-                        - 'componentWiseRange' to set a range of possible values around the initial value of the same parameter but of another component
-                        - 'componentWiseRatio' to set a ranaxis ratio (b/a)ge of possible values for the ratio of the same parameter in two components
-                    
-                    And the corresponding values are:
-                        - 'offset' for an offset and 'ratio' for a ratio
-                        - a list of two float to define bounds for the other types
-                
-                'components' : int/list of int
-                    number (of appearance in the .feedme file) of the galfit models one wants to constrain:
-                        - for 'offset' and 'ratio' constraint types a list of an indefinite number of int can be given. 
-                        - for both relative and absolute ranges, a single profile number (int) must be given
-                        - for component wise ranges or ratios, a list of two numbers (int) must be provided
-                        
-                'parameter' : str
-                    name of the parameter to contrain
+    Make a galfit CONSTRAINT file.
     
-    Return a galfit .constraint file as formatted text.
+    :param list[dict] constraintNames: list of constraint dictionaries. **See** :py:func:`run_galfit` **for more information**.
+    
+    :returns: CONSTRAINT file as formatted text
+    :rtype: str
+    
+    :raises TypeError: 
+        
+        * if **dicts** is not a list
+        * if 'type' key in constraint dict is not an acceptable value
+        * if 'components' key in one of the dict is not a list
+        * if 'value' key in one of the dict is not a list
+        
+    :raises KeyError: if neither 'parameter', nor 'constraints', nor 'components' keys are found in the dictionaries
+    :raises ValueError: 
+        
+        * if 'parameter' key in one of the dict is not an acceptable value
+        * if 'components' key in one of the dict does not have the correct length
+        * if 'type' key in one of the dict does not have the correct length
     """
     
     def mapParams(par):
@@ -730,41 +711,18 @@ def genConstraint(dicts):
 
 def genFeedme(header, listProfiles):
     """
-    Make a galfit.feedme configuration using the profiles listed in models.py.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        header : dict
-            dictionnary with key names corresponding to input parameter names in genHeader function. This is used to generate the header part of the file
-        listProfiles : list of dict
-            list of dictionaries. Each dictionnary corresponds to a profile:
-                - in order for the function to know which profile to use, you must provide a key 'name' whose value is one of the following:
-                    'deVaucouleur', 'edgeOnDisk', 'expDisk', 'ferrer', 'gaussian', 'king', 'moffat', 'nuker', 'psf', 'sersic', 'sky'
-                - available key names coorespond to the input parameter names. See each profile description, to know which key to use
-                - only mandatory inputs can be provided as keys if the default values in the function declarations are okay for you
-            
-            You can also add fourier modes, bending modes and/or a boxyness-diskyness parameter to each profile. To do so, provide one of the following keys:
-                'fourier', 'bending', 'boxyness'
-            These keys must contain a dictionnary whose keys are the input parameters names of the functions fourierModes, bendingModes and boxy_diskyness.
-            
-            Example
-            -------
-                Say one wants to make a galfit configuration with a:
-                    - output image output.fits and a zeroPointMag = 25.4 mag
-                    - Sersic profile with a centre position at x=45, y=56, a magnitude of 25 mag and an effective radius of 10 pixels, fixing only n=1, with a PA of 100 (letting other parameters to default values)
-                    - Nuker profile with gamma=1.5 and the surface brightness fixed to be 20.1 mag/arcsec^2
-                    - bending modes 1 and 3 with values 0.2 and 0.4 respectively added to the Nuker profile
-                    
-                Then one may write something like
-                    >>> header  = {'outputImage':'output.fits', 'zeroPointMag':25.5}
-                    >>> sersic  = {'name':'sersic', 'x':45, 'y':56, 'mag':25, 're':10, 'n':1, 'PA':100, 'isFixed':['n']}
-                    
-                    >>> bending = {'listModes':[1, 3], 'listModesValues':[0.2, 0.4]}
-                    >>> nuker  = {'name':'nuker', 'gamma':1.5, 'mu':20.1, 'bending':bending}
-                    
-                    >>> genFeedme(header, [sersic, nuker])
+    Make a galfit FEEDME configuration file using the given profiles.
+    
+    :param dict header: (**Optional**) dictionnary with key names corresponding to input parameter names in :py:func:genHeader function
+    :param list[dict] listProfiles: (**Optional**) list of profiles (models). **See** :py:func:`run_galfit` **for more information**.
                 
-    Return a full galfit.feedme configuration with header and body as formatted text.
+    :returns: FEEDME configuration file with header and body as formatted text
+    :rtype: str
+    
+    :raises ValueError: if 'name' key in one of the profiles is not an acceptable value
+    :raises KeyError: if 'name' key is missing in one of the profiles
     """
     
     header['name'] = 'header'
@@ -804,56 +762,71 @@ def genHeader(inputImage="none", outputImage='output.fits', sigmaImage="none", p
               xmin=0, xmax=100, ymin=0, ymax=100, sizeConvX=None, sizeConvY=None,
               psfSamplingFactor=1, zeroPointMag=30.0, arcsecPerPixel=[0.03, 0.03],
               displayType="regular", option=0):
-    """
-    Constructs a galfit.feedme header as general as possible.
+    r"""
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Main inputs
-    -----------
-        inputImage : str
-            name of the input file (fits file only). Note that if "none" is given, when running the feedme file, the fitting will be skipped and a model will be generated using the provided parameters.
-        outputImage : str
-            name of the file within which the image will be stored. Default is 'output.fits'.
-            Technically, the output "image" is not an image but a (1+3)D fits file, where the layer 0 is a blank image whose header contains the fits keys, the layer 1 is the original image within the fitting region, layer 2 is the model image and layer 3 is the residual between the model and the original image. Note that the residual is computed by subtracting the layer 2 from the layer 1. Hence, if any galaxy component is missing in the model image (even if it was optimised), the residual will not reflect the "goodness" of fit.
+    Constructs a galfit FEEDME header as general as possible.
+
+    :param str inputImage: name of the input .fits file. 
+    
+        .. note::
             
-        xmax : int
-            maximum x coordinate of the fitting region box (in px). Default is 100 px.
-        xmin : int
-            minimum x coordinate of the fitting region box (in px). Default is 0 px.
-        ymax : int
-            maximum y coordinate of the fitting region box (in px). Default is 100 px.
-        ymin : int
-            minimum y coordinate of the fitting region box (in px). Default is 0 px.
+            If "none" is given, when running the feedme file, the fitting will be skipped and a model will be generated using the provided parameters.
         
-    Additional inputs
-    -----------------
-        arcsecPerPixel : list of two floats
-            angular resolution (in arcsec) of image pixels. First element is the angular resolution in the x direction, second element in the y direction.
-        displayType : "regular", "both" or "curses"
-            galfit display mode. "Regular" mode does not allow any interaction. "Both" and "curses" modes allow you to interact with galfit during the fitting routine (both will display in a xterm terminal the possible commands).
-        couplingFile : str
-            name of the .constraints file used to add constraints on parameters.
-        maskImage : str
-            name of the image with bad pixels masked. Either a fits file (with the same dimensions as the input image) with a value of 0 for good pixels and >0 for bad pixels, or an ASCII file with two columns separated by a blank space (first column x coordinate, second y coordinate) listing all the bad pixels locations.
-        option : 0, 1, 2 or 3
-                - if 0, galfit run normally as explained above
-                - if 1, the model image only is made using the given parameters
-                - if 2, an image block (data, model and residual) is made using the given parameters
-                - if 3, an image block with the first slice beeing the data, and the followings ones beeing one (best-fit) component per slice
-       
-        psfImage : str
-             name of the psf image (fits file).
-        psfSamplingFactor : int
-            multiplicative factor used to scale the image pixel angular scale to the psf pixel angular scale if the psf is oversampled. Technically it is the ratio between the psf platescale (in arcsec/px) and the data platescale assuming the same seeing.
-        sigmaImage : str
-            name of the so called variance map (technically standard deviation map) where the value of the standard deviation of the underlying distribution of a pixel is given in place of the pixel value in the image (fits file only). If "none", galfit will compute one.
-        sizeConvX : int
-            x size of the convolution box (in px)
-        sizeConvY : int
-            y size of the convolution box (in px)
-        zeroPointMag : float
-            zero point magnitude used in the definition m = -2.5 \log_{10} (ADU/t_{exp}) + zeropoint where t_{exp} if the exposition time (generally found in the input fits file header).
+    :param str outputImage: name of the file within which the image will be stored. 
     
-    Returns the header as a formatted string.
+        .. note::
+            
+            Technically, the output "image" is not an image but a (1+3)D fits file, where:
+            
+                * layer 0 is a blank image whose header contains the fits keys
+                * layer 1 is the original image within the fitting region
+                * layer 2 is the model image
+                * layer 3 is the residual between the model and the original image. 
+                
+            The residual is computed by subtracting layer 2 from layer 1. 
+            
+            Hence, if any galaxy component is missing in the model image (even if it was optimised), the residual will not reflect the "fitness" of fit.
+    
+    :param int xmax: maximum x coordinate of the fitting region box (in pixel)
+    :param int xmin: minimum x coordinate of the fitting region box (in pixel)
+    :param int ymax: maximum y coordinate of the fitting region box (in pixel)
+    :param int ymin: minimum y coordinate of the fitting region box (in pixel)
+    
+    :param [float, float] arcsecPerPixel: (**Optional**) angular resolution (in arcsec) of image pixels. First element is the angular resolution in the x direction, second element in the y direction.
+    :param displayType: (**Optional**) galfit display mode
+    
+        * "Regular" mode does not allow any interaction
+        * "Both" and "curses" modes allow you to interact with galfit during the fitting routine (both will display a xterm terminal).
+    :type displayType: "regular", "both" or "curses"
+    :param str couplingFile: name of the CONSTRAINT file used to add constraints on parameters
+    :param str maskImage: name of the image with bad pixels masked. Possible options are:
+        
+        * a .fits file (with the same dimensions as the input image) with a value of 0 for good pixels and >0 for bad pixels
+        * an ASCII file with two columns separated by a blank space (first column x coordinate, second y coordinate) listing all the bad pixels locations
+        
+    :param int option: option
+        
+        * if 0, galfit run normally as explained above
+        * if 1, the model image only is made using the given parameters
+        * if 2, an image block (data, model and residual) is made using the given parameters
+        * if 3, an image block with the first slice beeing the data, and the followings ones beeing one (best-fit) component per slice
+   
+    :param str psfImage: name of the psf image (fits file)
+    :param int psfSamplingFactor: multiplicative factor used to scale the image pixel angular scale to the psf pixel angular scale if the psf is oversampled. Technically it is the ratio between the psf platescale (in arcsec/px) and the data platescale assuming the same seeing.
+    :param str sigmaImage: name of the so called variance map (technically standard deviation map) where the value of the standard deviation of the underlying distribution of a pixel is given in place of the pixel value in the image (fits file only). If "none", galfit will compute one.
+    :param int sizeConvX: x size of the convolution box (in px)
+    :param int sizeConvY: y size of the convolution box (in px)
+    :param float zeroPointMag: zero point magnitude used in the definition 
+    
+        .. math::
+            
+            m = -2.5 \log_{10} ({\rm{ADU}}/t_{\rm{exp}}) + {\rm{zeropoint}},
+            
+        where :math:`t_{\rm{exp}}` if the exposition time (generally found in the input .fits file header).
+    
+    :returns: header as a formatted string
+    :rtype: str
     """
     
     psfSamplingFactor, zeroPointMag, option = toStr([psfSamplingFactor, zeroPointMag, option])
