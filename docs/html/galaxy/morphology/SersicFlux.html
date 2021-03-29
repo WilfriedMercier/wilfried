@@ -1,0 +1,626 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sersic fluxes &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Morphological parameters" href="Morpho.html" />
+    <link rel="prev" title="Galaxies morphology" href="index.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 current active collapsible-parent">
+  <a class="reference internal" href="../index.html">
+   Galaxy module
+  </a>
+  <ul class="current collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../kinematics.html">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../models.html">
+     1D and 2D light models
+    </a>
+   </li>
+   <li class="toctree-l2 current active collapsible-parent">
+    <a class="reference internal" href="index.html">
+     Galaxies morphology
+    </a>
+    <ul class="current collapse-ul">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="Morpho.html">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/galaxy/morphology/SersicFlux.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/morphology/SersicFlux.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="sersic-fluxes">
+<h1>Sersic fluxes<a class="headerlink" href="#sersic-fluxes" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="galaxy.morphology.analyticFluxFrom0">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">analyticFluxFrom0</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#analyticFluxFrom0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.analyticFluxFrom0" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Analytically compute the integrated flux from 0 up to radius r for a Sersic profile of index n.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no Ie is given, values for mag and offset must be given instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em>) – Sersic index of the profile</p></li>
+<li><p><strong>r</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</p></li>
+<li><p><strong>re</strong> (<em>float</em>) – half-light radius</p></li>
+<li><p><strong>bn</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) bn factor appearing in the Sersic profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/ca4bdfb66867d6fadb8f48eedd4d564c3bfef2d4.png" alt="2 \gamma(2n, b_n) = \Gamma(2n)."/></p>
+</div></p></li>
+<li><p><strong>Ie</strong> (<em>float</em>) – (<strong>Optional</strong>) intensity at half-light radius</p></li>
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude used to compute Ie if not given</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>analytical flux from 0 to r (value (value) and its error (err) as the dictionary {‘value’:value, ‘error’:err})</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if <strong>r</strong> is neither int, nor float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.BoverD">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">BoverD</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ieb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noError</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#BoverD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.BoverD" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the ratio of the bulge flux (B) over the disk one (D) for a bulge-disk galaxy up to radius r.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no Ie is given, values for mag and offset must be given instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</p></li>
+<li><p><strong>rb</strong> (<em>float</em>) – half-light radius of the bulge</p></li>
+<li><p><strong>rd</strong> (<em>float</em>) – half-light radius of the disk</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) b1 factor appearing in the disk profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/e6385405fc64ee502ec353cd290fecf93bc1a9d1.png" alt="2 \gamma(2, b_1) = 1."/></p>
+</div></p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) b4 factor appearing in the disk profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/53f72ed8de66989621e8363cb0c7bd7ef202f9eb.png" alt="2 \gamma(8, b_4) = 7!."/></p>
+</div></p></li>
+<li><p><strong>Ied</strong> (<em>float</em>) – (<strong>Optional</strong>) intensity of the disk at half-light radius</p></li>
+<li><p><strong>Ied</strong> – (<strong>Optional</strong>) intensity of the bulge at half-light radius</p></li>
+<li><p><strong>magD</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude of the disk used to compute Ied if not given</p></li>
+<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude of the bulge used to compute Ieb if not given</p></li>
+<li><p><strong>noError</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not raise an error or not if one of the Ie values could not be computed correctly. If set to True, np.nan is returned.</p></li>
+<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used for the bulge component</p></li>
+<li><p><strong>offsetD</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used for the disk component</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>B/D ratio at all the given positions or np.nan if one of the intensities could not be computed correctly</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.BoverT">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">BoverT</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ieb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noError</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#BoverT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.BoverT" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Computes the ratio of the bulge flux (B) over the total one (T=D+B) for a bulge-disk galaxy up to radius r.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no Ie is given, values for mag and offset must be given instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</p></li>
+<li><p><strong>rb</strong> (<em>float</em>) – half-light radius of the bulge</p></li>
+<li><p><strong>rd</strong> (<em>float</em>) – half-light radius of the disk</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) b1 factor appearing in the disk profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/e6385405fc64ee502ec353cd290fecf93bc1a9d1.png" alt="2 \gamma(2, b_1) = 1."/></p>
+</div></p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) b4 factor appearing in the disk profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/53f72ed8de66989621e8363cb0c7bd7ef202f9eb.png" alt="2 \gamma(8, b_4) = 7!."/></p>
+</div></p></li>
+<li><p><strong>Ied</strong> (<em>float</em>) – (<strong>Optional</strong>) intensity of the disk at half-light radius</p></li>
+<li><p><strong>Ied</strong> – (<strong>Optional</strong>) intensity of the bulge at half-light radius</p></li>
+<li><p><strong>magD</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude of the disk used to compute Ied if not given</p></li>
+<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude of the bulge used to compute Ieb if not given</p></li>
+<li><p><strong>noError</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not raise an error or not if one of the Ie values could not be computed correctly. If set to True, np.nan is returned.</p></li>
+<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used for the bulge component</p></li>
+<li><p><strong>offsetD</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used for the disk component</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>B/T ratio at all the given positions or np.nan if one of the intensities could not be computed correctly</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.DoverT">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">DoverT</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ieb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#DoverT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.DoverT" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Computes the ratio of the disk flux (D) over the total one (T=D+B) for a bulge-disk galaxy up to radius r.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no Ie is given, values for mag and offset must be given instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</p></li>
+<li><p><strong>rb</strong> (<em>float</em>) – half-light radius of the bulge</p></li>
+<li><p><strong>rd</strong> (<em>float</em>) – half-light radius of the disk</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) b1 factor appearing in the disk profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/e6385405fc64ee502ec353cd290fecf93bc1a9d1.png" alt="2 \gamma(2, b_1) = 1."/></p>
+</div></p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) b4 factor appearing in the disk profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/53f72ed8de66989621e8363cb0c7bd7ef202f9eb.png" alt="2 \gamma(8, b_4) = 7!."/></p>
+</div></p></li>
+<li><p><strong>Ied</strong> (<em>float</em>) – (<strong>Optional</strong>) intensity of the disk at half-light radius</p></li>
+<li><p><strong>Ied</strong> – (<strong>Optional</strong>) intensity of the bulge at half-light radius</p></li>
+<li><p><strong>magD</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude of the disk used to compute Ied if not given</p></li>
+<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude of the bulge used to compute Ieb if not given</p></li>
+<li><p><strong>noError</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not raise an error or not if one of the Ie values could not be computed correctly. If set to True, np.nan is returned.</p></li>
+<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used for the bulge component</p></li>
+<li><p><strong>offsetD</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used for the disk component</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>D/T ratio at all the given positions or np.nan if one of the intensities could not be computed correctly</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.fluxSersic">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">fluxSersic</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#fluxSersic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.fluxSersic" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the flux of a single Sersic profile of index n up to radius r using raw integration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no Ie is given, values for mag and offset must be given instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em>) – Sersic index of the profile</p></li>
+<li><p><strong>r</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.</p></li>
+<li><p><strong>re</strong> (<em>float</em>) – half-light radius</p></li>
+<li><p><strong>bn</strong> (<em>float</em>) – <p>(<strong>Optional</strong>) bn factor appearing in the Sersic profile defined as</p>
+<div class="math">
+<p><img src="../../_images/math/ca4bdfb66867d6fadb8f48eedd4d564c3bfef2d4.png" alt="2 \gamma(2n, b_n) = \Gamma(2n)."/></p>
+</div></p></li>
+<li><p><strong>Ie</strong> (<em>float</em>) – (<strong>Optional</strong>) intensity at half-light radius</p></li>
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total magnitude used to compute Ie if not given</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used</p></li>
+<li><p><strong>start</strong> (<em>float</em>) – (<strong>Optional</strong>) starting point of the integration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>integrated flux up to radius r (value) and an estimation of its absolute error (err) as the dictionary {‘value’:value, ‘error’:err}</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.fluxSersics">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">fluxSersics</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listRe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listbn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listIe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listMag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analytical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#fluxSersics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.fluxSersics" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the flux of a sum of Sersic profiles up to radius r (starting from 0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listn</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – list of Sersic index for each profile</p></li>
+<li><p><strong>r</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – position at which the profiles are integrated. If a list if given, the position will be computed at each radius in the list.</p></li>
+<li><p><strong>listRe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – list of half-light radii for each profile</p></li>
+<li><p><strong>analytical</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to use the analytical solution or integrate the profile</p></li>
+<li><p><strong>listbn</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of bn factors appearing in Sersic profiles</p></li>
+<li><p><strong>listIe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of intensities at re for each profile</p></li>
+<li><p><strong>listMag</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of total integrated magnitudes for each profile</p></li>
+<li><p><strong>listOffset</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of magnitude offsets used in the magnitude system for each profile</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>integrated flux of the sum of all the given Sersic profiles (value) and an estimation of the error (err) as the dictionary {‘value’:value, ‘error’err}</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if <strong>listIe</strong> and <strong>listMag</strong> and <strong>listOffset</strong> are None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.ratioFlux1D">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">ratioFlux1D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listRe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listbn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listIe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listMag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analytical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#ratioFlux1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.ratioFlux1D" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the ratio of the flux of the sum of different Sersic profiles for a single galaxy at two different positions in the galaxy plane only.</p>
+<p>This function computes the ratio from the 1D profiles, either integrating (analytical=False) or via an analytical solution (analytical=True).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How to use</strong></p>
+<p>Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters.</p>
+<p>For instance, a ratio at radii 1” and 3” for a disk (n=1, Re=10”) + bulge (n=4, Re=20”) decomposition would give something like</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ratioFlux1D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="n">listMag</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span> <span class="n">listOffset</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Radii should be given with the same unit as the effective radii.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listn</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – list of Sersic index for each profile</p></li>
+<li><p><strong>r1</strong> (<em>float</em>) – first radius where the flux is computed</p></li>
+<li><p><strong>r2</strong> (<em>float</em>) – second radius where the flux is computed</p></li>
+<li><p><strong>listRe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – list of half-light radii for each profile</p></li>
+<li><p><strong>analytical</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to use the analytical solution or integrate the profile</p></li>
+<li><p><strong>listbn</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of bn factors appearing in Sersic profiles</p></li>
+<li><p><strong>listIe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of intensities at re for each profile</p></li>
+<li><p><strong>listMag</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of total integrated magnitudes for each profile</p></li>
+<li><p><strong>listOffset</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of magnitude offsets used in the magnitude system for each profile</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ratio of fluxes at the two different positions</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>if <strong>listIe</strong> and <strong>listMag</strong> and <strong>listOffset</strong> are None</p></li>
+<li><p>if the 2nd computed flux is 0</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.ratioFlux2D">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">ratioFlux2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['galaxy',</span> <span class="pre">'galaxy']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noPSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[False,</span> <span class="pre">False]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecToGrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">81</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'FWHMX':</span> <span class="pre">0.8,</span> <span class="pre">'FWHMY':</span> <span class="pre">0.8,</span> <span class="pre">'name':</span> <span class="pre">'Gaussian2D',</span> <span class="pre">'sigmaX':</span> <span class="pre">None,</span> <span class="pre">'sigmaY':</span> <span class="pre">None,</span> <span class="pre">'unit':</span> <span class="pre">'arcsec'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#ratioFlux2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.ratioFlux2D" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the ratio of the flux of a bulge+disk model between two radii either in the galaxy plane or in the sky plane.
+This function computes the ratio from 2D models (projected on the sky plane or not) with or without PSF convolution.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How to use</strong></p>
+<p>Easiest way is to provide two radii for r1 and r2, and then lists of Sersic profiles parameters.</p>
+<p>For instance, a ratio for a radius of 1 pixel (in galaxy plane) over 3 pixels (in sky plane) for a disk (n=1, Re=10 pixels, inclination=23°, PA=40°) + bulge (n=4, Re=20 pixels) decomposition would give something like</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ratioFlux2D</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">offsetD</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">offsetB</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">inclination</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">PA</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;galaxy&#39;</span><span class="p">,</span> <span class="s1">&#39;sky&#39;</span><span class="p">]})</span>
+</pre></div>
+</div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.total_flux">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">total_flux</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#total_flux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.total_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the integrated flux up to infinity. The flux and magnitude are related by the equation</p>
+<div class="math">
+<p><img src="../../_images/math/aba49069d33ec801de41bc612c69d1f53a830fa4.png" alt="m = -2.5 \log_{10} F_{\rm{tot}} + \rm{offset}"/></p>
+</div><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – magnitude offset</p></li>
+<li><p><strong>mag</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – total magnitude</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>total flux</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="index.html" title="previous page">Galaxies morphology</a>
+    <a class='right-next' id="next-link" href="Morpho.html" title="next page">Morphological parameters</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>

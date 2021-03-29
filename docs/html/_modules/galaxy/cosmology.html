@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.cosmology &#8212; wilfried library 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for galaxy.cosmology</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">A set of functions to easily compute standard calculations in extragalactic physics using cosmology. </span>
+
+<span class="sd">.. note::</span>
+<span class="sd">    This relies heavily on a custom, Python 3 adapted version of `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span>   <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span> <span class="nn">cosmolopy.distance</span>  <span class="k">as</span>     <span class="nn">cd</span>
+
+<span class="c1">#: Default cosmology</span>
+<span class="n">COSMOLOGY</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">({</span><span class="s1">&#39;omega_M_0&#39;</span> <span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;omega_lambda_0&#39;</span> <span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span> <span class="p">:</span> <span class="mf">0.72</span><span class="p">})</span>
+
+<div class="viewcode-block" id="angular_diameter_size"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.angular_diameter_size">[docs]</a><span class="k">def</span> <span class="nf">angular_diameter_size</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">scaleFactor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">cosmology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the size of an object with extent theta at redshift z from the angular diameter distance as size=theta*angular diameter distance.</span>
+
+<span class="sd">    :param z: redshift of the object</span>
+<span class="sd">    :type z: int or float</span>
+<span class="sd">    :param theta: angle subtended by the object. Unit should be in radians. If not, provide a scaling factor with **scaleFactor**.</span>
+<span class="sd">    :type theta: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    :param scaleFactor: (**Optional**)  if theta is not in radian, please provide a correct scale factor following the formula</span>
+<span class="sd">    </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            \theta [\rm{rad}] = \theta [\rm{your~unit}] \times scaleFactor [\rm{rad/your~unit}].</span>
+<span class="sd">            </span>
+<span class="sd">    :type scaleFactor: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: physical size in **kpc**</span>
+<span class="sd">    :rtype: int or float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+        
+    <span class="k">return</span> <span class="n">cd</span><span class="o">.</span><span class="n">angular_diameter_distance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span><span class="o">*</span><span class="n">theta</span><span class="o">*</span><span class="n">scaleFactor</span><span class="o">*</span><span class="mi">1000</span></div>
+    
+
+<div class="viewcode-block" id="comoving_separation"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.comoving_separation">[docs]</a><span class="k">def</span> <span class="nf">comoving_separation</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">cosmology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the tranverse distance (at fixed redshift) between objects separated by an angle theta on the sky in comoving units.</span>
+
+<span class="sd">    :param z: redshift of the object</span>
+<span class="sd">    :type z: int or float</span>
+<span class="sd">    :param theta: angle subtended by the object. Unit should be in radians. If not, provide a scaling factor with **scaleFactor**.</span>
+<span class="sd">    :type theta: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: comoving separation in **Mpc**</span>
+<span class="sd">    :rtype: int or float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+    
+    <span class="n">cosmology</span>     <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">(</span><span class="n">cosmology</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cd</span><span class="o">.</span><span class="n">comoving_distance_transverse</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span><span class="o">*</span><span class="n">theta</span></div>
+
+<div class="viewcode-block" id="comoving_los"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.comoving_los">[docs]</a><span class="k">def</span> <span class="nf">comoving_los</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">cosmology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the line of sight comoving distance between objects.</span>
+
+<span class="sd">    :param z1: redshift of the 1st object</span>
+<span class="sd">    :type z1: int or float</span>
+<span class="sd">    :param z2: redshift of the 2nd object</span>
+<span class="sd">    :type z2: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: comoving distance in **Mpc**</span>
+<span class="sd">    :rtype: int or float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+    
+    <span class="n">cosmology</span>     <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">(</span><span class="n">cosmology</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cd</span><span class="o">.</span><span class="n">comoving_distance</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z0</span><span class="o">=</span><span class="n">z2</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="separation"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.separation">[docs]</a><span class="k">def</span> <span class="nf">separation</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ra1</span><span class="p">,</span> <span class="n">dec1</span><span class="p">,</span> <span class="n">ra2</span><span class="p">,</span> <span class="n">dec2</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">]):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the comoving separation between two objects at the same redshift given their position.</span>
+
+<span class="sd">    :param z: redshift of the two objects</span>
+<span class="sd">    :type z: int or float</span>
+
+<span class="sd">    :param float ra1: right ascension of the first object</span>
+<span class="sd">    :param float dec1: declination of the first object</span>
+<span class="sd">    :param float ra2: right ascension of the second object</span>
+<span class="sd">    :param float dec2: declination of the second object</span>
+<span class="sd">    </span>
+<span class="sd">    :param units: units of the different coordinates in this order: ra1, dec1, ra2, dec2</span>
+<span class="sd">    :type units:  list[float] or list[astropy unit] or str</span>
+
+<span class="sd">    :returns: comoving separation in **Mpc**</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    :raises ValueError: if units is neither an iterable of length 4 or a str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="n">units</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
+        
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;4 units should be given nor a single one only. Cheers !&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># Objects representing the coordinates</span>
+    <span class="n">coord1</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra1</span><span class="p">,</span> <span class="n">dec1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">units</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">coord2</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra2</span><span class="p">,</span> <span class="n">dec2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">units</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+    
+    <span class="n">sep</span>   <span class="o">=</span> <span class="n">coord1</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">coord2</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">comoving_separation</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">wilfried library</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galaxy/index.html">Galaxy module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../galfit/index.html">Galfit module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Wilfried Mercier.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
