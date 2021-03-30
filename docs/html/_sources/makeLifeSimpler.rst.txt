@@ -1,5 +1,0 @@
-makeLifeSimpler
-===============
-
-.. automodule:: makeLifeSimpler
-   :members:

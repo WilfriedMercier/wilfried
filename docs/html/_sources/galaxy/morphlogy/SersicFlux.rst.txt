@@ -1,4 +1,0 @@
-Sersic fluxes
-=============
-
-.. autofunction:: galaxy.morphology.analyticFluxFrom0
