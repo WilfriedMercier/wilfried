@@ -77,7 +77,7 @@ def intensity_at_re(n, mag, re, offset, bn=None):
     if bn is None:
         bn = compute_bn(n)
     
-    return 10**((offset - mag)/2.5 - 2.0*np.log10(re) + 2.0*n*np.log10(bn) - bn/np.log(10)) / (2.0*np.pi*n*gamma(2.0*n))
+    return 10**((offset - mag)/2.5) * bn**(2*n) / (2*np.pi*n*gamma(2*n) * re**2 * np.exp(bn))
 
 
 def check_bns(listn, listbn):
