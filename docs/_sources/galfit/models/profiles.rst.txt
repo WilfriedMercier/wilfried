@@ -1,0 +1,15 @@
+GALFIT profile functions
+========================
+
+.. autofunction:: galfit.models.gendeVaucouleur
+.. autofunction:: galfit.models.genEdgeOnDisk
+.. autofunction:: galfit.models.genExpDisk
+.. autofunction:: galfit.models.genFerrer
+.. autofunction:: galfit.models.genGaussian
+.. autofunction:: galfit.models.genKing
+.. autofunction:: galfit.models.genMoffat
+.. autofunction:: galfit.models.genNuker
+.. autofunction:: galfit.models.genPSF
+.. autofunction:: galfit.models.genSersic
+.. autofunction:: galfit.models.genSky
+   
