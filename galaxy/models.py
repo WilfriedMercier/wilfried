@@ -448,8 +448,14 @@ def bulge2D(nx, ny, Rb, x0=None, y0=None, Ib=None, mag=None, offset=None, inclin
     
     :returns: X coordinate array, Y coordinate array and the 2D bulge model
     :rtype: 2D ndarray[float], 2D ndarray[float], 2D ndarray[float]
-    
+   
     .. rubric:: **Example**
+    
+    Comparing different models:
+        
+    * The first does not use **fineSampling**, thus it shows an intensity profile, rather than a flux profile
+    * The second one uses :samp:`fineSampling=81` so that it matches more the ouput of `Galfit <https://users.obs.carnegiescience.edu/peng/work/galfit/galfit.html>`_
+    * The last one also uses **fineSampling** but is convolved by a Gaussian with :math:`{\rm{FWHM}} = 0.087~\rm{arcsec}`
     
     .. plot::
         :include-source:
@@ -461,7 +467,7 @@ def bulge2D(nx, ny, Rb, x0=None, y0=None, Ib=None, mag=None, offset=None, inclin
         import matplotlib.pyplot   as     plt
         import matplotlib          as     mpl
         
-        # Bulge model without using fine sampling and without PSF
+        # Bulge model using fine sampling and without PSF
         X, Y, bulge1 = mod.bulge2D(100, 100, 35, mag=20, offset=30, noPSF=True)
         
         # Bulge mode with fine sampling but without PSF
@@ -480,16 +486,16 @@ def bulge2D(nx, ny, Rb, x0=None, y0=None, Ib=None, mag=None, offset=None, inclin
         rc('text', usetex=True)
         mpl.rcParams['text.latex.preamble'] = r'\usepackage{newtxmath}'
         
-        f            = plt.figure(figsize=(18, 7))
-        gs           = GridSpec(1, 3, figure=f, wspace=0, hspace=0, left=0.01, right=0.99, top=0.99, bottom=0.1)
+        f            = plt.figure(figsize=(9, 3))
+        gs           = GridSpec(1, 3, figure=f, wspace=0, hspace=0, left=0.2, right=0.8, top=0.9, bottom=0.3)
         
         ax1          = f.add_subplot(gs[0])
         ax2          = f.add_subplot(gs[1])
         ax3          = f.add_subplot(gs[2])
         
-        ax1.set_title(r'No fine sampling',      size=20)
-        ax2.set_title(r'Fine sampling = $9^2$', size=20)
-        ax3.set_title(r'Fine sampling \& PSF',  size=20)
+        ax1.set_title(r'No fine sampling',      size=15)
+        ax2.set_title(r'Fine sampling = $9^2$', size=15)
+        ax3.set_title(r'Fine sampling \& PSF',  size=15)
         
         for a in [ax1, ax2, ax3]:
            a.set_xticklabels([])
@@ -505,10 +511,108 @@ def bulge2D(nx, ny, Rb, x0=None, y0=None, Ib=None, mag=None, offset=None, inclin
         ret3  = ax3.imshow(bulge3, origin='lower', norm=LogNorm(), cmap='plasma')
         
         # Add colorbar
-        cb_ax = f.add_axes([0.01, 0.08, 0.98, 0.025])
+        cb_ax = f.add_axes([0.2, 0.2, 0.6, 0.025])
         cbar  = f.colorbar(ret1, cax=cb_ax, orientation='horizontal')
-        cbar.set_label(r'Surface brightness [arbitrary unit]', size=20)
-        cbar.ax.tick_params(labelsize=20)
+        cbar.set_label(r'Surface brightness [arbitrary unit]', size=15)
+        cbar.ax.tick_params(labelsize=15)
+        
+        plt.show()
+    
+        
+    .. rubric:: **Comparison with Galfit models**
+
+    We can also compare the ouput from this function with a similar model made with `Galfit <https://users.obs.carnegiescience.edu/peng/work/galfit/galfit.html>`_:
+        
+    .. plot::
+        :include-source:
+            
+        from   matplotlib.colors   import LogNorm, Normalize
+        from   matplotlib          import rc
+        from   matplotlib.gridspec import GridSpec
+        from   astropy.io          import fits
+        from   wilfried.galaxy     import models as mod
+        import matplotlib.pyplot   as     plt
+        import matplotlib          as     mpl
+        import numpy               as     np
+        
+        ##############################
+        #     Generate 2D models     #
+        ##############################
+        
+        X, Y, bulge1 = mod.bulge2D(100, 100, 15, mag=21, offset=30, noPSF=True,  fineSampling=81, samplingZone={'where':'centre', 'dx':5, 'dy':5})
+        X, Y, bulge2 = mod.bulge2D(100, 100, 15, mag=21, offset=30, noPSF=False, fineSampling=81, samplingZone={'where':'centre', 'dx':5, 'dy':5},
+                                  PSF={'name':'Gaussian2D', 'FWHMX':0.087, 'FWHMY':0.087, 'unit':'arcsec'}, arcsecToGrid=0.03)
+        
+        #####################################
+        #     Load GALFIT output images     #
+        #####################################
+        
+        with fits.open('/home/wilfried/wilfried_libs/galaxy/.test/bulge_withoutPSF.fits') as hdul:
+           bulge_nopsf = hdul[0].data
+        
+        with fits.open('/home/wilfried/wilfried_libs/galaxy/.test/bulge_withPSF.fits') as hdul:
+           bulge_psf   = hdul[0].data
+        
+        ##########################
+        #       Plot parts       #
+        ##########################
+        
+        rc('font', **{'family': 'serif', 'serif': ['Times']})
+        rc('text', usetex=True)
+        mpl.rcParams['text.latex.preamble'] = r'\usepackage{newtxmath}'
+        
+        f            = plt.figure(figsize=(9, 6))
+        gs           = GridSpec(2, 3, figure=f, wspace=0, hspace=0, left=0.1, right=0.9, top=0.95, bottom=0.15)
+        
+        axs          = []
+        for i in gs:
+           axs.append(f.add_subplot(i))
+        
+        axs[0].set_ylabel(r'without PSF', size=15)
+        axs[0].set_title(r'bulge2D',      size=15)
+        axs[1].set_title(r'Galfit bulge', size=15)
+        axs[2].set_title(r'Residuals',    size=15)
+        axs[3].set_ylabel(r'with PSF',    size=15)
+        
+        
+        for a in axs:
+           a.set_xticklabels([])
+           a.set_yticklabels([])
+        
+           a.tick_params(axis='x', which='both', direction='in')
+           a.tick_params(axis='y', which='both', direction='in')
+           a.yaxis.set_ticks_position('both')
+           a.xaxis.set_ticks_position('both')
+        
+        # First line
+        mmax  = np.nanmax([bulge1, bulge2, bulge_nopsf, bulge_psf])
+        mmin  = np.nanmin([bulge1, bulge2, bulge_nopsf, bulge_psf])
+        
+        diff1 = 100 - 100*bulge_nopsf/bulge1
+        diff2 = 100 - 100*bulge_psf/bulge2
+        dmax  = np.nanmax([diff1, diff2])
+        dmin  = np.nanmin([diff1, diff2])
+        
+        ret11 = axs[0].imshow(bulge1,      origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
+        ret12 = axs[1].imshow(bulge_nopsf, origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
+        ret13 = axs[2].imshow(diff1,       origin='lower', cmap='viridis', norm=Normalize(vmin=dmin, vmax=dmax))
+        
+        # Second line
+        ret21 = axs[3].imshow(bulge2,      origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
+        ret22 = axs[4].imshow(bulge_psf,   origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
+        ret23 = axs[5].imshow(diff2,       origin='lower', cmap='viridis', norm=Normalize(vmin=dmin, vmax=dmax))
+        
+        # Add colorbar 1
+        cb_ax1 = f.add_axes([0.1, 0.1, 0.53, 0.025])
+        cbar1  = f.colorbar(ret11, cax=cb_ax1, orientation='horizontal')
+        cbar1.set_label(r'Surface brightness [arbitrary unit]', size=15)
+        cbar1.ax.tick_params(labelsize=15)
+        
+        # Add colorbar 2
+        cb_ax2 = f.add_axes([0.64, 0.1, 0.26, 0.025])
+        cbar2  = f.colorbar(ret13, cax=cb_ax2, orientation='horizontal')
+        cbar2.set_label(r'Relative difference (\%)', size=15)
+        cbar2.ax.tick_params(labelsize=15)
         
         plt.show()
     '''
@@ -524,7 +628,8 @@ def bulge2D(nx, ny, Rb, x0=None, y0=None, Ib=None, mag=None, offset=None, inclin
     
     # Generating bulge model
     X, Y, model = Sersic2D(nx, ny, [4], [Rb],
-                           x0=x0, y0=y0, listIe=[Ib], listInclination=[inclination], listPA=[PA],
+                           x0=x0, y0=y0, listIe=[Ib], listMag=[mag], listOffset=[offset],
+                           listInclination=[inclination], listPA=[PA],
                            fineSampling=fineSampling, samplingZone=samplingZone,
                            verbose=verbose, skipCheck=True)
     
@@ -652,7 +757,7 @@ def Sersic2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None,
             raise ValueError('PA should be given in the range -90° <= PA <= +90°, counting angles anti clock-wise. Cheers !')
         
 
-    if listIe is None:
+    if listIe is None or None in listIe:
         if listMag is not None and listOffset is not None:
             listIe         = intensity_at_re(np.array(listn), np.array(listMag), np.array(listRe), np.array(listOffset))
         else:
@@ -663,7 +768,7 @@ def Sersic2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None,
         listInclination    = [0]*nbModels
     if listPA          is None:
         listPA             = [0]*nbModels
-    
+
     ##################################
     #         Compute models         #
     ##################################
@@ -702,6 +807,7 @@ def Sersic2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None,
         '''
         
     else:
+        
         # We generate grids with pixel size of 1x1 (and we centre it on the galaxy centre)
         listX              = np.arange(0, nx, 1) - x0
         listY              = np.arange(0, ny, 1) - y0
