@@ -164,10 +164,13 @@ def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX
     :param dict model: (**Optional**) dictionnary of the PSF (and its parameters) to use for the convolution. Default is a (0, 0) centred radial gaussian (muX=muY=0 and sigmaX=sigmaY) with a FWHM corresponding to that of MUSE (~0.8"~4 MUSE pixels). For now, only 2D Gaussians are accepted as PSF.
     :param bool verbose: (**Optional**) whether to print text on stdout or not
 
-    :returns: a new image where the convolution has been performed
-    :rtype: 2D ndarray
+    :returns: a new convolved image
+    :rtype: 2D ndarray[float]
     
-    :raises ValueError: if unit is not a valid unit or if the PSF is not a 2D Gaussian
+    :raises ValueError: 
+        
+        * if unit key in **model** dict is not a valid astropy unit 
+        * if the PSF is not a 2D Gaussian model
     '''
     
     def setListFromDict(dictionary, keys=None, default=None):
@@ -198,7 +201,7 @@ def PSFconvolution2D(data, arcsecToGrid=0.03, model={'name':'Gaussian2D', 'FWHMX
         return out
 
     if verbose:
-        print('Convoluting')
+        print('Convoluting using PSF model %s' %model)
     
     # Retrieve PSF parameters and set default values if not provided
     if model['name'].lower() == 'gaussian2d':
