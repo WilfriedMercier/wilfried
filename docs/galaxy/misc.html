@@ -111,7 +111,7 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="models.html">
-     1D and 2D light models
+     Galfit models
     </a>
    </li>
    <li class="toctree-l2 collapsible-parent">
@@ -179,6 +179,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../galfit/galfit.html">
      Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../galfit/models.html">
+     Galfit models
     </a>
    </li>
   </ul>
@@ -298,13 +303,17 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a new image where the convolution has been performed</p>
+<dd class="field-even"><p>a new convolved image</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>2D ndarray</p>
+<dd class="field-odd"><p>2D ndarray[float]</p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – if unit is not a valid unit or if the PSF is not a 2D Gaussian</p>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>if unit key in <strong>model</strong> dict is not a valid astropy unit</p></li>
+<li><p>if the PSF is not a 2D Gaussian model</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>

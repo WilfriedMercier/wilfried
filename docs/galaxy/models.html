@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1D and 2D light models &#8212; wilfried library 1.0 documentation</title>
+    <title>Galaxy models &#8212; wilfried library 1.0 documentation</title>
     
   <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
@@ -111,7 +111,7 @@
    </li>
    <li class="toctree-l2 current active">
     <a class="current reference internal" href="#">
-     1D and 2D light models
+     Galaxy models
     </a>
    </li>
    <li class="toctree-l2 collapsible-parent">
@@ -179,6 +179,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../galfit/galfit.html">
      Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../galfit/models.html">
+     Galfit models
     </a>
    </li>
   </ul>
@@ -265,6 +270,26 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i>
+            Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#d-profiles">
+   1D profiles
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   2D profiles
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
         </div>
     </div>
 </div>
@@ -274,9 +299,19 @@
               <div>
                 
   <div class="section" id="module-galaxy.models">
-<span id="d-and-2d-light-models"></span><h1>1D and 2D light models<a class="headerlink" href="#module-galaxy.models" title="Permalink to this headline">¶</a></h1>
+<span id="galaxy-models"></span><h1>Galaxy models<a class="headerlink" href="#module-galaxy.models" title="Permalink to this headline">¶</a></h1>
 <p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
 <p>Useful functions for galaxy modelling and other related computation.</p>
+<div class="contents local topic" id="table-of-contents">
+<p class="topic-title">Table of contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#d-profiles" id="id2">1D profiles</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id3">2D profiles</a></p></li>
+</ul>
+</div>
+<div class="section" id="d-profiles">
+<h2><a class="toc-backref" href="#id2">1D profiles</a><a class="headerlink" href="#d-profiles" title="Permalink to this headline">¶</a></h2>
+<p>A collection of 1D surface brightness profiles.</p>
 <dl class="py function">
 <dt id="galaxy.models.bulge">
 <code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">bulge</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#bulge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.bulge" title="Permalink to this definition">¶</a></dt>
@@ -301,80 +336,6 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.models.bulgeDiskOnSky">
-<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">bulgeDiskOnSky</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'FWHMX':</span> <span class="pre">0.8,</span> <span class="pre">'FWHMY':</span> <span class="pre">0.8,</span> <span class="pre">'name':</span> <span class="pre">'Gaussian2D',</span> <span class="pre">'sigmaX':</span> <span class="pre">None,</span> <span class="pre">'sigmaY':</span> <span class="pre">None,</span> <span class="pre">'unit':</span> <span class="pre">'arcsec'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noPSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecToGrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">2,</span> <span class="pre">'dy':</span> <span class="pre">2,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#bulgeDiskOnSky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.bulgeDiskOnSky" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
-<p>Generate a bulge + (sky projected) disk 2D model (with PSF convolution).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<blockquote>
-<div><p><strong>How to use</strong></p>
-<p>Apart from the mandatory inputs, it is necessary to provide:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>an intensity at Re for each profile</p></li>
-<li><p>a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)</p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-<p><strong>Infos about sampling</strong></p>
-<blockquote>
-<div><p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
-<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><strong>Rd</strong> and <strong>Rb</strong> should be given in pixel units. 
-If you provide them in arcsec, you must update the <strong>arcsecToGrid</strong> value to 1 (since 1 pixel will be equal to 1 arcsec).</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
-<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
-<li><p><strong>Rb</strong> (<em>float</em>) – bulge half-light radius. Best practice is to provide it in pixels.</p></li>
-<li><p><strong>Rd</strong> (<em>float</em>) – disk half-light radius. Best practice is to provide it in pixels.</p></li>
-<li><p><strong>arcsecToGrid</strong> (<em>float</em>) – (<strong>Optional</strong>) pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel</p></li>
-<li><p><strong>Ib</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
-<li><p><strong>Id</strong> (<em>float</em>) – (<strong>Optional</strong>) disk intensity at (disk) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
-<li><p><strong>inclination</strong> ((<strong>Optional</strong>) int or float) – (<strong>Optional</strong>) disk inclination on sky. Generally given between -90° and +90°. Value must be given in degrees.</p></li>
-<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge total magnitude</p></li>
-<li><p><strong>magD</strong> (<em>float</em>) – (<strong>Optional</strong>) disk total magnitude</p></li>
-<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge magnitude offset</p></li>
-<li><p><strong>offsetD</strong> (<em>float</em>) – (<strong>Optional</strong>) disk magnitude offset</p></li>
-<li><p><strong>noPSF</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not perform PSF convolution or not</p></li>
-<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – disk position angle (in degrees)</p></li>
-<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
-<li><p><strong>PSF</strong> (<em>dict</em>) – (<strong>Optional</strong>) Dictionnary of the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF.</p></li>
-<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>where to perform the over sampling. Dictionnaries should have the following keys:</p>
-<ul>
-<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
-<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
-<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
-</ul>
-</p></li>
-<li><p><strong>skipCheck</strong> (<em>bool</em>) – whether to skip the checking part or not</p></li>
-<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – x-axis centre position. Default is None so that nx//2 will be used.</p></li>
-<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – y-axis centre position. Default is None so that ny//2 will be used.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em>) – whether to print text on stdout or not</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>2D ndarray, 2D ndarray, 2D ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -433,74 +394,6 @@ If you provide them in arcsec, you must update the <strong>arcsecToGrid</strong>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>TypeError</strong> – if <strong>r</strong>, <strong>M</strong> and <strong>a</strong> are neither int, nor float</p></li>
 <li><p><strong>ValueError</strong> – if np.any(<strong>r</strong>) &lt; 0, if <strong>a</strong> &lt;= 0 or if <strong>M</strong> &lt; 0</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.models.model2D">
-<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">model2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listRe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listIe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listMag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listInclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listPA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">5,</span> <span class="pre">'dy':</span> <span class="pre">5,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#model2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.model2D" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
-<p>Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<blockquote>
-<div><p><strong>How to use</strong></p>
-<p>Apart from the mandatory inputs, it is necessary to provide:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>an intensity at Re for each profile</p></li>
-<li><p>a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)</p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-<p><strong>Infos about sampling</strong></p>
-<blockquote>
-<div><p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
-<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>listn</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – list of Sersic index for each profile</p></li>
-<li><p><strong>listRe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – list of half-light radii for each profile</p></li>
-<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
-<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
-<li><p><strong>combine</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists</p></li>
-<li><p><strong>listIe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of intensities at re for each profile</p></li>
-<li><p><strong>listInclination</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of inclination of each Sersic component on the sky in degrees</p></li>
-<li><p><strong>listPA</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°.</p></li>
-<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – (<strong>Optional</strong>) fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
-<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) where to perform the sampling. Default is everywhere. Dictionnaries should have the following keys:</p>
-<ul>
-<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
-<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
-<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
-</ul>
-</p></li>
-<li><p><strong>skipCheck</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to skip the checking part or not</p></li>
-<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) x-axis centre position. Default is None so that <strong>nx</strong>//2 will be used.</p></li>
-<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) y-axis centre position. Default is None so that <strong>ny</strong>//2 will be used.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>X, Y grids and the intensity map if <strong>combine</strong> is True</p></li>
-<li><p>X, Y grids and a listof intensity maps for each component if <strong>combine</strong> is False</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>TypeError</strong> – if ‘dx’ and ‘dy’ keys not in <strong>samplingZone</strong>, if <strong>fineSampling</strong>, <strong>nx</strong> and <strong>ny</strong> are neither int, nor np.integer</p></li>
-<li><p><strong>ValueError</strong> – if ‘where’ key value in <strong>samplingZone</strong> is neither ‘all’, nor ‘centre’, if <strong>fineSampling</strong> &lt; 1, if at least one PA is not in the range [-90, 90] deg, or if Ie and mag and offset are None</p></li>
 </ul>
 </dd>
 </dl>
@@ -575,6 +468,267 @@ If you provide them in arcsec, you must update the <strong>arcsecToGrid</strong>
 </dl>
 </dd></dl>
 
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id3">2D profiles</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>A collection of 2D models of surface brightness profiles with or without inclination effects and PSF convolution.</p>
+<dl class="py function">
+<dt id="galaxy.models.bulgeDiskOnSky">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">bulgeDiskOnSky</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'FWHMX':</span> <span class="pre">0.8,</span> <span class="pre">'FWHMY':</span> <span class="pre">0.8,</span> <span class="pre">'name':</span> <span class="pre">'Gaussian2D',</span> <span class="pre">'sigmaX':</span> <span class="pre">None,</span> <span class="pre">'sigmaY':</span> <span class="pre">None,</span> <span class="pre">'unit':</span> <span class="pre">'arcsec'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noPSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecToGrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">2,</span> <span class="pre">'dy':</span> <span class="pre">2,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#bulgeDiskOnSky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.bulgeDiskOnSky" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate a bulge + (sky projected) disk 2D model (with PSF convolution).</p>
+<p class="rubric"><strong>How to use</strong></p>
+<p>Apart from the mandatory inputs, it is necessary to provide</p>
+<ul class="simple">
+<li><p>an intensity at Re for each profile</p></li>
+<li><p>a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)</p></li>
+</ul>
+<p class="rubric"><strong>Infos about sampling</strong> </p>
+<p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</p>
+<ul class="simple">
+<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
+<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Rd</strong> and <strong>Rb</strong> should be given in pixel units.</p>
+<p>If you provide them in arcsec, you must update the <strong>arcsecToGrid</strong> value to 1 (since 1 pixel will be equal to 1 arcsec).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
+<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
+<li><p><strong>Rb</strong> (<em>float</em>) – bulge half-light radius. Best practice is to provide it in pixels.</p></li>
+<li><p><strong>Rd</strong> (<em>float</em>) – disk half-light radius. Best practice is to provide it in pixels.</p></li>
+<li><p><strong>arcsecToGrid</strong> (<em>float</em>) – (<strong>Optional</strong>) pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel</p></li>
+<li><p><strong>Ib</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
+<li><p><strong>Id</strong> (<em>float</em>) – (<strong>Optional</strong>) disk intensity at (disk) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
+<li><p><strong>inclination</strong> ((<strong>Optional</strong>) int or float) – (<strong>Optional</strong>) disk inclination on sky. Generally given between -90° and +90°. Value must be given in degrees.</p></li>
+<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge total magnitude</p></li>
+<li><p><strong>magD</strong> (<em>float</em>) – (<strong>Optional</strong>) disk total magnitude</p></li>
+<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge magnitude offset</p></li>
+<li><p><strong>offsetD</strong> (<em>float</em>) – (<strong>Optional</strong>) disk magnitude offset</p></li>
+<li><p><strong>noPSF</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not perform PSF convolution or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – disk position angle (in degrees)</p></li>
+<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
+<li><p><strong>PSF</strong> (<em>dict</em>) – (<strong>Optional</strong>) Dictionnary of the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF.</p></li>
+<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>where to perform the over sampling. Dictionnaries should have the following keys:</p>
+<ul>
+<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
+<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
+<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
+</ul>
+</p></li>
+<li><p><strong>skipCheck</strong> (<em>bool</em>) – whether to skip the checking part or not</p></li>
+<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – x-axis centre position. Default is None so that nx//2 will be used.</p></li>
+<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – y-axis centre position. Default is None so that ny//2 will be used.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – whether to print text on stdout or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2D ndarray, 2D ndarray, 2D ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.Sersic2D">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">Sersic2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listRe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listIe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listMag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listInclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listPA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">5,</span> <span class="pre">'dy':</span> <span class="pre">5,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#Sersic2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.Sersic2D" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.</p>
+<p class="rubric"><strong>How to use</strong></p>
+<p>Apart from the mandatory inputs, it is necessary to provide</p>
+<ul class="simple">
+<li><p>an intensity at Re for each profile</p></li>
+<li><p>a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)</p></li>
+</ul>
+<p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</p>
+<ul class="simple">
+<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
+<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listn</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – list of Sersic index for each profile</p></li>
+<li><p><strong>listRe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – list of half-light radii for each profile</p></li>
+<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
+<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
+<li><p><strong>combine</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists</p></li>
+<li><p><strong>listIe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of intensities at re for each profile</p></li>
+<li><p><strong>listInclination</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of inclination of each Sersic component on the sky in degrees</p></li>
+<li><p><strong>listPA</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°.</p></li>
+<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – (<strong>Optional</strong>) fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
+<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) where to perform the sampling. Default is everywhere. Dictionnaries should have the following keys:</p>
+<ul>
+<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
+<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
+<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
+</ul>
+</p></li>
+<li><p><strong>skipCheck</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to skip the checking part or not</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to print info on stdout or not</p></li>
+<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) x-axis centre position. Default is None so that <strong>nx</strong>//2 will be used.</p></li>
+<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) y-axis centre position. Default is None so that <strong>ny</strong>//2 will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>X, Y grids and the intensity map if <strong>combine</strong> is True</p></li>
+<li><p>X, Y grids and a listof intensity maps for each component if <strong>combine</strong> is False</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – <ul>
+<li><p>if ‘dx’ and ‘dy’ keys are not in <strong>samplingZone</strong></p></li>
+<li><p>if <strong>fineSampling</strong>, <strong>nx</strong> and <strong>ny</strong> are neither int, nor np.integer</p></li>
+</ul>
+</p></li>
+<li><p><strong>ValueError</strong> – <ul>
+<li><p>if ‘where’ key value in <strong>samplingZone</strong> is neither ‘all’, nor ‘centre’</p></li>
+<li><p>if nx, ny or arcsecToGrid are &lt; 0</p></li>
+<li><p>if at least one n or one Re is &lt; 0</p></li>
+<li><p>if <strong>fineSampling</strong> &lt; 1</p></li>
+<li><p>if at least one PA is not in the range [-90, 90] deg</p></li>
+<li><p>if Ie and mag and offset are None</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.bulge2D">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">bulge2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'FWHMX':</span> <span class="pre">0.8,</span> <span class="pre">'FWHMY':</span> <span class="pre">0.8,</span> <span class="pre">'name':</span> <span class="pre">'Gaussian2D',</span> <span class="pre">'sigmaX':</span> <span class="pre">None,</span> <span class="pre">'sigmaY':</span> <span class="pre">None,</span> <span class="pre">'unit':</span> <span class="pre">'arcsec'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noPSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecToGrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">5,</span> <span class="pre">'dy':</span> <span class="pre">5,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#bulge2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.bulge2D" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate a 2D model for a de Vaucouleur bulge. This model can be sky projected and PSF convolved.</p>
+<p class="rubric"><strong>How to use</strong></p>
+<p>You must provide the size of the image with <strong>nx</strong> and <strong>ny</strong> as well as a bulge effective radius (usually in pixel unit) with <strong>Rb</strong>. Additionally, one must provide one of the following</p>
+<ul class="simple">
+<li><p>surface brightness at <strong>Rb</strong> with <strong>Ib</strong></p></li>
+<li><p>total magnitude and magnitude offset to go from magnitude to <strong>Ie</strong> using the parameters <strong>mag</strong> and <strong>offset</strong></p></li>
+</ul>
+<p>The PSF convolution only accepts 2D Gaussians for now. You can either provide</p>
+<ul class="simple">
+<li><p>a FWHM in the X and Y directions</p></li>
+<li><p>a dispersion in the X and Y directions</p></li>
+</ul>
+<p>You must also provide a unit for the FWHM or sigma values. This unit must be recognised by astropy. Since images have dimensions in pixel unit, if the FWHM or sigma values are not given in pixel unit, you must also provide <code class="samp docutils literal notranslate"><span class="pre">arcsecToGrid</span></code> to convert from physical unit to pixel unit.</p>
+<p>If you do not want to convolve with the PSF, provide <code class="samp docutils literal notranslate"><span class="pre">noPSF=True</span></code>.</p>
+<p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</p>
+<ul class="simple">
+<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
+<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
+<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
+<li><p><strong>Rb</strong> (<em>float</em>) – bulge half-light radius. Best practice is to provide it in pixels.</p></li>
+<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) x-axis centre position. Default is None so that <strong>nx</strong>//2 will be used.</p></li>
+<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) y-axis centre position. Default is None so that <strong>ny</strong>//2 will be used.</p></li>
+<li><p><strong>Ib</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
+<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge total magnitude</p></li>
+<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge magnitude offset</p></li>
+<li><p><strong>inclination</strong> ((<strong>Optional</strong>) int or float) – (<strong>Optional</strong>) inclination on sky. Generally given between -90° and +90°. Value must be given in degrees.</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – position angle (in degrees)</p></li>
+<li><p><strong>PSF</strong> (<em>dict</em>) – (<strong>Optional</strong>) Dictionnary of the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF.</p></li>
+<li><p><strong>noPSF</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not perform PSF convolution or not</p></li>
+<li><p><strong>arcsecToGrid</strong> (<em>float</em>) – (<strong>Optional</strong>) pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel</p></li>
+<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
+<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>where to perform the over sampling. Dictionnaries should have the following keys:</p>
+<ul>
+<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
+<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
+<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
+</ul>
+</p></li>
+<li><p><strong>skipCheck</strong> (<em>bool</em>) – whether to skip the checking part or not</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to print info on stdout or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X coordinate array, Y coordinate array and the 2D bulge model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2D ndarray[float], 2D ndarray[float], 2D ndarray[float]</p>
+</dd>
+</dl>
+<p class="rubric"><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span>   <span class="nn">matplotlib.colors</span>   <span class="kn">import</span> <span class="n">LogNorm</span>
+<span class="kn">from</span>   <span class="nn">matplotlib</span>          <span class="kn">import</span> <span class="n">rc</span>
+<span class="kn">from</span>   <span class="nn">matplotlib.gridspec</span> <span class="kn">import</span> <span class="n">GridSpec</span>
+<span class="kn">from</span>   <span class="nn">wilfried.galaxy</span>     <span class="kn">import</span> <span class="n">models</span> <span class="k">as</span> <span class="n">mod</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>   <span class="k">as</span>     <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>          <span class="k">as</span>     <span class="nn">mpl</span>
+
+<span class="c1"># Bulge model without using fine sampling and without PSF</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge1</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Bulge mode with fine sampling but without PSF</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge2</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">)</span>
+
+<span class="c1"># Bulge model with fine sampling and with PSF convolution (FWHM=0.8 arcsec)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge3</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span>
+                          <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Gaussian2D&#39;</span><span class="p">,</span> <span class="s1">&#39;FWHMX&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;FWHMY&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="s1">&#39;arcsec&#39;</span><span class="p">},</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+
+<span class="c1">###############################</span>
+<span class="c1">#          Plot part          #</span>
+<span class="c1">###############################</span>
+
+<span class="c1"># Setup figure and axes</span>
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;family&#39;</span><span class="p">:</span> <span class="s1">&#39;serif&#39;</span><span class="p">,</span> <span class="s1">&#39;serif&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Times&#39;</span><span class="p">]})</span>
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.latex.preamble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\usepackage</span><span class="si">{newtxmath}</span><span class="s1">&#39;</span>
+
+<span class="n">f</span>            <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">gs</span>           <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">ax1</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ax2</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ax3</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;No fine sampling&#39;</span><span class="p">,</span>      <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling = $9^2$&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling \&amp; PSF&#39;</span><span class="p">,</span>  <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">]:</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+<span class="c1"># Show bulges</span>
+<span class="n">ret1</span>  <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge1</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+<span class="n">ret2</span>  <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge2</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+<span class="n">ret3</span>  <span class="o">=</span> <span class="n">ax3</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge3</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add colorbar</span>
+<span class="n">cb_ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+<span class="n">cbar</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ret1</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cb_ax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Surface brightness [arbitrary unit]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../galaxy/models-1.py">Source code</a>, <a class="reference external" href="../galaxy/models-1.png">png</a>, <a class="reference external" href="../galaxy/models-1.hires.png">hires.png</a>, <a class="reference external" href="../galaxy/models-1.pdf">pdf</a>)</p>
+<div class="figure align-default">
+<img alt="../_images/models-1.png" src="../_images/models-1.png" />
+</div>
+</dd></dl>
+
+</div>
 </div>
 
 

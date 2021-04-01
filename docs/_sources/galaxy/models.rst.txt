@@ -1,8 +1,33 @@
-1D and 2D light models
-======================
+Galaxy models
+=============
 
 .. automodule:: galaxy.models
-   :members:
    :show-inheritance:
+
+.. contents:: Table of contents
+   :local:
+
+
+1D profiles
+***********
+
+A collection of 1D surface brightness profiles.
+
+.. autofunction:: galaxy.models.bulge
+.. autofunction:: galaxy.models.exponential_disk
+.. autofunction:: galaxy.models.hernquist
+.. autofunction:: galaxy.models.nfw
+.. autofunction:: galaxy.models.sersic_profile
+
+2D profiles
+***********
+
+A collection of 2D models of surface brightness profiles with or without inclination effects and PSF convolution.
+
+.. autofunction:: galaxy.models.bulgeDiskOnSky
+.. autofunction:: galaxy.models.Sersic2D
+.. autofunction:: galaxy.models.bulge2D
+
+
 
 

@@ -109,7 +109,7 @@
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="galaxy/models.html">
-     1D and 2D light models
+     Galaxy models
     </a>
    </li>
    <li class="toctree-l2 collapsible-parent">
@@ -177,6 +177,11 @@
    <li class="toctree-l2">
     <a class="reference internal" href="galfit/galfit.html">
      Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="galfit/models.html">
+     Galfit models
     </a>
    </li>
   </ul>
@@ -366,15 +371,21 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galfit/models.html#galfit.models.bendingModes">bendingModes() (in module galfit.models)</a>
+</li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic.bn">bn (galaxy.massModels.Sersic attribute)</a>
 </li>
       <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.BoverD">BoverD() (in module galaxy.morphology)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.BoverT">BoverT() (in module galaxy.morphology)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galfit/models.html#galfit.models.boxy_diskyness">boxy_diskyness() (in module galfit.models)</a>
+</li>
       <li><a href="galaxy/models.html#galaxy.models.bulge">bulge() (in module galaxy.models)</a>
+</li>
+      <li><a href="galaxy/models.html#galaxy.models.bulge2D">bulge2D() (in module galaxy.models)</a>
 </li>
       <li><a href="galaxy/models.html#galaxy.models.bulgeDiskOnSky">bulgeDiskOnSky() (in module galaxy.models)</a>
 </li>
@@ -404,10 +415,10 @@
 </li>
       <li><a href="galaxy/cosmology.html#galaxy.cosmology.comoving_los">comoving_los() (in module galaxy.cosmology)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/cosmology.html#galaxy.cosmology.comoving_separation">comoving_separation() (in module galaxy.cosmology)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/misc.html#galaxy.misc.compute_bn">compute_bn() (in module galaxy.misc)</a>
 </li>
       <li><a href="galaxy/morphology/MUSE.html#galaxy.MUSE.compute_lsfw">compute_lsfw() (in module galaxy.MUSE)</a>
@@ -427,6 +438,10 @@
       <li><a href="galaxy/cosmology.html#galaxy.cosmology.COSMOLOGY">COSMOLOGY (in module galaxy.cosmology)</a>
 </li>
       <li><a href="galaxy/kinematics.html#galaxy.kinematics.create_mask">create_mask() (in module galaxy.kinematics)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.createCommentsDict">createCommentsDict() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.createIsFixedDict">createIsFixedDict() (in module galfit.models)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -482,11 +497,13 @@
       </ul></li>
       <li><a href="galaxy/photometry/Fluxes.html#galaxy.photometry.flux_to_lum">flux_to_lum() (in module galaxy.photometry)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.fluxSersic">fluxSersic() (in module galaxy.morphology)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.fluxSersics">fluxSersics() (in module galaxy.morphology)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.fourierModes">fourierModes() (in module galfit.models)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.fromStructuredArrayOrNot">fromStructuredArrayOrNot() (in module galaxy.misc)</a>
 </li>
@@ -550,8 +567,6 @@
         <li><a href="galaxy/models.html#module-galaxy.models">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     galaxy.morphology
 
@@ -573,11 +588,44 @@
         <li><a href="galfit/galfit.html#module-galfit.galfit">module</a>
 </li>
       </ul></li>
+      <li>
+    galfit.models
+
+      <ul>
+        <li><a href="galfit/models.html#module-galfit.models">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galfit/galfit.html#galfit.galfit.genConstraint">genConstraint() (in module galfit.galfit)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.gendeVaucouleur">gendeVaucouleur() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genEdgeOnDisk">genEdgeOnDisk() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genExpDisk">genExpDisk() (in module galfit.models)</a>
 </li>
       <li><a href="galfit/galfit.html#galfit.galfit.genFeedme">genFeedme() (in module galfit.galfit)</a>
 </li>
+      <li><a href="galfit/models.html#galfit.models.genFerrer">genFerrer() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genGaussian">genGaussian() (in module galfit.models)</a>
+</li>
       <li><a href="galfit/galfit.html#galfit.galfit.genHeader">genHeader() (in module galfit.galfit)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genKing">genKing() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genModel">genModel() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genMoffat">genMoffat() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genNuker">genNuker() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genPSF">genPSF() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genSersic">genSersic() (in module galfit.models)</a>
+</li>
+      <li><a href="galfit/models.html#galfit.models.genSky">genSky() (in module galfit.models)</a>
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist.gfield">gfield() (galaxy.massModels.Hernquist method)</a>
 
@@ -615,6 +663,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galfit/models.html#index-0">index</a>
+</li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.inferError">inferError() (in module makeLifeSimpler)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.intensity_at_re">intensity_at_re() (in module galaxy.misc)</a>
@@ -670,8 +720,6 @@
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.mergeModelsIntoOne">mergeModelsIntoOne() (in module galaxy.misc)</a>
 </li>
-      <li><a href="galaxy/models.html#galaxy.models.model2D">model2D() (in module galaxy.models)</a>
-</li>
       <li><a href="galfit/galfit.html#galfit.galfit.modelFunctions">modelFunctions (in module galfit.galfit)</a>
 </li>
       <li>
@@ -695,6 +743,8 @@
         <li><a href="galaxy/photometry/index.html#module-galaxy.photometry">galaxy.photometry</a>
 </li>
         <li><a href="galfit/galfit.html#module-galfit.galfit">galfit.galfit</a>
+</li>
+        <li><a href="galfit/models.html#module-galfit.models">galfit.models</a>
 </li>
         <li><a href="makeLifeSimpler.html#module-makeLifeSimpler">makeLifeSimpler</a>
 </li>
@@ -805,10 +855,12 @@
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic">Sersic (class in galaxy.massModels)</a>
 </li>
-      <li><a href="galaxy/angularMomentum.html#galaxy.angularMomentum.sersic_kthMoment">sersic_kthMoment() (in module galaxy.angularMomentum)</a>
+      <li><a href="galaxy/models.html#galaxy.models.Sersic2D">Sersic2D() (in module galaxy.models)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/angularMomentum.html#galaxy.angularMomentum.sersic_kthMoment">sersic_kthMoment() (in module galaxy.angularMomentum)</a>
+</li>
       <li><a href="galaxy/models.html#galaxy.models.sersic_profile">sersic_profile() (in module galaxy.models)</a>
 </li>
       <li><a href="galaxy/photometry/Masses_SFR.html#galaxy.photometry.sfr_kennicutt_oii">sfr_kennicutt_oii() (in module galaxy.photometry)</a>

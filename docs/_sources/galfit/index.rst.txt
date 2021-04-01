@@ -11,4 +11,6 @@ Galfit module
    :caption: Contents:
 
    ./galfit.rst
+   ./models.rst
+   
 
