@@ -305,12 +305,12 @@
 <div class="contents local topic" id="table-of-contents">
 <p class="topic-title">Table of contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#d-profiles" id="id2">1D profiles</a></p></li>
-<li><p><a class="reference internal" href="#id1" id="id3">2D profiles</a></p></li>
+<li><p><a class="reference internal" href="#d-profiles" id="id3">1D profiles</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id4">2D profiles</a></p></li>
 </ul>
 </div>
 <div class="section" id="d-profiles">
-<h2><a class="toc-backref" href="#id2">1D profiles</a><a class="headerlink" href="#d-profiles" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">1D profiles</a><a class="headerlink" href="#d-profiles" title="Permalink to this headline">¶</a></h2>
 <p>A collection of 1D surface brightness profiles.</p>
 <dl class="py function">
 <dt id="galaxy.models.bulge">
@@ -470,7 +470,7 @@
 
 </div>
 <div class="section" id="id1">
-<h2><a class="toc-backref" href="#id3">2D profiles</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">2D profiles</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>A collection of 2D models of surface brightness profiles with or without inclination effects and PSF convolution.</p>
 <dl class="py function">
 <dt id="galaxy.models.bulgeDiskOnSky">
@@ -663,6 +663,12 @@
 </dd>
 </dl>
 <p class="rubric"><strong>Example</strong></p>
+<p>Comparing different models:</p>
+<ul class="simple">
+<li><p>The first does not use <strong>fineSampling</strong>, thus it shows an intensity profile, rather than a flux profile</p></li>
+<li><p>The second one uses <code class="samp docutils literal notranslate"><span class="pre">fineSampling=81</span></code> so that it matches more the ouput of <a class="reference external" href="https://users.obs.carnegiescience.edu/peng/work/galfit/galfit.html">Galfit</a></p></li>
+<li><p>The last one also uses <strong>fineSampling</strong> but is convolved by a Gaussian with <img class="math" src="../_images/math/e49ad3bf0a784e35d85765cb2194f74f74ff1d4c.png" alt="{\rm{FWHM}} = 0.087~\rm{arcsec}"/></p></li>
+</ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span>   <span class="nn">matplotlib.colors</span>   <span class="kn">import</span> <span class="n">LogNorm</span>
 <span class="kn">from</span>   <span class="nn">matplotlib</span>          <span class="kn">import</span> <span class="n">rc</span>
 <span class="kn">from</span>   <span class="nn">matplotlib.gridspec</span> <span class="kn">import</span> <span class="n">GridSpec</span>
@@ -670,7 +676,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>   <span class="k">as</span>     <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>          <span class="k">as</span>     <span class="nn">mpl</span>
 
-<span class="c1"># Bulge model without using fine sampling and without PSF</span>
+<span class="c1"># Bulge model using fine sampling and without PSF</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge1</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Bulge mode with fine sampling but without PSF</span>
@@ -689,16 +695,16 @@
 <span class="n">rc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.latex.preamble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\usepackage</span><span class="si">{newtxmath}</span><span class="s1">&#39;</span>
 
-<span class="n">f</span>            <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
-<span class="n">gs</span>           <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">f</span>            <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">gs</span>           <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 
 <span class="n">ax1</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">ax2</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax3</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;No fine sampling&#39;</span><span class="p">,</span>      <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling = $9^2$&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling \&amp; PSF&#39;</span><span class="p">,</span>  <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;No fine sampling&#39;</span><span class="p">,</span>      <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling = $9^2$&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling \&amp; PSF&#39;</span><span class="p">,</span>  <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">]:</span>
    <span class="n">a</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
@@ -714,10 +720,10 @@
 <span class="n">ret3</span>  <span class="o">=</span> <span class="n">ax3</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge3</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add colorbar</span>
-<span class="n">cb_ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+<span class="n">cb_ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
 <span class="n">cbar</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ret1</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cb_ax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
-<span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Surface brightness [arbitrary unit]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Surface brightness [arbitrary unit]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -725,6 +731,103 @@
 <p>(<a class="reference external" href="../galaxy/models-1.py">Source code</a>, <a class="reference external" href="../galaxy/models-1.png">png</a>, <a class="reference external" href="../galaxy/models-1.hires.png">hires.png</a>, <a class="reference external" href="../galaxy/models-1.pdf">pdf</a>)</p>
 <div class="figure align-default">
 <img alt="../_images/models-1.png" src="../_images/models-1.png" />
+</div>
+<p class="rubric"><strong>Comparison with Galfit models</strong></p>
+<p>We can also compare the ouput from this function with a similar model made with <a class="reference external" href="https://users.obs.carnegiescience.edu/peng/work/galfit/galfit.html">Galfit</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span>   <span class="nn">matplotlib.colors</span>   <span class="kn">import</span> <span class="n">LogNorm</span><span class="p">,</span> <span class="n">Normalize</span>
+<span class="kn">from</span>   <span class="nn">matplotlib</span>          <span class="kn">import</span> <span class="n">rc</span>
+<span class="kn">from</span>   <span class="nn">matplotlib.gridspec</span> <span class="kn">import</span> <span class="n">GridSpec</span>
+<span class="kn">from</span>   <span class="nn">astropy.io</span>          <span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span>   <span class="nn">wilfried.galaxy</span>     <span class="kn">import</span> <span class="n">models</span> <span class="k">as</span> <span class="n">mod</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>   <span class="k">as</span>     <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>          <span class="k">as</span>     <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">numpy</span>               <span class="k">as</span>     <span class="nn">np</span>
+
+<span class="c1">##############################</span>
+<span class="c1">#     Generate 2D models     #</span>
+<span class="c1">##############################</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge1</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">})</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge2</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span>
+                          <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Gaussian2D&#39;</span><span class="p">,</span> <span class="s1">&#39;FWHMX&#39;</span><span class="p">:</span><span class="mf">0.087</span><span class="p">,</span> <span class="s1">&#39;FWHMY&#39;</span><span class="p">:</span><span class="mf">0.087</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="s1">&#39;arcsec&#39;</span><span class="p">},</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+
+<span class="c1">#####################################</span>
+<span class="c1">#     Load GALFIT output images     #</span>
+<span class="c1">#####################################</span>
+
+<span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;/home/wilfried/wilfried_libs/galaxy/.test/bulge_withoutPSF.fits&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+   <span class="n">bulge_nopsf</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+<span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;/home/wilfried/wilfried_libs/galaxy/.test/bulge_withPSF.fits&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+   <span class="n">bulge_psf</span>   <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+<span class="c1">##########################</span>
+<span class="c1">#       Plot parts       #</span>
+<span class="c1">##########################</span>
+
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;family&#39;</span><span class="p">:</span> <span class="s1">&#39;serif&#39;</span><span class="p">,</span> <span class="s1">&#39;serif&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Times&#39;</span><span class="p">]})</span>
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.latex.preamble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\usepackage</span><span class="si">{newtxmath}</span><span class="s1">&#39;</span>
+
+<span class="n">f</span>            <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">gs</span>           <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+
+<span class="n">axs</span>          <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">:</span>
+   <span class="n">axs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;without PSF&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;bulge2D&#39;</span><span class="p">,</span>      <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Galfit bulge&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Residuals&#39;</span><span class="p">,</span>    <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;with PSF&#39;</span><span class="p">,</span>    <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+<span class="c1"># First line</span>
+<span class="n">mmax</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">([</span><span class="n">bulge1</span><span class="p">,</span> <span class="n">bulge2</span><span class="p">,</span> <span class="n">bulge_nopsf</span><span class="p">,</span> <span class="n">bulge_psf</span><span class="p">])</span>
+<span class="n">mmin</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">bulge1</span><span class="p">,</span> <span class="n">bulge2</span><span class="p">,</span> <span class="n">bulge_nopsf</span><span class="p">,</span> <span class="n">bulge_psf</span><span class="p">])</span>
+
+<span class="n">diff1</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">100</span><span class="o">*</span><span class="n">bulge_nopsf</span><span class="o">/</span><span class="n">bulge1</span>
+<span class="n">diff2</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">100</span><span class="o">*</span><span class="n">bulge_psf</span><span class="o">/</span><span class="n">bulge2</span>
+<span class="n">dmax</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">([</span><span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span><span class="p">])</span>
+<span class="n">dmin</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span><span class="p">])</span>
+
+<span class="n">ret11</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge1</span><span class="p">,</span>      <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret12</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge_nopsf</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret13</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">diff1</span><span class="p">,</span>       <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">dmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">dmax</span><span class="p">))</span>
+
+<span class="c1"># Second line</span>
+<span class="n">ret21</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge2</span><span class="p">,</span>      <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret22</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge_psf</span><span class="p">,</span>   <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret23</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">diff2</span><span class="p">,</span>       <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">dmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">dmax</span><span class="p">))</span>
+
+<span class="c1"># Add colorbar 1</span>
+<span class="n">cb_ax1</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.53</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+<span class="n">cbar1</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ret11</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cb_ax1</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">cbar1</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Surface brightness [arbitrary unit]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">cbar1</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># Add colorbar 2</span>
+<span class="n">cb_ax2</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+<span class="n">cbar2</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ret13</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cb_ax2</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">cbar2</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Relative difference (\%)&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">cbar2</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../galaxy/models-2.py">Source code</a>, <a class="reference external" href="../galaxy/models-2.png">png</a>, <a class="reference external" href="../galaxy/models-2.hires.png">hires.png</a>, <a class="reference external" href="../galaxy/models-2.pdf">pdf</a>)</p>
+<div class="figure align-default">
+<img alt="../_images/models-2.png" src="../_images/models-2.png" />
 </div>
 </dd></dl>
 

@@ -65,14 +65,14 @@ diff2 = 100 - 100*bulge_psf/bulge2
 dmax  = np.nanmax([diff1, diff2])
 dmin  = np.nanmin([diff1, diff2])
 
-ret11 = axs[0].imshow(bulge1,      origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
-ret12 = axs[1].imshow(bulge_nopsf, origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
-ret13 = axs[2].imshow(diff1,       origin='lower', cmap='viridis', norm=Normalize(vmin=dmin, vmax=dmax))
+ret11 = axs[0].imshow(bulge1,      origin='lower', cmap='plasma', norm=LogNorm(  vmin=mmin, vmax=mmax))
+ret12 = axs[1].imshow(bulge_nopsf, origin='lower', cmap='plasma', norm=LogNorm(  vmin=mmin, vmax=mmax))
+ret13 = axs[2].imshow(diff1,       origin='lower', cmap='viridis',    norm=Normalize(vmin=dmin, vmax=dmax))
 
 # Second line
-ret21 = axs[3].imshow(bulge2,      origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
-ret22 = axs[4].imshow(bulge_psf,   origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))
-ret23 = axs[5].imshow(diff2,       origin='lower', cmap='viridis', norm=Normalize(vmin=dmin, vmax=dmax))
+ret21 = axs[3].imshow(bulge2,      origin='lower', cmap='plasma', norm=LogNorm(  vmin=mmin, vmax=mmax))
+ret22 = axs[4].imshow(bulge_psf,   origin='lower', cmap='plasma', norm=LogNorm(  vmin=mmin, vmax=mmax))
+ret23 = axs[5].imshow(diff2,       origin='lower', cmap='viridis',    norm=Normalize(vmin=dmin, vmax=dmax))
 
 # Add colorbar 1
 cb_ax1 = f.add_axes([0.1, 0.1, 0.53, 0.025])
