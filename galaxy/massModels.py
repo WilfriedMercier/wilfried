@@ -6,19 +6,19 @@
 3D and 2D mass models for different mass and light profiles.
 """
 
-import numpy                 as     np
-import astropy.units         as     u
-import wilfried.morphology   as     morpho
-from   astropy.units.core    import UnitConversionError
-from   .models               import checkAndComputeIe, sersic_profile
-from   .misc                 import compute_bn, realGammainc
-from   astropy.constants     import G
-from   scipy.special         import gamma, i0, i1, k0, k1
+import numpy                      as     np
+import astropy.units              as     u
+import wilfried.galaxy.morphology as     morpho
+from   astropy.units.core         import UnitConversionError
+from   .models                    import checkAndComputeIe, sersic_profile
+from   .misc                      import compute_bn, realGammainc
+from   astropy.constants          import G
+from   scipy.special              import gamma, i0, i1, k0, k1
 
 try:
-    from   astropy.cosmology import Planck18 as cosmo
+    from   astropy.cosmology      import Planck18 as cosmo
 except ImportError:
-    from   astropy.cosmology import Planck15 as cosmo
+    from   astropy.cosmology      import Planck15 as cosmo
     
 
 #######################################################################################
