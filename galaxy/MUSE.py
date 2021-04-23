@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 11 15:37:49 2020
-
-@author: wilfried
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 Functions directly related to MUSE instrument and its observations.
 """
@@ -17,29 +15,28 @@ from   astropy.io    import fits
 
 def centreFromHSTtoMUSE(X, Y, imHST, imMUSE, extHST=0, extMUSE=0, noError=False):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Convert centre coordinates in pixels in HST image into pixel coordinates in MUSE image/cube.
 
-    Parameters
-    ----------
-        X : float/int
-            x centre position
-        Y : float/int
-            y centre position
-        imHST : str
-            file containing the HST image to generate wcs object
-        imMUSE : str
-            file containing a MUSE cube or image to generate wcs object
-            
-    Optional parameters
-    -------------------
-        extHST : int
-            extension to open in the HST fits file. Default is 0.
-        extMUSE : int
-            extension to open in the MUSE file. Default is 0.
-        noError : bool
-            whether to not throw an error or not when HST or MUSE file(s) is/are missing. If True, a tuple (np.nan, np.nan) is returned. Default is to throw an error.
+    :param X: x centre position
+    :type X: int or float
+    :param Y: y centre position
+    :type Y: int or float
+    :param str imHST: file containing the HST image to generate wcs object
+    :param str imMUSE: file containing a MUSE cube or image to generate wcs object
+        
+    :param int extHST: extension to open in the HST fits file
+    :param int extMUSE: extension to open in the MUSE file
+    :param bool noError: whether to not throw an error or not when HST or MUSE file(s) is/are missing. If True, a tuple (np.nan, np.nan) is returned.
 
-    Return the new (MUSE) pixel coordinates.
+    :returns: new (MUSE) pixel coordinates
+    :rtype: tuple
+    
+    :raises IOError:
+        
+        * if **noError** is False and **imHST** is not found
+        * if **noError** is False and **imMUSE** is not found
     '''
     
     # Check files exist first
@@ -77,19 +74,29 @@ def centreFromHSTtoMUSE(X, Y, imHST, imMUSE, extHST=0, extMUSE=0, noError=False)
 
 class ListGroups:
     
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    List of PSF values for the different MUSE fields.
+    '''
+    
     def __init__(self):
         '''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
         Keep track of the measurements made to know the PSF evolution as a function of wavelength in each MUSE field
 
-        - FWHM within old fields were measured at two wavelengths ([OII] and [OIII] rest-frame), so that is why PSF FWHM values are given for these two wavelengths along with the redshift of the galaxies on which it was measured.
-        - For the new fields, FWHM was measured as the median of each star modelled at ~100 different wavelengths.
-          So, for these fields, slope and offset are directly given instead of given two measurements and a z value
+            * FWHM within old fields were measured at two wavelengths ([OII] and [OIII] rest-frame), so that is why PSF FWHM values are given for these two wavelengths along with the redshift of the galaxies on which it was measured.
+            * For the new fields, FWHM was measured as the median of each star modelled at ~100 different wavelengths.
+          
+        So, for these fields, slope and offset are directly given instead of given two measurements and a z value
         '''
         
         # Rest-frame wavelengths in Angstrom
         self.OII  = 3729 
         self.OIII = 5007
         
+        #: PSF values using the Gaussian model
         self.gaussian = {'114'    : {'OII'  :  3.705,	
                                      'OIII' : 3.315, 
                                      'z'    : 0.598849},
@@ -144,9 +151,10 @@ class ListGroups:
                           '35'    : {'slope' : -2.555e-04,
                                      'offset': 4.934},
                           '87'    : {'slope' : -2.306e-04,
-                                     'offset': 4.756}
+                                     'offset': 4.756},
                          }
         
+        #: PSF values using the Moffat model
         self.moffat = {'23'   : {'OII'  : 3.97, 
                                  'OIII' : 3.29, 
                                  'z'    : 0.850458}, 
@@ -194,30 +202,32 @@ class ListGroups:
                                  'z'    : 0.85754},
                       '114'   : {'OII'  : 3.115, 
                                  'OIII' : 2.81, 
-                                 'z'    : 0.598849}
+                                 'z'    : 0.598849},
+                      
+                      'MXDF'  : {'OII'  : 0.64221739,
+                                 'OIII' : 0.58665217,
+                                 'z'    : 0}
                      }
 
 def compute_lsfw(z, lambda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Compute the MUSE Line Spread Fonction FWHM given the rest-frame wavelength of the line and the redshift of the corresponding object.
 
-    Mandatory parameters
-    --------------------
-        lambda0 : float/int
-            rest-frame wavelength in Angstroms
-        z : float/int
-            redshift of the object
-        
-    Optional parameters
-    -------------------    
-        a0: float
-            lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda. Default is 5.835e-8 A.
-        a1: float
-            lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda. Default is -9.080e-4.
-        a2: float
-            lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda. Default is 5.983 A^{-1}.
+    :param lambda0: rest-frame wavelength in Angstroms
+    :type lambda0: int or float
+    :param z: redshift of the object
+    :type z: int or float or ndarray[int] or ndarray[float]
+      
+    :param float a0: lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda
+    :param float a1: lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda
+    :param float a2: lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda
 
-    Return the LSF FWHM in Angstroms.
+    :returns: LSF FWHM in Angstroms
+    :rtype: float or ndarray[float]
+    
+    :raises ValueError: if np.any(z<0)
     '''
     
     if np.any(z<0):
@@ -233,22 +243,21 @@ def compute_lsfw(z, lambda0, a2=5.835e-8, a1=-9.080e-4, a0=5.983):
 
 def computeFWHM(wavelength, field, model='Gaussian'):
     '''
-    Compute the FWHM at a given observed wavelength assuming a linearly decreasing relation for the FWHM with wavelength (calibrated on OII and OIII measurements at different redshifts).
-    Only MUSE fields in the COSMOS field are considered here.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory parameters
-    --------------------
-        field : str
-            field name for each desired wavelength
-        wavelength : int
-            the wavelength for which we want to compute the FWHM in Angstrom
-            
-    Optional parameters
-    -------------------
-        model : 'Moffat' or 'Gaussian'
-            model to use. Default is Gaussian.
+    Compute the FWHM at a given observed wavelength assuming a linearly decreasing relation for the FWHM with wavelength (calibrated on OII and OIII measurements at different redshifts).
+    
+    Only MUSE fields in the COSMOS field are considered here.
+
+    :param str field: field name for each desired wavelength
+    :param wavelength: wavelength for which we want to compute the FWHM in Angstrom
+    :type wavelength: int or float
+    
+    :param model: model to use
+    :type model: 'Moffat' or 'Gaussian'
         
-    Return the computed FWHM.
+    :returns: computed FWHM
+    :rtype: float
     '''
     
     # The FWHM were computed for two wavelengths at some group redshift
