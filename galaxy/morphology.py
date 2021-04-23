@@ -7,7 +7,7 @@ Computations relative to galaxies morphology.
 """
 
 import numpy                              as     np
-import astropy.units.quantity.Quantity    as     AstropyQuantityType
+from   astropy.units.quantity             import Quantity
 from   scipy.special                      import gammainc
 from   scipy.optimize                     import root
 from   scipy.integrate                    import quad
