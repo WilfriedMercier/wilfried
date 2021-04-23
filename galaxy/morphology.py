@@ -7,6 +7,7 @@ Computations relative to galaxies morphology.
 """
 
 import numpy                              as     np
+import astropy.units.quantity.Quantity    as     AstropyQuantityType
 from   scipy.special                      import gammainc
 from   scipy.optimize                     import root
 from   scipy.integrate                    import quad
@@ -683,7 +684,7 @@ def computePAs(image, method='minmax', num=100, returnThresholds=False):
         return theta
     
     
-##################################################{#######################################################
+##########################################################################################################
 #                                 Thickness prescription                                                 #
 ##########################################################################################################
 
@@ -711,6 +712,95 @@ def disk_thickness(z):
         raise TypeError('z array has type %s but it must either be float or a numpy array' %type(z))
         
     return 10**(-lq0)
+
+
+def correct_inclination(inc, q0):
+    '''
+    Correct the inclination using the given disk thickness assuming the mass distribution is an oblate system. Correction is from Bottinelli et al., 1983 and is given by
+    
+    .. math::
+        
+        cos^2 i_0 = (q^2 - q_0^2) / (1 - q_0^2)
+    
+    where :math:`i_0` is the intrinsic inclination of the galaxy, :math:`q = b/a` is the observed axis ratio on the sky and :math:`q_0` is the intrinsic axis ratio of the galaxy.
+
+    :param inc: observed inclination of the galaxy in degrees (assumed to be :math:`\arccos b/a`)
+    :type inc: int/float/astropy Quantity object with unit of an angle of ndarray of one of these types
+    :param q0: intrinsic axis ratio
+    :type q0: int/float or ndarray[int]/ndarray[float]
+    
+    :returns: corrected inclination in degree
+    :rtype: float or ndarray[float]
+    '''
+    
+    if isinstance(inc, AstropyQuantityType):
+        inc     = inc.to('rad')
+    else:
+        inc    *= np.pi/180
+    
+    q           = np.cos(inc)
+    newinc      = np.arccos(np.sqrt((q*q - q0*q0) / (1 - q0*q0))) 
+    
+    if isinstance(newinc, AstropyQuantityType):
+        newinc  = newinc.to('degree').value
+    else:
+        newinc *= 180/np.pi
+        
+    return newinc
+    
+
+def correct_I0(I0, q0, inc=None, inc0=None):
+    '''
+    Correct the observed central surface brightness of a double exponential disk when fitted with a single exponential disk due to the effect of finite thickness. 
+    
+    .. note::
+        
+        The intrinsic central surface brightness of a double exponential disk is larger than the central surface brightness given by the best-fit single exponential profile.
+        
+        The reason is that when fitting with  a single exponential profile, the inclination is biased because the intrinsic axis ratio is not deduced from it, which means the value is underestimated with respect to the intrinsic value.
+        
+        The correction is given by (Mercier et al., 2021)
+        
+        .. math::
+            
+            \Sigma(0) / \Sigma_{\rm{RT}} (0) = (q_0 \sin i_0 + \cos i_0) / \sqrt{q_0^2 \sin^2 i_0 + \cos^2 i_0}
+            
+    .. warning::
+        
+        Provide inclinations in degree.
+    
+    :param I: observed central surface brightness from the single exponential profile
+    :type I: float or ndarray[float]
+    :param q0: intrinsic axis ratio of the galaxy
+    :type q0: float or ndarray[float]
+    
+    :param inc: (**Optional**) observed inclination in degree (not corrected of the galaxy thickness). If inc0 is given, inc0 is used instead.
+    :type inc: float or ndarray[float] or astropy Quantity with angle unit
+    :param inc0: (**Optional**) intrinsic inclination in degree (corrected of the galaxy thickness)
+    :type inc0: float or ndarray[float] or astropy Quantity with angle unit
+    
+    :returns: corrected central surface brightness
+    :rtype: float or ndarray[float]
+    
+    :raises ValueError: if both **inc** and **inc0** are None
+    '''
+    
+    if inc is None and inc0 is None:
+        raise ValueError('At least inc or inc0 must be provided. Cheers !')
+    elif inc0 is None:
+        inc0 = correct_inclination(inc, q0)
+        
+    if isinstance(inc0, AstropyQuantityType):
+        inc0.to('rad')
+    else:
+        inc0 *= np.pi/180
+    
+    cosi0     = np.cos(inc0)
+    sini0     = np.sin(inc0)
+    
+    r0        = (q0 * sini0 + cosi0) / np.sqrt(q0 * q0 * sini0 * sini0 + cosi0 * cosi0)
+    
+    return r0 * I0
     
 
 #################################################################################################################
