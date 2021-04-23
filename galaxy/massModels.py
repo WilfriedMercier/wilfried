@@ -8,6 +8,7 @@
 
 import numpy                 as     np
 import astropy.units         as     u
+import wilfried.morphology   as     morpho
 from   astropy.units.core    import UnitConversionError
 from   .models               import checkAndComputeIe, sersic_profile
 from   .misc                 import compute_bn, realGammainc
@@ -1099,7 +1100,8 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
     Double exponential disk profile class implementing Bovy rotation curve.
     '''
     
-    def __init__(self, Re, hz, M_L, q0=None, Ie=None, mag=None, offset=None, 
+    def __init__(self, Re, hz, M_L, q0=None, Ie=None, mag=None, offset=None,
+                 inc=None, inc0=None,
                  unit_Re='kpc', unit_hz='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
         """
         .. note::
@@ -1111,14 +1113,19 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
                 
             You can also provide **q0** instead of **hz** (which must be None in this case).
             
+            The observed or intrinsic inclination must be given with **inc** or **inc0**, respectively, if one wants to correct the central surface brightness for the effect of finite thickness.
+            
         :param hz: vertical scale height
         :type hz: int or float
         :param M_L: mass to light ratio
         :type M_L: int or float
         :param Re: half-light radius in the plane of symmetry
         :type Re: int or float
+    
+        :param float inc: (**Optional**) observed inclination (not corrected of the galaxy thickness)
+        :param float inc0: (**Optional**) intrinsic inclination (corrected of the galaxy thickness)
                 
-        :param float Ie: (**Optional**) intensity at half-light radius
+        :param float Ie: (**Optional**) intensity at half-light radius if the galaxy was seen face-on (must correct for inclination effects)
         :param float mag: (**Optional**) galaxy total integrated magnitude used to compute **Ie** if not given
         :param float offset: (**Optional**) magnitude offset in the magnitude system used
         :param float q0: (**Optional**) axis ratio equal to hz/Rd with Rd the disk scale length. If this value is different from None, it overrides **hz**.
@@ -1131,7 +1138,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         Sersic.__init__(       self, 1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
         
         #: Disk scale length :math:`R_{\rm{d}} = R_{\rm{e}} / b_n`
-        self.Rd       = self.Re/self.bn
+        self.Rd         = self.Re/self.bn
         
         if q0 is not None:
             if q0 >= 0 and q0 <= 1:
@@ -1145,6 +1152,11 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         else:
             self.hz     = hz
             self.q0     = self.hz/self.Rd
+            
+        # Surface density computed in Sersic assumes no thickness so we must correct for this effect if the user provides an intrinsic inclination (see Mercier et al., 2021)
+        if inc0 is not None or inc is not None:
+            self.I0     = morpho.correct_I0(self.I0, self.q0, inc=inc, inc0=inc0)
+            self.Ie     = self.I0/np.exp(self.bn)
         
         
     ######################################################
@@ -1267,8 +1279,8 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         
         R = self._checkR(R, self.Re)
     
-        v_RT2   = self.velocity_razor_thin(R)**2
-        v_corr2 = self.velocity_correction(R)**2
+        v_RT2   = self._velocity_razor_thin(R)**2
+        v_corr2 = self._velocity_correction(R)**2
         
         if isinstance(R.value, (int, float, np.float16, np.float32, np.float64)):
             if v_RT2 < v_corr2:
