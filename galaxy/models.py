@@ -448,7 +448,7 @@ def bulge2D(nx, ny, Rb, x0=None, y0=None, Ib=None, mag=None, offset=None, inclin
     
     :returns: X coordinate array, Y coordinate array and the 2D bulge model
     :rtype: 2D ndarray[float], 2D ndarray[float], 2D ndarray[float]
-   
+    
     .. rubric:: **Example**
     
     Comparing different models:
@@ -746,8 +746,8 @@ def Sersic2D(nx, ny, listn, listRe, x0=None, y0=None, listIe=None, listMag=None,
     if not skipCheck:
         samplingZone = _checkParams(nx, ny, samplingZone, fineSampling, verbose)
         
-        if any([i<0 for i in [nx, ny, arcsecToGrid]]):
-            raise ValueError('At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, arcsecToGrid.')
+        if any([i<0 for i in [nx, ny]]):
+            raise ValueError('At least one of the following parameters was provided as a negative number, which is not correct: nx, ny.')
             
         for ll in [listn, listRe]:
             if any([i<0 for i in ll]):
