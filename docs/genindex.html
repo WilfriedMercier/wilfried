@@ -27,6 +27,7 @@
     
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     
   <link rel="preload" as="script" href="_static/js/index.d3f166471bb80abb5163.js">
 
@@ -34,6 +35,8 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
     <script src="_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
@@ -73,9 +76,33 @@
 </ul>
 <ul class="nav sidenav_l1">
  <li class="toctree-l1">
+  <a class="reference internal" href="dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="makeLifeSimpler.html">
    makeLifeSimpler
   </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1 collapsible-parent">
   <a class="reference internal" href="galaxy/index.html">
@@ -274,6 +301,7 @@
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -355,12 +383,14 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.analyticFluxFrom0">analyticFluxFrom0() (in module galaxy.morphology)</a>
+      <li><a href="utilities/io.html#utilities.io.add_new_array_to_previous">add_new_array_to_previous() (in module utilities.io)</a>
 </li>
-      <li><a href="galaxy/cosmology.html#galaxy.cosmology.angular_diameter_size">angular_diameter_size() (in module galaxy.cosmology)</a>
+      <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.analyticFluxFrom0">analyticFluxFrom0() (in module galaxy.morphology)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/cosmology.html#galaxy.cosmology.angular_diameter_size">angular_diameter_size() (in module galaxy.cosmology)</a>
+</li>
       <li><a href="galaxy/kinematics.html#galaxy.kinematics.apply_mask">apply_mask() (in module galaxy.kinematics)</a>
 </li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.applyMask">applyMask() (in module makeLifeSimpler)</a>
@@ -382,6 +412,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galfit/models.html#galfit.models.boxy_diskyness">boxy_diskyness() (in module galfit.models)</a>
+</li>
+      <li><a href="utilities/coloredMessages.html#utilities.coloredMessages.brightMessage">brightMessage() (in module utilities.coloredMessages)</a>
 </li>
       <li><a href="galaxy/models.html#galaxy.models.bulge">bulge() (in module galaxy.models)</a>
 </li>
@@ -451,12 +483,14 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur">deVaucouleur (class in galaxy.massModels)</a>
 </li>
-      <li><a href="galaxy/morphology/Thickness.html#galaxy.morphology.disk_thickness">disk_thickness() (in module galaxy.morphology)</a>
+      <li><a href="utilities/coloredMessages.html#utilities.coloredMessages.dimMessage">dimMessage() (in module utilities.coloredMessages)</a>
 </li>
-      <li><a href="galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk">DoubleExponentialDisk (class in galaxy.massModels)</a>
+      <li><a href="galaxy/morphology/Thickness.html#galaxy.morphology.disk_thickness">disk_thickness() (in module galaxy.morphology)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk">DoubleExponentialDisk (class in galaxy.massModels)</a>
+</li>
       <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.DoverT">DoverT() (in module galaxy.morphology)</a>
 </li>
       <li><a href="galaxy/photometry/Fluxes.html#galaxy.photometry.dust_attenuation_calzetti">dust_attenuation_calzetti() (in module galaxy.photometry)</a>
@@ -469,10 +503,12 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="galaxy/models.html#galaxy.models.exponential_disk">exponential_disk() (in module galaxy.models)</a>
+      <li><a href="utilities/coloredMessages.html#utilities.coloredMessages.errorMessage">errorMessage() (in module utilities.coloredMessages)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/models.html#galaxy.models.exponential_disk">exponential_disk() (in module galaxy.models)</a>
+</li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.ExponentialDisk">ExponentialDisk (class in galaxy.massModels)</a>
 </li>
   </ul></td>
@@ -661,13 +697,15 @@
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic.Ie">Ie (galaxy.massModels.Sersic attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galfit/models.html#index-0">index</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.inferError">inferError() (in module makeLifeSimpler)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.intensity_at_re">intensity_at_re() (in module galaxy.misc)</a>
+</li>
+      <li><a href="utilities/io.html#utilities.io.is_VOtable">is_VOtable() (in module utilities.io)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -679,6 +717,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/io.html#utilities.io.loadVOtable">loadVOtable() (in module utilities.io)</a>
+</li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.logicalAndFromList">logicalAndFromList() (in module makeLifeSimpler)</a>
 </li>
   </ul></td>
@@ -748,10 +788,16 @@
 </li>
         <li><a href="makeLifeSimpler.html#module-makeLifeSimpler">makeLifeSimpler</a>
 </li>
+        <li><a href="utilities/coloredMessages.html#module-utilities.coloredMessages">utilities.coloredMessages</a>
+</li>
+        <li><a href="utilities/io.html#module-utilities.io">utilities.io</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/angularMomentum.html#galaxy.angularMomentum.momentum">momentum() (in module galaxy.angularMomentum)</a>
+</li>
+      <li><a href="utilities/io.html#utilities.io.move_bad_fields_to_bottom">move_bad_fields_to_bottom() (in module utilities.io)</a>
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.MassModelBase.Mtot">Mtot() (galaxy.massModels.MassModelBase property)</a>
 
@@ -778,6 +824,14 @@
       <li><a href="galaxy/massModels.html#galaxy.massModels.NFW">NFW (class in galaxy.massModels)</a>
 </li>
       <li><a href="galaxy/models.html#galaxy.models.nfw">nfw() (in module galaxy.models)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/coloredMessages.html#utilities.coloredMessages.okMessage">okMessage() (in module utilities.coloredMessages)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -899,6 +953,22 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.uniqueArr">uniqueArr() (in module makeLifeSimpler)</a>
 </li>
+      <li>
+    utilities.coloredMessages
+
+      <ul>
+        <li><a href="utilities/coloredMessages.html#module-utilities.coloredMessages">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    utilities.io
+
+      <ul>
+        <li><a href="utilities/io.html#module-utilities.io">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -927,11 +997,17 @@
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.ExponentialDisk.Vmax">Vmax (galaxy.massModels.ExponentialDisk attribute)</a>
 </li>
+      <li><a href="utilities/io.html#utilities.io.VOtableColumns">VOtableColumns() (in module utilities.io)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/io.html#utilities.io.write_array_to_vot">write_array_to_vot() (in module utilities.io)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galfit/galfit.html#galfit.galfit.writeConfigs">writeConfigs() (in module galfit.galfit)</a>
 </li>

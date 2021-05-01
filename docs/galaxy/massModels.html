@@ -27,6 +27,7 @@
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     
   <link rel="preload" as="script" href="../_static/js/index.d3f166471bb80abb5163.js">
 
@@ -34,6 +35,8 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -75,9 +78,28 @@
 </ul>
 <ul class="current nav sidenav_l1">
  <li class="toctree-l1">
+  <a class="reference internal" href="../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1 current active collapsible-parent">
   <a class="reference internal" href="index.html">
@@ -284,7 +306,7 @@
 <p>3D and 2D mass models for different mass and light profiles.</p>
 <dl class="py class">
 <dt id="galaxy.massModels.DoubleExponentialDisk">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.massModels.</span></code><code class="sig-name descname"><span class="pre">DoubleExponentialDisk</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Re</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_hz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erg/(cm^2.s.A)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_M_L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'solMass.s.A.cm^2/(erg.kpc^2)'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.massModels.</span></code><code class="sig-name descname"><span class="pre">DoubleExponentialDisk</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inc0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Re</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_hz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erg/(cm^2.s.A)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_M_L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'solMass.s.A.cm^2/(erg.kpc^2)'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#galaxy.massModels.Sersic" title="galaxy.massModels.Sersic"><code class="xref py py-class docutils literal notranslate"><span class="pre">galaxy.massModels.Sersic</span></code></a>, <a class="reference internal" href="#galaxy.massModels.MassModelBase" title="galaxy.massModels.MassModelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">galaxy.massModels.MassModelBase</span></code></a></p>
 <p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
 <p>Double exponential disk profile class implementing Bovy rotation curve.</p>
@@ -321,7 +343,7 @@
 
 <dl class="py method">
 <dt id="galaxy.massModels.DoubleExponentialDisk.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Re</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_hz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erg/(cm^2.s.A)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_M_L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'solMass.s.A.cm^2/(erg.kpc^2)'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inc0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Re</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_hz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kpc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'erg/(cm^2.s.A)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_M_L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'solMass.s.A.cm^2/(erg.kpc^2)'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can either provide:</p>
@@ -332,6 +354,7 @@
 </ul>
 </div></blockquote>
 <p>You can also provide <strong>q0</strong> instead of <strong>hz</strong> (which must be None in this case).</p>
+<p>The observed or intrinsic inclination must be given with <strong>inc</strong> or <strong>inc0</strong>, respectively, if one wants to correct the central surface brightness for the effect of finite thickness.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -339,7 +362,9 @@
 <li><p><strong>hz</strong> (<em>int</em><em> or </em><em>float</em>) – vertical scale height</p></li>
 <li><p><strong>M_L</strong> (<em>int</em><em> or </em><em>float</em>) – mass to light ratio</p></li>
 <li><p><strong>Re</strong> (<em>int</em><em> or </em><em>float</em>) – half-light radius in the plane of symmetry</p></li>
-<li><p><strong>Ie</strong> (<em>float</em>) – (<strong>Optional</strong>) intensity at half-light radius</p></li>
+<li><p><strong>inc</strong> (<em>float</em>) – (<strong>Optional</strong>) observed inclination (not corrected of the galaxy thickness)</p></li>
+<li><p><strong>inc0</strong> (<em>float</em>) – (<strong>Optional</strong>) intrinsic inclination (corrected of the galaxy thickness)</p></li>
+<li><p><strong>Ie</strong> (<em>float</em>) – (<strong>Optional</strong>) intensity at half-light radius if the galaxy was seen face-on (must correct for inclination effects)</p></li>
 <li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) galaxy total integrated magnitude used to compute <strong>Ie</strong> if not given</p></li>
 <li><p><strong>offset</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used</p></li>
 <li><p><strong>q0</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio equal to hz/Rd with Rd the disk scale length. If this value is different from None, it overrides <strong>hz</strong>.</p></li>

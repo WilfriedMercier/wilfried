@@ -73,6 +73,11 @@
 </ul>
 <ul class="nav sidenav_l1">
  <li class="toctree-l1">
+  <a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
@@ -708,7 +713,7 @@
 <span class="sd">    </span>
 <span class="sd">    :returns: X coordinate array, Y coordinate array and the 2D bulge model</span>
 <span class="sd">    :rtype: 2D ndarray[float], 2D ndarray[float], 2D ndarray[float]</span>
-<span class="sd">   </span>
+<span class="sd">    </span>
 <span class="sd">    .. rubric:: **Example**</span>
 <span class="sd">    </span>
 <span class="sd">    Comparing different models:</span>
@@ -1006,8 +1011,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">skipCheck</span><span class="p">:</span>
         <span class="n">samplingZone</span> <span class="o">=</span> <span class="n">_checkParams</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">samplingZone</span><span class="p">,</span> <span class="n">fineSampling</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="p">]]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, arcsecToGrid.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">]]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of the following parameters was provided as a negative number, which is not correct: nx, ny.&#39;</span><span class="p">)</span>
             
         <span class="k">for</span> <span class="n">ll</span> <span class="ow">in</span> <span class="p">[</span><span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">]:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ll</span><span class="p">]):</span>

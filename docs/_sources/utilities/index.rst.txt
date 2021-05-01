@@ -3,21 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Table of content
+Useful utilities
 ================
+
+Fonctions and classes in this module are not galaxy-related. They can be used for other purposes.
 
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
-   ./dependencies.rst
-   ./makeLifeSimpler.rst
-   ./utilities/index.rst
-   ./galaxy/index.rst
-   ./galfit/index.rst
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   ./coloredMessages.rst
+   ./io.rst

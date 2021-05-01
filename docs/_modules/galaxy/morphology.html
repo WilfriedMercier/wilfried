@@ -73,6 +73,11 @@
 </ul>
 <ul class="nav sidenav_l1">
  <li class="toctree-l1">
+  <a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
@@ -267,6 +272,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>                              <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">from</span>   <span class="nn">astropy.units.quantity</span>             <span class="kn">import</span> <span class="n">Quantity</span>
 <span class="kn">from</span>   <span class="nn">scipy.special</span>                      <span class="kn">import</span> <span class="n">gammainc</span>
 <span class="kn">from</span>   <span class="nn">scipy.optimize</span>                     <span class="kn">import</span> <span class="n">root</span>
 <span class="kn">from</span>   <span class="nn">scipy.integrate</span>                    <span class="kn">import</span> <span class="n">quad</span>
@@ -943,7 +949,7 @@
         <span class="k">return</span> <span class="n">theta</span></div>
     
     
-<span class="c1">##################################################{#######################################################</span>
+<span class="c1">##########################################################################################################</span>
 <span class="c1">#                                 Thickness prescription                                                 #</span>
 <span class="c1">##########################################################################################################</span>
 
@@ -971,6 +977,95 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;z array has type </span><span class="si">%s</span><span class="s1"> but it must either be float or a numpy array&#39;</span> <span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
         
     <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">lq0</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">correct_inclination</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">q0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Correct the inclination using the given disk thickness assuming the mass distribution is an oblate system. Correction is from Bottinelli et al., 1983 and is given by</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        cos^2 i_0 = (q^2 - q_0^2) / (1 - q_0^2)</span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`i_0` is the intrinsic inclination of the galaxy, :math:`q = b/a` is the observed axis ratio on the sky and :math:`q_0` is the intrinsic axis ratio of the galaxy.</span>
+
+<span class="sd">    :param inc: observed inclination of the galaxy in degrees (assumed to be :math:`\arccos b/a`)</span>
+<span class="sd">    :type inc: int/float/astropy Quantity object with unit of an angle of ndarray of one of these types</span>
+<span class="sd">    :param q0: intrinsic axis ratio</span>
+<span class="sd">    :type q0: int/float or ndarray[int]/ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: corrected inclination in degree</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">AstropyQuantityType</span><span class="p">):</span>
+        <span class="n">inc</span>     <span class="o">=</span> <span class="n">inc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inc</span>    <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+    
+    <span class="n">q</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">inc</span><span class="p">)</span>
+    <span class="n">newinc</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">q</span><span class="o">*</span><span class="n">q</span> <span class="o">-</span> <span class="n">q0</span><span class="o">*</span><span class="n">q0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q0</span><span class="o">*</span><span class="n">q0</span><span class="p">)))</span> 
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newinc</span><span class="p">,</span> <span class="n">AstropyQuantityType</span><span class="p">):</span>
+        <span class="n">newinc</span>  <span class="o">=</span> <span class="n">newinc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">newinc</span> <span class="o">*=</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        
+    <span class="k">return</span> <span class="n">newinc</span>
+    
+
+<span class="k">def</span> <span class="nf">correct_I0</span><span class="p">(</span><span class="n">I0</span><span class="p">,</span> <span class="n">q0</span><span class="p">,</span> <span class="n">inc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inc0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Correct the observed central surface brightness of a double exponential disk when fitted with a single exponential disk due to the effect of finite thickness. </span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        The intrinsic central surface brightness of a double exponential disk is larger than the central surface brightness given by the best-fit single exponential profile.</span>
+<span class="sd">        </span>
+<span class="sd">        The reason is that when fitting with  a single exponential profile, the inclination is biased because the intrinsic axis ratio is not deduced from it, which means the value is underestimated with respect to the intrinsic value.</span>
+<span class="sd">        </span>
+<span class="sd">        The correction is given by (Mercier et al., 2021)</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            </span>
+<span class="sd">            \Sigma(0) / \Sigma_{\rm{RT}} (0) = (q_0 \sin i_0 + \cos i_0) / \sqrt{q_0^2 \sin^2 i_0 + \cos^2 i_0}</span>
+<span class="sd">            </span>
+<span class="sd">    .. warning::</span>
+<span class="sd">        </span>
+<span class="sd">        Provide inclinations in degree.</span>
+<span class="sd">    </span>
+<span class="sd">    :param I: observed central surface brightness from the single exponential profile</span>
+<span class="sd">    :type I: float or ndarray[float]</span>
+<span class="sd">    :param q0: intrinsic axis ratio of the galaxy</span>
+<span class="sd">    :type q0: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param inc: (**Optional**) observed inclination in degree (not corrected of the galaxy thickness). If inc0 is given, inc0 is used instead.</span>
+<span class="sd">    :type inc: float or ndarray[float] or astropy Quantity with angle unit</span>
+<span class="sd">    :param inc0: (**Optional**) intrinsic inclination in degree (corrected of the galaxy thickness)</span>
+<span class="sd">    :type inc0: float or ndarray[float] or astropy Quantity with angle unit</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: corrected central surface brightness</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: if both **inc** and **inc0** are None</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">inc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">inc0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least inc or inc0 must be provided. Cheers !&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">inc0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">inc0</span> <span class="o">=</span> <span class="n">correct_inclination</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">q0</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inc0</span><span class="p">,</span> <span class="n">AstropyQuantityType</span><span class="p">):</span>
+        <span class="n">inc0</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inc0</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+    
+    <span class="n">cosi0</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">inc0</span><span class="p">)</span>
+    <span class="n">sini0</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">inc0</span><span class="p">)</span>
+    
+    <span class="n">r0</span>        <span class="o">=</span> <span class="p">(</span><span class="n">q0</span> <span class="o">*</span> <span class="n">sini0</span> <span class="o">+</span> <span class="n">cosi0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q0</span> <span class="o">*</span> <span class="n">q0</span> <span class="o">*</span> <span class="n">sini0</span> <span class="o">*</span> <span class="n">sini0</span> <span class="o">+</span> <span class="n">cosi0</span> <span class="o">*</span> <span class="n">cosi0</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">r0</span> <span class="o">*</span> <span class="n">I0</span>
     
 
 <span class="c1">#################################################################################################################</span>
