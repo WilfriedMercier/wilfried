@@ -96,8 +96,23 @@
     </a>
    </li>
    <li class="toctree-l2">
+    <a class="reference internal" href="utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="utilities/io.html">
      Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/strings.html">
+     Strings manipulation
     </a>
    </li>
   </ul>
@@ -439,7 +454,11 @@
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.checkAndComputeIe">checkAndComputeIe() (in module galaxy.misc)</a>
 </li>
+      <li><a href="utilities/dict.html#utilities.dictionaries.checkDictKeys">checkDictKeys() (in module utilities.dictionaries)</a>
+</li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.checkDupplicates">checkDupplicates() (in module makeLifeSimpler)</a>
+</li>
+      <li><a href="utilities/dict.html#utilities.dictionaries.checkInDict">checkInDict() (in module utilities.dictionaries)</a>
 </li>
       <li><a href="galaxy/kinematics.html#galaxy.kinematics.clean_galaxy">clean_galaxy() (in module galaxy.kinematics)</a>
 </li>
@@ -462,6 +481,10 @@
       <li><a href="galaxy/morphology/MUSE.html#galaxy.MUSE.computeFWHM">computeFWHM() (in module galaxy.MUSE)</a>
 </li>
       <li><a href="galaxy/morphology/Morpho.html#galaxy.morphology.computePAs">computePAs() (in module galaxy.morphology)</a>
+</li>
+      <li><a href="utilities/strings.html#utilities.strings.computeStringsLen">computeStringsLen() (in module utilities.strings)</a>
+</li>
+      <li><a href="utilities/dict.html#utilities.dictionaries.concatenateDictValues">concatenateDictValues() (in module utilities.dictionaries)</a>
 </li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.convertCoords">convertCoords() (in module makeLifeSimpler)</a>
 </li>
@@ -758,6 +781,8 @@
       </ul></li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.MassModelBase">MassModelBase (class in galaxy.massModels)</a>
 </li>
+      <li><a href="utilities/strings.html#utilities.strings.maxStringsLen">maxStringsLen() (in module utilities.strings)</a>
+</li>
       <li><a href="galaxy/misc.html#galaxy.misc.mergeModelsIntoOne">mergeModelsIntoOne() (in module galaxy.misc)</a>
 </li>
       <li><a href="galfit/galfit.html#galfit.galfit.modelFunctions">modelFunctions (in module galfit.galfit)</a>
@@ -790,7 +815,13 @@
 </li>
         <li><a href="utilities/coloredMessages.html#module-utilities.coloredMessages">utilities.coloredMessages</a>
 </li>
+        <li><a href="utilities/dict.html#module-utilities.dictionaries">utilities.dictionaries</a>
+</li>
         <li><a href="utilities/io.html#module-utilities.io">utilities.io</a>
+</li>
+        <li><a href="utilities/list.html#module-utilities.lists">utilities.lists</a>
+</li>
+        <li><a href="utilities/strings.html#module-utilities.strings">utilities.strings</a>
 </li>
       </ul></li>
   </ul></td>
@@ -861,6 +892,8 @@
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.PSFconvolution2D">PSFconvolution2D() (in module galaxy.misc)</a>
 </li>
+      <li><a href="utilities/strings.html#utilities.strings.putStringsTogether">putStringsTogether() (in module utilities.strings)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -891,6 +924,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/misc.html#galaxy.misc.realGammainc">realGammainc() (in module galaxy.misc)</a>
 </li>
+      <li><a href="utilities/dict.html#utilities.dictionaries.removeKeys">removeKeys() (in module utilities.dictionaries)</a>
+</li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.ExponentialDisk.Rmax">Rmax (galaxy.massModels.ExponentialDisk attribute)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.rotateGalaxy">rotateGalaxy() (in module galaxy.misc)</a>
@@ -911,11 +946,13 @@
 </li>
       <li><a href="galaxy/models.html#galaxy.models.Sersic2D">Sersic2D() (in module galaxy.models)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/angularMomentum.html#galaxy.angularMomentum.sersic_kthMoment">sersic_kthMoment() (in module galaxy.angularMomentum)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/models.html#galaxy.models.sersic_profile">sersic_profile() (in module galaxy.models)</a>
+</li>
+      <li><a href="utilities/dict.html#utilities.dictionaries.setDict">setDict() (in module utilities.dictionaries)</a>
 </li>
       <li><a href="galaxy/photometry/Masses_SFR.html#galaxy.photometry.sfr_kennicutt_oii">sfr_kennicutt_oii() (in module galaxy.photometry)</a>
 </li>
@@ -935,16 +972,22 @@
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist.todeVaucouleur">todeVaucouleur() (galaxy.massModels.Hernquist property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur.toHernquist">toHernquist() (galaxy.massModels.deVaucouleur method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist.toSersic">toSersic() (galaxy.massModels.Hernquist property)</a>
+</li>
+      <li><a href="utilities/strings.html#utilities.strings.toStr">toStr() (in module utilities.strings)</a>
 </li>
       <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.total_flux">total_flux() (in module galaxy.morphology)</a>
 </li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.transpose">transpose() (in module makeLifeSimpler)</a>
+
+      <ul>
+        <li><a href="utilities/list.html#utilities.lists.transpose">(in module utilities.lists)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -960,6 +1003,13 @@
         <li><a href="utilities/coloredMessages.html#module-utilities.coloredMessages">module</a>
 </li>
       </ul></li>
+      <li>
+    utilities.dictionaries
+
+      <ul>
+        <li><a href="utilities/dict.html#module-utilities.dictionaries">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
@@ -967,6 +1017,20 @@
 
       <ul>
         <li><a href="utilities/io.html#module-utilities.io">module</a>
+</li>
+      </ul></li>
+      <li>
+    utilities.lists
+
+      <ul>
+        <li><a href="utilities/list.html#module-utilities.lists">module</a>
+</li>
+      </ul></li>
+      <li>
+    utilities.strings
+
+      <ul>
+        <li><a href="utilities/strings.html#module-utilities.strings">module</a>
 </li>
       </ul></li>
   </ul></td>

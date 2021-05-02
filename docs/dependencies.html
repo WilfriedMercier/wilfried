@@ -97,6 +97,26 @@
      Colored messages
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
   </ul>
   <i class="fas fa-chevron-down">
   </i>
@@ -305,10 +325,10 @@
 <p>Some modules require specific python libaries to be installed first. Below we list them by alphabetical order and give instructions as to how install them</p>
 <table class="table">
 <colgroup>
-<col style="width: 41%" />
-<col style="width: 21%" />
-<col style="width: 32%" />
-<col style="width: 6%" />
+<col style="width: 20%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 47%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Dependency</p></td>
@@ -316,19 +336,18 @@
 <td><p>Install with conda</p></td>
 <td><p>Other</p></td>
 </tr>
-<tr class="row-even"><td rowspan="2"><p><a class="reference external" href="https://https://www.astropy.org/">astropy</a></p></td>
-<td rowspan="2"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">astropy</span>
+<tr class="row-even"><td><p><a class="reference external" href="https://https://www.astropy.org/">astropy</a></p></td>
+<td><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">astropy</span>
 </pre></div>
 </div>
 </td>
-<td rowspan="2"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conda</span> <span class="n">install</span> <span class="n">astropy</span>
+<td><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conda</span> <span class="n">install</span> <span class="n">astropy</span>
 </pre></div>
 </div>
 </td>
-<td rowspan="2"></td>
+<td></td>
 </tr>
-<tr class="row-odd"></tr>
-<tr class="row-even"><td><p><a class="reference external" href="https://github.com/tartley/colorama">colorama</a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/tartley/colorama">colorama</a></p></td>
 <td><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">colorama</span>
 </pre></div>
 </div>
@@ -339,18 +358,28 @@
 </td>
 <td></td>
 </tr>
-<tr class="row-odd"><td rowspan="2"><p><a class="reference external" href="https://numpy.org/">numpy</a></p></td>
-<td rowspan="2"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">numpy</span>
+<tr class="row-even"><td><p><a class="reference external" href="https://numpy.org/">numpy</a></p></td>
+<td><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">install</span> <span class="n">numpy</span>
 </pre></div>
 </div>
 </td>
-<td rowspan="2"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conda</span> <span class="n">install</span> <span class="n">numpy</span>
+<td><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conda</span> <span class="n">install</span> <span class="n">numpy</span>
 </pre></div>
 </div>
 </td>
-<td rowspan="2"></td>
+<td></td>
 </tr>
-<tr class="row-even"></tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></td>
+<td><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">matplotlib</span>
+</pre></div>
+</div>
+</td>
+<td><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">conda</span> <span class="n">install</span> <span class="n">matplotlib</span>
+</pre></div>
+</div>
+</td>
+<td><p>See <a class="reference external" href="https://matplotlib.org/stable/devel/dependencies.html#optional-dependencies">here</a> for optional dependencies</p></td>
+</tr>
 </tbody>
 </table>
 </div>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Galfit module &#8212; wilfried library 1.0 documentation</title>
+    <title>List manipulations &#8212; wilfried library 1.0 documentation</title>
     
   <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
@@ -40,8 +40,8 @@
     <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Galfit auto-routines" href="galfit.html" />
-    <link rel="prev" title="Masses and SFR estimates" href="../galaxy/photometry/Masses_SFR.html" />
+    <link rel="next" title="Galaxy module" href="../galaxy/index.html" />
+    <link rel="prev" title="Input/Output" href="io.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -87,34 +87,24 @@
    makeLifeSimpler
   </a>
  </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../utilities/index.html">
+ <li class="toctree-l1 current active collapsible-parent">
+  <a class="reference internal" href="index.html">
    Useful utilities
   </a>
-  <ul class="collapse-ul">
+  <ul class="current collapse-ul">
    <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/coloredMessages.html">
+    <a class="reference internal" href="coloredMessages.html">
      Colored messages
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/dict.html">
-     Dictionaries
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/io.html">
+    <a class="reference internal" href="io.html">
      Input/Output
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/list.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      List manipulations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/strings.html">
-     Strings manipulation
     </a>
    </li>
   </ul>
@@ -213,18 +203,18 @@
   <i class="fas fa-chevron-down">
   </i>
  </li>
- <li class="toctree-l1 current active collapsible-parent">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../galfit/index.html">
    Galfit module
   </a>
   <ul class="collapse-ul">
    <li class="toctree-l2">
-    <a class="reference internal" href="galfit.html">
+    <a class="reference internal" href="../galfit/galfit.html">
      Galfit auto-routines
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="models.html">
+    <a class="reference internal" href="../galfit/models.html">
      Galfit models
     </a>
    </li>
@@ -272,7 +262,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/galfit/index.rst.txt"><button type="button"
+        <a class="dropdown-buttons" href="../_sources/utilities/list.rst.txt"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
@@ -292,7 +282,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         
-        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galfit/index.rst"><button
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/utilities/list.rst"><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
     </div>
@@ -312,6 +302,31 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i>
+            Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#list-of-available-functions">
+   List of available functions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#examples">
+   Examples
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-utilities.lists">
+   Documentation
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
         </div>
     </div>
 </div>
@@ -320,19 +335,53 @@
         
               <div>
                 
-  <div class="section" id="galfit-module">
-<h1>Galfit module<a class="headerlink" href="#galfit-module" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="galfit.html">Galfit auto-routines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Galfit models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="models.html#miscellaneous">Miscellaneous</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models.html#galfit-profiles">Galfit profiles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="models.html#galfit-additional-tags">Galfit additional tags</a></li>
+  <div class="section" id="list-manipulations">
+<h1>List manipulations<a class="headerlink" href="#list-manipulations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="list-of-available-functions">
+<h2>List of available functions<a class="headerlink" href="#list-of-available-functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#transpose">transpose</a></p></li>
 </ul>
-</li>
-</ul>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>A few examples are given below</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wilfried.utilities.lists</span> <span class="kn">import</span> <span class="n">transpose</span>
+
+<span class="c1"># Generate mock list</span>
+<span class="n">l</span>  <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
+<span class="n">lt</span> <span class="o">=</span> <span class="n">transpose</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-utilities.lists">
+<span id="documentation"></span><h2>Documentation<a class="headerlink" href="#module-utilities.lists" title="Permalink to this headline">¶</a></h2>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Fonctions related to manipulating lists.</p>
+<span class="target" id="transpose"></span><dl class="py function">
+<dt id="utilities.lists.transpose">
+<code class="sig-prename descclassname"><span class="pre">utilities.lists.</span></code><code class="sig-name descname"><span class="pre">transpose</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theList</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/lists.html#transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.lists.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the transpose of a list without the use of numpy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>theList</strong> (<em>list</em>) – list to transpose</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>transposed list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>theList</strong> is not a list</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
@@ -342,8 +391,8 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="../galaxy/photometry/Masses_SFR.html" title="previous page">Masses and SFR estimates</a>
-    <a class='right-next' id="next-link" href="galfit.html" title="next page">Galfit auto-routines</a>
+    <a class='left-prev' id="prev-link" href="io.html" title="previous page">Input/Output</a>
+    <a class='right-next' id="next-link" href="../galaxy/index.html" title="next page">Galaxy module</a>
 
         </div>
         

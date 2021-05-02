@@ -13,4 +13,7 @@ Fonctions and classes in this module are not galaxy-related. They can be used fo
    :caption: Contents:
 
    ./coloredMessages.rst
+   ./dict.rst
    ./io.rst
+   ./list.rst
+   ./strings.rst
