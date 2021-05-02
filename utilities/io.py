@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-TEST
-Created on Mon Jan  6 10:34:54 2020
-
-@author: wilfried
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 Functions related to input-output interaction.
 """
@@ -21,14 +18,16 @@ import numpy                  as     np
 
 def is_VOtable(fullname):
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Check whether a file is a VOtable.
+
+    :param str fullname: name of the file
     
-    Mandatory inputs
-    ----------------
-        fullname : str
-            path+name of the file to test
+    :returns: True if it is a VOtable
+    :rtype: bool
     
-    Returns True if it is a VOtable. False otherwise.
+    :raises IOError: if **fullname** is no a VOtable
     """
     
     if not is_votable(fullname):
@@ -38,30 +37,28 @@ def is_VOtable(fullname):
 
 def loadVOtable(name, outputType='Table', num=0, pedantic=False, use_names_over_ids=False):
     '''
-    Load a VOtable using astropy.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory parameters
-    --------------------
-        name : str
-            VOtable catalogue file name
+    Load a VOtable using astropy.
+
+    :param str name: VOtable catalogue file name
+
+    :param int num: (**Optional**) positon of the table to load within the VOtable file
+    :param str outputType: (**Optional**) type of output data. Must be one of the following:
         
-    Optional parameters
-    -------------------
-        num : int
-            number of the required table within the VOtable. Default is 0 so as to load the first table.
-        outputType : 'default' or 'array' or 'Table'
-            which type of output. 
-                - 'VOtable'       : return the loaded VOtable as the standard astropy VOtable type
-                - 'tableElement'  : return the loaded VOtable as the 
-                - 'array'         : return the loaded VOtable as a numpy structured array
-                - 'Table'         : return the loaded VOtable as an astropy Table
+        * 'default' to load it as an Astropy VOtable data type
+        * 'array' to load it as a numpy structured array
+        * 'Table' to load it as an Astropy Table
+
+    :param bool pedantic: (**Optional**) whether to disable Exceptions when reading VOtable files with unusual keywords
+    :param bool use_names_over_id: (**Optional**) whether (when creating as astropy Table out of the VOtable table element) to use columns names rather than the unique IDs in the VOtable columns to name the astropy Table columns
                 
-        pedantic : bool
-            whether to disable Exceptions when reading VOtable files with unusual keywords. Default is False.
-        use_names_over_id : bool
-            whether (when creating as astropy Table out of the VOtable table element) to use columns names rather than the unique IDs in the VOtable columns to name the astropy Table columns. Default is False.
-                
-    Return the loaded table.
+    :returns: loaded table
+
+    :raises TypeError: 
+        
+        * if **outputType** is not of type str
+        * if **num** is not of type int
     '''
     
     if not isinstance(outputType, str):
@@ -91,17 +88,12 @@ def loadVOtable(name, outputType='Table', num=0, pedantic=False, use_names_over_
 
 def VOtableColumns(name, fullInfo=False):
     '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Show the column names in the VOtable object.
 
-    Parameters
-    ----------
-        name : str
-            VOtable file name
-    
-    Optional parameters
-    -------------------
-        fullInfo : bool
-            whether to show full information or just the names. Default is False.
+    :param str name: VOtable file name
+    :param bool fullInfo: (**Optional**) whether to show full information or just the names
     '''
     
     data = loadVOtable(name)
@@ -116,14 +108,17 @@ def VOtableColumns(name, fullInfo=False):
 
 def write_array_to_vot(array, outputFile):
     """
-    Write an array or an astropy table into a VOtable file.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        array : numpy array, astropy table
-            The array to write into the file
-        outputFile : str
-            The file to write the array into
+    Write a numpy array or an astropy Table into a VOtable file.
+    
+    .. note::
+        
+        If **array** is not an astropy Table, it is converted to it.
+
+    :param array: array to write into the file
+    :type array: numpy structured array of astropy Table
+    :param str outputFile: file to write the array into
     """
     
     if not isinstance(array, astropy.table.table.Table):
@@ -141,30 +136,23 @@ def write_array_to_vot(array, outputFile):
 
 def add_new_array_to_previous(newArray, fullFileName, fields, oldArray=None, isFirstArray=False, fieldsToDrop=None, typesToDrop=None):
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Append a new structured array to another one, only keeping some fields after applying their corresponding data types onto the new columns.
     This function is used to combine data from different MUSE catalogues where field names and data types may vary between different versions.
-    
-    Mandatory inputs
-    ----------------
-        fields : list of str
-            list containing the field names
-        fullfilename : str
-            filename of the new array to append to the previous one
-        newArray : numpy structured array
-            new array to append to the previous one
-            
-    Optional inputs
-    ---------------
-        fieldsToDrop : list of string
-            the name of the fields to move to the bottom and change their type. If not None, typesToDrop must be a list of the same size.
-        isFirstArray : bool
-            whether this is the first array one makes with this function or not. If True a check will be made at the end.
-        oldArray : numpy structured array
-            previous array whereto append new data
-        typesToDrop : list of data types
-            data types corresponding to the specified fields which must be dropped to the bottom
-              
-    Returns a new structured array where all the content of the previous ones has been correctly appended          
+
+    :param list[str] fields: field names
+    :param str fullfilename: name of the new array to append to the previous one
+    :param newArray: new array to append to the previous one
+        
+    :param list[str] fieldsToDrop: (**Optional**)  names of the fields to move to the bottom and change their type. If not None, **typesToDrop** must be a list of the same size.
+    :param bool isFirstArray: (**Optional**) whether this is the first array generated with this function or not. If True a check will be made at the end.
+    :param oldArray: previous array whereto append new data
+    :type oldArray: (**Optional**) structured ndarray
+    :param list typesToDrop: (**Optional**) data types corresponding to the specified fields which must be dropped to the bottom
+          
+    :returns: new structured array where all the content of the previous ones has been correctly appended
+    :rtype: structured ndarray          
     """
     
     #Try to keep all the required fields (common to every catalogue if they all had the same name)
@@ -223,18 +211,17 @@ def add_new_array_to_previous(newArray, fullFileName, fields, oldArray=None, isF
 
 def move_bad_fields_to_bottom(array, orderedFieldList, orderedTypeList):
     """
-    Move a list of fields from a structured array to the bottom and change their type.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------                                                
-        array : numpy structured array
-            array to modify               
-        orderedFieldList : list
-            list of field names to move and to change type 
-        orderedTypeList : list
-            list of new types for the fields (same order as orderedFieldList)
+    Move a list of fields from a structured array to the bottom and change their type.
+                                                
+    :param array: array to modify               
+    :type array: structured ndarray
+    :param list[str] orderedFieldList: list of field names to move and to change type 
+    :param list orderedTypeList: list of new types for the fields (same order as **orderedFieldList**)
                            
-    Return an array with some fields moved to the bottom and with different types.
+    :returns: array with some fields moved to the bottom and with different types
+    :rtype: structured ndarray
     """
     
     outArray = array.copy()

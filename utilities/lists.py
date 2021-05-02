@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct 22 14:05:54 2020
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
-@author: wilfried
+Fonctions related to manipulating lists.
 """
 
 def transpose(theList):
     '''
-    Compute the transpose of a list with pure python.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Compute the transpose of a list without the use of numpy.
 
-    Parameters
-    ----------
-        theList : list
-            list to transpose
+    :param list theList: list to transpose
 
-    Return the transposed list.
+    :returns: transposed list
+    :rtype: list
+    
+    :raises TypeError: if **theList** is not a list
     '''
     
     if type(theList) != list:
-        raise ValueError('Data is not a list.')
+        raise TypeError('Data is not a list.')
         
     return list(map(list, zip(*theList)))

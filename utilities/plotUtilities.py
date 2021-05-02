@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct 11 16:43:25 2019
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
-@author: Wilfried Mercier - IRAP
-
-With the help of Issa Lina - OBSPM
+With the help of Lina Issa - IRAP
 
 Functions meant to automatise as much as possible plotting of data of any kind.
 """
@@ -13,145 +11,12 @@ Functions meant to automatise as much as possible plotting of data of any kind.
 import numpy                              as     np
 import matplotlib.pyplot                  as     plt
 import matplotlib.gridspec                as     gridspec
-import bottleneck                         as     bn
-import colorama                           as     col
 import astropy.io.fits                    as     fits
-import subprocess                         as     sub
 from   matplotlib.colors                  import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
 from   astropy.modeling.functional_models import Gaussian2D
 from   matplotlib.markers                 import MarkerStyle
 from   copy                               import copy
 from   os.path                            import isfile
-from   .coloredMessages                   import *
-col.init()
-
-
-###########################################################################
-#                   Interactive spectral plots with ds9                   #
-###########################################################################
-
-def inspectSpectrum(file, extension=1):
-    '''
-    Inspect the pixel spectra in a data cube opened in SAOImage ds9.
-
-    Mandatory parameters
-    --------------------
-        file : str
-            data cube file (must also be opened in ds9)
-    
-    Optional parameters
-    -------------------
-        extension : int
-            data cube extension to open. Default is the 2nd one (index 1)
-    '''
-    
-    def getxpaOutput():
-        output    = sub.run('xpaget ds9 pan', shell=True, capture_output=True).stdout
-        
-        try:
-            x, y  = map(int, map(float, output.decode().rstrip('\n').split(' ')))
-            print('Coordinates x y: %f %f' %(x, y))
-        except:
-            raise IOError(errorMessage('Failed to map coordinates from %s into int values...' %output))
-
-        return x, y
-    
-    col.reinit()
-    
-    # Check that at least one instance of ds9 is running
-    code = sub.run('xpaget xpans', shell=True).returncode
-    if code != 0:
-        raise IOError(errorMessage('No xpa compatible software can be found. Please run ds9 prior to using this function. Cheers !'))
-    
-    ##############################################
-    #          Gathering data from cube          #
-    ##############################################
-        
-    print(brightMessage('Loading data cube (# %d) into memory...' %extension))
-    with fits.open(file) as hdul:
-        header = hdul[extension].header
-        data   = hdul[extension].data
-        
-    if 'EXTNAME' in header:
-        print('Extension name: ' + brightMessage(header['EXTNAME']))
-        
-    if 'NAXIS3' not in header:
-        raise IOError(errorMessage('NAXIS3 key missing in cube header. Not possible to retrieve the number of channels...'))
-    else:
-        nbWv   = header['NAXIS3']
-        
-    # Getting spectral range if given in fits header
-    if 'CRVAL3' in header:
-        minX   = header['CRVAL3']
-        print(okMessage('CRVAL3 key found in header:') + ' using %s as minimum wavelength value' %minX)
-    else:
-        minX   = 0
-        print(errorMessage('No CRVAL3 key found in header.'))
-        
-    if 'CD3_3' in header:
-        deltaX = header['CD3_3']
-        print(okMessage('CD3_3 key found in header:') + ' using %s as wavelength step' %deltaX)
-    else:
-        deltaX = 1
-        print(errorMessage('No CD3_3 key found in header.'))
-    
-    # Getting x and y axes units    
-    if 'BUNIT' in header:
-        funit  = header['BUNIT']
-        print(okMessage('BUNIT key found in header:') + ' using %s as flux unit' %funit)
-    else:
-        funit  = ''
-        print(errorMessage('No BUNIT key found in header.'))
-        
-    if 'CUNIT3' in header:
-        wunit  = header['CUNIT3']
-        print(okMessage('CUNIT3 key found in header:') + ' using %s as wavelength unit' %wunit)
-    else:
-        wunit  = ''
-        print(errorMessage('No CUNIT3 key found in header.'))
-    
-    ####################################################################
-    #                     Generate an empty figure                     #
-    ####################################################################
-        
-    print(brightMessage('Making figure...'))
-    
-    f        = plt.figure(figsize=(10, 4))
-    ax       = plt.subplot(111)
-    plt.tick_params(axis='both', which='both', direction='in', left=True, right=True, bottom=True, top=True, labelbottom=True, labeltop=False, labelleft=True, labelright=False, labelsize=14)
-    plt.xlabel('Wavelength [%s]' %wunit, fontsize=14)
-    plt.ylabel('Flux [%s]' %funit, fontsize=14)
-    
-    xdata     = np.linspace(minX, minX+deltaX*nbWv, num=nbWv)
-    spectrum, = ax.plot(xdata, [0]*nbWv, 'k')
-    ax.set_xlim(np.nanmin(xdata), np.nanmax(xdata))
-    
-    # Set cursor behaviour to pan
-    sub.run('xpaset -p ds9 mode pan', shell=True)
-    prevx, prevy      = getxpaOutput()
-    while True:
-        
-        updateFig     = False
-        x, y          = getxpaOutput()
-        
-        # Update coordinates and plot if necessary
-        if prevx != x:
-            prevx     = x
-            updateFig = True
-        if prevy != y:
-            prevx     = y
-            updateFig = True
-        
-        if updateFig:
-            ydata = data[:, y, x]
-            ydata = bn.move_mean(ydata, window=8, min_count=1)
-            spectrum.set_ydata(ydata)
-            ax.set_ylim(np.nanmin(ydata), np.nanmax(ydata))
-        
-        plt.pause(0.5)
-    
-    col.deinit()
-    return
 
 
 ################################################################################################
@@ -159,37 +24,56 @@ def inspectSpectrum(file, extension=1):
 ################################################################################################
 
 
-def display_hst_models(file1, fileout='test.pdf', title='title', cmap='spectral', log=False, show=False):
-    '''This function enables to display an image, the associated GALFIT model and residuals.
+def display_hst_models(file1, fileout='test.pdf', title=None, cmap='spectral', log=False, show=False):
+    '''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Authors:
-    ----------
-        Main contributor  : Epinat Benoit - LAM
-        Sec. conttributor : Mercier Wilfried - IRAP
+    This function enables to display a GALFIT output file containing the galaxy image, the associated model and the residuals.
     
-    Parameters
-    ----------
-        log : booelan
-            whether to have a log scale or not
-        cmap : string
-            name of the colormap
-        file1: string
-            name of GALFIT file that contains the model
-        fileout: string
-            name of the output file
-        show : boolean
-            whether to show the image or not
-        title: string
-            title of the output image
+    :param str file1: name of GALFIT output file
+        
+    :param str cmap: (**Optional**) name of the colormap. Must be understood by matplotlib.
+    :param str fileout: (**Optional**) name of the output file
+    :param bool log: (**Optional**) whether to have a log scale or not
+    :param bool show: (**Optional**) whether to show the image or not
+    :param str title: (**Optional**) title of the output image
+    
+    :raises TypeError:
+        
+        * if **title** is neither None, nor of type str
+        * if **fileout** is not of type str
+        * if **cmap** is not of type str
+        * if **log** is not of type bool
+        * if **show** is not of type bool
     '''
     
+    # Perform checks
+    if title is not None and not isinstance(title, str):
+        raise TypeError('title is of type %s but it must be a string.' %type(title))
+        
+    if not isinstance(fileout, str):
+        raise TypeError('fileout is of type %s but it must be a string.' %type(fileout))
+        
+    if not isinstance(cmap, str):
+        raise TypeError('cmap is of type %s but it must be a string.' %type(cmap))
+        
+    if not isinstance(log, bool):
+        raise TypeError('log is of type %s but it must be a bool.' %type(log))
+        
+    if not isinstance(show, bool):
+        raise TypeError('show is of type %s but it must be a bool.' %type(show))
+
+    # Load data    
     hdul     = fits.open(file1)
     data     = hdul[1].data
     model    = hdul[2].data
     res      = hdul[3].data
     
+    # Generate figure
     fig      = plt.figure(figsize=(12, 3))
-    fig.suptitle(title)
+    
+    if title is not None:
+        fig.suptitle(title)
     
     maxi     = np.max([np.max([data, model]), np.abs(np.min([data, model]))])
     mini     = -maxi

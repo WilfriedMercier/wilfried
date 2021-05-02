@@ -1,93 +1,90 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct 24 10:26:30 2019
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
-@author: wilfried
-
-Functions acting on dictionnaries.
+Functions acting on dictionaries.
 """
 
 import numpy         as     np
 from   astropy.table import Table, vstack
 
-def checkDictKeys(dictionnary, keys=[], dictName='NOT PROVIDED'):
+def checkDictKeys(dictionary, keys=[], dictName='NOT PROVIDED'):
     """
-    Check that every dictionnary key is among the keys list 'keys'.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        dictionnary : dict
-            dictionnary from which we want to test if given keys are in 'keys' list
-        
-    Optional inputs
-    ---------------
-        dictName : str
-            dictionnary variable name printed in the error message
-        keys : list of str
-            list of authorised keys names 
+    Check that all the dictionary keys are among the list **keys**.
+
+    :param dict dictionary: dictionary from which we want to test if given keys are in **keys** list
+
+    :param str dictName: (**Optional**) dictionary variable name printed in the error message
+    :param list[str] keys: (**Optional**) list of authorised key names 
             
-    Return None if 'dictionnary' has only keys in 'keys', or KeyError if one of the keys is not in 'keys' list.
+    :returns: None if **dictionary** keys are all in **keys** list 
+    
+    :raises KeyError: if one of the keys is not in **keys** list
     """
     
-    for k in dictionnary.keys():
+    for k in dictionary.keys():
         if k not in keys:
-            raise KeyError("key '%s' in dictionnary %s is not a valid key among %s" %(k, dictName, keys))
+            raise KeyError("key '%s' in dictionary %s is not a valid key among %s" %(k, dictName, keys))
+            
     return None
     
 
-def checkInDict(dictionnary, keys=[], dictName='NOT PROVIDED'):
+def checkInDict(dictionary, keys=[], dictName='NOT PROVIDED'):
     """
-    Check that given keys exist in the dictionnary.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        dictionnary : dict
-            dictionnary from which we want to test if given keys already exist
-        
-    Optional inputs
-    ---------------
-        dictName : str
-            dictionnary variable name printed in the error message
-        keys : list of str
-            keys names we want to test if they exist in 'dictionnary'
+    Check that the given keys exist in the dictionary.
+
+    :param dict dictionary: dictionary from which we want to test if given keys already exist
+    :param str dictName: (**Optional**) dictionary variable name printed in the error message
+    :param list[str] keys: (**Optional**) key names we want to test if they exist in **dictionary**
             
-    Return None if keys exist, or KeyError if one of the keys was missing.
+    :returns: None if keys exist
+    
+    :raises KeyError: if one of the keys is missing in the dictionary
     """
     
-    dictkeys = dictionnary.keys()
+    dictkeys = dictionary.keys()
     for name in keys:
         if name not in dictkeys:
-            raise KeyError("at least one of the mandatory keys in dictionnary '%s' was not provided. Please provide at least the mandatory keys. Cheers !" %dictName)
+            raise KeyError("at least one of the mandatory keys in dictionary '%s' was not provided. Please provide at least the mandatory keys. Cheers !" %dictName)
     return None
 
 
 def concatenateDictValues(myDicts, astropyTable=True):
-    '''
-    IMPORTANT : NOT WORKING PROPERLY !
+    r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Take a dictionnary containing either numpy arrays or numpy structured arrays as values and concatenate them.
+    Take a dictionary containing either numpy arrays or numpy structured arrays as values and concatenate them.
     
-    Notes:
-    ------
+    .. warning::
+        
+        NOT WORKING PROPERLY !
+    
+    .. note::
+        
         - If working with structured arrays/astropy tables, be careful to have the same column names/fields, otherwise the concatenation shall still produce a result which may be different from what would be expected.
         - When combining a standard array with a masked one, a new mask (with False values everywhere) will be concatenated to the previous one so that the masks will be preserved.
+
+    :param myDicts: either a single dictionary containing numpy arrays or a list of dictionnaries (numpy arrays as values as well)
+    :type myDicts: dict or list of dicts
+    :param bool astropyTable: (**Optional**) whether to return an astropy table or not. If False, it will return a numpy masked array.
+            
+    :returns: table where each numpy array in the dictionary has been concatenated to the others, or a list of tables
+    :rtype: masked ndarray or astropy Table of list[masked ndarray] or list[astropy Table]
     
-    Mandatory inputs
-    ----------------
-        myDicts : dict or list of dicts
-            either a single input dictionnary containing numpy arrays or a list of dictionnaries (numpy arrays as values as well)
-            
-    Optional inputs
-    ---------------
-        astropyTable : bool
-            whether to return an astropy table or not. If False, it will return a numpy masked array.
-            
-    Return either a single (masked) numpy array/astropy Table where each numpy array in the dictionnary has been concatenated to the others, or a list of (masked) numpy arrays/astropy tables.
+    :raises ValueError: if **myDicts** is an empty list
+    :raises TypeError:
+        
+        * if at least one element in **myDicts** is not a dict
+        * if **myDicts** is not a list
     '''
     
     def doItForOneDict(myDict):
-        '''Just do the concatenation for a single dictionnary.'''
+        '''Just do the concatenation for a single dictionary.'''
         
         for pos, value in enumerate(myDict.values()):
             # If we have an array of int/floats instead of an array of tuples (as for structured arrays), astropy will not be able to correctly transform it into an astropy table.
@@ -95,7 +92,6 @@ def concatenateDictValues(myDicts, astropyTable=True):
             try:
                 iter(value[0])
             except TypeError:
-                print('coucou')
                 value = [value]
                 
             if pos == 0:
@@ -118,7 +114,7 @@ def concatenateDictValues(myDicts, astropyTable=True):
                 text = 'nd'
             else:
                 text = 'th'
-            raise TypeError('One of the elements of the %d%s dictionnary is not a numpy array (or a derived class). Please only provide numpy arrays/astropy tables within the given dictionnaries. Cheers !' %(pos+1, text))
+            raise TypeError('One of the elements of the %d%s dictionary is not a numpy array (or a derived class). Please only provide numpy arrays/astropy tables within the given dictionnaries. Cheers !' %(pos+1, text))
         return
     
 
@@ -128,17 +124,17 @@ def concatenateDictValues(myDicts, astropyTable=True):
         if len(myDicts) == 0:
             raise ValueError('The given list is empty. Please provide a non-empty list of dictionnaries. Cheers !')
         
-        # Check whether each element in the list is a dictionnary
+        # Check whether each element in the list is a dictionary
         for aDict in myDicts:
             if not isinstance(aDict, dict):
-                raise TypeError('One of the element in the input list is not a dictionnary. Either provide a single dictionnary or a list of dictionnaries as input. Cheers !')
+                raise TypeError('One of the element in the input list is not a dictionary. Either provide a single dictionary or a list of dictionnaries as input. Cheers !')
                 
         # If we deal with dictionnaries, check that each element value is either a list or a numpy array
         for aDict in myDicts:
             for pos, element in enumerate(aDict.values()):
                 checkanArray(element, pos)
                 
-        # If it went fine, concatenate for every dictionnary
+        # If it went fine, concatenate for every dictionary
         return [doItForOneDict(i) for i in myDicts]
     
     elif isinstance(myDicts, dict):
@@ -147,54 +143,49 @@ def concatenateDictValues(myDicts, astropyTable=True):
             
         return doItForOneDict(myDicts)
     else:
-        raise TypeError('Given input was neiter a dictionnary, nor a list of dictionnaries. Please provide one of those types. Cheers !')
+        raise TypeError('Given input was neiter a dictionary, nor a list of dictionnaries. Please provide one of those types. Cheers !')
 
 
-def removeKeys(dictionnary, keys=[]):
+def removeKeys(dictionary, keys=[]):
     """
-    Creates a new dictionnary with given keys removed.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        dictionnary : dict
-            dictionnary from which the keys are removed    
-        
-    Optional inputs
-    ---------------
-        keys : list of str
-            list of keys to remove from the dictionnary
+    Creates a new dictionary with given keys removed.
+
+    :param dict dictionary: dictionary from which the keys are removed    
+    :param list[str] keys: (**Optional**) keys to remove from the dictionary
             
-    Returns a new dictionnary with given keys removed.        
+    :returns: new dictionary with given keys removed
+    :rtype: dict
     """
     
-    dicCopy = dictionnary.copy()
+    dicCopy = dictionary.copy()
     for k in keys:
         try:
             dicCopy.pop(k)
         except KeyError:
             pass
+        
     return dicCopy
     
 
-def setDict(dictionnary, keys=[], default=[]):
+def setDict(dictionary, keys=[], default=[]):
     """
-    Create a dictionnary whose desired keys are either retrieved from a dictionnary, or set to default values otherwise.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        dictionnary : dict
-            dictionnary from which the values in 'keys' list are retrieved
-            
-    Optional inputs
-    ---------------
-        default : list
-            list of default values for keys listed in 'keys' if no value is given in 'dictionnary'
-        keys : list of str
-            list of key names which should be retrieved either from 'dictionnary' or from 'default'
+    Create a new dictionary whose keys are either retrieved from a dictionary, or set to default values if not present in the dictionary.
+
+    :param dict dictionary: dictionary from which the values in **keys** list are retrieved
+        
+    :param list default: (**Optional**) list of default values for keys listed in **keys** if no value is found in **dictionary**
+    :param list[str] keys: (**Optional**) list of key names which should be retrieved either from **dictionary** or from **default**
     
-    Return a new dictionnary with keys listed in 'keys' having values either from 'dictionnary' or 'default'.
+    :returns: new dictionary with keys listed in **keys** having values either from **dictionary** or from **default**
+    :rtype: dict
     """
     
+    dicCopy = dictionary.copy()
     for k, df in zip(keys, default):
-        dictionnary.setdefault(k, df)
-    return dictionnary
+        dicCopy.setdefault(k, df)
+        
+    return dicCopy

@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Oct 11 16:40:55 2019
-
-@author: Wilfried Mercier - IRAP
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 String related functions.
 """
@@ -15,14 +13,14 @@ String related functions.
 
 def computeStringsLen(listStrings):
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     For each string in the list, compute its length and return them all.
     
-    Mandatory inputs
-    ------
-    listStrings : list of str
-        list of strings whose length is computed
+    :param list[str] listStrings: list of strings
         
-    Return a list with the length for each string in the input list.
+    :returns: list with the length for each string
+    :rtype: list
     """
     
     return [len(i) for i in listStrings]
@@ -30,46 +28,48 @@ def computeStringsLen(listStrings):
 
 def maxStringsLen(listStrings):
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     For each string in the list, compute its length and return the maximum value.
     
-    Mandatory inputs
-    ------
-    listStrings : list of str
-        list of strings
+    :param list[str] listStrings: list of strings
         
-    Return the length of the longest strings.
+    :returns: the length of the longest string
+    :rtype: int
     """
     
     return max(computeStringsLen(listStrings))
 
 
 def putStringsTogether(listStrings):
-    """
-    Combine strings from a list with a newline character (\n) between each string (except after the final one).
+    r"""
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ------
-    listStrings : list of str
-        list of strings to combine
+    Combine strings from a list with a newline character (\\n) between each string (except after the final one).
+    
+    :param list[str] listStrings: list of strings to combine
         
-    Return the combined strings as formatted text.
+    :returns: the combined strings as formatted text
+    :rtype: str
     """
+    
     string = ""
     for i in listStrings[:-1]:
         string += i + "\n"
+        
     return string+listStrings[-1]
 
 
 def toStr(listStuff):
     """
-    Transform a list of values into a list of strings.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        listStuff : list
-            input lits whose elements will be transformed into strings
+    Transform a list of values into a list of strings.
+
+    :param list listStuff: list whose elements will be transformed into strings
             
-    Return the input list as a list of strings.
+    :returns: the input list as a list of strings
+    :rtype: list[str]
     """
     
     return [str(i) for i in listStuff]

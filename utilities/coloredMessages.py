@@ -1,32 +1,66 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jun 14 11:12:24 2020
+.. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
-@author: wilfried
-
-General functions to format io output using ANSII sequences via colorama
+General functions to format io output using ANSII sequences using colorama.
 """
 
 import colorama as col
 
 def errorMessage(text):
-    '''Error message as a red bright text'''
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Colorise text in red and emphasise it for error messages.
+    
+    :param str text: text
+    
+    :returns: colorised text
+    :rtype: str
+    '''
     
     return col.Fore.RED + col.Style.BRIGHT + text + col.Style.RESET_ALL
 
 def okMessage(text):
-    '''Validation message as a dim green text'''
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Dim green text for validation messages.
+    
+    :param str text: text
+    
+    :returns: colorised text
+    :rtype: str
+    '''
     
     return col.Fore.GREEN + col.Style.DIM + text + col.Style.RESET_ALL
 
 def brightMessage(text):
-    '''Emphasize a text by brightening it'''
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Emphasize a text by brightening it.
+    
+    :param str text: text
+    
+    :returns: brightened text
+    :rtype: str
+    '''
     
     return col.Style.BRIGHT + text + col.Style.RESET_ALL
 
 def dimMessage(text):
-    '''Dim a text'''
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Dim a text.
+
+    :param str text: text
+    
+    :returns: dimmed text
+    :rtype: str
+    '''
     
     return col.Style.DIM + text + col.Style.RESET_ALL
     
