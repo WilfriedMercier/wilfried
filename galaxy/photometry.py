@@ -17,7 +17,11 @@ def calzetti_law(lbda, rv=4.05, a=2.659, b1=-1.857, c1=1.040, d1=0, e1=0, b2=-2.
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
-    Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input. In principle, this law is valid from 0.12 to 2.2 microns.
+    Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input. 
+    
+    .. note::
+        
+        In principle, this law is valid from 0.12 to 2.2 microns.
     
     The relation is 
     
@@ -52,7 +56,7 @@ def calzetti_law(lbda, rv=4.05, a=2.659, b1=-1.857, c1=1.040, d1=0, e1=0, b2=-2.
 
 def dust_attenuation_calzetti(lbda, ebv, rv=4.05):
     '''
-    . codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
     Compute the dust attenuation using the Calzetti attenuation curve (could be more general adding a function name) from the colour excess.
 
@@ -267,7 +271,7 @@ def sfr_kennicutt_oii(floii, z):
     
     Compute the SFR from the ionised gas flux.
     
-    :param floii: ionised gas flux
+    :param floii: ionised gas flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.
     :type floii: float or ndarray[float]
     :param z: redshift
     :type z: float or ndarray[float]
