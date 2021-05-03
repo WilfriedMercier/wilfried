@@ -733,18 +733,21 @@ def correct_inclination(inc, q0):
     :rtype: float or ndarray[float]
     '''
     
-    if isinstance(inc, AstropyQuantityType):
-        inc     = inc.to('rad')
+    newinc       = inc.copy()
+    if isinstance(newinc, Quantity):
+        newinc   = newinc.to('rad')
     else:
-        inc    *= np.pi/180
+        newinc  *= np.pi/180
+        
+    # If b/a > intrinsic thickness, apply correction, otherwise do not
+    q            = np.cos(inc)
+    mask         = q > q0
+    newinc[mask] = np.arccos(np.sqrt((q[mask]**2 - q0[mask]**2) / (1 - q0[mask]**2))) 
     
-    q           = np.cos(inc)
-    newinc      = np.arccos(np.sqrt((q*q - q0*q0) / (1 - q0*q0))) 
-    
-    if isinstance(newinc, AstropyQuantityType):
-        newinc  = newinc.to('degree').value
+    if isinstance(newinc, Quantity):
+        newinc   = newinc.to('degree').value
     else:
-        newinc *= 180/np.pi
+        newinc  *= 180/np.pi
         
     return newinc
     
@@ -790,7 +793,7 @@ def correct_I0(I0, q0, inc=None, inc0=None):
     elif inc0 is None:
         inc0 = correct_inclination(inc, q0)
         
-    if isinstance(inc0, AstropyQuantityType):
+    if isinstance(inc0, Quantity):
         inc0.to('rad')
     else:
         inc0 *= np.pi/180
