@@ -97,6 +97,26 @@
      Colored messages
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
   </ul>
   <i class="fas fa-chevron-down">
   </i>
@@ -306,7 +326,11 @@
 <dt id="galaxy.photometry.calzetti_law">
 <code class="sig-prename descclassname"><span class="pre">galaxy.photometry.</span></code><code class="sig-name descname"><span class="pre">calzetti_law</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lbda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.659</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1.857</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.04</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">2.156</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.509</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">0.198</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.011</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/photometry.html#calzetti_law"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.photometry.calzetti_law" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt;</em></p>
-<p>Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input. In principle, this law is valid from 0.12 to 2.2 microns.</p>
+<p>Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In principle, this law is valid from 0.12 to 2.2 microns.</p>
+</div>
 <p>The relation is</p>
 <div class="math">
 <p><img src="../../_images/math/973e6b611d3911909a619910696ca6a4f84079c9.png" alt="k = a \times (b + c/\lambda + d/\lambda^2 + e/\lambda^3),"/></p>
@@ -333,7 +357,7 @@
 <dl class="py function">
 <dt id="galaxy.photometry.dust_attenuation_calzetti">
 <code class="sig-prename descclassname"><span class="pre">galaxy.photometry.</span></code><code class="sig-name descname"><span class="pre">dust_attenuation_calzetti</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lbda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ebv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/photometry.html#dust_attenuation_calzetti"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.photometry.dust_attenuation_calzetti" title="Permalink to this definition">¶</a></dt>
-<dd><p>. codeauthor:: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt;</p>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt;</em></p>
 <p>Compute the dust attenuation using the Calzetti attenuation curve (could be more general adding a function name) from the colour excess.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

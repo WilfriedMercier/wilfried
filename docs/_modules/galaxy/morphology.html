@@ -27,6 +27,7 @@
     
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     
   <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
 
@@ -34,6 +35,8 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -81,6 +84,40 @@
   <a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1 collapsible-parent">
   <a class="reference internal" href="../../galaxy/index.html">
@@ -998,18 +1035,21 @@
 <span class="sd">    :rtype: float or ndarray[float]</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">AstropyQuantityType</span><span class="p">):</span>
-        <span class="n">inc</span>     <span class="o">=</span> <span class="n">inc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;rad&#39;</span><span class="p">)</span>
+    <span class="n">newinc</span>       <span class="o">=</span> <span class="n">inc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newinc</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">newinc</span>   <span class="o">=</span> <span class="n">newinc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;rad&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">inc</span>    <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+        <span class="n">newinc</span>  <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>
+        
+    <span class="c1"># If b/a &gt; intrinsic thickness, apply correction, otherwise do not</span>
+    <span class="n">q</span>            <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">inc</span><span class="p">)</span>
+    <span class="n">mask</span>         <span class="o">=</span> <span class="n">q</span> <span class="o">&gt;</span> <span class="n">q0</span>
+    <span class="n">newinc</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">q</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">q0</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q0</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span> 
     
-    <span class="n">q</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">inc</span><span class="p">)</span>
-    <span class="n">newinc</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">q</span><span class="o">*</span><span class="n">q</span> <span class="o">-</span> <span class="n">q0</span><span class="o">*</span><span class="n">q0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q0</span><span class="o">*</span><span class="n">q0</span><span class="p">)))</span> 
-    
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newinc</span><span class="p">,</span> <span class="n">AstropyQuantityType</span><span class="p">):</span>
-        <span class="n">newinc</span>  <span class="o">=</span> <span class="n">newinc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">newinc</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">newinc</span>   <span class="o">=</span> <span class="n">newinc</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">newinc</span> <span class="o">*=</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="n">newinc</span>  <span class="o">*=</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
         
     <span class="k">return</span> <span class="n">newinc</span>
     
@@ -1055,7 +1095,7 @@
     <span class="k">elif</span> <span class="n">inc0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">inc0</span> <span class="o">=</span> <span class="n">correct_inclination</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="n">q0</span><span class="p">)</span>
         
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inc0</span><span class="p">,</span> <span class="n">AstropyQuantityType</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inc0</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">):</span>
         <span class="n">inc0</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;rad&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">inc0</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">180</span>

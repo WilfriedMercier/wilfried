@@ -27,6 +27,7 @@
     
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     
   <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
 
@@ -34,6 +35,8 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -81,6 +84,40 @@
   <a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1 collapsible-parent">
   <a class="reference internal" href="../../galaxy/index.html">
@@ -282,7 +319,11 @@
     <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
 <span class="sd">    </span>
-<span class="sd">    Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input. In principle, this law is valid from 0.12 to 2.2 microns.</span>
+<span class="sd">    Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input. </span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        In principle, this law is valid from 0.12 to 2.2 microns.</span>
 <span class="sd">    </span>
 <span class="sd">    The relation is </span>
 <span class="sd">    </span>
@@ -317,7 +358,7 @@
 
 <div class="viewcode-block" id="dust_attenuation_calzetti"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.dust_attenuation_calzetti">[docs]</a><span class="k">def</span> <span class="nf">dust_attenuation_calzetti</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">4.05</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    . codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Compute the dust attenuation using the Calzetti attenuation curve (could be more general adding a function name) from the colour excess.</span>
 
@@ -532,7 +573,7 @@
 <span class="sd">    </span>
 <span class="sd">    Compute the SFR from the ionised gas flux.</span>
 <span class="sd">    </span>
-<span class="sd">    :param floii: ionised gas flux</span>
+<span class="sd">    :param floii: ionised gas flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.</span>
 <span class="sd">    :type floii: float or ndarray[float]</span>
 <span class="sd">    :param z: redshift</span>
 <span class="sd">    :type z: float or ndarray[float]</span>
