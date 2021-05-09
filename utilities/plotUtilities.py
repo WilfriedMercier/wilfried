@@ -108,32 +108,26 @@ def display_hst_models(file1, fileout='test.pdf', title=None, cmap='spectral', l
 
 def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=True, diverging=False, zeroPoint=0.0, cmap='bwr'):
     """
-    Generates a pdf file with all the galfit images (data, model and residual side by side) found in the given list.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Author:
-        Main contributor : Mercier Wilfried - IRAP
+    Generate a pdf file with all the GALFIT images (data, model and residual) side by side.
     
-    Mandatory inputs
-    ----------------
-        fnamesList : list or string
-            list of all the file names (paths included) with the galfit images to be appended inside the tex file. If readFromFile is set True, give the name of a file containing all the different names (one per line) instead.
-        pdfOut : string
-            name of the output pdf file
+    .. note::
         
-    Optional inputs
-    ---------------
-        diverging : bool
-            whether to use a diverging norm or not. If true, a linear norm will be used (overriding any log norm)
-        cmap : string
-            color map to use when plotting
-        groupNumbers : list of strings
-            the list of groups the galaxies belong to
-        log : boolean
-            whether to show images as log or not
-        readFromFile : boolean
-            whether to read the file names from a file or not. If True, the names must be listed as one per line only.
-        zeroPoint : float
-            value at which the diverging norm will split in two
+        When certain problems arise, a default blank plot is drawn instead. Below is a list of issues where a blank plot may be generated
+            
+            * if a file is not found
+            * if the min and max of an image are equal
+
+    :param list[str] fnamesList: all the file names (paths included) with the GALFIT images. If **readFromFile** is True, provide the name of a file containing all the different names (one per line).
+    :param str pdfOut: name of the output pdf file
+        
+    :param bool diverging: (**Optional**) whether to use a diverging norm or not. If False, a linear norm will be used (overriding any log norm).
+    :param str cmap: (**Optional**) colormap to use for the plot
+    :param list[str] groupNumbers: (**Optional**) list of groups the galaxies belong to
+    :param bool log: (**Optional**) whether to show images as log or not
+    :param bool readFromFile: (**Optional**) whether to read the file names from a file or not. If True, the names must be listed one per line.
+    :param float zeroPoint: (**Optional**) value at which the diverging norm will split in two
     """
     
     def noModelAvailable():
@@ -264,59 +258,76 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
 #########################################################################
 #                    Automated plotting utilities                       #
 #########################################################################
+
+'''
+'''
     
 def effective_local_density(numPlot, X, Y, xerr, yerr, xmin=None, xmax=None, ymin=None, ymax=None, dx=1, dy=1, nx=None, ny=None):
-    '''
-    Generate an effective local density plot. The idea is that, given a set of measurements for which we have values of the data points scatter in X and Y, rather than just plotting those values with error bars, we can instead try to compute the likelihood of having data points in a particular location.
+    r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Information
-    -----------
-        The likelihood is represented as an effective 2D density, that is in points/whather X and Y axes unit is^2.
-        If we are located infinitely far away from the bulk of the points, then we expect the density to drop to 0.
-        On the other hand, if all the measurements are located at the same location with 0 error assigned to them, then we expect to have a density maximised as N/box size of a point.
+    Generate an effective local density plot. 
     
-        This gives an idea of how clustered along a certain relation the points could be given their error bars.
-        
-        However, error bars are only indicators of how wrong the measurement could be. They do not strictly show the lower and upper bounds of the measurement.
-        Usually, error bars represent the 1 sigma width of a Gaussian distribution centered at that measurement location.
-        Therefore, we are assuming that this is the case here.
+    The idea is that, given a set of measurements for which we have values of the data points scatter in X and Y, rather than just plotting those values with error bars, we can instead try to compute the "likelihood" of having data points in a particular location.
+    
+    
+    .. rubric:: **Information**
+    
+    The "likelihood" is represented as an effective 2D density:
+    
+        * If we are located infinitely far away from the bulk of the points, then we expect the density to drop to 0.
+        * On the other hand, if all the measurements are located at the same location with 0 error assigned to them, then we expect to have a density maximised as N/box size of a point.
+    
+    This gives an idea of how clustered along a certain relation the points could be given their error bars.
+    
+    But, error bars are only indicators of how "wrong" the measurement could be. They do not strictly show the lower and upper bounds of the measurement. 
+    
+    Error bars are sometimes represented as a 1 sigma width of a Gaussian distribution centered at that measurement location. Thus, we are assuming that this is the case here.
 
-    Mandatory parameters
-    --------------------
-        X : numpy array of float/int
-            x position of the data points
-        xerr : numpy array of float/int
-            x axis error on the data points
-        Y : numpy array of float/int
-            y position of the data  points
-        yerr : numpy array of float/int
-            y axis error on the data points
-   
-    Optional parameters
-    -------------------
-    dx : float/int
-        x axis step used to draw the grid. If nx is provided, this parameter is overriden. Default is 1.
-    dy : float/int
-        y axis step used to draw the grid. If ny is provided, this parameters is overriden. Defualt is 1.
-    nx : int
-        number of cells along the x axis. Default is None so that dx is used instead to compute this value.
-    ny : int
-        number of cells along the y axis. Default is NOne so that dy is used instead to compute this value.
-    xmin : float/int
-        minimum x axis value for the x axis of the plot. Default is None so that the data points values will be used as bound.
-    xmax : float/int
-        maximum x axis value for the x axis of the plot. Default is None so that the data points values will be used as bound.
-    ymin : float/int
-        minimum y axis value for the y axis of the plot. Default is None so that the data points values will be used as bound.
-    ymax : float/int
-        maximum y axis value for the y axis of the plot. Default is None so that the data points values will be used as bound.
+
+    .. warning::
         
-    Return matplotlib main axis.
+        This is purely experimental.
+
+    :param numPlot: plot identifier. It can be 
+    
+        * an int (format is XYZ with X the number of rows, Y the number of columns and Z the plot position)
+        * a list with 3 similar numbers [X, Y, Z]
+        * a matplotlib GridSpec instance
+        
+    :type numPlot: list[3 int] or ndarray[3 int] or int or matplotlib GridSpec instance
+    :param X: X position of the data points
+    :type X: ndarray[int] or ndarray[float]
+    :param xerr: X axis error on the data points
+    :type xerr: ndarray[int] or ndarray[float]
+    :param Y: y position of the data  points
+    :type Y: ndarray[int] or ndarray[float]
+    :param yerr: y axis error on the data points
+    :type yerr: ndarray[int] or ndarray[float]
+
+    :param dx: (**Optional**) x axis step used to draw the grid. If **nx** is provided, this parameter is overriden.
+    :type dx: int or float
+    :param dy: (**Optional**) y axis step used to draw the grid. If **ny** is provided, this parameters is overriden
+    :type dy: int or floats
+    :param int nx: (**Optional**) number of cells along the x axis. If None, **dx** is used instead to compute this value.
+    :param int ny: (**Optional**) number of cells along the y axis. If None, **dy** is used instead to compute this value.
+    :param xmin: (**Optional**) minimum x axis value for the x axis of the plot. If None, data points values will be used as bound.
+    :type xmin: int or float
+    :param xmax: (**Optional**) maximum x axis value for the x axis of the plot. If None, data points values will be used as bound.
+    :type xmax: int or float
+    :param ymin: (**Optional**) minimum y axis value for the y axis of the plot. If None, data points values will be used as bound.
+    :type ymin: int or float
+    :param ymax: (**Optional**) maximum y axis value for the y axis of the plot. If None, data points values will be used as bound.
+    :type ymax: int or float
+        
+    :returns: matplotlib main axis
+    :raises TypeError: if neither **X**, **Y**, **xerr** nor **yerr** is of type ndarray
+    :raises ValueError: if either **xmin**, **xmax**, **ymin** or **ymax** is nan
     '''
     
     # Generate subplot
     typ = type(numPlot)
-    if (typ == list or typ == np.ndarray) and len(numPlot)>=3:
+    if isinstance(typ, (list, np.ndarray)) and len(numPlot) == 3:
         ax1 = plt.subplot(numPlot[0], numPlot[1], numPlot[2])
     else:
         ax1 = plt.subplot(numPlot)
@@ -388,43 +399,39 @@ def effective_local_density(numPlot, X, Y, xerr, yerr, xmin=None, xmax=None, ymi
 def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hideAllTicks=False, cmap='plasma', colorbar=True,
                   norm='log', cut=None, xlim=None, ylim=None, title=None, filled='both'):
     '''
-    Draw a (filled) contour plot of some data.
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Mandatory inputs
-    ----------------
-        X : numpy array from meshgrid
-            grid containing the x-axis values for each pixel
-        Y : numpy array from meshgrid
-            grid containing the y-axis values for each pixel
-        Z : numpy array from meshgrid
-            grid containing the z-axis values for each pixel. This will correspond to the image values.
-            
-    Optional inputs
-    ---------------
-        aspect : str
-            which aspect we want the plot to have. Default is 'equal'.
-        cmap : str
-            colormap to use. Defualt is 'plasma'.
-        colorbar : bool
-            whether to draw a colorbar or not. Default is True.
-        contours : int or list of int/float
-            number of contours to draw. (if int) or list of contour values (if list). If None, its value will be determined from numpy contour or contourf functions. Default is None.
-        cut : float
-            cut below which values in the Z data are put to np.nan. This is particularly useful with a log norm to have a 'finite' model since values below a certain threshold generally have no physical meaning. Default is None so that no cut is applied.
-        filled : bool or 'both'
-            whether to draw a filled contour only, or just contours, or both. Default is both
-        hideAllTicks : bool
-            whether to hide ticks or not. Default is False.
-        norm : 'log' or 'linear'
-            whether to use a log or a linear scale. Default is 'log'.
-        sizeFig : tuple of two int
-            width and height of the figure respectively. Default is (12, 12).
-        xlim : tuple of two float
-            x-axis bounds. Default is None so that the min and max of X are used.
-        ylim : tuple of two float
-            y-axis bounds. Default is None so that the min and max of Y are used.
+    Draw a (filled) contour plot.
+
+    :param X: grid containing the x-axis values for each pixel
+    :type X: meshgrid ndarray
+    :param Y: grid containing the y-axis values for each pixel
+    :type Y: meshgrid ndarray
+    :param Z: grid containing the z-axis values for each pixel. This will correspond to the contour values.
+    :type Z: meshgrid ndarray
     
-    Return the current axis and the plot.
+    :param str aspect: (**Optional**) aspect of the plot
+    :param str cmap: (**Optional**) colormap to use
+    :param bool colorbar: (**Optional**) whether to draw a colorbar or not
+    :param contours: (**Optional**) contours to draw 
+    
+        * if an int, it must be the number of contours to draw
+        * if a list, it must be the contour values 
+        * if None, its value will be determined automatically (see matplotlib)
+        
+    :type contours: int or list[int] or list[float]
+    :param float cut: (**Optional**) cut below which values in the Z data are put to np.nan. If None, no cut is applied.
+    :param filled: (**Optional**) whether to draw a filled contour (if True) or just contours (if False), or both (if "both")
+    :type filled: bool or str
+    :param bool hideAllTicks: (**Optional**) whether to hide ticks or not
+    :param str norm: (**Optional**) scale to use. Must either be 'log' or 'linear'.
+    :param (int, int) sizeFig: (**Optional**) width and height of the figure
+    :param (float, float) xlim: (**Optional**) x-axis bounds. If None, the min and max of X are used.
+    :param (float, float) ylim: (**Optional**) y-axis bounds. If None, the min and max of Y are used.
+    
+    :returns: current axis and plot
+    
+    :raises ValueError: if **norm** is neither 'linear', nor 'log'
     '''
     
     plt.rcParams["figure.figsize"] = sizeFig
@@ -482,88 +489,62 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
                 align='mid', histtype='stepfilled', alpha=1.0, cumulative=False, legendNcols=1, hatch=None, orientation='vertical', log=False, stacked=False, grid=True):
 
     """
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
     Function which plots on a highly configurable subplot grid 1D histograms. A list of data can be given to have multiple histograms on the same subplot.
 
-    Input
-    -----
-    align : 'left', 'mid' or 'right'
-        how to align bars respective to their value
-    alpha : float
-        how transparent the bars are
-    bins : int or list of int
-        if an integer, the number of bins. If it is a list, edges of the bins must be given.
-    color : list of strings/chars/RGBs
-        color for the data. It can either be a string, char or RGB value.
-    cumulative : boolean
-        whether to plot the cumulative distribution (where each bin equals the sum of the values in the previous bins up to this one) or the histogram
-    data: numpy array, list of numpy arrays
-        the data
-    fancybox : bool
-        whether to draw a fancy legend or not
-    framealpha : float
-        alpha value of the legend background
-    frameon : bool
-        whether to draw the legend frame or not. Default is True.
-    grid : bool
-        whether to show the grid or not
-    hatch : char
-        the hatching pattern
-    hideXlabel : boolean
-        whether to hide the x label or not
-    hideXticks : boolean
-        whether to hide the x ticks or not
-    hideYlabel : boolean
-        whether to hide the y label or not
-    hideYticks : boolean
-        whether to hide the y ticks or not
-    histtype : 'bar', 'barstacked', 'step', 'stepfilled'
-        how the histogram is plotted. Bar puts histograms next to each other. Barstacked stacks them. Step plots unfilled histograms. Stepfilled generates a filled histogram by default.
-    integralIsOne : boolean or list of boolean
-        whether to normalize the integral of the histogram
-    label : string
-        legend label for the data
-    legendEdgeColor : str
-        color of the legend edges. Default is None so that there is no edge.
-    legendNcols : int
-        number of columns in the legend
-    legendTextSize : int
-        size for the legend
-    locLegend : string, int
-        position where to place the legend
-    numPlot : int (3 digits)
-        the subplot number
-    orientation : str
-        orientation of the bars
-    outputName : str
-        name of the file to save the graph into. If None, the plot is not saved into a file
-    overwrite : boolean
-        whether to overwrite the ouput file or not
-    placeYaxisOnRight : boolean
-        whether to place the y axis of the plot on the right or not
-    textsize : int
-        size for the labels
-    shadow : bool
-        whether to draw a shadow around the legend or not
-    showLegend : boolean
-        whether to show the legend or not
-    tickSize : int
-        size of the ticks on both axes
-    tightLayout : boolean
-        whether to use bbox_inches='tight' if tightLayout is True or bbox_inches=None otherwise
-    weights : numpy array of floats or list of numpy arrays
-        the weights to apply to each value in data
-    xlabel : string
-        the x label
-    xlim : list of floats/None
-        the x-axis limits to use. If None is specified as lower/upper/both limit(s), the minimum/maximum/both values are used
-    ylabel : string
-        the y label
-    ylim : list of floats/None
-        the y-axis limits to use. If None is specified as lower/upper/both limit(s), the minimum/maximum/both values are used
-    zorder : int, list of ints for many plots
-        whether the data will be plot in first position or in last. The lower the value, the earlier it will be plotted
+    :param ndarray data: data to plot as histogram
+    :param numPlot: plot identifier. It can be 
+    
+        * an int (format is XYZ with X the number of rows, Y the number of columns and Z the plot position)
+        * a list with 3 similar numbers [X, Y, Z]
+        * a matplotlib GridSpec instance
         
-    Return current axis, hist values and bins.
+    :type numPlot: list[3 int] or ndarray[3 int] or int or matplotlib GridSpec instance
+
+    :param str align: (**Optional**) how to align bars with respect to their value. Must either be 'left', 'mid' or 'right'.
+    :param float alpha: (**Optional**) transparency of the bars
+    :param bins: (**Optional**) define the bins:
+        
+        * if an int, must be the number of bins
+        * if a list, must be the bins edges
+        
+    :type bins: int or list[int]
+    :param str color: (**Optional**) color for the data. It can either be a string or RGB values.
+    :param bool cumulative: (**Optional**) whether to plot the cumulative distribution (where each bin equals the sum of the values in the previous bins up to this one)
+    :param bool fancybox: (**Optional**) whether to draw a fancy legend or not
+    :param float framealpha: (**Optional**) transparency the legend background
+    :param bool frameon: (**Optional**) whether to draw the legend frame or not
+    :param bool grid: (**Optional**) whether to show the grid or not
+    :param str hatch: (**Optional**) hatching pattern
+    :param bool hideXlabel: (**Optional**) whether to hide the x label or not
+    :param bool hideXticks: (**Optional**) whether to hide the x ticks or not
+    :param bool hideYlabel: (**Optional**) whether to hide the y label or not
+    :param bool hideYticks: (**Optional**) whether to hide the y ticks or not
+    :param str histtype: (**Optional**) type of histogram. Must either be 'bar' (histograms next to each other), 'barstacked' (stacked histograms), 'step' (unfilled histograms) or 'stepfilled' (filled histograms).
+    :param bool integralIsOne: (**Optional**) whether to normalise the integral of the histogram
+    :param str label: (**Optional**) legend label
+    :param str legendEdgeColor: (**Optional**) color of the legend edges. If None, there is no edge.
+    :param int legendNcols: (**Optional**) number of columns in the legend
+    :param int legendTextSize: (**Optional**) size for the legend
+    :param str locLegend: (**Optional**) position of the legend
+    :param str orientation: (**Optional**) orientation of the bars
+    :param str outputName: (**Optional**) file name where save the figure. If None, the plot is not saved into a file.
+    :param bool overwrite: (**Optional**) whether to overwrite the ouput file or not
+    :param bool placeYaxisOnRight: (**Optional**) whether to place the y axis of the plot on the right or not
+    :param int textsize: (**Optional**) size for the labels
+    :param bool shadow: (**Optional**) whether to draw a shadow around the legend or not
+    :param bool showLegend: (**Optional**) whether to show the legend or not
+    :param int tickSize: (**Optional**) size of the ticks on both axes
+    :param bool tightLayout: (**Optional**) whether to use bbox_inches='tight' if **tightLayout** is True or bbox_inches=None otherwise
+    :param ndarray[float] weights:  (**Optional**) weights to apply to each value in **data**
+    :param str xlabel: (**Optional**) x axis label
+    :param list[float] xlim: (**Optional**) x-axis limits to use. If None, data bounds are used.
+    :param str ylabel: (**Optional**) y axis label
+    :param list[floats] ylim:  (**Optional**) y-axis limits to use. If None, data bounds are used
+    :param int zorder: (**Optional**) plot position. The lower the value, the earlier it will be plotted
+        
+    :returns: current axis, hist values and bins
     """
     
     ax1 = plt.subplot(numPlot)
