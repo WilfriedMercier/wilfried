@@ -1,0 +1,4 @@
+Histograms
+==========
+
+.. autofunction:: utilities.plotUtilities.asManyHists

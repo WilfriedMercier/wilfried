@@ -17,3 +17,4 @@ Fonctions and classes in this module are not galaxy-related. They can be used fo
    ./io.rst
    ./list.rst
    ./strings.rst
+   ./plotUtilities/index.rst

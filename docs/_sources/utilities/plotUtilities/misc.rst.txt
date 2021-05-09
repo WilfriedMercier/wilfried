@@ -1,0 +1,4 @@
+Miscellaneous
+=============
+
+.. autofunction:: utilities.plotUtilities.effective_local_density
