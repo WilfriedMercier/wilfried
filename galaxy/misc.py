@@ -22,28 +22,25 @@ def checkAndComputeIe(Ie, n, bn, re, mag, offset, noError=False):
     
     Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.
 
-    :param float bn: bn factor appearing in the Sersic profile (see below)
+    :param bn: bn factor appearing in the Sersic profile (see :py:func:`compute_bn`)
+    :type bn: float or ndarray[float]
     :param float Ie: intensity at effective radius
-    :param float mag: total integrated magnitude
+    :type Ie: float or ndarray[float]
+    :param mag: total integrated magnitude
+    :type mag: float or ndarray[float]
     :param n: Sersic index
-    :type n: int or float
-    :param float offset: magnitude offset
-    :param float re: half-light/effective radius
+    :type n: int or float or list[int] or list[float] or ndarray[int] or ndarray[float]
+    :param offset: magnitude offset
+    :type offset: float or ndarray[float]
+    :param re: half-light/effective radius
+    :type re: float or ndarray[float]
 
     :param bool noError: (**Optional**) whether to not raise an error or not when data is missing to compute the intensity. If True, None is returned.
-    
-    :returns: Ie if it could be computed or already existed, or None if **noError** flag is set to True.
-    :rtype: int or float or None
-    
-    :raises ValueError: if neither Ie, nor mag and offset are provided
-    
-    .. note::
 
-        The bn factor is defined by the following equation
-    
-        .. math::
-            
-            2\gamma(2n, b_n) = \Gamma(2n)
+    :returns: Ie if it could be computed or already existed, or None if **noError** flag is set to True.
+    :rtype: float or ndarray[float] or None
+
+    :raises ValueError: if neither Ie, nor mag and offset are provided
     """
     
     if Ie is None:
@@ -63,15 +60,19 @@ def intensity_at_re(n, mag, re, offset, bn=None):
     
     Compute the intensity of a given Sersic profile with index n at the position of the half-light radius re. This assumes to know the integrated magnitude of the profile, as well as the offset used for the magnitude definition.
     
-    :param float mag: total integrated magnitude of the profile
+    :param mag: total integrated magnitude of the profile
+    :type mag: float or ndarray[float]
     :param n: Sersic index of the given profile
-    :type n: int or float
-    :param float offset: magnitude offset used in the defition of the magnitude system
-    :param float re: effective (half-light) radius
+    :type n: int or float or list[int] or list[float] or ndarray[int] or ndarray[float]
+    :param offset: magnitude offset used in the defition of the magnitude system
+    :type offset: float or ndarray[float]
+    :param re: effective (half-light) radius
+    :type re: float or ndarray[float]
 
-    :param float bn: (**Optional**) bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. If None, its value will be computed from n.
+    :param bn: (**Optional**) bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. If None, its value will be computed from n.
+    :type bn: float or ndarray[float]
     :returns: the intensity at re
-    :rtype: float
+    :rtype: float or ndarray[float]
     """
  
     if bn is None:
@@ -107,7 +108,7 @@ def compute_bn(n):
         2\gamma(2n, b_n) = \Gamma(2n)
 
     :param n: Sersic index of the profile
-    :type n: int or float
+    :type n: int or float or list[int] or list[float] or ndarray[int] or ndarray[float]
     :returns: bn
     :rtype: float
     """
