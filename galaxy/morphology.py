@@ -219,7 +219,7 @@ def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     if None in [Ied, Ieb]:    
         return np.nan
         
-    return fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']   
+    return fluxSersic(r, 1, rd, bn=b1, Ie=Ied)['value'] / fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']   
 
     
 def fluxSersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
