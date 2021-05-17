@@ -115,6 +115,35 @@
      Strings manipulation
     </a>
    </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
   </ul>
   <i class="fas fa-chevron-down">
   </i>
@@ -521,7 +550,7 @@
     <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ied</span><span class="p">,</span> <span class="n">Ieb</span><span class="p">]:</span>    
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         
-    <span class="k">return</span> <span class="n">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">b4</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ieb</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">fluxSersics</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">],</span> <span class="n">listbn</span><span class="o">=</span><span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">],</span> <span class="n">listIe</span><span class="o">=</span><span class="p">[</span><span class="n">Ied</span><span class="p">,</span> <span class="n">Ieb</span><span class="p">])[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>   </div>
+    <span class="k">return</span> <span class="n">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">b1</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ied</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">fluxSersics</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">rd</span><span class="p">,</span> <span class="n">rb</span><span class="p">],</span> <span class="n">listbn</span><span class="o">=</span><span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b4</span><span class="p">],</span> <span class="n">listIe</span><span class="o">=</span><span class="p">[</span><span class="n">Ied</span><span class="p">,</span> <span class="n">Ieb</span><span class="p">])[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>   </div>
 
     
 <div class="viewcode-block" id="fluxSersic"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.fluxSersic">[docs]</a><span class="k">def</span> <span class="nf">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>

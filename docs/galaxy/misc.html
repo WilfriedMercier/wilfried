@@ -123,8 +123,23 @@
     </a>
     <ul class="collapse-ul">
      <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="../utilities/plotUtilities/hst.html">
-       HST related plots
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/singleContour.html">
+       Contours
       </a>
      </li>
     </ul>
@@ -382,12 +397,12 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bn</strong> (<em>float</em>) – bn factor appearing in the Sersic profile (see below)</p></li>
-<li><p><strong>Ie</strong> (<em>float</em>) – intensity at effective radius</p></li>
-<li><p><strong>mag</strong> (<em>float</em>) – total integrated magnitude</p></li>
-<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em>) – Sersic index</p></li>
-<li><p><strong>offset</strong> (<em>float</em>) – magnitude offset</p></li>
-<li><p><strong>re</strong> (<em>float</em>) – half-light/effective radius</p></li>
+<li><p><strong>bn</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – bn factor appearing in the Sersic profile (see <a class="reference internal" href="#galaxy.misc.compute_bn" title="galaxy.misc.compute_bn"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_bn()</span></code></a>)</p></li>
+<li><p><strong>Ie</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – intensity at effective radius</p></li>
+<li><p><strong>mag</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – total integrated magnitude</p></li>
+<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>] or </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – Sersic index</p></li>
+<li><p><strong>offset</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – magnitude offset</p></li>
+<li><p><strong>re</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – half-light/effective radius</p></li>
 <li><p><strong>noError</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not raise an error or not when data is missing to compute the intensity. If True, None is returned.</p></li>
 </ul>
 </dd>
@@ -395,18 +410,12 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 <dd class="field-even"><p>Ie if it could be computed or already existed, or None if <strong>noError</strong> flag is set to True.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int or float or None</p>
+<dd class="field-odd"><p>float or ndarray[float] or None</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>ValueError</strong> – if neither Ie, nor mag and offset are provided</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The bn factor is defined by the following equation</p>
-<div class="math">
-<p><img src="../_images/math/8d279bae4c0e3472487c92a6b9c11fba49228082.png" alt="2\gamma(2n, b_n) = \Gamma(2n)"/></p>
-</div></div>
 </dd></dl>
 
 <dl class="py function">
@@ -439,7 +448,7 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 <p><img src="../_images/math/8d279bae4c0e3472487c92a6b9c11fba49228082.png" alt="2\gamma(2n, b_n) = \Gamma(2n)"/></p>
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em>) – Sersic index of the profile</p>
+<dd class="field-odd"><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>] or </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – Sersic index of the profile</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>bn</p>
@@ -483,18 +492,18 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mag</strong> (<em>float</em>) – total integrated magnitude of the profile</p></li>
-<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em>) – Sersic index of the given profile</p></li>
-<li><p><strong>offset</strong> (<em>float</em>) – magnitude offset used in the defition of the magnitude system</p></li>
-<li><p><strong>re</strong> (<em>float</em>) – effective (half-light) radius</p></li>
-<li><p><strong>bn</strong> (<em>float</em>) – (<strong>Optional</strong>) bn factor appearing in the Sersic profile defined as $2gamma(2n, bn) = Gamma(2n)$. If None, its value will be computed from n.</p></li>
+<li><p><strong>mag</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – total integrated magnitude of the profile</p></li>
+<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>] or </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – Sersic index of the given profile</p></li>
+<li><p><strong>offset</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – magnitude offset used in the defition of the magnitude system</p></li>
+<li><p><strong>re</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – effective (half-light) radius</p></li>
+<li><p><strong>bn</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) bn factor appearing in the Sersic profile defined as $2gamma(2n, bn) = Gamma(2n)$. If None, its value will be computed from n.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>the intensity at re</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>float or ndarray[float]</p>
 </dd>
 </dl>
 </dd></dl>

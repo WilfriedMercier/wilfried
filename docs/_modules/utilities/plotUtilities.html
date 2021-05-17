@@ -122,7 +122,7 @@
     <ul class="collapse-ul">
      <li class="toctree-l3">
       <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
-       Galfit related plots
+       Histograms
       </a>
      </li>
      <li class="toctree-l3">
@@ -137,7 +137,7 @@
      </li>
      <li class="toctree-l3">
       <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
-       Galfit related plots
+       Contours
       </a>
      </li>
     </ul>
@@ -756,7 +756,8 @@
 <span class="sd">    :type filled: bool or str</span>
 <span class="sd">    :param bool hideAllTicks: (**Optional**) whether to hide ticks or not</span>
 <span class="sd">    :param str norm: (**Optional**) scale to use. Must either be &#39;log&#39; or &#39;linear&#39;.</span>
-<span class="sd">    :param (int, int) sizeFig: (**Optional**) width and height of the figure</span>
+<span class="sd">    :param sizeFig: (**Optional**) width and height of the figure</span>
+<span class="sd">    :type sizeFig: (int, int)</span>
 <span class="sd">    :param (float, float) xlim: (**Optional**) x-axis bounds. If None, the min and max of X are used.</span>
 <span class="sd">    :param (float, float) ylim: (**Optional**) y-axis bounds. If None, the min and max of Y are used.</span>
 <span class="sd">    </span>
@@ -875,7 +876,7 @@
 <span class="sd">    :param list[floats] ylim:  (**Optional**) y-axis limits to use. If None, data bounds are used</span>
 <span class="sd">    :param int zorder: (**Optional**) plot position. The lower the value, the earlier it will be plotted</span>
 <span class="sd">        </span>
-<span class="sd">    :returns: current axis, hist values and bins</span>
+<span class="sd">    :returns: Current axis, hist values, bin values, patches elements and legend elements</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">numPlot</span><span class="p">)</span>

@@ -27,6 +27,7 @@
     
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     
   <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
 
@@ -34,6 +35,8 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -81,6 +84,69 @@
   <a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1 collapsible-parent">
   <a class="reference internal" href="../../galaxy/index.html">
@@ -287,28 +353,25 @@
 <span class="sd">    </span>
 <span class="sd">    Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.</span>
 
-<span class="sd">    :param float bn: bn factor appearing in the Sersic profile (see below)</span>
+<span class="sd">    :param bn: bn factor appearing in the Sersic profile (see :py:func:`compute_bn`)</span>
+<span class="sd">    :type bn: float or ndarray[float]</span>
 <span class="sd">    :param float Ie: intensity at effective radius</span>
-<span class="sd">    :param float mag: total integrated magnitude</span>
+<span class="sd">    :type Ie: float or ndarray[float]</span>
+<span class="sd">    :param mag: total integrated magnitude</span>
+<span class="sd">    :type mag: float or ndarray[float]</span>
 <span class="sd">    :param n: Sersic index</span>
-<span class="sd">    :type n: int or float</span>
-<span class="sd">    :param float offset: magnitude offset</span>
-<span class="sd">    :param float re: half-light/effective radius</span>
+<span class="sd">    :type n: int or float or list[int] or list[float] or ndarray[int] or ndarray[float]</span>
+<span class="sd">    :param offset: magnitude offset</span>
+<span class="sd">    :type offset: float or ndarray[float]</span>
+<span class="sd">    :param re: half-light/effective radius</span>
+<span class="sd">    :type re: float or ndarray[float]</span>
 
 <span class="sd">    :param bool noError: (**Optional**) whether to not raise an error or not when data is missing to compute the intensity. If True, None is returned.</span>
-<span class="sd">    </span>
-<span class="sd">    :returns: Ie if it could be computed or already existed, or None if **noError** flag is set to True.</span>
-<span class="sd">    :rtype: int or float or None</span>
-<span class="sd">    </span>
-<span class="sd">    :raises ValueError: if neither Ie, nor mag and offset are provided</span>
-<span class="sd">    </span>
-<span class="sd">    .. note::</span>
 
-<span class="sd">        The bn factor is defined by the following equation</span>
-<span class="sd">    </span>
-<span class="sd">        .. math::</span>
-<span class="sd">            </span>
-<span class="sd">            2\gamma(2n, b_n) = \Gamma(2n)</span>
+<span class="sd">    :returns: Ie if it could be computed or already existed, or None if **noError** flag is set to True.</span>
+<span class="sd">    :rtype: float or ndarray[float] or None</span>
+
+<span class="sd">    :raises ValueError: if neither Ie, nor mag and offset are provided</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">Ie</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -328,15 +391,19 @@
 <span class="sd">    </span>
 <span class="sd">    Compute the intensity of a given Sersic profile with index n at the position of the half-light radius re. This assumes to know the integrated magnitude of the profile, as well as the offset used for the magnitude definition.</span>
 <span class="sd">    </span>
-<span class="sd">    :param float mag: total integrated magnitude of the profile</span>
+<span class="sd">    :param mag: total integrated magnitude of the profile</span>
+<span class="sd">    :type mag: float or ndarray[float]</span>
 <span class="sd">    :param n: Sersic index of the given profile</span>
-<span class="sd">    :type n: int or float</span>
-<span class="sd">    :param float offset: magnitude offset used in the defition of the magnitude system</span>
-<span class="sd">    :param float re: effective (half-light) radius</span>
+<span class="sd">    :type n: int or float or list[int] or list[float] or ndarray[int] or ndarray[float]</span>
+<span class="sd">    :param offset: magnitude offset used in the defition of the magnitude system</span>
+<span class="sd">    :type offset: float or ndarray[float]</span>
+<span class="sd">    :param re: effective (half-light) radius</span>
+<span class="sd">    :type re: float or ndarray[float]</span>
 
-<span class="sd">    :param float bn: (**Optional**) bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. If None, its value will be computed from n.</span>
+<span class="sd">    :param bn: (**Optional**) bn factor appearing in the Sersic profile defined as $2\gamma(2n, bn) = \Gamma(2n)$. If None, its value will be computed from n.</span>
+<span class="sd">    :type bn: float or ndarray[float]</span>
 <span class="sd">    :returns: the intensity at re</span>
-<span class="sd">    :rtype: float</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
  
     <span class="k">if</span> <span class="n">bn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -372,7 +439,7 @@
 <span class="sd">        2\gamma(2n, b_n) = \Gamma(2n)</span>
 
 <span class="sd">    :param n: Sersic index of the profile</span>
-<span class="sd">    :type n: int or float</span>
+<span class="sd">    :type n: int or float or list[int] or list[float] or ndarray[int] or ndarray[float]</span>
 <span class="sd">    :returns: bn</span>
 <span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
