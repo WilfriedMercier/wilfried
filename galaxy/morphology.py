@@ -118,9 +118,15 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     
     if None in [Ieb, Ied]:
         return np.nan
+    
+    bulge  = fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value']
+    disk   = fluxSersic(r, 1, rd, bn=b1, Ie=Ied)['value']
+    
+    if isinstance(bulge, list) and isinstance(disk, list):
+        return [b/d for b, d in zip(bulge, disk)]
+    else:
+        return bulge/disk
         
-    return fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / fluxSersic(r, 1, rd, bn=b1, Ie=Ied)['value']    
-
 
 def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
     r"""
@@ -168,8 +174,14 @@ def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     
     if None in [Ied, Ieb]:    
         return np.nan
-        
-    return fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value'] / fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']    
+    
+    bulge  = fluxSersic(r, 4, rb, bn=b4, Ie=Ieb)['value']
+    total  = fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value'] 
+    
+    if isinstance(bulge, list) and isinstance(total, list):
+        return [b/t for b, t in zip(bulge, total)]
+    else:
+        return bulge/total
 
 
 def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
@@ -218,8 +230,14 @@ def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
     
     if None in [Ied, Ieb]:    
         return np.nan
-        
-    return fluxSersic(r, 1, rd, bn=b1, Ie=Ied)['value'] / fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']   
+    
+    disk   = fluxSersic(r, 1, rd, bn=b1, Ie=Ied)['value']
+    total  = fluxSersics(r, [1, 4], [rd, rb], listbn=[b1, b4], listIe=[Ied, Ieb])['value']
+    
+    if isinstance(disk, list) and isinstance(total, list):
+        return [d/t for d, t in zip(disk, total)]
+    else:
+        return disk/total
 
     
 def fluxSersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
