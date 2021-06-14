@@ -123,8 +123,23 @@
     </a>
     <ul class="collapse-ul">
      <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="../utilities/plotUtilities/hst.html">
-       HST related plots
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/singleContour.html">
+       Contours
       </a>
      </li>
     </ul>
@@ -417,6 +432,29 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>int or float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.cosmology.dz_from_dage">
+<code class="sig-prename descclassname"><span class="pre">galaxy.cosmology.</span></code><code class="sig-name descname"><span class="pre">dz_from_dage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmology</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/cosmology.html#dz_from_dage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.cosmology.dz_from_dage" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the redshift upper and lower bounds around a given redshift such that they are <strong>dage</strong> Gyr apart from the reference redshift.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>int</em><em> or </em><em>float</em>) – reference redshift</p></li>
+<li><p><strong>dage</strong> (<em>int</em><em> or </em><em>float</em>) – age interval in Gyr</p></li>
+<li><p><strong>cosmology</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) parameters for the desired cosmology. See <a class="reference external" href="https://roban.github.io/CosmoloPy/">cosmolopy</a> for more information.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>upper and lower redshift bounds</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float, float</p>
 </dd>
 </dl>
 </dd></dl>

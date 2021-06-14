@@ -27,6 +27,7 @@
     
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     
   <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
 
@@ -34,6 +35,8 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -81,6 +84,69 @@
   <a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1 collapsible-parent">
   <a class="reference internal" href="../../galaxy/index.html">
@@ -274,8 +340,10 @@
 <span class="sd">    This relies heavily on a custom, Python 3 adapted version of `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span>   <span class="nn">scipy.optimize</span>      <span class="kn">import</span> <span class="n">root</span>
 <span class="kn">from</span>   <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
 <span class="kn">import</span> <span class="nn">cosmolopy.distance</span>  <span class="k">as</span>     <span class="nn">cd</span>
+<span class="kn">import</span> <span class="nn">cosmolopy.constants</span> <span class="k">as</span>     <span class="nn">cc</span>
 
 <span class="c1">#: Default cosmology</span>
 <span class="n">COSMOLOGY</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">({</span><span class="s1">&#39;omega_M_0&#39;</span> <span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;omega_lambda_0&#39;</span> <span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span> <span class="p">:</span> <span class="mf">0.72</span><span class="p">})</span>
@@ -354,6 +422,67 @@
     
     <span class="n">cosmology</span>     <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">(</span><span class="n">cosmology</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cd</span><span class="o">.</span><span class="n">comoving_distance</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z0</span><span class="o">=</span><span class="n">z2</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="dz_from_dage"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.dz_from_dage">[docs]</a><span class="k">def</span> <span class="nf">dz_from_dage</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dage</span><span class="p">,</span> <span class="n">cosmology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the redshift upper and lower bounds around a given redshift such that they are **dage** Gyr apart from the reference redshift.</span>
+<span class="sd">    </span>
+<span class="sd">    :param z: reference redshift</span>
+<span class="sd">    :type z: int or float</span>
+<span class="sd">    :param dage: age interval in Gyr</span>
+<span class="sd">    :type dage: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: upper and lower redshift bounds</span>
+<span class="sd">    :rtype: float, float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="c1"># Function to find the zero for the lower bound</span>
+    <span class="k">def</span> <span class="nf">func_min</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        
+        <span class="c1"># Make sure redshift do not fall outside interpolation range</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">x</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">100</span>
+        
+        <span class="n">age_x</span>        <span class="o">=</span> <span class="n">age_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">cc</span><span class="o">.</span><span class="n">Gyr_s</span> <span class="c1"># in Gyr</span>
+        <span class="k">return</span> <span class="n">age_z</span> <span class="o">-</span> <span class="n">age_x</span> <span class="o">-</span> <span class="n">dage</span>
+    
+    <span class="c1"># Function to find the zero for the upper bound</span>
+    <span class="k">def</span> <span class="nf">func_max</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        
+        <span class="c1"># Make sure redshift do not fall outside interpolation range</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">x</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">100</span>
+            
+        <span class="n">age_x</span>        <span class="o">=</span> <span class="n">age_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">cc</span><span class="o">.</span><span class="n">Gyr_s</span> <span class="c1"># in Gyr</span>
+        <span class="k">return</span> <span class="n">age_x</span> <span class="o">-</span> <span class="n">age_z</span> <span class="o">-</span> <span class="n">dage</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+    
+    <span class="n">cosmology</span>        <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">(</span><span class="n">cosmology</span><span class="p">)</span>
+    
+    <span class="c1"># age_func gives age as a function of z, z_func gives z as a function of age</span>
+    <span class="n">age_func</span><span class="p">,</span> <span class="n">z_func</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">quick_age_function</span><span class="p">(</span><span class="n">zmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span>
+    <span class="n">age_z</span>            <span class="o">=</span> <span class="n">age_func</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">cc</span><span class="o">.</span><span class="n">Gyr_s</span>               <span class="c1"># in Gyr</span>
+    
+    <span class="c1"># Find lower bound</span>
+    <span class="n">guess</span>            <span class="o">=</span> <span class="n">z</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">sol_low</span>          <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">func_min</span><span class="p">,</span> <span class="n">guess</span><span class="p">)</span>
+    
+    <span class="c1"># Find upper bound</span>
+    <span class="n">guess</span>            <span class="o">=</span> <span class="n">z</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">sol_hig</span>          <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">func_max</span><span class="p">,</span> <span class="n">guess</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">sol_hig</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">sol_low</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+    
 
 <div class="viewcode-block" id="separation"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.separation">[docs]</a><span class="k">def</span> <span class="nf">separation</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">ra1</span><span class="p">,</span> <span class="n">dec1</span><span class="p">,</span> <span class="n">ra2</span><span class="p">,</span> <span class="n">dec2</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">]):</span>
     <span class="sd">&#39;&#39;&#39;</span>
