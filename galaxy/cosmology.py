@@ -9,8 +9,10 @@ A set of functions to easily compute standard calculations in extragalactic phys
     This relies heavily on a custom, Python 3 adapted version of `cosmolopy <https://roban.github.io/CosmoloPy/>`_.
 """
 
+from   scipy.optimize      import root
 from   astropy.coordinates import SkyCoord
 import cosmolopy.distance  as     cd
+import cosmolopy.constants as     cc
 
 #: Default cosmology
 COSMOLOGY = cd.set_omega_k_0({'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72})
@@ -89,6 +91,67 @@ def comoving_los(z1, z2, cosmology=None):
     
     cosmology     = cd.set_omega_k_0(cosmology)
     return cd.comoving_distance(z1, z0=z2, **cosmology)
+ 
+def dz_from_dage(z, dage, cosmology=None):
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Compute the redshift upper and lower bounds around a given redshift such that they are **dage** Gyr apart from the reference redshift.
+    
+    :param z: reference redshift
+    :type z: int or float
+    :param dage: age interval in Gyr
+    :type dage: int or float
+    
+    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy <https://roban.github.io/CosmoloPy/>`_ for more information.
+    
+    :returns: upper and lower redshift bounds
+    :rtype: float, float
+    '''
+    
+    # Function to find the zero for the lower bound
+    def func_min(x):
+        
+        # Make sure redshift do not fall outside interpolation range
+        if x<0:
+            x        = 0
+        elif x>100:
+            x        = 100
+        
+        age_x        = age_func(x)/cc.Gyr_s # in Gyr
+        return age_z - age_x - dage
+    
+    # Function to find the zero for the upper bound
+    def func_max(x):
+        
+        # Make sure redshift do not fall outside interpolation range
+        if x<0:
+            x        = 0
+        elif x>100:
+            x        = 100
+            
+        age_x        = age_func(x)/cc.Gyr_s # in Gyr
+        return age_x - age_z - dage
+    
+    if cosmology is None:
+        cosmology = COSMOLOGY
+    
+    cosmology        = cd.set_omega_k_0(cosmology)
+    
+    # age_func gives age as a function of z, z_func gives z as a function of age
+    age_func, z_func = cd.quick_age_function(zmax=100, return_inverse=True, **cosmology)
+    age_z            = age_func(z)/cc.Gyr_s               # in Gyr
+    
+    # Find lower bound
+    guess            = z-1
+    sol_low          = root(func_min, guess)
+    
+    # Find upper bound
+    guess            = z+1
+    sol_hig          = root(func_max, guess)
+    
+    return sol_hig['x'][0], sol_low['x'][0]
+    
 
 def separation(z, ra1, dec1, ra2, dec2, units=['deg', 'deg', 'deg', 'deg']):
     '''
