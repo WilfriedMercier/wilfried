@@ -7,6 +7,7 @@ Computations relative to galaxies morphology.
 """
 
 import numpy                              as     np
+from   copy                               import deepcopy
 from   astropy.units.quantity             import Quantity
 from   scipy.special                      import gammainc
 from   scipy.optimize                     import root
@@ -751,21 +752,26 @@ def correct_inclination(inc, q0):
     :rtype: float or ndarray[float]
     '''
     
-    newinc       = inc.copy()
+    newinc           = deepcopy(inc)
     if isinstance(newinc, Quantity):
-        newinc   = newinc.to('rad')
+        newinc       = newinc.to('rad')
     else:
-        newinc  *= np.pi/180
-        
+        newinc      *= np.pi/180
+    
+    q                = np.cos(newinc)
+    
     # If b/a > intrinsic thickness, apply correction, otherwise do not
-    q            = np.cos(inc)
-    mask         = q > q0
-    newinc[mask] = np.arccos(np.sqrt((q[mask]**2 - q0[mask]**2) / (1 - q0[mask]**2))) 
+    if isinstance(newinc, (int, float, np.float16, np.float32, np.float64)):
+        if q > q0:
+            newinc   = np.arccos(np.sqrt((q**2 - q0**2) / (1 - q0**2))) 
+    else:
+        mask         = q > q0
+        newinc[mask] = np.arccos(np.sqrt((q[mask]**2 - q0[mask]**2) / (1 - q0[mask]**2))) 
     
     if isinstance(newinc, Quantity):
-        newinc   = newinc.to('degree').value
+        newinc       = newinc.to('degree').value
     else:
-        newinc  *= 180/np.pi
+        newinc      *= 180/np.pi
         
     return newinc
     
