@@ -115,6 +115,35 @@
      Strings manipulation
     </a>
    </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
   </ul>
   <i class="fas fa-chevron-down">
   </i>
@@ -446,16 +475,23 @@
     
     <span class="k">return</span> <span class="n">ebv</span> <span class="o">*</span> <span class="n">cardelli_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="n">rv</span><span class="p">)</span> </div>
 
-<div class="viewcode-block" id="flux_to_lum"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.flux_to_lum">[docs]</a><span class="k">def</span> <span class="nf">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="flux_to_lum"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.flux_to_lum">[docs]</a><span class="k">def</span> <span class="nf">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
 <span class="sd">    </span>
-<span class="sd">    Convert a flux into a luminosity.</span>
+<span class="sd">    Convert a flux into a luminosity. If an attenuation and a colour excess are given, the flux is corrected beforehand.</span>
 
 <span class="sd">    :param floii: flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.</span>
 <span class="sd">    :type floii: float or ndarray[float]</span>
 <span class="sd">    :param z: redshift</span>
 <span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param av_fast: (**Optional**) attenuation from FAST</span>
+<span class="sd">    :type av_fast: float or ndarray[float]</span>
+<span class="sd">    :param ebv: (**Optional**) colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
 <span class="sd">    </span>
 <span class="sd">    :returns: luminosity in :math:`\rm{erg/s}`</span>
 <span class="sd">    :rtype: float or ndarray[float]</span>
@@ -463,9 +499,13 @@
     
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
         <span class="n">floii</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s.cm^2)&#39;</span><span class="p">)</span>
+        
+    <span class="c1"># Correct flux of attenuation</span>
+    <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="p">]:</span>
+       <span class="n">floii</span>  <span class="o">=</span> <span class="n">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
     
-    <span class="n">dl</span>   <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-    <span class="n">loii</span> <span class="o">=</span> <span class="p">(</span><span class="n">floii</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">dl</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;erg/s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">dl</span>        <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">loii</span>      <span class="o">=</span> <span class="p">(</span><span class="n">floii</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">dl</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;erg/s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
     
     <span class="k">return</span> <span class="n">loii</span></div>
 
@@ -540,11 +580,11 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sfr</span> <span class="o">/</span> <span class="mf">2.5e-10</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mass_gas_kennicutt"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.mass_gas_kennicutt">[docs]</a><span class="k">def</span> <span class="nf">mass_gas_kennicutt</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="mass_gas_kennicutt"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.mass_gas_kennicutt">[docs]</a><span class="k">def</span> <span class="nf">mass_gas_kennicutt</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">rd</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
 <span class="sd">    </span>
-<span class="sd">    Convert the ionised gas flux into a gas mass assuming it is uniformly distributed in 2.2*rd.</span>
+<span class="sd">    Convert the ionised gas flux into a gas mass assuming it is uniformly distributed in 2.2*rd. If an attenuation and a colour excess are given, the flux is corrected beforehand.</span>
 <span class="sd">    </span>
 <span class="sd">    :param floii: ionised gas flux in :math:`\rm{erg/s/cm2}`</span>
 <span class="sd">    :type floii: float or ndarray[float]</span>
@@ -553,6 +593,13 @@
 <span class="sd">    :param z: redshift</span>
 <span class="sd">    :type z: float or ndarray[float]</span>
 <span class="sd">    </span>
+<span class="sd">    :param av_fast: (**Optional**) attenuation from FAST</span>
+<span class="sd">    :type av_fast: float or ndarray[float]</span>
+<span class="sd">    :param ebv: (**Optional**) colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
 <span class="sd">    :returns: gas mass using the Kennicutt law and its error in :math:`M_{\odot}`</span>
 <span class="sd">    :rtype: float or ndarray[float], float or ndarray[float]</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -560,30 +607,37 @@
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">rd</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
         <span class="n">rd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;pc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
     
-    <span class="n">loii</span>  <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-    <span class="n">mgas</span>  <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">4.7564e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">dmgas</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.9438e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">loii</span>     <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="o">=</span><span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+    <span class="n">mgas</span>     <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">4.7564e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">dmgas</span>    <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.9438e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span><span class="o">.</span><span class="n">value</span>
     
     <span class="k">return</span> <span class="n">mgas</span><span class="p">,</span> <span class="n">dmgas</span></div>
 
 
-<div class="viewcode-block" id="sfr_kennicutt_oii"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.sfr_kennicutt_oii">[docs]</a><span class="k">def</span> <span class="nf">sfr_kennicutt_oii</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="sfr_kennicutt_oii"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.sfr_kennicutt_oii">[docs]</a><span class="k">def</span> <span class="nf">sfr_kennicutt_oii</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
 <span class="sd">    </span>
-<span class="sd">    Compute the SFR from the ionised gas flux.</span>
+<span class="sd">    Compute the SFR from the ionised gas flux. If an attenuation and a colour excess are given, the flux is corrected beforehand.</span>
 <span class="sd">    </span>
 <span class="sd">    :param floii: ionised gas flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.</span>
 <span class="sd">    :type floii: float or ndarray[float]</span>
 <span class="sd">    :param z: redshift</span>
 <span class="sd">    :type z: float or ndarray[float]</span>
 <span class="sd">    </span>
+<span class="sd">    :param av_fast: (**Optional**) attenuation from FAST</span>
+<span class="sd">    :type av_fast: float or ndarray[float]</span>
+<span class="sd">    :param ebv: (**Optional**) colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
 <span class="sd">    :returns: SFR in :math:`M_{\odot}/{\rm{yr}}` and its error.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
-    <span class="n">loii</span> <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-    <span class="n">sfr</span>  <span class="o">=</span> <span class="mf">1.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
-    <span class="n">dsfr</span> <span class="o">=</span> <span class="mf">0.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
+    <span class="n">loii</span>     <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="o">=</span><span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+    <span class="n">sfr</span>      <span class="o">=</span> <span class="mf">1.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
+    <span class="n">dsfr</span>     <span class="o">=</span> <span class="mf">0.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
     
     <span class="k">return</span> <span class="n">sfr</span><span class="p">,</span> <span class="n">dsfr</span></div>
 </pre></div>
