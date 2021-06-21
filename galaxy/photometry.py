@@ -144,16 +144,23 @@ def dust_attenuation_cardelli(lbda, ebv, rv=3.1):
     
     return ebv * cardelli_law(lbda, rv=rv) 
 
-def flux_to_lum(floii, z):
+def flux_to_lum(floii, z, av_fast=None, ebv=None, lbda=0.3728):
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
-    Convert a flux into a luminosity.
+    Convert a flux into a luminosity. If an attenuation and a colour excess are given, the flux is corrected beforehand.
 
     :param floii: flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.
     :type floii: float or ndarray[float]
     :param z: redshift
     :type z: float or ndarray[float]
+    
+    :param av_fast: (**Optional**) attenuation from FAST
+    :type av_fast: float or ndarray[float]
+    :param ebv: (**Optional**) colour excess
+    :type ebv: float or ndarray[float]
+    :param lbda: (**Optional**) rest-frame wavelength in microns
+    :type lbda: float or ndarray[float]
     
     :returns: luminosity in :math:`\rm{erg/s}`
     :rtype: float or ndarray[float]
@@ -161,9 +168,13 @@ def flux_to_lum(floii, z):
     
     if not hasattr(floii, 'unit'):
         floii = u.Quantity(floii, unit='erg/(s.cm^2)')
+        
+    # Correct flux of attenuation
+    if None not in av_fast, ebv, lbda:
+       floii  = correct_extinction(floii, z, av_fast, ebv, lbda=lbda)
     
-    dl   = cosmo.luminosity_distance(z)
-    loii = (floii * 4 * np.pi * dl**2).to('erg/s').value
+    dl        = cosmo.luminosity_distance(z)
+    loii      = (floii * 4 * np.pi * dl**2).to('erg/s').value
     
     return loii
 
@@ -238,11 +249,11 @@ def mass_gas_sfr(sfr, rd):
     return (np.pi * (2.2*rd)**2) ** (2/7) * (sfr / 2.5e-10) ** (5/7)
 
 
-def mass_gas_kennicutt(floii, rd, z):
+def mass_gas_kennicutt(floii, rd, z, av_fast=None, ebv=None, lbda=0.3728):
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
-    Convert the ionised gas flux into a gas mass assuming it is uniformly distributed in 2.2*rd.
+    Convert the ionised gas flux into a gas mass assuming it is uniformly distributed in 2.2*rd. If an attenuation and a colour excess are given, the flux is corrected beforehand.
     
     :param floii: ionised gas flux in :math:`\rm{erg/s/cm2}`
     :type floii: float or ndarray[float]
@@ -251,6 +262,13 @@ def mass_gas_kennicutt(floii, rd, z):
     :param z: redshift
     :type z: float or ndarray[float]
     
+    :param av_fast: (**Optional**) attenuation from FAST
+    :type av_fast: float or ndarray[float]
+    :param ebv: (**Optional**) colour excess
+    :type ebv: float or ndarray[float]
+    :param lbda: (**Optional**) rest-frame wavelength in microns
+    :type lbda: float or ndarray[float]
+    
     :returns: gas mass using the Kennicutt law and its error in :math:`M_{\odot}`
     :rtype: float or ndarray[float], float or ndarray[float]
     '''
@@ -258,29 +276,36 @@ def mass_gas_kennicutt(floii, rd, z):
     if hasattr(rd, 'unit'):
         rd.to('pc').value
     
-    loii  = flux_to_lum(floii, z)
-    mgas  = ((np.pi * (2.2*rd)**2) ** (2/7) * 4.7564e-23 * loii ** (5/7)).value
-    dmgas = ((np.pi * (2.2*rd)**2) ** (2/7) * 1.9438e-23 * loii ** (5/7)).value
+    loii     = flux_to_lum(floii, z, av_fast=av_fast, ebv=ebv, lbda=lbda)
+    mgas     = ((np.pi * (2.2*rd)**2) ** (2/7) * 4.7564e-23 * loii ** (5/7)).value
+    dmgas    = ((np.pi * (2.2*rd)**2) ** (2/7) * 1.9438e-23 * loii ** (5/7)).value
     
     return mgas, dmgas
 
 
-def sfr_kennicutt_oii(floii, z):
+def sfr_kennicutt_oii(floii, z, av_fast=None, ebv=None, lbda=0.3728):
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
-    Compute the SFR from the ionised gas flux.
+    Compute the SFR from the ionised gas flux. If an attenuation and a colour excess are given, the flux is corrected beforehand.
     
     :param floii: ionised gas flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.
     :type floii: float or ndarray[float]
     :param z: redshift
     :type z: float or ndarray[float]
     
+    :param av_fast: (**Optional**) attenuation from FAST
+    :type av_fast: float or ndarray[float]
+    :param ebv: (**Optional**) colour excess
+    :type ebv: float or ndarray[float]
+    :param lbda: (**Optional**) rest-frame wavelength in microns
+    :type lbda: float or ndarray[float]
+    
     :returns: SFR in :math:`M_{\odot}/{\rm{yr}}` and its error.
     '''
     
-    loii = flux_to_lum(floii, z)
-    sfr  = 1.4e-41 * loii
-    dsfr = 0.4e-41 * loii
+    loii     = flux_to_lum(floii, z, av_fast=av_fast, ebv=ebv, lbda=lbda)
+    sfr      = 1.4e-41 * loii
+    dsfr     = 0.4e-41 * loii
     
     return sfr, dsfr
