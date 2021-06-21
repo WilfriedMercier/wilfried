@@ -170,7 +170,7 @@ def flux_to_lum(floii, z, av_fast=None, ebv=None, lbda=0.3728):
         floii = u.Quantity(floii, unit='erg/(s.cm^2)')
         
     # Correct flux of attenuation
-    if None not in av_fast, ebv, lbda:
+    if None not in [av_fast, ebv, lbda]:
        floii  = correct_extinction(floii, z, av_fast, ebv, lbda=lbda)
     
     dl        = cosmo.luminosity_distance(z)
