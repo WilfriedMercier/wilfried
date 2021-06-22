@@ -166,15 +166,57 @@ def flux_to_lum(floii, z, av_fast=None, ebv=None, lbda=0.3728):
     :rtype: float or ndarray[float]
     '''
     
+    # Make astropy Quantity
     if not hasattr(floii, 'unit'):
-        floii = u.Quantity(floii, unit='erg/(s.cm^2)')
+        floii              = u.Quantity(floii, unit='erg/(s.cm^2)')
         
     # Correct flux of attenuation
     if av_fast is not None and ebv is not None and lbda is not None:
-       floii  = correct_extinction(floii, z, av_fast, ebv, lbda=lbda)
+        
+       # If an array
+       if isinstance(floii.value, np.ndarray):
+               
+           # Where there is nan, we do not apply the correction
+           mask            = np.isnan(av_fast) | np.isnan(ebv) | np.isnan(lbda)
+           
+           # Redshift mask
+           if isinstance(z, np.ndarray):
+               zmask       = z[~mask]
+           else:
+               zmask       = z
+             
+           # Av mask
+           if isinstance(av_fast, np.ndarray):
+               av_fastmask = av_fast[~mask]
+           else:
+               av_fastmask = av_fast
     
-    dl        = cosmo.luminosity_distance(z)
-    loii      = (floii * 4 * np.pi * dl**2).to('erg/s').value
+           # Colour excess mask
+           if isinstance(ebv, np.ndarray):
+               ebvmask     = ebv[~mask]
+           else:
+               ebvmask     = ebv
+               
+           # Rest-frame wavelength mask
+           if isinstance(lbda, np.ndarray):
+               lbdamask    = lbda[~mask]
+           else:
+               lbdamask    = lbda
+               
+           # Extract unit and value to apply the correction
+           unit            = floii.unit
+           floii           = floii.value
+           floii[~mask]    = correct_extinction(floii[~mask], zmask, av_fastmask, ebvmask, lbda=lbda)
+           
+           # Reconstruct the Quantity object
+           floii           = u.Quantity(floii, unit=unit)
+           
+       # If a float and we can apply a correction
+       elif not np.isnan(av_fast) and not np.isnan(ebv) and not np.isnan(lbda):
+           floii           = correct_extinction(floii, z, av_fast, ebv, lbda=lbda)
+    
+    dl                     = cosmo.luminosity_distance(z)
+    loii                   = (floii * 4 * np.pi * dl**2).to('erg/s').value
     
     return loii
 
