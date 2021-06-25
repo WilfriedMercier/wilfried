@@ -425,7 +425,8 @@ def singleContour(X, Y, Z, contours=None, sizeFig=(12, 12), aspect='equal', hide
     :type filled: bool or str
     :param bool hideAllTicks: (**Optional**) whether to hide ticks or not
     :param str norm: (**Optional**) scale to use. Must either be 'log' or 'linear'.
-    :param (int, int) sizeFig: (**Optional**) width and height of the figure
+    :param sizeFig: (**Optional**) width and height of the figure
+    :type sizeFig: (int, int)
     :param (float, float) xlim: (**Optional**) x-axis bounds. If None, the min and max of X are used.
     :param (float, float) ylim: (**Optional**) y-axis bounds. If None, the min and max of Y are used.
     
@@ -544,7 +545,7 @@ def asManyHists(numPlot, data, bins=None, weights=None, hideXlabel=False, hideYl
     :param list[floats] ylim:  (**Optional**) y-axis limits to use. If None, data bounds are used
     :param int zorder: (**Optional**) plot position. The lower the value, the earlier it will be plotted
         
-    :returns: current axis, hist values and bins
+    :returns: Current axis, hist values, bin values, patches elements and legend elements
     """
     
     ax1 = plt.subplot(numPlot)
@@ -1500,29 +1501,40 @@ def asManyPlots2(numPlot, datax, datay,
     ax1.yaxis.set_ticks_position('both')
     ax1.xaxis.set_ticks_position('both')
     ax1.set_title(title.label, loc=title.position, pad=title.verticalOffset, fontsize=title.size, color=title.color, fontfamily=title.font, fontweight=title.weight, fontstyle=title.style)
-    
-    # Set ticks properties for x and y axes
-    ax1.tick_params(axis='x', which='both', direction=xaxis.ticks.direction, labelsize=xaxis.label.size, length=xaxis.ticks.size)
-    ax1.tick_params(axis='y', which='both', direction=yaxis.ticks.direction, labelsize=yaxis.label.size, length=xaxis.ticks.size)
         
     # Set x and y labels
     plt.xlabel(xaxis.label.text, size=xaxis.label.size) 
     plt.ylabel(yaxis.label.text, size=yaxis.label.size)
     
     # Place axes to the correct position
+    labelleft       = False
+    labelright      = False
+    
     if yaxis.pos.lower() == "right":
         ax1.yaxis.set_label_position("right")
+        labelright  = True
     elif yaxis.pos.lower() == "left":
         ax1.yaxis.set_label_position("left")
+        labelleft   = True
     else:
         raise ValueError("ValueError: given key 'yAxisPos' from dictionary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
     
+    # Place axes to the correct position
+    labelbottom     = False
+    labeltop        = False
+    
     if xaxis.pos.lower() == "bottom":
         ax1.xaxis.set_label_position("bottom")
+        labelbottom = True
     elif xaxis.pos.lower() == "top":
         ax1.xaxis.set_label_position("top")
+        labeltop    = True
     else:
         raise ValueError("ValueError: given key 'xAxisPos' from dictionary axesProperties is neither 'right' nor 'left'. Please provide one of these values or nothing. Cheers !")
+
+    # Set ticks properties for x and y axes
+    ax1.tick_params(axis='x', which='both', direction=xaxis.ticks.direction, labelsize=xaxis.label.size, length=xaxis.ticks.size, labelbottom=labelbottom, labeltop=labeltop)
+    ax1.tick_params(axis='y', which='both', direction=yaxis.ticks.direction, labelsize=yaxis.label.size, length=xaxis.ticks.size, labelleft=labelleft, labelright=labelright)
 
     if not layout.grid.hide:
         plt.grid(zorder=layout.grid.zorder)
