@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.angularMomentum &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galaxy/index.html">
+   Galaxy module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/kinematics.html">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/models.html">
+     Galaxy models
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../galaxy/morphology/index.html">
+     Galaxies morphology
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Morpho.html">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../galaxy/photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for galaxy.angularMomentum</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">*Author:* Wilfried Mercier - IRAP</span>
+
+<span class="sd">Computations related to angular momenta of galaxies.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>         <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">from</span>   <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">gammainc</span><span class="p">,</span> <span class="n">gamma</span>
+<span class="kn">from</span>   <span class="nn">.models</span>       <span class="kn">import</span> <span class="n">compute_bn</span>
+
+<div class="viewcode-block" id="sersic_kthMoment"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.sersic_kthMoment">[docs]</a><span class="k">def</span> <span class="nf">sersic_kthMoment</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute the kth radial moment for a Sérsic profile</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        \int_{v_{\rm{min}}}^{v_{\rm{max}}} dr~r^k \Sigma(r)</span>
+
+<span class="sd">    :param k: order of the moment</span>
+<span class="sd">    :type k: int or float</span>
+<span class="sd">    :param vmin: lower bound to compute the kth moment. Must be greater than 0 and less than vmax. Should be the same unit as Re.</span>
+<span class="sd">    :type vmin: int or float</span>
+<span class="sd">    :param vmax: upper bound to compute the kth moment. Must be greater than 0 and more than vmin. Should be the same unit as Re.</span>
+<span class="sd">    :type vmax: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param Ie: (**Optional**) flux at Re</span>
+<span class="sd">    :type Ie: int or float</span>
+<span class="sd">    :param n: (**Optional**) Sérsic index</span>
+<span class="sd">    :type n: int or float</span>
+<span class="sd">    :param Re: (**Optional**) effective radius</span>
+<span class="sd">    :type Re: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: kth order moment</span>
+<span class="sd">    :rtype: int or float</span>
+<span class="sd">    :raises ValueError: if vmin&lt;0 or vmin &gt;= vmax</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">vmin</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">vmin</span> <span class="o">&gt;=</span> <span class="n">vmax</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either vmin or vmax is wrong.&#39;</span><span class="p">)</span>
+        
+    <span class="n">bn</span>        <span class="o">=</span> <span class="n">compute_bn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">prod</span>      <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">prefactor</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ie</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">Re</span><span class="o">**</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">bn</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">bn</span><span class="o">**</span><span class="n">prod</span><span class="p">)</span>
+    <span class="n">gamma1</span>    <span class="o">=</span> <span class="n">gammainc</span><span class="p">(</span><span class="n">prod</span><span class="p">,</span> <span class="n">bn</span><span class="o">*</span><span class="p">(</span><span class="n">vmax</span><span class="o">/</span><span class="n">Re</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">))</span>
+    <span class="n">gamma2</span>    <span class="o">=</span> <span class="n">gammainc</span><span class="p">(</span><span class="n">prod</span><span class="p">,</span> <span class="n">bn</span><span class="o">*</span><span class="p">(</span><span class="n">vmin</span><span class="o">/</span><span class="n">Re</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">prefactor</span><span class="o">*</span><span class="n">gamma</span><span class="p">(</span><span class="n">prod</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">gamma1</span> <span class="o">-</span> <span class="n">gamma2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="momentum"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.momentum">[docs]</a><span class="k">def</span> <span class="nf">momentum</span><span class="p">(</span><span class="n">rt</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute the analytical angular momentum for a single Sérsic profile and a ramp model rotation curve in the **unnormalised** case</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        J_z = 2\pi \int_0^\infty dR~R^2 \Sigma (R) V(R),</span>
+<span class="sd">        </span>
+<span class="sd">    and, in the **normalised** case</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        j = \frac{\int_0^\infty dR~R^2 \Sigma (R) V(R)}{\int_0^\infty dR~R \Sigma (R)},</span>
+<span class="sd">        </span>
+<span class="sd">    where </span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        \Sigma(R) &amp;= Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]}</span>
+<span class="sd">        </span>
+<span class="sd">        V(R) &amp;= V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t</span>
+<span class="sd">        </span>
+<span class="sd">    :param rt: kinematical transition radius</span>
+<span class="sd">    :type rt: int or float</span>
+<span class="sd">    :param vt: kinematical plateau velocity (must be positive)</span>
+<span class="sd">    :type vt: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param Ie: (**Optional**) flux at Re</span>
+<span class="sd">    :type Ie: int or float</span>
+<span class="sd">    :param n: (**Optional**) Sérsic index</span>
+<span class="sd">    :type n: int or float</span>
+<span class="sd">    :param bool normalise: (**Optional**) whether to normalise by the first order moment of the light distribution. Default is True</span>
+<span class="sd">    :param Re: (**Optional**) effective radius. Must have the same unit as rt. Default is 10.</span>
+<span class="sd">    :type Re: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.</span>
+<span class="sd">    :rtype: int or float</span>
+<span class="sd">    :raises ValueError: if rt &lt;= 0 or vt &lt;= 0</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">rt</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Transition radius must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">vt</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Plateau velocity must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="mi">1</span>
+        
+    <span class="c1"># The velocity curve is vt * r/rt for r&lt;rt and vt for r&gt;rt</span>
+    <span class="c1"># Therefore, two parts must be computed:</span>
+    <span class="c1">#  1. between 0 and rt as a 3rd order moment divided by rt</span>
+    <span class="c1">#  2. between rt and infinity as a 2nd order moment</span>
+    
+    <span class="n">inner</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">rt</span><span class="p">,</span>     <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">)</span><span class="o">/</span><span class="n">rt</span>
+    <span class="n">outer</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">rt</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">vt</span><span class="o">*</span><span class="p">(</span><span class="n">inner</span><span class="o">+</span><span class="n">outer</span><span class="p">)</span><span class="o">/</span><span class="n">norm</span></div>
+</pre></div>
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>

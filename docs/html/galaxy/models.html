@@ -1,0 +1,928 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaxy models &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Galaxies morphology" href="morphology/index.html" />
+    <link rel="prev" title="Galaxy mass models" href="massModels.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/hst.html">
+       HST related plots
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 current active collapsible-parent">
+  <a class="reference internal" href="index.html">
+   Galaxy module
+  </a>
+  <ul class="current collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="kinematics.html">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Galaxy models
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="morphology/index.html">
+     Galaxies morphology
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/Morpho.html">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../galfit/models.html">
+     Galfit models
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/galaxy/models.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/models.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i>
+            Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#d-profiles">
+   1D profiles
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   2D profiles
+  </a>
+ </li>
+</ul>
+
+        </nav>
+        
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="module-galaxy.models">
+<span id="galaxy-models"></span><h1>Galaxy models<a class="headerlink" href="#module-galaxy.models" title="Permalink to this headline">¶</a></h1>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Useful functions for galaxy modelling and other related computation.</p>
+<div class="contents local topic" id="table-of-contents">
+<p class="topic-title">Table of contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#d-profiles" id="id3">1D profiles</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id4">2D profiles</a></p></li>
+</ul>
+</div>
+<div class="section" id="d-profiles">
+<h2><a class="toc-backref" href="#id3">1D profiles</a><a class="headerlink" href="#d-profiles" title="Permalink to this headline">¶</a></h2>
+<p>A collection of 1D surface brightness profiles.</p>
+<dl class="py function">
+<dt id="galaxy.models.bulge">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">bulge</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#bulge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.bulge" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Computes the value of the intensity of a de Vaucouleur bulge at position r defined as</p>
+<div class="math">
+<p><img src="../_images/math/027a7f315801e717c331f175b1542c68c3a96e1a.png" alt="\Sigma(r) = I_{\rm{e}} e^{\left [ \left (r/R_{\rm{e}} \right )^{1/4} - 1 \right ]},"/></p>
+</div><p>with <img class="math" src="../_images/math/02e9ba95a6448d0edb31eb6bf64c5316bd908c36.png" alt="R_{\rm{e}}"/> the effective radius and <img class="math" src="../_images/math/bba8df14c232c179be27ba94d5f12f9fb6625ca4.png" alt="I_{\rm{e}}"/> the surface brightness at the effective radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em>) – position at which the profile is computed</p></li>
+<li><p><strong>re</strong> (<em>float</em>) – half-light radius</p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – (<strong>Optional</strong>) b4 factor appearing in the Sersic profile. If None, its value will be computed.</p></li>
+<li><p><strong>Ie</strong> (<em>float</em>) – (<strong>Optional</strong>) surface brightness at half-light radius</p></li>
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude used to compute Ie if not given</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>surface brightness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.exponential_disk">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">exponential_disk</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#exponential_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.exponential_disk" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Computes the value of the intensity of an exponential disk at position r defined as</p>
+<div class="math">
+<p><img src="../_images/math/f9e0df37c6c4f100ea98ddfc02d85bb45fa2cde0.png" alt="\Sigma(r) = I_{\rm{e}} e^{\left [ r/R_{\rm{e}} - 1 \right ]},"/></p>
+</div><p>with <img class="math" src="../_images/math/02e9ba95a6448d0edb31eb6bf64c5316bd908c36.png" alt="R_{\rm{e}}"/> the effective radius and <img class="math" src="../_images/math/bba8df14c232c179be27ba94d5f12f9fb6625ca4.png" alt="I_{\rm{e}}"/> the surface brightness at the effective radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em>) – position at which the profile is computed</p></li>
+<li><p><strong>re</strong> (<em>float</em>) – half-light radius</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – (<strong>Optional</strong>) b1 factor appearing in the Sersic profile. If None, its value will be computed.</p></li>
+<li><p><strong>Ie</strong> (<em>float</em>) – (<strong>Optional</strong>) surface brightness at half-light radius</p></li>
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude used to compute Ie if not given</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>surface brightness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.hernquist">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">hernquist</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#hernquist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.hernquist" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Hernquist profile defined as</p>
+<div class="math">
+<p><img src="../_images/math/0ea7af6ab6445e28080dc5a58db8f6d734f3fb8f.png" alt="\rho(r) = \frac{M_{\rm{b}}}{2\pi} \frac{a}{r} (r + a)^{-3},"/></p>
+</div><p>with <img class="math" src="../_images/math/bd6ff32bf2265a980708308f76a14198f8dccddd.png" alt="M_{\rm{b}}"/> the total mass and <img class="math" src="../_images/math/b3e65e3b6408fcfa00452530b73f55d1755f9965.png" alt="a"/> the scale radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>int</em><em> or </em><em>float</em>) – scale radius</p></li>
+<li><p><strong>M</strong> (<em>int</em><em> or </em><em>float</em>) – total mass</p></li>
+<li><p><strong>r</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radial distance(s) where to compute the Hernquist profile. Unit must be the same as <strong>a</strong>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Hernquist profile evaluated at the given distance(s). Unit is that of <strong>M</strong>/<strong>a^3</strong>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray[float]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – if <strong>r</strong>, <strong>M</strong> and <strong>a</strong> are neither int, nor float</p></li>
+<li><p><strong>ValueError</strong> – if np.any(<strong>r</strong>) &lt; 0, if <strong>a</strong> &lt;= 0 or if <strong>M</strong> &lt; 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.nfw">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">nfw</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#nfw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.nfw" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>NFW profile defined as</p>
+<div class="math">
+<p><img src="../_images/math/04841d3f2cf16bcd3a2bedcb429859ae0b851ce3.png" alt="\rho(r) = \delta_{\rm{c}} \rho_{\rm{crit}} (r/r_{\rm{s}})^{-1} (1 + r/r_{\rm{s}})^{-2},"/></p>
+</div><p>with <img class="math" src="../_images/math/23d1c822dbcd337d3b73b96f0ec8804aa5865ddd.png" alt="r_{\rm{s}} = r_{200} / c"/> the halo scale radius, with <img class="math" src="../_images/math/e5b134b7e0d387972aada359b470495d2470564d.png" alt="r_{200}"/> the virial radius where the mean overdensity is equal to 200, <img class="math" src="../_images/math/d520a12f1579170834c32ad5f656de081bbb36fe.png" alt="c"/> the halo concentration, <img class="math" src="../_images/math/904bb58c7203e3894aa2f07121e45da55d7fe26e.png" alt="\rho_{\rm{crit}} = 3 H_0^2 / (8\pi G)"/> the Universe closure density, and <img class="math" src="../_images/math/82b7bda044c5edd7b3cf8a6d7edd6abb85d29b69.png" alt="\delta_{\rm{c}}"/> the halo overdensity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>int</em><em> or </em><em>float</em>) – halo concentration</p></li>
+<li><p><strong>r</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radial distance(s) where to compute the profile. Unit must be the same as rs.</p></li>
+<li><p><strong>rs</strong> (<em>int</em><em> or </em><em>float</em>) – scale radius</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>NFW profile evaluated at the given distance. Unit is that of a 3D mass density in SI (i.e. kg/m^3).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray[float]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – if <strong>r</strong>, <strong>c</strong> and <strong>rs</strong> are neither int, nor float</p></li>
+<li><p><strong>ValueError</strong> – if np.any(<strong>r</strong>)&lt;0, if c&lt;=0, or if rs&lt;=0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.sersic_profile">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">sersic_profile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#sersic_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.sersic_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>General Sersic profile defined as</p>
+<div class="math">
+<p><img src="../_images/math/c873b073f13ba451278f2e559fa41be54b648223.png" alt="\Sigma(r) = I_{\rm{e}} e^{\left [ \left (r/R_{\rm{e}} \right )^{1/n} - 1 \right ]},"/></p>
+</div><p>with <img class="math" src="../_images/math/02e9ba95a6448d0edb31eb6bf64c5316bd908c36.png" alt="R_{\rm{e}}"/> the effective radius, <img class="math" src="../_images/math/bba8df14c232c179be27ba94d5f12f9fb6625ca4.png" alt="I_{\rm{e}}"/> the surface brightness at the effective radius and <img class="math" src="../_images/math/5a939c5280da7202ca4531f175a7780ad5e1f80a.png" alt="n"/> the Sersic index.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Compute it with:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>n, re and Ie</p></li>
+<li><p>n, re, mag and offset</p></li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<em>float</em>) – position at which the profile is computed</p></li>
+<li><p><strong>re</strong> (<em>float</em>) – half-light radius</p></li>
+<li><p><strong>bn</strong> (<em>float</em>) – (<strong>Optional</strong>) bn factor appearing in the Sersic profile. If None, its value will be computed.</p></li>
+<li><p><strong>Ie</strong> (<em>float</em>) – (<strong>Optional</strong>) surface brightness at half-light radius</p></li>
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude used to compute Ie if not given</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – (<strong>Optional</strong>) magnitude offset in the magnitude system used</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>surface brightness</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id4">2D profiles</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>A collection of 2D models of surface brightness profiles with or without inclination effects and PSF convolution.</p>
+<dl class="py function">
+<dt id="galaxy.models.bulgeDiskOnSky">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">bulgeDiskOnSky</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'FWHMX':</span> <span class="pre">0.8,</span> <span class="pre">'FWHMY':</span> <span class="pre">0.8,</span> <span class="pre">'name':</span> <span class="pre">'Gaussian2D',</span> <span class="pre">'sigmaX':</span> <span class="pre">None,</span> <span class="pre">'sigmaY':</span> <span class="pre">None,</span> <span class="pre">'unit':</span> <span class="pre">'arcsec'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noPSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecToGrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">2,</span> <span class="pre">'dy':</span> <span class="pre">2,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#bulgeDiskOnSky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.bulgeDiskOnSky" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate a bulge + (sky projected) disk 2D model (with PSF convolution).</p>
+<p class="rubric"><strong>How to use</strong></p>
+<p>Apart from the mandatory inputs, it is necessary to provide</p>
+<ul class="simple">
+<li><p>an intensity at Re for each profile</p></li>
+<li><p>a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)</p></li>
+</ul>
+<p class="rubric"><strong>Infos about sampling</strong> </p>
+<p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</p>
+<ul class="simple">
+<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
+<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Rd</strong> and <strong>Rb</strong> should be given in pixel units.</p>
+<p>If you provide them in arcsec, you must update the <strong>arcsecToGrid</strong> value to 1 (since 1 pixel will be equal to 1 arcsec).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
+<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
+<li><p><strong>Rb</strong> (<em>float</em>) – bulge half-light radius. Best practice is to provide it in pixels.</p></li>
+<li><p><strong>Rd</strong> (<em>float</em>) – disk half-light radius. Best practice is to provide it in pixels.</p></li>
+<li><p><strong>arcsecToGrid</strong> (<em>float</em>) – (<strong>Optional</strong>) pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel</p></li>
+<li><p><strong>Ib</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
+<li><p><strong>Id</strong> (<em>float</em>) – (<strong>Optional</strong>) disk intensity at (disk) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
+<li><p><strong>inclination</strong> ((<strong>Optional</strong>) int or float) – (<strong>Optional</strong>) disk inclination on sky. Generally given between -90° and +90°. Value must be given in degrees.</p></li>
+<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge total magnitude</p></li>
+<li><p><strong>magD</strong> (<em>float</em>) – (<strong>Optional</strong>) disk total magnitude</p></li>
+<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge magnitude offset</p></li>
+<li><p><strong>offsetD</strong> (<em>float</em>) – (<strong>Optional</strong>) disk magnitude offset</p></li>
+<li><p><strong>noPSF</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not perform PSF convolution or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – disk position angle (in degrees)</p></li>
+<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
+<li><p><strong>PSF</strong> (<em>dict</em>) – (<strong>Optional</strong>) Dictionnary of the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF.</p></li>
+<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>where to perform the over sampling. Dictionnaries should have the following keys:</p>
+<ul>
+<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
+<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
+<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
+</ul>
+</p></li>
+<li><p><strong>skipCheck</strong> (<em>bool</em>) – whether to skip the checking part or not</p></li>
+<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – x-axis centre position. Default is None so that nx//2 will be used.</p></li>
+<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – y-axis centre position. Default is None so that ny//2 will be used.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – whether to print text on stdout or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2D ndarray, 2D ndarray, 2D ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.Sersic2D">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">Sersic2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listRe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listIe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listMag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listInclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listPA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">5,</span> <span class="pre">'dy':</span> <span class="pre">5,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#Sersic2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.Sersic2D" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.</p>
+<p class="rubric"><strong>How to use</strong></p>
+<p>Apart from the mandatory inputs, it is necessary to provide</p>
+<ul class="simple">
+<li><p>an intensity at Re for each profile</p></li>
+<li><p>a total magnitude value for each profile and a corresponding magnitude offset per profile (to convert from magnitudes to intensities)</p></li>
+</ul>
+<p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</p>
+<ul class="simple">
+<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
+<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listn</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – list of Sersic index for each profile</p></li>
+<li><p><strong>listRe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – list of half-light radii for each profile</p></li>
+<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
+<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
+<li><p><strong>combine</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to combine (sum) all the components and return a single intensity map, or to return each component separately in lists</p></li>
+<li><p><strong>listIe</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of intensities at re for each profile</p></li>
+<li><p><strong>listInclination</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of inclination of each Sersic component on the sky in degrees</p></li>
+<li><p><strong>listPA</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) list of position angle of each Sersic component on the sky in degrees. Generally, these values are given between -90° and +90°.</p></li>
+<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – (<strong>Optional</strong>) fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
+<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) where to perform the sampling. Default is everywhere. Dictionnaries should have the following keys:</p>
+<ul>
+<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
+<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
+<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
+</ul>
+</p></li>
+<li><p><strong>skipCheck</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to skip the checking part or not</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to print info on stdout or not</p></li>
+<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) x-axis centre position. Default is None so that <strong>nx</strong>//2 will be used.</p></li>
+<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) y-axis centre position. Default is None so that <strong>ny</strong>//2 will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>X, Y grids and the intensity map if <strong>combine</strong> is True</p></li>
+<li><p>X, Y grids and a listof intensity maps for each component if <strong>combine</strong> is False</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TypeError</strong> – <ul>
+<li><p>if ‘dx’ and ‘dy’ keys are not in <strong>samplingZone</strong></p></li>
+<li><p>if <strong>fineSampling</strong>, <strong>nx</strong> and <strong>ny</strong> are neither int, nor np.integer</p></li>
+</ul>
+</p></li>
+<li><p><strong>ValueError</strong> – <ul>
+<li><p>if ‘where’ key value in <strong>samplingZone</strong> is neither ‘all’, nor ‘centre’</p></li>
+<li><p>if nx, ny or arcsecToGrid are &lt; 0</p></li>
+<li><p>if at least one n or one Re is &lt; 0</p></li>
+<li><p>if <strong>fineSampling</strong> &lt; 1</p></li>
+<li><p>if at least one PA is not in the range [-90, 90] deg</p></li>
+<li><p>if Ie and mag and offset are None</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.models.bulge2D">
+<code class="sig-prename descclassname"><span class="pre">galaxy.models.</span></code><code class="sig-name descname"><span class="pre">bulge2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'FWHMX':</span> <span class="pre">0.8,</span> <span class="pre">'FWHMY':</span> <span class="pre">0.8,</span> <span class="pre">'name':</span> <span class="pre">'Gaussian2D',</span> <span class="pre">'sigmaX':</span> <span class="pre">None,</span> <span class="pre">'sigmaY':</span> <span class="pre">None,</span> <span class="pre">'unit':</span> <span class="pre">'arcsec'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noPSF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecToGrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fineSampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samplingZone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'dx':</span> <span class="pre">5,</span> <span class="pre">'dy':</span> <span class="pre">5,</span> <span class="pre">'where':</span> <span class="pre">'centre'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipCheck</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/models.html#bulge2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.models.bulge2D" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate a 2D model for a de Vaucouleur bulge. This model can be sky projected and PSF convolved.</p>
+<p class="rubric"><strong>How to use</strong></p>
+<p>You must provide the size of the image with <strong>nx</strong> and <strong>ny</strong> as well as a bulge effective radius (usually in pixel unit) with <strong>Rb</strong>. Additionally, one must provide one of the following</p>
+<ul class="simple">
+<li><p>surface brightness at <strong>Rb</strong> with <strong>Ib</strong></p></li>
+<li><p>total magnitude and magnitude offset to go from magnitude to <strong>Ie</strong> using the parameters <strong>mag</strong> and <strong>offset</strong></p></li>
+</ul>
+<p>The PSF convolution only accepts 2D Gaussians for now. You can either provide</p>
+<ul class="simple">
+<li><p>a FWHM in the X and Y directions</p></li>
+<li><p>a dispersion in the X and Y directions</p></li>
+</ul>
+<p>You must also provide a unit for the FWHM or sigma values. This unit must be recognised by astropy. Since images have dimensions in pixel unit, if the FWHM or sigma values are not given in pixel unit, you must also provide <code class="samp docutils literal notranslate"><span class="pre">arcsecToGrid</span></code> to convert from physical unit to pixel unit.</p>
+<p>If you do not want to convolve with the PSF, provide <code class="samp docutils literal notranslate"><span class="pre">noPSF=True</span></code>.</p>
+<p><strong>fineSampling</strong> parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</p>
+<ul class="simple">
+<li><p>if the sampling is performed everywhere (‘where’ keyword in <strong>samplingZone</strong> equal to ‘all’), the final image will have dimensions (<strong>nx*fineSampling</strong>, <strong>ny*fineSampling</strong>)</p></li>
+<li><p>if the sampling is performed around the centre (‘where’ equal to ‘centre’), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (<strong>nx</strong>, <strong>ny</strong>).</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> (<em>int</em>) – size of the model for the x-axis</p></li>
+<li><p><strong>ny</strong> (<em>int</em>) – size of the model for the y-axis</p></li>
+<li><p><strong>Rb</strong> (<em>float</em>) – bulge half-light radius. Best practice is to provide it in pixels.</p></li>
+<li><p><strong>x0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) x-axis centre position. Default is None so that <strong>nx</strong>//2 will be used.</p></li>
+<li><p><strong>y0</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) y-axis centre position. Default is None so that <strong>ny</strong>//2 will be used.</p></li>
+<li><p><strong>Ib</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge intensity at (bulge) half-light radius. If not provided, magnitude and magnitude offset must be given instead.</p></li>
+<li><p><strong>magB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge total magnitude</p></li>
+<li><p><strong>offsetB</strong> (<em>float</em>) – (<strong>Optional</strong>) bulge magnitude offset</p></li>
+<li><p><strong>inclination</strong> ((<strong>Optional</strong>) int or float) – (<strong>Optional</strong>) inclination on sky. Generally given between -90° and +90°. Value must be given in degrees.</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – position angle (in degrees)</p></li>
+<li><p><strong>PSF</strong> (<em>dict</em>) – (<strong>Optional</strong>) Dictionnary of the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF.</p></li>
+<li><p><strong>noPSF</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not perform PSF convolution or not</p></li>
+<li><p><strong>arcsecToGrid</strong> (<em>float</em>) – (<strong>Optional</strong>) pixel size conversion in arcsec/pixel, used to convert the FWHM/sigma from arcsec to pixel</p></li>
+<li><p><strong>fineSampling</strong> (<em>int</em><em>(</em><em>&gt;0</em><em>)</em>) – fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</p></li>
+<li><p><strong>samplingZone</strong> (<em>dict</em>) – <p>where to perform the over sampling. Dictionnaries should have the following keys:</p>
+<ul>
+<li><p>’where’ (type str) -&gt; either ‘all’ to perform everywhere or ‘centre’ to perform around the centre</p></li>
+<li><p>’dx’    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, ‘dx’ does not need to be provided.</p></li>
+<li><p>’dy’    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, ‘dy’ does not need to be provided.</p></li>
+</ul>
+</p></li>
+<li><p><strong>skipCheck</strong> (<em>bool</em>) – whether to skip the checking part or not</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to print info on stdout or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>X coordinate array, Y coordinate array and the 2D bulge model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2D ndarray[float], 2D ndarray[float], 2D ndarray[float]</p>
+</dd>
+</dl>
+<p class="rubric"><strong>Example</strong></p>
+<p>Comparing different models:</p>
+<ul class="simple">
+<li><p>The first does not use <strong>fineSampling</strong>, thus it shows an intensity profile, rather than a flux profile</p></li>
+<li><p>The second one uses <code class="samp docutils literal notranslate"><span class="pre">fineSampling=81</span></code> so that it matches more the ouput of <a class="reference external" href="https://users.obs.carnegiescience.edu/peng/work/galfit/galfit.html">Galfit</a></p></li>
+<li><p>The last one also uses <strong>fineSampling</strong> but is convolved by a Gaussian with <img class="math" src="../_images/math/e49ad3bf0a784e35d85765cb2194f74f74ff1d4c.png" alt="{\rm{FWHM}} = 0.087~\rm{arcsec}"/></p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span>   <span class="nn">matplotlib.colors</span>   <span class="kn">import</span> <span class="n">LogNorm</span>
+<span class="kn">from</span>   <span class="nn">matplotlib</span>          <span class="kn">import</span> <span class="n">rc</span>
+<span class="kn">from</span>   <span class="nn">matplotlib.gridspec</span> <span class="kn">import</span> <span class="n">GridSpec</span>
+<span class="kn">from</span>   <span class="nn">wilfried.galaxy</span>     <span class="kn">import</span> <span class="n">models</span> <span class="k">as</span> <span class="n">mod</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>   <span class="k">as</span>     <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>          <span class="k">as</span>     <span class="nn">mpl</span>
+
+<span class="c1"># Bulge model using fine sampling and without PSF</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge1</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Bulge mode with fine sampling but without PSF</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge2</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">)</span>
+
+<span class="c1"># Bulge model with fine sampling and with PSF convolution (FWHM=0.8 arcsec)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge3</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span>
+                          <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Gaussian2D&#39;</span><span class="p">,</span> <span class="s1">&#39;FWHMX&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;FWHMY&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="s1">&#39;arcsec&#39;</span><span class="p">},</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+
+<span class="c1">###############################</span>
+<span class="c1">#          Plot part          #</span>
+<span class="c1">###############################</span>
+
+<span class="c1"># Setup figure and axes</span>
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;family&#39;</span><span class="p">:</span> <span class="s1">&#39;serif&#39;</span><span class="p">,</span> <span class="s1">&#39;serif&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Times&#39;</span><span class="p">]})</span>
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.latex.preamble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\usepackage</span><span class="si">{newtxmath}</span><span class="s1">&#39;</span>
+
+<span class="n">f</span>            <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">gs</span>           <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">ax1</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ax2</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ax3</span>          <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;No fine sampling&#39;</span><span class="p">,</span>      <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling = $9^2$&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax3</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Fine sampling \&amp; PSF&#39;</span><span class="p">,</span>  <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">ax3</span><span class="p">]:</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+<span class="c1"># Show bulges</span>
+<span class="n">ret1</span>  <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge1</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+<span class="n">ret2</span>  <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge2</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+<span class="n">ret3</span>  <span class="o">=</span> <span class="n">ax3</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge3</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add colorbar</span>
+<span class="n">cb_ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+<span class="n">cbar</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ret1</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cb_ax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Surface brightness [arbitrary unit]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../galaxy/models-1.py">Source code</a>, <a class="reference external" href="../galaxy/models-1.png">png</a>, <a class="reference external" href="../galaxy/models-1.hires.png">hires.png</a>, <a class="reference external" href="../galaxy/models-1.pdf">pdf</a>)</p>
+<div class="figure align-default">
+<img alt="../_images/models-1.png" src="../_images/models-1.png" />
+</div>
+<p class="rubric"><strong>Comparison with Galfit models</strong></p>
+<p>We can also compare the ouput from this function with a similar model made with <a class="reference external" href="https://users.obs.carnegiescience.edu/peng/work/galfit/galfit.html">Galfit</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span>   <span class="nn">matplotlib.colors</span>   <span class="kn">import</span> <span class="n">LogNorm</span><span class="p">,</span> <span class="n">Normalize</span>
+<span class="kn">from</span>   <span class="nn">matplotlib</span>          <span class="kn">import</span> <span class="n">rc</span>
+<span class="kn">from</span>   <span class="nn">matplotlib.gridspec</span> <span class="kn">import</span> <span class="n">GridSpec</span>
+<span class="kn">from</span>   <span class="nn">astropy.io</span>          <span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span>   <span class="nn">wilfried.galaxy</span>     <span class="kn">import</span> <span class="n">models</span> <span class="k">as</span> <span class="n">mod</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>   <span class="k">as</span>     <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>          <span class="k">as</span>     <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">numpy</span>               <span class="k">as</span>     <span class="nn">np</span>
+
+<span class="c1">##############################</span>
+<span class="c1">#     Generate 2D models     #</span>
+<span class="c1">##############################</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge1</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">})</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">bulge2</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bulge2D</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fineSampling</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span>
+                          <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Gaussian2D&#39;</span><span class="p">,</span> <span class="s1">&#39;FWHMX&#39;</span><span class="p">:</span><span class="mf">0.087</span><span class="p">,</span> <span class="s1">&#39;FWHMY&#39;</span><span class="p">:</span><span class="mf">0.087</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="s1">&#39;arcsec&#39;</span><span class="p">},</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+
+<span class="c1">#####################################</span>
+<span class="c1">#     Load GALFIT output images     #</span>
+<span class="c1">#####################################</span>
+
+<span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;/home/wilfried/wilfried_libs/galaxy/.test/bulge_withoutPSF.fits&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+   <span class="n">bulge_nopsf</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+<span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;/home/wilfried/wilfried_libs/galaxy/.test/bulge_withPSF.fits&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+   <span class="n">bulge_psf</span>   <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+<span class="c1">##########################</span>
+<span class="c1">#       Plot parts       #</span>
+<span class="c1">##########################</span>
+
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;family&#39;</span><span class="p">:</span> <span class="s1">&#39;serif&#39;</span><span class="p">,</span> <span class="s1">&#39;serif&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Times&#39;</span><span class="p">]})</span>
+<span class="n">rc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.latex.preamble&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\usepackage</span><span class="si">{newtxmath}</span><span class="s1">&#39;</span>
+
+<span class="n">f</span>            <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">gs</span>           <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+
+<span class="n">axs</span>          <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">:</span>
+   <span class="n">axs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;without PSF&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;bulge2D&#39;</span><span class="p">,</span>      <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Galfit bulge&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Residuals&#39;</span><span class="p">,</span>    <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;with PSF&#39;</span><span class="p">,</span>    <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+   <span class="n">a</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+<span class="c1"># First line</span>
+<span class="n">mmax</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">([</span><span class="n">bulge1</span><span class="p">,</span> <span class="n">bulge2</span><span class="p">,</span> <span class="n">bulge_nopsf</span><span class="p">,</span> <span class="n">bulge_psf</span><span class="p">])</span>
+<span class="n">mmin</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">bulge1</span><span class="p">,</span> <span class="n">bulge2</span><span class="p">,</span> <span class="n">bulge_nopsf</span><span class="p">,</span> <span class="n">bulge_psf</span><span class="p">])</span>
+
+<span class="n">diff1</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">100</span><span class="o">*</span><span class="n">bulge_nopsf</span><span class="o">/</span><span class="n">bulge1</span>
+<span class="n">diff2</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">100</span><span class="o">*</span><span class="n">bulge_psf</span><span class="o">/</span><span class="n">bulge2</span>
+<span class="n">dmax</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">([</span><span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span><span class="p">])</span>
+<span class="n">dmin</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">diff1</span><span class="p">,</span> <span class="n">diff2</span><span class="p">])</span>
+
+<span class="n">ret11</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge1</span><span class="p">,</span>      <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret12</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge_nopsf</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret13</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">diff1</span><span class="p">,</span>       <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">dmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">dmax</span><span class="p">))</span>
+
+<span class="c1"># Second line</span>
+<span class="n">ret21</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge2</span><span class="p">,</span>      <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret22</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">bulge_psf</span><span class="p">,</span>   <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>  <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(</span>  <span class="n">vmin</span><span class="o">=</span><span class="n">mmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mmax</span><span class="p">))</span>
+<span class="n">ret23</span> <span class="o">=</span> <span class="n">axs</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">diff2</span><span class="p">,</span>       <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">dmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">dmax</span><span class="p">))</span>
+
+<span class="c1"># Add colorbar 1</span>
+<span class="n">cb_ax1</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.53</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+<span class="n">cbar1</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ret11</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cb_ax1</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">cbar1</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Surface brightness [arbitrary unit]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">cbar1</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># Add colorbar 2</span>
+<span class="n">cb_ax2</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.26</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">])</span>
+<span class="n">cbar2</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ret13</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cb_ax2</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+<span class="n">cbar2</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Relative difference (\%)&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">cbar2</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="../galaxy/models-2.py">Source code</a>, <a class="reference external" href="../galaxy/models-2.png">png</a>, <a class="reference external" href="../galaxy/models-2.hires.png">hires.png</a>, <a class="reference external" href="../galaxy/models-2.pdf">pdf</a>)</p>
+<div class="figure align-default">
+<img alt="../_images/models-2.png" src="../_images/models-2.png" />
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="massModels.html" title="previous page">Galaxy mass models</a>
+    <a class='right-next' id="next-link" href="morphology/index.html" title="next page">Galaxies morphology</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>

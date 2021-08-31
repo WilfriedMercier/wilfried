@@ -1,0 +1,86 @@
+Input/Output
+============
+
+List of available functions
+---------------------------
+
+* `is_VOtable`_
+* `loadVOtable`_
+* `VOtableColumns`_
+* `write_array_to_vot`_
+* `add_new_array_to_previous`_
+* `move_bad_fields_to_bottom`_
+
+Examples
+--------
+
+Below are a few examples on how to use some functions. First, let us generate fake data and write them into a VOtable file:
+
+.. code::
+
+   from astropy.table import Table
+
+   tab = Table(names=('ID', 'value1', 'value2'))
+   tab.add_row((1, 25, 13))
+   tab.add_row((2, 0, 6))
+   tab.add_row((3, 2, -7))
+   tab.write('data.vot', format='votable')
+
+Now we can play with the VOtable file.
+
+.. code::
+
+   from wilfried.utilities.io import is_VOtable, loadVOtable, VOtableColumns, write_array_to_vot
+
+   file          = 'data.vot'
+
+   # First let us print column names
+   columns       = VOtableColumns(file)
+   print(columns)
+
+   # Then we check file type and then load data
+   if is_VOtable(file):              # IOError is automatically raised if file is not a VOtable
+      catalogue1 = load_VOtable(file) # default output is astropy Table
+   print(catalogue1)
+
+   # Now we load it as an astropy structured array
+   if is_VOtable(file):
+      catalogue2 = loadVOtable(file, outputType='array')
+   print(catalogue2)
+
+   # We can directly save the array into a new VOtable file without converting to a Table
+   new_file      = 'new_data.vot'
+   write_array_to_vot(catalogue2, 'new_data.vot')
+
+   # Let us check whether it saved data correctly
+   catalogue3    = loadVOtable(new_file)
+   print(catalogue3)
+      
+Documentation
+-------------
+
+.. automodule:: utilities.io
+
+   .. _is_VOtable:
+   
+   .. autofunction:: utilities.io.is_VOtable
+
+   .. _loadVOtable:
+   
+   .. autofunction:: utilities.io.loadVOtable
+
+    .. _VOtableColumns:
+    
+   .. autofunction:: utilities.io.VOtableColumns
+
+   .. _write_array_to_vot:
+   
+   .. autofunction:: utilities.io.write_array_to_vot
+
+   .. _add_new_array_to_previous:
+   
+   .. autofunction:: utilities.io.add_new_array_to_previous
+
+   .. _move_bad_fields_to_bottom:
+   
+   .. autofunction:: utilities.io.move_bad_fields_to_bottom

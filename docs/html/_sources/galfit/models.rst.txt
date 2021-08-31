@@ -1,0 +1,41 @@
+Galfit models
+=============
+
+.. automodule:: galfit.models
+
+.. contents:: Table of contents
+   :local:
+
+.. index:: index
+
+Miscellaneous
+*************
+
+Test
+""""
+.. autofunction:: galfit.models.createIsFixedDict
+.. autofunction:: galfit.models.createCommentsDict
+.. autofunction:: galfit.models.genModel
+
+Galfit profiles
+***************
+
+.. autofunction:: galfit.models.gendeVaucouleur
+.. autofunction:: galfit.models.genEdgeOnDisk
+.. autofunction:: galfit.models.genExpDisk
+.. autofunction:: galfit.models.genFerrer
+.. autofunction:: galfit.models.genGaussian
+.. autofunction:: galfit.models.genKing
+.. autofunction:: galfit.models.genMoffat
+.. autofunction:: galfit.models.genNuker
+.. autofunction:: galfit.models.genPSF
+.. autofunction:: galfit.models.genSersic
+.. autofunction:: galfit.models.genSky
+
+
+Galfit additional tags
+**********************
+
+.. autofunction:: galfit.models.bendingModes
+.. autofunction:: galfit.models.boxy_diskyness
+.. autofunction:: galfit.models.fourierModes

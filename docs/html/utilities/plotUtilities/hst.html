@@ -1,0 +1,451 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galfit related plots &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Miscellaneous" href="misc.html" />
+    <link rel="prev" title="Histograms" href="asManyHists.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 current active collapsible-parent">
+  <a class="reference internal" href="../index.html">
+   Useful utilities
+  </a>
+  <ul class="current collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 current active collapsible-parent">
+    <a class="reference internal" href="index.html">
+     Plot utilities
+    </a>
+    <ul class="current collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galaxy/index.html">
+   Galaxy module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/kinematics.html">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/models.html">
+     Galaxy models
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../galaxy/morphology/index.html">
+     Galaxies morphology
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Morpho.html">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../galaxy/photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/utilities/plotUtilities/hst.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/utilities/plotUtilities/hst.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="galfit-related-plots">
+<h1>Galfit related plots<a class="headerlink" href="#galfit-related-plots" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="utilities.plotUtilities.display_hst_models">
+<code class="sig-prename descclassname"><span class="pre">utilities.plotUtilities.</span></code><code class="sig-name descname"><span class="pre">display_hst_models</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'test.pdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spectral'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utilities/plotUtilities.html#display_hst_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.plotUtilities.display_hst_models" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>This function enables to display a GALFIT output file containing the galaxy image, the associated model and the residuals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file1</strong> (<em>str</em>) – name of GALFIT output file</p></li>
+<li><p><strong>cmap</strong> (<em>str</em>) – (<strong>Optional</strong>) name of the colormap. Must be understood by matplotlib.</p></li>
+<li><p><strong>fileout</strong> (<em>str</em>) – (<strong>Optional</strong>) name of the output file</p></li>
+<li><p><strong>log</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to have a log scale or not</p></li>
+<li><p><strong>show</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to show the image or not</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – (<strong>Optional</strong>) title of the output image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – <ul class="simple">
+<li><p>if <strong>title</strong> is neither None, nor of type str</p></li>
+<li><p>if <strong>fileout</strong> is not of type str</p></li>
+<li><p>if <strong>cmap</strong> is not of type str</p></li>
+<li><p>if <strong>log</strong> is not of type bool</p></li>
+<li><p>if <strong>show</strong> is not of type bool</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="utilities.plotUtilities.genMeThatPDF">
+<code class="sig-prename descclassname"><span class="pre">utilities.plotUtilities.</span></code><code class="sig-name descname"><span class="pre">genMeThatPDF</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fnamesList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdfOut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readFromFile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupNumbers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diverging</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeroPoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bwr'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/utilities/plotUtilities.html#genMeThatPDF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.plotUtilities.genMeThatPDF" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate a pdf file with all the GALFIT images (data, model and residual) side by side.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When certain problems arise, a default blank plot is drawn instead. Below is a list of issues where a blank plot may be generated</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>if a file is not found</p></li>
+<li><p>if the min and max of an image are equal</p></li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fnamesList</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – all the file names (paths included) with the GALFIT images. If <strong>readFromFile</strong> is True, provide the name of a file containing all the different names (one per line).</p></li>
+<li><p><strong>pdfOut</strong> (<em>str</em>) – name of the output pdf file</p></li>
+<li><p><strong>diverging</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to use a diverging norm or not. If False, a linear norm will be used (overriding any log norm).</p></li>
+<li><p><strong>cmap</strong> (<em>str</em>) – (<strong>Optional</strong>) colormap to use for the plot</p></li>
+<li><p><strong>groupNumbers</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) list of groups the galaxies belong to</p></li>
+<li><p><strong>log</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to show images as log or not</p></li>
+<li><p><strong>readFromFile</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to read the file names from a file or not. If True, the names must be listed one per line.</p></li>
+<li><p><strong>zeroPoint</strong> (<em>float</em>) – (<strong>Optional</strong>) value at which the diverging norm will split in two</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="asManyHists.html" title="previous page">Histograms</a>
+    <a class='right-next' id="next-link" href="misc.html" title="next page">Miscellaneous</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>

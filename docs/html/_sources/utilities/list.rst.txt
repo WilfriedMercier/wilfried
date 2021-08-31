@@ -1,0 +1,32 @@
+List manipulations
+==================
+
+List of available functions
+---------------------------
+
+* `transpose`_
+
+Examples
+--------
+
+A few examples are given below
+
+.. code::
+
+   from wilfried.utilities.lists import transpose
+
+   # Generate mock list
+   l  = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+   print(l)
+
+   lt = transpose(l)
+   print(lt)
+      
+Documentation
+-------------
+
+.. automodule:: utilities.lists
+
+   .. _transpose:
+   
+   .. autofunction:: utilities.lists.transpose

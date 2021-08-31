@@ -1,0 +1,60 @@
+Strings manipulation
+====================
+
+List of available functions
+---------------------------
+
+* `computeStringsLen`_
+* `maxStringsLen`_
+* `putStringsTogether`_
+* `toStr`_
+
+Examples
+--------
+
+A few examples are given below
+
+.. code::
+
+   import wilfried.utilities.strings as st
+
+   data = [1, 2, 3, 5.5]
+   print(data)
+
+   # Transform data into list of strings
+   data_str = st.toStr(data)
+   print(data_str)
+
+   # Compute the length of each string in the list
+   data_len = st.computeStringsLen(data_str)
+   print(data_len)
+
+   # Compute the length of the longest string in the list
+   maxLen   = st.maxStringsLen(data_str)
+   print(maxLen)
+
+   # Combine strings from the list into a single string
+   string   = st.putStringsTogether(data_str)
+   print(string)
+
+      
+Documentation
+-------------
+
+.. automodule:: utilities.strings
+
+   .. _computeStringsLen:
+   
+   .. autofunction:: utilities.strings.computeStringsLen
+
+   .. _maxStringsLen:
+   
+   .. autofunction:: utilities.strings.maxStringsLen
+
+   .. _putStringsTogether:
+   
+   .. autofunction:: utilities.strings.putStringsTogether
+
+   .. _toStr:
+   
+   .. autofunction:: utilities.strings.toStr

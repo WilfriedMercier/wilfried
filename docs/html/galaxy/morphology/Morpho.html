@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morphological parameters &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Galaxies thickness" href="Thickness.html" />
+    <link rel="prev" title="Sersic fluxes" href="SersicFlux.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 current active collapsible-parent">
+  <a class="reference internal" href="../index.html">
+   Galaxy module
+  </a>
+  <ul class="current collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../kinematics.html">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../models.html">
+     Galaxy models
+    </a>
+   </li>
+   <li class="toctree-l2 current active collapsible-parent">
+    <a class="reference internal" href="index.html">
+     Galaxies morphology
+    </a>
+    <ul class="current collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="SersicFlux.html">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/galaxy/morphology/Morpho.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/morphology/Morpho.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="morphological-parameters">
+<h1>Morphological parameters<a class="headerlink" href="#morphological-parameters" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="galaxy.morphology.computePAs">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">computePAs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'minmax'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returnThresholds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#computePAs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.computePAs" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute a set of PA values for a galaxy using different minimum threshold values.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How it works</strong></p>
+<p>A set of threshold values are generated between the minimum and the maximum of the image, e.g.</p>
+<ul class="simple">
+<li><p>[0, 1, 2] for a galaxy with a minimum of 0 and a maximum of 2 (using num=3)</p></li>
+</ul>
+<p>These values are applied one after another onto the image as a minmum threshold, that is data points with value&lt;threshold are masked. We get what we call a ‘slice’.
+For each slice, we compute its PA (angle starting from the vertical axis, counting anti clockwise).</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>PA angles are given between -90° and +90° so that there is a degeneracy between these two bounds.</p></li>
+<li><p>If the ‘minmax’ method is used, a galaxy with a PA close to 90° will not have a good PA estimation as different slices will have values oscillating around +90° and -90°, yielding a median value of approximately 0°…</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>im</strong> (<em>2D ndarray</em>) – image of a galaxy</p></li>
+<li><p><strong>method</strong> (<em>'minmax'</em><em> or </em><em>'furthest'</em>) – <p>(<strong>Optional</strong>) method to use</p>
+<ul>
+<li><p>if ‘minmax’ the PA of each slice is computed as the angle between the min and the max within the slice (not very efficient)</p></li>
+<li><p>if ‘furthest’ the PA of each slice is computed as the angle between the max and the furthest point relative to it (much more efficient)</p></li>
+</ul>
+</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – (<strong>Optional</strong>) how many slices must be made</p></li>
+<li><p><strong>returnThresholds</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to return the threshold values as well as the PAs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>PA list (and the threshold values if returnThresholds is True)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list (and list f returnThresholds is True)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if the method is neither ‘minmax’, nor ‘furthest’</p></li>
+<li><p><strong>TypeError</strong> – if num is not an int, or if returnThresholds is not a bool</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.the_re_equation_for_2_Sersic_profiles">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">the_re_equation_for_2_Sersic_profiles</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noStructuredArray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#the_re_equation_for_2_Sersic_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.the_re_equation_for_2_Sersic_profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>A semi-analytical equation whose zero should give the value of the half-light radius for a bulge-disk decomposition defined as</p>
+<div class="math">
+<p><img src="../../_images/math/4c38aabf98ebffc604b222c31b3958c086132726.png" alt="\Sigma (r) = I_{\rm{b}} e^{-b_4 \left [ \left (r/R_{\rm{b}} \right ) -1 \right ]} + I_{\rm{d}} e^{-b_1 \left [ \left (r/R_{\rm{d}} \right ) -1 \right ]},"/></p>
+</div><p>where <img class="math" src="../../_images/math/cb1de39f373a048d3ce17cf725d9dff4b74f46fa.png" alt="R_{\rm{b}}, R_{\rm{d}}"/> are the bulge and disk effective radii, and <img class="math" src="../../_images/math/4e6051968658a1fdccc1b803df5ea58b25c5e508.png" alt="I_{\rm{b}}, I_{\rm{d}}"/> are the bulge and disk surface brightness at their effective radii, respectively.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is meant to be used with a zero search algorithm (dichotomy or anything else).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gal</strong> (<em>structured ndarray</em>) – <p>structured array with data for all the galaxies. The required column names are:</p>
+<ul>
+<li><p>’R_d_GF’ for the effective radius of the disk</p></li>
+<li><p>’R_b_GF’ for the effective radius of the bulge</p></li>
+<li><p>’Mag_d_GF’ for the total integrated magnitude of the disk</p></li>
+<li><p>’Mag_b_GF’ the total integrated magnitude of the bulge</p></li>
+</ul>
+</p></li>
+<li><p><strong>re</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – value of the half-light radius of the sum of the two components. This is the value which shall be returned by a zero search algorithm.</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – b1 factor appearing in the Sersic profile of an exponential disk</p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – b4 factor appearing in the Sersic profile of a bulge</p></li>
+<li><p><strong>magB</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – total magnitude of the bulge</p></li>
+<li><p><strong>magD</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – total magnitude of the disk</p></li>
+<li><p><strong>norm</strong> (<em>float</em>) – normalisation factor to divide the equation (used to improve convergence)</p></li>
+<li><p><strong>noStructuredArray</strong> (<em>bool</em>) – if False, the structured array gal will be used. If False, values of the magnitudes and half-light radii of the two components must be given.</p></li>
+<li><p><strong>offsetMagD</strong> (<em>int</em><em> or </em><em>float</em>) – magnitude offset used in the magnitude system for the disk</p></li>
+<li><p><strong>offsetMagB</strong> (<em>int</em><em> or </em><em>float</em>) – magnitude offset used in the magnitude system for the bulge</p></li>
+<li><p><strong>Rb</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – half-light radius of the bulge</p></li>
+<li><p><strong>Rd</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – half-light radius of the disk</p></li>
+<li><p><strong>stretch</strong> (<em>float</em>) – dilatation factor used to multiply re in order to smooth out the sharp slope around the 0 of the function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value of the left-hand side of the equation. If re is correct, the returned value should be close to 0.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if offsetMagD and offsetMagB are given but are neither float, nor int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.morphology.solve_re">
+<code class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></code><code class="sig-name descname"><span class="pre">solve_re</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noStructuredArray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ltot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagD</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useZeroOrder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hybr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#solve_re"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.solve_re" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>This is meant to find the half-light radius of the sum of an exponential disk and a de Vaucouleur bulge, either via a semi-analytical formula, or using numerical integration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How to use</strong></p>
+<p>There are two ways to use this function:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>using numerical integration of the light profiles</p></li>
+<li><p>by finding the zero of a specific equation.</p></li>
+</ul>
+</div></blockquote>
+<p>In both cases, the parameter <strong>gal</strong> is mandatory. This corresponds to a numpy structured array with the following fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘Mag_d_GF’, ‘Mag_b_GF’, ‘R_d_GF’ and ‘R_b_GF’</p></li>
+</ul>
+</div></blockquote>
+<p><strong>HOWEVER</strong>, if the flag <strong>noStructuredArray</strong> is True, this array will not be used (so just cast anything into this parameter, it will not matter) but instead, the optional parameters <strong>magD</strong>, <strong>magB</strong>, <strong>Rd</strong> and <strong>Rb</strong> must be provided.</p>
+<p>The guess can be ignored, though the result may not converge.</p>
+<p><strong>b1</strong> and <strong>b4</strong> values do not necessarily need to be provided if you only call this function very few times. If not, they will be computed once at the beginning and propagated in subsequent function calls.</p>
+<p>Solving methods:</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p><strong>Numerical integration</strong></p>
+<p>This method will find the zero of the following function</p>
+<div class="math">
+<p><img src="../../_images/math/be260ddf63a23f04bae6fac9cb50c802c2e2c617.png" alt="f(r) = 2\pi \int_0^r dr~r \Sigma (r) - L_{\rm{tot}},"/></p>
+</div></li>
+</ol>
+<blockquote>
+<div><p>where <img class="math" src="../../_images/math/abceac9b3d79131ab965307b8bf4a1ceecf795c1.png" alt="L_{\rm{tot}}"/> is the total integrated luminosity of the sum of the disk and bulge. The <strong>Ltot</strong> parameter is not mandatory, as it will be computed if not provided.</p>
+<p><strong>However, if not provided, this requires to give magnitude values (this is mandatory in any case) AND a magnitude offset value in order to compute it</strong>.</p>
+<p>The <strong>Ie</strong> parameter can be given or can be ignored. In the latter case, it will be computed using the magnitudes and magnitude offset, so this last parameter should be provided as well in this case.</p>
+</div></blockquote>
+<ol class="loweralpha" start="2">
+<li><p><strong>Semi-analytical solution</strong></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is an experimental feature. It follows from analytically computing the equation for re using its definition as well as the sum of an exponential disk and a bulge.</p>
+</div>
+<p>In this case, the <strong>integration</strong> parameter must be set to False.</p>
+<p><strong>THE FOLLOWING PARAMETERS ARE NOT REQUIRED FOR THIS METHOD:</strong></p>
+<ul class="simple">
+<li><p><strong>Ltot</strong>, <strong>Ie</strong> and <strong>offset</strong></p></li>
+</ul>
+</li>
+</ol>
+</div></blockquote>
+<p><strong>Additional information</strong></p>
+<blockquote>
+<div><p>For only one galaxy, only a scalar value may be provided for each parameter you would like to pass. However, for more than one galaxy, a list must be given instead.</p>
+</div></blockquote>
+</div>
+<p>Basically, the simplest way to solve re is to call the function the following way:</p>
+<blockquote>
+<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solve_re</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where array is a numpy structured array with the relevant columns.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gal</strong> (<em>structured ndarray</em>) – structured array with data for all the galaxies. The required column names are ‘R_d_GF’ (re for the disk component), ‘R_b_GF’ (re for the bulge component), ‘Mag_d_GF’ (the total integrated magnitude for the disk component), ‘Mag_b_GF’ (the total integrated magnitude for the bulge component).</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – (<strong>Optional</strong>) b1 factor appearing in the Sersic profile of an exponential disk</p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – (<strong>Optional</strong>) b4 factor appearing in the Sersic profile of a bulge</p></li>
+<li><p><strong>guess</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) guess for the value of re for all the galaxies</p></li>
+<li><p><strong>Ie</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) intensity at half-light radius for all the galaxies (including both profiles)</p></li>
+<li><p><strong>integration</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to find re integrating the light profiles or not (i.e. solving the re equation)</p></li>
+<li><p><strong>Ltot</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) total luminosity of the galaxies. This parameter is used when finding re using numerical integration of the light profiles. If integration is True and no Ltot is provided, it will be computed using the total magnitude of each component and the offset value.</p></li>
+<li><p><strong>magB</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) total magnitude of the bulge</p></li>
+<li><p><strong>magD</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) total magnitude of the disk</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – (<strong>Optional</strong>) method to use to find the zero of the re equation function or the integral to solve</p></li>
+<li><p><strong>normalise</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to normalise the equation or not. It is recommended to do so to improve the convergence.</p></li>
+<li><p><strong>noStructuredArray</strong> (<em>bool</em>) – (<strong>Optional</strong>) if False, the structured array gal will be used. If False, values of the magnitudes and half-light radii of the two components must be given.</p></li>
+<li><p><strong>offsetMagD</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) magnitude offset used in the magnitude system for the disk</p></li>
+<li><p><strong>offsetMagB</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) magnitude offset used in the magnitude system for the bulge</p></li>
+<li><p><strong>Rb</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) half-light radius of the bulge</p></li>
+<li><p><strong>Rd</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) half-light radius of the disk</p></li>
+<li><p><strong>stretch</strong> (<em>float</em>) – (<strong>Optional</strong>) dilatation factor used to multiply re in order to smooth out the sharp slope around the 0 of the function</p></li>
+<li><p><strong>useZeroOder</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to use the zero order analytical solution as a guess. If True, the value of guess will be used by the zero search algorithm.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to print messaged on stdout (True) or not (False)</p></li>
+<li><p><strong>xtol</strong> (<em>float</em>) – (<strong>Optional</strong>) relative error convergence factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value of re, as well as a convergence flag and a debug dict</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or list[float], float or list[float], dict or list[dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="SersicFlux.html" title="previous page">Sersic fluxes</a>
+    <a class='right-next' id="next-link" href="Thickness.html" title="next page">Galaxies thickness</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>

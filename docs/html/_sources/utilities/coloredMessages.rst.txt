@@ -1,0 +1,52 @@
+Colored messages
+================
+
+List of available functions
+---------------------------
+
+* `brightMessage`_
+* `dimMessage`_
+* `errorMessage`_
+* `okMessage`_
+
+Example
+-------
+
+Below is an example on how to generate colored texts.
+
+.. code::
+
+   from wilfried.utilities import coloredMessages as cmsg
+
+   bright = cmsg.brightMessage('A bright message !')
+   dim    = cmsg.dimMessage(   'A dim message !')
+   error  = cmsg.errorMessage( 'An error message !')
+   ok     = cmsg.okMessage(    'A message to say everything is fine !')
+
+   # Just print them one by one
+   for i in [bright, dim, error, ok]:
+      print(i)
+
+   # You can also combine them together
+   print(bright, dim, 'A normal text in the middle.', error, ok)
+
+Documentation
+-------------
+
+.. automodule:: utilities.coloredMessages
+
+   .. _brightMessage:
+   
+   .. autofunction:: utilities.coloredMessages.brightMessage
+
+   .. _dimMessage:
+   
+   .. autofunction:: utilities.coloredMessages.dimMessage
+
+    .. _errorMessage:
+    
+   .. autofunction:: utilities.coloredMessages.errorMessage
+
+   .. _okMessage:
+   
+   .. autofunction:: utilities.coloredMessages.okMessage

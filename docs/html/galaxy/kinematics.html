@@ -1,0 +1,571 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaxy kinematics &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Miscellaneous" href="misc.html" />
+    <link rel="prev" title="Cosmology computations" href="cosmology.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../utilities/plotUtilities/hst.html">
+       HST related plots
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 current active collapsible-parent">
+  <a class="reference internal" href="index.html">
+   Galaxy module
+  </a>
+  <ul class="current collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="models.html">
+     Galaxy models
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="morphology/index.html">
+     Galaxies morphology
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/Morpho.html">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="morphology/Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../galfit/models.html">
+     Galfit models
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/galaxy/kinematics.rst.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/kinematics.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="module-galaxy.kinematics">
+<span id="galaxy-kinematics"></span><h1>Galaxy kinematics<a class="headerlink" href="#module-galaxy.kinematics" title="Permalink to this headline">¶</a></h1>
+<p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Fonctions related to kinematical modelling of galaxies.</p>
+<dl class="py function">
+<dt id="galaxy.kinematics.apply_mask">
+<code class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></code><code class="sig-name descname"><span class="pre">apply_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#apply_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.apply_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>This function applies a mask to an image and puts nan in the masked area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mask</strong> (<em>ndarray</em>) – array containing the indices of the pixels to be masked</p></li>
+<li><p><strong>image</strong> (<em>ndarray</em>) – image to be masked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the masked image</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.kinematics.clean_galaxy">
+<code class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></code><code class="sig-name descname"><span class="pre">clean_galaxy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lsfw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'snr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thru</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_ssmooth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_OII3729'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#clean_galaxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.clean_galaxy" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>This function cleans the maps created by CAMEL for a given galaxy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fraction</strong> (<em>float</em>) – fraction for a lower threshold on the velocity dispersion map</p></li>
+<li><p><strong>lsfw</strong> (<em>float</em>) – spectral resolution in <em>km/s</em> (sigma)</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of the galaxy</p></li>
+<li><p><strong>ouputpath</strong> (<em>str</em>) – path where the ouput data will be stored</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – path where the input data are stored</p></li>
+<li><p><strong>clean</strong> (<em>str</em>) – (<strong>Optional</strong>) name of the manually cleaned map. If None, no cleaned map is used to add an additional mask.</p></li>
+<li><p><strong>data_mask</strong> (<em>str</em><em> or </em><em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) basename of the map used for the threshold (e.g. ‘snr’ to use the signal to noise ratio map)</p></li>
+<li><p><strong>line</strong> (<em>str</em>) – (<strong>Optional</strong>)  line used (suffixe, e.g. ‘_Ha’)</p></li>
+<li><p><strong>option</strong> (<em>str</em>) – (<strong>Optional</strong>) option of CAMEL to find the files to clean (e.g. ‘_ssmooth’)</p></li>
+<li><p><strong>thrl</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>)  lower threshold for cleaning. Is None, the minimum (apart from nan) will be used.</p></li>
+<li><p><strong>thru</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>)  upper threshold for cleaning. Is None, the maximum (apart from nan) will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.kinematics.clean_setofgalaxies">
+<code class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></code><code class="sig-name descname"><span class="pre">clean_setofgalaxies</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'galsList.input'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logFile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'folderList.list'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'snr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thru</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_ssmooth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_OII3729'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#clean_setofgalaxies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.clean_setofgalaxies" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Clean maps created by camel for a list of galaxies.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How to use</strong></p>
+<dl class="simple">
+<dt>Provide:</dt><dd><ul class="simple">
+<li><p>a filename containing two columns: the absolute file name of every galaxy config file (thus ending with .config) and their corresponding spectral resolution in km/s (e.g. /home/wilfried/CGr114_s/o2/CGr114_101_o2.config 30).</p></li>
+<li><p>a keyword for the additional mask (apart from the spectral width criterion), or a list of keywords</p></li>
+<li><p>thresholds if necessary</p></li>
+<li><p>a clean map if there is one. The same name will be used for every galaxy. Best practice would be to use an identical name for all the galaxies (located in different folders), such as ‘clean.fits’.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – name of the input file containing two columns: the list of galaxies and the associated spectral resolution in <em>km/s</em> (sigma)</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – path where the input file is stored</p></li>
+<li><p><strong>logFile</strong> (<em>str</em>) – name of of the file containing the list of the output folder names</p></li>
+<li><p><strong>clean</strong> (<em>str</em>) – (<strong>Optional</strong>) name of the manually cleaned map.If None, no clean file is used to add an another manual mask.</p></li>
+<li><p><strong>data_mask</strong> (<em>str</em><em> or </em><em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) basename of the map used for threshold (e.g. ‘snr’ for signal to noise ratio map)</p></li>
+<li><p><strong>fraction</strong> (<em>float</em>) – (<strong>Optional</strong>) fraction for a lower threshold on the velocity dispersion map</p></li>
+<li><p><strong>thrl</strong> (<em>float</em>) – (<strong>Optional</strong>) lower threshold for cleaning. Is None, the minimum (apart from nan) will be used.</p></li>
+<li><p><strong>thru</strong> (<em>float</em>) – (<strong>Optional</strong>) upper threshold for cleaning. If None, the maximum (apart from nan) will be used.</p></li>
+<li><p><strong>option</strong> (<em>str</em>) – (<strong>Optional</strong>) option from camel to find the files to clean (e.g. ‘_ssmooth’)</p></li>
+<li><p><strong>line</strong> (<em>str</em>) – (<strong>Optional</strong>) line used (suffixe, e.g. ‘_Ha’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.kinematics.compute_velres">
+<code class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></code><code class="sig-name descname"><span class="pre">compute_velres</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lbda0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.835e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">0.000908</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.983</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#compute_velres"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.compute_velres" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt;</em></p>
+<p>Compute the spectral resolution in terms of velocity sigma from the line restframe wavelength, the redshift of the source and from MUSE LSF model</p>
+<div class="math">
+<p><img src="../_images/math/f9575d937b33734be13506d3e6ade96817e8b4d1.png" alt="{\rm{FWHM}}(\lambda) = a2 \times \lambda^2 + a1 \times \lambda + a0"/></p>
+</div><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lbda0</strong> (<em>float</em>) – rest frame wavelength of the line used to infer kinematics in <strong>Angstroms</strong></p></li>
+<li><p><strong>z</strong> (<em>float</em>) – redshift of the galaxy</p></li>
+<li><p><strong>a0</strong> (<em>float</em>) – (<strong>Optional</strong>) lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda</p></li>
+<li><p><strong>a1</strong> (<em>float</em>) – (<strong>Optional</strong>) lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda</p></li>
+<li><p><strong>a2</strong> (<em>float</em>) – (<strong>Optional</strong>) lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the observed (redshifted) wavelength, the LSF FWHM in <strong>Angstroms</strong> and the LSF dispersion in <strong>km/s</strong>, assuming a Gaussian shape for the LSF profile.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float and float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.kinematics.create_mask">
+<code class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></code><code class="sig-name descname"><span class="pre">create_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thrl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thru</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#create_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.create_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>This function creates a mask from an image using a lower and an upper threshold.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> (<em>ndarray</em>) – image used to create the mask</p></li>
+<li><p><strong>thrl</strong> (<em>float</em>) – (<strong>Optional</strong>) lower threshold</p></li>
+<li><p><strong>thru</strong> (<em>float</em>) – (<strong>Optional</strong>) upper threshold</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>boolean mask (True everywhere thrl&lt;=image&lt;=thru)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray(bool)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.kinematics.velocityAtR">
+<code class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></code><code class="sig-name descname"><span class="pre">velocityAtR</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Vt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rlast</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#velocityAtR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.velocityAtR" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Assuming a linear ramp model, try to compute the velocity at a single radius</p>
+<div class="math">
+<p><img src="../_images/math/eaeddad979e5ed3583d300e61a776611fc8e00b3.png" alt="V(R) = V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t."/></p>
+</div><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> (<em>int</em><em> or </em><em>float</em>) – position where the velocity must be computed (in the same units as Rt and Rlast)</p></li>
+<li><p><strong>Vt</strong> (<em>float</em>) – plateau velocity</p></li>
+<li><p><strong>Rt</strong> (<em>float</em>) – radius of transition between the inner linear slope and the outer plateau</p></li>
+<li><p><strong>Rlast</strong> (<em>float</em>) – distance from the centre of the furthest pixel used in the fit</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether print error messages or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the computed velocity in units of Vt and a boolean value indicating whether the computed value is reliable or not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int or float and bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.kinematics.velres_setofgalaxies">
+<code class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></code><code class="sig-name descname"><span class="pre">velres_setofgalaxies</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lbda0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.835e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">0.000908</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.983</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#velres_setofgalaxies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.velres_setofgalaxies" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the resolution in velocity for a list of galaxies and write it into an output file along the corresponding file name.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How to use</strong></p>
+<dl class="simple">
+<dt>Provide an input and output file names and the line rest-frame wavelength in Angstroms. The input file shoudl contain the following columns:</dt><dd><ul class="simple">
+<li><p>galaxy file names</p></li>
+<li><p>redshift of the galaxies</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inname</strong> (<em>str</em>) – input file name containing the list of galaxies and their redshift. In this version, the redshift is in the name itself, as well as the line used.</p></li>
+<li><p><strong>outname</strong> (<em>str</em>) – output file name containing the list of galaxies and the spectral resolution</p></li>
+<li><p><strong>a0</strong> (<em>float</em>) – (<strong>Optional</strong>) lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda</p></li>
+<li><p><strong>a1</strong> (<em>float</em>) – (<strong>Optional</strong>) lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda</p></li>
+<li><p><strong>a2</strong> (<em>float</em>) – (<strong>Optional</strong>) lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+    <a class='left-prev' id="prev-link" href="cosmology.html" title="previous page">Cosmology computations</a>
+    <a class='right-next' id="next-link" href="misc.html" title="next page">Miscellaneous</a>
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>
