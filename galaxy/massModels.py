@@ -90,7 +90,7 @@ class MassModelBase:
         :raises ValueError: if **r** < 0
         '''
         
-        if r<0:
+        if np.any(r<0):
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         if not hasattr(r, 'unit'):
@@ -900,7 +900,7 @@ class Sersic:
         :raises ValueError: if **r** < 0
         '''
         
-        if r<0:
+        if np.any(r<0):
             raise ValueError('Radial distance is < 0. Please provide a positive valued distance.')
             
         if not hasattr(r, 'unit'):
@@ -1078,19 +1078,36 @@ class ExponentialDisk(Sersic, MassModelBase):
             
         where :math:`I_i, K_i` are the modified Bessel functions of the first and second kind, respectively, of order i, and  :math:`y = r/(2 R_{\rm{d}})`.
 
-        :param r: radius where the velocit profile is computed
-        :type r: int or float
-        :returns: velocity profile at a radius **r**
+        :param r: radius where the velocity profile is computed
+        :type r: int, float, astropy Quantity or ndarray[float]
+        
+        :returns: velocity profile at a radius **r** in km/s
         :rtype: float
         '''
         
-        r = self._checkR(r, self.Re)
+        r             = self._checkR(r, self.Re)
         
-        if r.value == 0:
-            return 0
+        if isinstance(r.value, (int, float, np.float16, np.float32, np.float64)):
+            
+            if r.value == 0:
+                vr   = u.Quantity(0, 'km/s')
+            else:
+                y    = r/(2*self.Rd)
+                vr   = (self.Vmax*r/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
+            
+        elif isinstance(r.value, np.ndarray):
+            vr       = u.Quantity(np.zeros(np.shape(r)), unit='km/s')
+            mask     = r != 0
+            rmask    = r[mask]
+            y        = rmask/(2*self.Rd)
+            vr[mask] = (self.Vmax*rmask/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
+        
         else:
-            y = r/(2*self.Rd)
-            return (self.Vmax*r/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
+            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(R))
+        
+        return vr.to('km/s')
+            
+        
         
 
 class DoubleExponentialDisk(Sersic, MassModelBase):
@@ -1153,7 +1170,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
             self.hz     = hz
             self.q0     = self.hz/self.Rd
             
-        # Surface density computed in Sersic assumes no thickness so we must correct for this effect if the user provides an intrinsic inclination (see Mercier et al., 2021)
+        # Surface density computed in Sersic assumes no thickness so we must correct for this effect if the user provides an intrinsic inclination (see Mercier et al., in prep.)
         if inc0 is not None or inc is not None:
             self.I0     = morpho.correct_I0(self.I0, self.q0, inc=inc, inc0=inc0)
             self.Ie     = self.I0/np.exp(self.bn)
@@ -1256,7 +1273,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         return sersic_profile(R, self.n, self.Re, Ie=self.Ie, bn=self.bn) * np.exp(-np.abs(z)/self.hz) / (2*self.hz)
     
     
-    def velocity(self, R, *args, **kwargs):
+    def velocity(self, R, *args, inner_correction=False, **kwargs):
         r'''
         Velocity profile for a self-sustaining 3D double exponential disk against its own gravity through centripedal acceleration
         
@@ -1270,32 +1287,109 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
             
             This formula is a `Bovy rotation curve <http://astro.utoronto.ca/~bovy/AST1420/notes-2017/notebooks/05.-Flattened-Mass-Distributions.html#Potentials-for-disks-with-finite-thickness>`_, i.e. an approximation for a thin (but non-zero thickness) disk.
                 
+            This rotation curve is ill-defined below a certain radius which depends on the disk thickness since the correction will become too important near the centre of the galaxy. 
+            
+            To correct for this effect, one can use the **inner_correction** optional parameter. This parameter will approximate the rotation curve in the inner parts. The approximation, called inner ramp, corresponds to the tangent which passes through the origin. This simply writes as
+            
+            .. math::
+                
+                V(r) = V_{\rm{d}} (R_0) \times r / R_0,
+                
+            where :math:`V_{\rm{d}}` is the Bovy rotation curve defined above and :math:`R_0` is the radius at which the tangent line passes through the origin. From personal derivations, this radius is the solution of the following equation
+        
+            .. math::
+
+                x^2 \left [ I_1(x) K_0(x) - I_0(x) K_1(x) \right ] + x I_1(x) K_1(x) + q_0 (x + 0.5) e^{-2x} = 0,
+            
+            where :math:`I_n` and :math:`K_n` are the modified Bessel functions of first and second kind, respectively, and :math:`q_0` is the disk thickness.
+        
+            A numerical approximation, incorrect by less than 1% in the :math:`0 < q_0 < 1` range, is given by
+        
+            .. math::
+            
+                \log R / R_{\rm{d}} = 0.767 + 0.86 \times x - 0.14 \times x^2 - 0.023 \times x^3 + 0.005 \times x^4 + 0.001 \times x^5,
+        
+            where :math:`x = \log q_0`.
+            
         :param R: radius where the velocity is computed
         :type R: float or ndarray[float]
+        
+        :param bool inner_correction: (**Optional**) whether to apply the correction in the inner parts (ramp approximation) or not
+        
         :returns: velocity if the disk was razor thin
         :rtype: float or ndarray[float]
+        
         :raises TypeError: if **R** is neither int, float, np.float16, np.float32, np.foat64 or ndarray
         '''
         
-        R = self._checkR(R, self.Re)
-    
-        v_RT2   = self._velocity_razor_thin(R)**2
-        v_corr2 = self._velocity_correction(R)**2
+        R                 = self._checkR(R, self.Re)
+        v_RT2             = self._velocity_razor_thin(R)**2 # Razor thin velocity squared
+        v_corr2           = self._velocity_correction(R)**2 # Bovy approximation correction squared
         
         if isinstance(R.value, (int, float, np.float16, np.float32, np.float64)):
-            if v_RT2 < v_corr2:
-                vr = 0
+            
+            if inner_correction and R < self._ramp_radius and self.q0 > 0:
+                vr        = self.inner_ramp_approximation(R)
+            elif v_RT2 < v_corr2:
+                vr        = u.Quantity(0, unit='km/s')
             else:
-                vr = np.sqrt(v_RT2 - v_corr2)
+                vr        = np.sqrt(v_RT2 - v_corr2)
             
         elif isinstance(R.value, np.ndarray):
-            vr       = np.zeros(np.shape(R))
-            mask     = v_corr2 < v_RT2
-            vr[mask] = np.sqrt(v_RT2 - v_corr2)
+            
+            vr            = u.Quantity(np.zeros(np.shape(R)), unit='km/s')
+            
+            if inner_correction and self.q0 > 0:
+                mask      = R >= self._ramp_radius
+                vr[~mask] = self.inner_ramp_approximation(R[~mask])
+            else:
+                mask      = v_corr2 < v_RT2
+                
+            vr[mask]      = np.sqrt(v_RT2[mask] - v_corr2[mask])
         
         else:
             raise TypeError('R array has type %s but only float and numpy array are expected.' %type(R))
         
-        return vr
-            
+        return vr.to('km/s')
+     
+      
+    #####################################################
+    #       Inner parts linear ramp approximation       #
+    #####################################################
+    
+    @property
+    def _ramp_radius(self, *args, **kwargs):
+        '''Compute the radius where the ramp approximation ends (same unit as Rd).'''
+     
+        lq0 = np.log(self.q0)
+        return self.Rd * np.exp(0.767 + 0.86*lq0 - 0.14*lq0**2 - 0.023*lq0**3 + 0.005*lq0**4 + 0.001*lq0**5)
+   
+    @property
+    def _ramp_slope(self, *args, **kwargs):
+        '''Compute the slope for the ramp approximation.'''
+       
+        radius = self._ramp_radius
+        return self.velocity(radius, inner_correction=False) / radius
+    
+    def inner_ramp_approximation(self, R, *args, **kwargs):
+        '''
+        Inner ramp approximation. This gives the linear model which is tagent to the bovy rotation curve. It is used to correct the rotation curves in the inner parts where the bovy correction becomes larger than the razor thin disk velocity.
+
+        :param R: radius where to compute the velocity
+        :type R: float or ndarray[float]
+      
+        :returns: velocity profile for the inner ramp
+        :rtype: float or ndarray[float]
+      
+        :raises TypeError: if **R** is neither int, float, np.float16, np.float32, np.foat64 or ndarray
+        :raises ValueError: if **R** is larger than the ramp radius
+        '''
+      
+        R = self._checkR(R, self.Re)
+      
+        print(self._ramp_slope, self.velocity(self._ramp_radius, inner_correction=False))
+        if np.any(R >= self._ramp_radius):
+            raise ValueError('At least one radius in %s is larger than the ramp radius %s' %(R, self._ramp_radius))
+         
+        return self._ramp_slope * R
     
