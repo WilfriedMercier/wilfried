@@ -426,6 +426,18 @@
 </dd></dl>
 
 <dl class="py method">
+<dt id="galaxy.massModels.DoubleExponentialDisk._ramp_radius">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">_ramp_radius</span></code><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk._ramp_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the radius where the ramp approximation ends (same unit as Rd).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="galaxy.massModels.DoubleExponentialDisk._ramp_slope">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">_ramp_slope</span></code><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk._ramp_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the slope for the ramp approximation.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="galaxy.massModels.DoubleExponentialDisk._velocity_correction">
 <code class="sig-name descname"><span class="pre">_velocity_correction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk._velocity_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk._velocity_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Velocity correction necessary for the rotation curve</p>
@@ -473,6 +485,29 @@
 </dd></dl>
 
 <dl class="py method">
+<dt id="galaxy.massModels.DoubleExponentialDisk.inner_ramp_approximation">
+<code class="sig-name descname"><span class="pre">inner_ramp_approximation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk.inner_ramp_approximation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk.inner_ramp_approximation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inner ramp approximation. This gives the linear model which is tagent to the bovy rotation curve. It is used to correct the rotation curves in the inner parts where the bovy correction becomes larger than the razor thin disk velocity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>R</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radius where to compute the velocity</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>velocity profile for the inner ramp</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray[float]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – if <strong>R</strong> is neither int, float, np.float16, np.float32, np.foat64 or ndarray</p></li>
+<li><p><strong>ValueError</strong> – if <strong>R</strong> is larger than the ramp radius</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="galaxy.massModels.DoubleExponentialDisk.profile">
 <code class="sig-name descname"><span class="pre">profile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk.profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk.profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Light density profile at radius <strong>R</strong> and height <strong>z</strong></p>
@@ -503,7 +538,7 @@
 
 <dl class="py method">
 <dt id="galaxy.massModels.DoubleExponentialDisk.velocity">
-<code class="sig-name descname"><span class="pre">velocity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk.velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk.velocity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">velocity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_correction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/massModels.html#DoubleExponentialDisk.velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.massModels.DoubleExponentialDisk.velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Velocity profile for a self-sustaining 3D double exponential disk against its own gravity through centripedal acceleration</p>
 <div class="math">
 <p><img src="../_images/math/b4fb011559caa18c4f21dee07e56473b76e1c72c.png" alt="V(r) = \sqrt{V_{\rm{RT}}^2 (r) - V_{\rm{corr}}^2 (r)},"/></p>
@@ -511,10 +546,25 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This formula is a <a class="reference external" href="http://astro.utoronto.ca/~bovy/AST1420/notes-2017/notebooks/05.-Flattened-Mass-Distributions.html#Potentials-for-disks-with-finite-thickness">Bovy rotation curve</a>, i.e. an approximation for a thin (but non-zero thickness) disk.</p>
+<p>This rotation curve is ill-defined below a certain radius which depends on the disk thickness since the correction will become too important near the centre of the galaxy.</p>
+<p>To correct for this effect, one can use the <strong>inner_correction</strong> optional parameter. This parameter will approximate the rotation curve in the inner parts. The approximation, called inner ramp, corresponds to the tangent which passes through the origin. This simply writes as</p>
+<div class="math">
+<p><img src="../_images/math/675b53b36ec86defca23d973466eaf112fb3ea3b.png" alt="V(r) = V_{\rm{d}} (R_0) \times r / R_0,"/></p>
+</div><p>where <img class="math" src="../_images/math/a4d7933698f1a06821dcc74b83e9b5b081f29259.png" alt="V_{\rm{d}}"/> is the Bovy rotation curve defined above and <img class="math" src="../_images/math/def0a5fde1c0fe96e791603b65ed60363924aee0.png" alt="R_0"/> is the radius at which the tangent line passes through the origin. From personal derivations, this radius is the solution of the following equation</p>
+<div class="math">
+<p><img src="../_images/math/8226245ecfaebe566fc4af9ec1330f968d64bb38.png" alt="x^2 \left [ I_1(x) K_0(x) - I_0(x) K_1(x) \right ] + x I_1(x) K_1(x) + q_0 (x + 0.5) e^{-2x} = 0,"/></p>
+</div><p>where <img class="math" src="../_images/math/cedf8f4ae343f5048d845dcc02f4fed7719d92f3.png" alt="I_n"/> and <img class="math" src="../_images/math/ffcf97585b0bff9d3f06ce5832ac61407d983108.png" alt="K_n"/> are the modified Bessel functions of first and second kind, respectively, and <img class="math" src="../_images/math/d99748b9c04f896155717105e8b5d778f7ef0a68.png" alt="q_0"/> is the disk thickness.</p>
+<p>A numerical approximation, incorrect by less than 1% in the <img class="math" src="../_images/math/4e3348eea8e350e48e33d4a70c972116a4a555f4.png" alt="0 &lt; q_0 &lt; 1"/> range, is given by</p>
+<div class="math">
+<p><img src="../_images/math/6b5c19199cfe18dcb9f0b83d2118309757890dd3.png" alt="\log R / R_{\rm{d}} = 0.767 + 0.86 \times x - 0.14 \times x^2 - 0.023 \times x^3 + 0.005 \times x^4 + 0.001 \times x^5,"/></p>
+</div><p>where <img class="math" src="../_images/math/910121f08dc28f357b42aac87105bf6bcc8a6f2a.png" alt="x = \log q_0"/>.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>R</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radius where the velocity is computed</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>R</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radius where the velocity is computed</p></li>
+<li><p><strong>inner_correction</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to apply the correction in the inner parts (ramp approximation) or not</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>velocity if the disk was razor thin</p>
@@ -599,10 +649,10 @@
 </div><p>where <img class="math" src="../_images/math/20e7f1fb16918d867afc86f0a85d255ef7e85f95.png" alt="I_i, K_i"/> are the modified Bessel functions of the first and second kind, respectively, of order i, and  <img class="math" src="../_images/math/669d344a27d1d293842cafc91fb3cf71c3ec3ccf.png" alt="y = r/(2 R_{\rm{d}})"/>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>int</em><em> or </em><em>float</em>) – radius where the velocit profile is computed</p>
+<dd class="field-odd"><p><strong>r</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>astropy Quantity</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radius where the velocity profile is computed</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>velocity profile at a radius <strong>r</strong></p>
+<dd class="field-even"><p>velocity profile at a radius <strong>r</strong> in km/s</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>

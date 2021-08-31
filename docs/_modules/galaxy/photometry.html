@@ -497,15 +497,57 @@
 <span class="sd">    :rtype: float or ndarray[float]</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
+    <span class="c1"># Make astropy Quantity</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
-        <span class="n">floii</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s.cm^2)&#39;</span><span class="p">)</span>
+        <span class="n">floii</span>              <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s.cm^2)&#39;</span><span class="p">)</span>
         
     <span class="c1"># Correct flux of attenuation</span>
-    <span class="k">if</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="p">]:</span>
-       <span class="n">floii</span>  <span class="o">=</span> <span class="n">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">av_fast</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ebv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lbda</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        
+       <span class="c1"># If an array</span>
+       <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">floii</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               
+           <span class="c1"># Where there is nan, we do not apply the correction</span>
+           <span class="n">mask</span>            <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">av_fast</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ebv</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lbda</span><span class="p">)</span>
+           
+           <span class="c1"># Redshift mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">zmask</span>       <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">zmask</span>       <span class="o">=</span> <span class="n">z</span>
+             
+           <span class="c1"># Av mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">av_fast</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">av_fastmask</span> <span class="o">=</span> <span class="n">av_fast</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">av_fastmask</span> <span class="o">=</span> <span class="n">av_fast</span>
     
-    <span class="n">dl</span>        <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-    <span class="n">loii</span>      <span class="o">=</span> <span class="p">(</span><span class="n">floii</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">dl</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;erg/s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+           <span class="c1"># Colour excess mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ebv</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">ebvmask</span>     <span class="o">=</span> <span class="n">ebv</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">ebvmask</span>     <span class="o">=</span> <span class="n">ebv</span>
+               
+           <span class="c1"># Rest-frame wavelength mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">lbdamask</span>    <span class="o">=</span> <span class="n">lbda</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">lbdamask</span>    <span class="o">=</span> <span class="n">lbda</span>
+               
+           <span class="c1"># Extract unit and value to apply the correction</span>
+           <span class="n">unit</span>            <span class="o">=</span> <span class="n">floii</span><span class="o">.</span><span class="n">unit</span>
+           <span class="n">floii</span>           <span class="o">=</span> <span class="n">floii</span><span class="o">.</span><span class="n">value</span>
+           <span class="n">floii</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>    <span class="o">=</span> <span class="n">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">],</span> <span class="n">zmask</span><span class="p">,</span> <span class="n">av_fastmask</span><span class="p">,</span> <span class="n">ebvmask</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+           
+           <span class="c1"># Reconstruct the Quantity object</span>
+           <span class="n">floii</span>           <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+           
+       <span class="c1"># If a float and we can apply a correction</span>
+       <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">av_fast</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ebv</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lbda</span><span class="p">):</span>
+           <span class="n">floii</span>           <span class="o">=</span> <span class="n">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av_fast</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+    
+    <span class="n">dl</span>                     <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">loii</span>                   <span class="o">=</span> <span class="p">(</span><span class="n">floii</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">dl</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;erg/s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
     
     <span class="k">return</span> <span class="n">loii</span></div>
 

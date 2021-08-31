@@ -421,7 +421,7 @@
 <span class="sd">        :raises ValueError: if **r** &lt; 0</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
-        <span class="k">if</span> <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Radial distance is &lt; 0. Please provide a positive valued distance.&#39;</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
@@ -1231,7 +1231,7 @@
 <span class="sd">        :raises ValueError: if **r** &lt; 0</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
-        <span class="k">if</span> <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Radial distance is &lt; 0. Please provide a positive valued distance.&#39;</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
@@ -1409,19 +1409,36 @@
 <span class="sd">            </span>
 <span class="sd">        where :math:`I_i, K_i` are the modified Bessel functions of the first and second kind, respectively, of order i, and  :math:`y = r/(2 R_{\rm{d}})`.</span>
 
-<span class="sd">        :param r: radius where the velocit profile is computed</span>
-<span class="sd">        :type r: int or float</span>
-<span class="sd">        :returns: velocity profile at a radius **r**</span>
+<span class="sd">        :param r: radius where the velocity profile is computed</span>
+<span class="sd">        :type r: int, float, astropy Quantity or ndarray[float]</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: velocity profile at a radius **r** in km/s</span>
 <span class="sd">        :rtype: float</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        <span class="n">r</span>             <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">vr</span>   <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y</span>    <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">)</span>
+                <span class="n">vr</span>   <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">*</span><span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="mf">0.8798243</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">i0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">i1</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k1</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+            
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">vr</span>       <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">r</span><span class="p">)),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+            <span class="n">mask</span>     <span class="o">=</span> <span class="n">r</span> <span class="o">!=</span> <span class="mi">0</span>
+            <span class="n">rmask</span>    <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+            <span class="n">y</span>        <span class="o">=</span> <span class="n">rmask</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">)</span>
+            <span class="n">vr</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">*</span><span class="n">rmask</span><span class="o">/</span><span class="p">(</span><span class="mf">0.8798243</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">i0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">i1</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k1</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+        
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Vmax</span><span class="o">*</span><span class="n">r</span><span class="o">/</span><span class="p">(</span><span class="mf">0.8798243</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Rd</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">i0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k0</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="n">i1</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">k1</span><span class="p">(</span><span class="n">y</span><span class="p">))</span></div></div>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;r array has type </span><span class="si">%s</span><span class="s1"> but only float and numpy array are expected.&#39;</span> <span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">vr</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span></div></div>
+            
+        
         
 
 <div class="viewcode-block" id="DoubleExponentialDisk"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk">[docs]</a><span class="k">class</span> <span class="nc">DoubleExponentialDisk</span><span class="p">(</span><span class="n">Sersic</span><span class="p">,</span> <span class="n">MassModelBase</span><span class="p">):</span>
@@ -1587,7 +1604,7 @@
         <span class="k">return</span> <span class="n">sersic_profile</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">hz</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">hz</span><span class="p">)</span></div>
     
     
-<div class="viewcode-block" id="DoubleExponentialDisk.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DoubleExponentialDisk.velocity"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">inner_correction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Velocity profile for a self-sustaining 3D double exponential disk against its own gravity through centripedal acceleration</span>
 <span class="sd">        </span>
@@ -1601,34 +1618,111 @@
 <span class="sd">            </span>
 <span class="sd">            This formula is a `Bovy rotation curve &lt;http://astro.utoronto.ca/~bovy/AST1420/notes-2017/notebooks/05.-Flattened-Mass-Distributions.html#Potentials-for-disks-with-finite-thickness&gt;`_, i.e. an approximation for a thin (but non-zero thickness) disk.</span>
 <span class="sd">                </span>
+<span class="sd">            This rotation curve is ill-defined below a certain radius which depends on the disk thickness since the correction will become too important near the centre of the galaxy. </span>
+<span class="sd">            </span>
+<span class="sd">            To correct for this effect, one can use the **inner_correction** optional parameter. This parameter will approximate the rotation curve in the inner parts. The approximation, called inner ramp, corresponds to the tangent which passes through the origin. This simply writes as</span>
+<span class="sd">            </span>
+<span class="sd">            .. math::</span>
+<span class="sd">                </span>
+<span class="sd">                V(r) = V_{\rm{d}} (R_0) \times r / R_0,</span>
+<span class="sd">                </span>
+<span class="sd">            where :math:`V_{\rm{d}}` is the Bovy rotation curve defined above and :math:`R_0` is the radius at which the tangent line passes through the origin. From personal derivations, this radius is the solution of the following equation</span>
+<span class="sd">        </span>
+<span class="sd">            .. math::</span>
+
+<span class="sd">                x^2 \left [ I_1(x) K_0(x) - I_0(x) K_1(x) \right ] + x I_1(x) K_1(x) + q_0 (x + 0.5) e^{-2x} = 0,</span>
+<span class="sd">            </span>
+<span class="sd">            where :math:`I_n` and :math:`K_n` are the modified Bessel functions of first and second kind, respectively, and :math:`q_0` is the disk thickness.</span>
+<span class="sd">        </span>
+<span class="sd">            A numerical approximation, incorrect by less than 1% in the :math:`0 &lt; q_0 &lt; 1` range, is given by</span>
+<span class="sd">        </span>
+<span class="sd">            .. math::</span>
+<span class="sd">            </span>
+<span class="sd">                \log R / R_{\rm{d}} = 0.767 + 0.86 \times x - 0.14 \times x^2 - 0.023 \times x^3 + 0.005 \times x^4 + 0.001 \times x^5,</span>
+<span class="sd">        </span>
+<span class="sd">            where :math:`x = \log q_0`.</span>
+<span class="sd">            </span>
 <span class="sd">        :param R: radius where the velocity is computed</span>
 <span class="sd">        :type R: float or ndarray[float]</span>
+<span class="sd">        </span>
+<span class="sd">        :param bool inner_correction: (**Optional**) whether to apply the correction in the inner parts (ramp approximation) or not</span>
+<span class="sd">        </span>
 <span class="sd">        :returns: velocity if the disk was razor thin</span>
 <span class="sd">        :rtype: float or ndarray[float]</span>
+<span class="sd">        </span>
 <span class="sd">        :raises TypeError: if **R** is neither int, float, np.float16, np.float32, np.foat64 or ndarray</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
-        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
-    
-        <span class="n">v_RT2</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_razor_thin</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-        <span class="n">v_corr2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_correction</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">R</span>                 <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+        <span class="n">v_RT2</span>             <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_razor_thin</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># Razor thin velocity squared</span>
+        <span class="n">v_corr2</span>           <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocity_correction</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># Bovy approximation correction squared</span>
         
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">v_RT2</span> <span class="o">&lt;</span> <span class="n">v_corr2</span><span class="p">:</span>
-                <span class="n">vr</span> <span class="o">=</span> <span class="mi">0</span>
+            
+            <span class="k">if</span> <span class="n">inner_correction</span> <span class="ow">and</span> <span class="n">R</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ramp_radius</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">q0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">vr</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_ramp_approximation</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">v_RT2</span> <span class="o">&lt;</span> <span class="n">v_corr2</span><span class="p">:</span>
+                <span class="n">vr</span>        <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">vr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_RT2</span> <span class="o">-</span> <span class="n">v_corr2</span><span class="p">)</span>
+                <span class="n">vr</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_RT2</span> <span class="o">-</span> <span class="n">v_corr2</span><span class="p">)</span>
             
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">vr</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
-            <span class="n">mask</span>     <span class="o">=</span> <span class="n">v_corr2</span> <span class="o">&lt;</span> <span class="n">v_RT2</span>
-            <span class="n">vr</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_RT2</span> <span class="o">-</span> <span class="n">v_corr2</span><span class="p">)</span>
+            
+            <span class="n">vr</span>            <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">R</span><span class="p">)),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">inner_correction</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">q0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">mask</span>      <span class="o">=</span> <span class="n">R</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ramp_radius</span>
+                <span class="n">vr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner_ramp_approximation</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask</span>      <span class="o">=</span> <span class="n">v_corr2</span> <span class="o">&lt;</span> <span class="n">v_RT2</span>
+                
+            <span class="n">vr</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v_RT2</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">-</span> <span class="n">v_corr2</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
         
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;R array has type </span><span class="si">%s</span><span class="s1"> but only float and numpy array are expected.&#39;</span> <span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
         
-        <span class="k">return</span> <span class="n">vr</span></div></div>
-            
+        <span class="k">return</span> <span class="n">vr</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;km/s&#39;</span><span class="p">)</span></div>
+     
+      
+    <span class="c1">#####################################################</span>
+    <span class="c1">#       Inner parts linear ramp approximation       #</span>
+    <span class="c1">#####################################################</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_ramp_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Compute the radius where the ramp approximation ends (same unit as Rd).&#39;&#39;&#39;</span>
+     
+        <span class="n">lq0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rd</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.767</span> <span class="o">+</span> <span class="mf">0.86</span><span class="o">*</span><span class="n">lq0</span> <span class="o">-</span> <span class="mf">0.14</span><span class="o">*</span><span class="n">lq0</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">0.023</span><span class="o">*</span><span class="n">lq0</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.005</span><span class="o">*</span><span class="n">lq0</span><span class="o">**</span><span class="mi">4</span> <span class="o">+</span> <span class="mf">0.001</span><span class="o">*</span><span class="n">lq0</span><span class="o">**</span><span class="mi">5</span><span class="p">)</span>
+   
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_ramp_slope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Compute the slope for the ramp approximation.&#39;&#39;&#39;</span>
+       
+        <span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ramp_radius</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">inner_correction</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="n">radius</span>
+    
+<div class="viewcode-block" id="DoubleExponentialDisk.inner_ramp_approximation"><a class="viewcode-back" href="../../galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.inner_ramp_approximation">[docs]</a>    <span class="k">def</span> <span class="nf">inner_ramp_approximation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Inner ramp approximation. This gives the linear model which is tagent to the bovy rotation curve. It is used to correct the rotation curves in the inner parts where the bovy correction becomes larger than the razor thin disk velocity.</span>
+
+<span class="sd">        :param R: radius where to compute the velocity</span>
+<span class="sd">        :type R: float or ndarray[float]</span>
+<span class="sd">      </span>
+<span class="sd">        :returns: velocity profile for the inner ramp</span>
+<span class="sd">        :rtype: float or ndarray[float]</span>
+<span class="sd">      </span>
+<span class="sd">        :raises TypeError: if **R** is neither int, float, np.float16, np.float32, np.foat64 or ndarray</span>
+<span class="sd">        :raises ValueError: if **R** is larger than the ramp radius</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+      
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkR</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">)</span>
+      
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ramp_slope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ramp_radius</span><span class="p">,</span> <span class="n">inner_correction</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">R</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ramp_radius</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one radius in </span><span class="si">%s</span><span class="s1"> is larger than the ramp radius </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ramp_radius</span><span class="p">))</span>
+         
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ramp_slope</span> <span class="o">*</span> <span class="n">R</span></div></div>
     
 </pre></div>
 
