@@ -127,7 +127,7 @@ def plot_hst(gs, hstmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xm
         axhstmap.set_xlabel(r"$\Delta \alpha~('')$")
         axhstmap.tick_params(labelbottom=False, labelleft=True, labelright=False, labeltop=True)
         axhstmap.xaxis.set_label_position("top")
-        axhstmap.set_title(r'HST-ACS F814W', pad=40)
+        axhstmap.set_title(r'HST-ACS F814W', pad=40 )
     if len(fluxcont) > 1:
         
         cont_levels = np.logspace(np.log10(250), np.log10(8000), 6)
