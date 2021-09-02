@@ -127,7 +127,7 @@ def plot_hst(gs, hstmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xm
         axhstmap.set_xlabel(r"$\Delta \alpha~('')$")
         axhstmap.tick_params(labelbottom=False, labelleft=True, labelright=False, labeltop=True)
         axhstmap.xaxis.set_label_position("top")
-        axhstmap.set_title(r'HST-ACS F814W')
+        axhstmap.set_title(r'HST-ACS F814W', pad=40)
     if len(fluxcont) > 1:
         
         cont_levels = np.logspace(np.log10(250), np.log10(8000), 6)
@@ -207,6 +207,8 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
         withSNR : bool
             whether to add a MUSE SNR map or not. Default is False.
     '''
+    
+    pad                   = 40
     
     ##################################################
     #                  Getting data                  #
@@ -472,7 +474,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
         
         axflux.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=True)
         axflux.xaxis.set_label_position("top")
-        axflux.set_title(r'[O\textsc{ ii}] flux')
+        axflux.set_title(r'[O\textsc{ ii}] flux', pad=pad)
         
         # Flux colorbar
         axcbfl                = plt.subplot(gs[3 * ncols])
@@ -540,7 +542,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     
     axvf.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=True)
     axvf.xaxis.set_label_position("top")
-    axvf.set_title(r'Velocity field')
+    axvf.set_title(r'Velocity field', pad=pad)
     
     # Plotting flux contours in log scale
     cont_levels = np.logspace(np.log10(250), np.log10(8000), 6)
@@ -666,7 +668,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     axsig.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=True)
     axsig.xaxis.set_label_position("top")
     axsig.yaxis.set_label_position("right")
-    axsig.set_title(r'Velocity dispersion')
+    axsig.set_title(r'Velocity dispersion', pad=pad)
     
     # Plotting centre and PA
     axsig.plot([xc], [yc], 'g+', mew=1)
