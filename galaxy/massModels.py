@@ -533,7 +533,7 @@ class Hernquist(MassModelBase):
         r = self._checkR(r, self.a)
         return self.F*self.a/(2*np.pi) / (r * (r + self.a)**3)
     
-    
+        
     def velocity(self, r, *args, **kwargs):
         r'''
         Velocity profile for a self-sustaining Hernquist 3D profile against its own gravity through centripedal acceleration.
@@ -545,17 +545,33 @@ class Hernquist(MassModelBase):
         where :math:`G` is the gravitational constant and :math:`M(<r)` is the enclosed mass.
 
         :param r: radius where the velocity profile is computed
-        :type r: int or float
-        :returns: V(r) in units of G*M/L*F/sqrt(a)
-        :rtype: astropy.units Quantity
-        '''
-
-        r = self._checkR(r, self.a)
+        :type r: int, float, astropy Quantity or ndarray[float]
         
-        if r.value==0:
-            return 0
+        :returns: velocity profile at a radius **r** in :math:`\rm{km/s}`
+        :rtype: Astropy Quantity
+        
+        :raises TypeError: if **r** is neither int, float, np.float16, np.float32, np.foat64 or ndarray
+        '''
+        
+        r             = self._checkR(r, self.a)
+        
+        if isinstance(r.value, (int, float, np.float16, np.float32, np.float64)):
+            
+            if r.value == 0:
+                vr   = u.Quantity(0, 'km/s')
+            else:
+                vr   = np.sqrt(G*self.M_L*self.F*r)/(self.a+r)
+            
+        elif isinstance(r.value, np.ndarray):
+            vr       = u.Quantity(np.zeros(np.shape(r)), unit='km/s')
+            mask     = r != 0
+            rmask    = r[mask]
+            vr[mask] = np.sqrt(G*self.M_L*self.F*rmask)/(self.a+rmask)
+        
         else:
-            return np.sqrt(G*self.M_L*self.F*r)/(self.a+r)
+            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(R))
+        
+        return vr.to('km/s')
     
     
     ################################
@@ -744,8 +760,8 @@ class NFW(MassModelBase):
         
         r = self._checkR(r, self.Rs).value
         return u.Quantity(0*r, unit='erg/(s.A.cm^2)')
-    
-    
+        
+        
     def velocity(self, r, *args, **kwargs):
         r'''
         Velocity profile for a self-sustaining 3D profile against its own gravity through centripedal acceleration
@@ -757,17 +773,34 @@ class NFW(MassModelBase):
         where :math:`G` is the gravitational constant and :math:`M(<r)` is the enclosed mass.
 
         :param r: radius where the velocity profile is computed
-        :type r: int or float
-        :returns: V(r)
-        :rtype: astropy.units Quantity
+        :type r: int, float, astropy Quantity or ndarray[float]
+        
+        :returns: velocity profile at a radius **r** in :math:`\rm{km/s}`
+        :rtype: Astropy Quantity
+        
+        :raises TypeError: if **r** is neither int, float, np.float16, np.float32, np.foat64 or ndarray
         '''
         
-        r = self._checkR(r, self.Rs)
+        r             = self._checkR(r, self.Rs)
         
-        if r.value==0:
-            return 0 * self.Vmax.unit
+        if isinstance(r.value, (int, float, np.float16, np.float32, np.float64)):
+            
+            if r.value == 0:
+                vr   = u.Quantity(0, 'km/s')
+            else:
+                vr   = self.Vmax * np.sqrt(self.Rs * (np.log(1+r/self.Rs)/r - 1/(r+self.Rs)) / self._factor)
+            
+        elif isinstance(r.value, np.ndarray):
+            vr       = u.Quantity(np.zeros(np.shape(r)), unit='km/s')
+            mask     = r != 0
+            rmask    = r[mask]
+            vr[mask] = self.Vmax * np.sqrt(self.Rs * (np.log(1+rmask/self.Rs)/rmask - 1/(rmask+self.Rs)) / self._factor)
+        
         else:
-            return self.Vmax * np.sqrt(self.Rs * (np.log(1+r/self.Rs)/r - 1/(r+self.Rs)) / self._factor)
+            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(R))
+        
+        return vr.to('km/s')
+        
     
     ################################
     #          Properties          #
@@ -1081,8 +1114,10 @@ class ExponentialDisk(Sersic, MassModelBase):
         :param r: radius where the velocity profile is computed
         :type r: int, float, astropy Quantity or ndarray[float]
         
-        :returns: velocity profile at a radius **r** in km/s
-        :rtype: float
+        :returns: velocity profile at a radius **r** in :math:`\rm{km/s}`
+        :rtype: Astropy Quantity
+        
+        :raises TypeError: if **r** is neither int, float, np.float16, np.float32, np.foat64 or ndarray
         '''
         
         r             = self._checkR(r, self.Re)
@@ -1316,8 +1351,8 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         
         :param bool inner_correction: (**Optional**) whether to apply the correction in the inner parts (ramp approximation) or not
         
-        :returns: velocity if the disk was razor thin
-        :rtype: float or ndarray[float]
+        :returns: velocity in :math:`\rm{km/s}`
+        :rtype: Astropy Quantity
         
         :raises TypeError: if **R** is neither int, float, np.float16, np.float32, np.foat64 or ndarray
         '''
@@ -1387,7 +1422,6 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
       
         R = self._checkR(R, self.Re)
       
-        print(self._ramp_slope, self.velocity(self._ramp_radius, inner_correction=False))
         if np.any(R >= self._ramp_radius):
             raise ValueError('At least one radius in %s is larger than the ramp radius %s' %(R, self._ramp_radius))
          
