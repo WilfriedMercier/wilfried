@@ -63,4 +63,18 @@ def dimMessage(text):
     '''
     
     return col.Style.DIM + text + col.Style.RESET_ALL
+
+def warningMessage(text):
+    '''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Same as error message but using yellow instead of red.
+
+    :param str text: text
+    
+    :returns: colorised text
+    :rtype: str
+    '''
+    
+    return col.Style.BRIGHT + col.Fore.YELLOW + text + col.Style.RESET_ALL
     
