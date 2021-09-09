@@ -236,6 +236,11 @@
     <i class="fas fa-chevron-down">
     </i>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="galaxy/SEDfitting.html">
+     Pixel per pixel SED fitting
+    </a>
+   </li>
   </ul>
   <i class="fas fa-chevron-down">
   </i>
@@ -378,6 +383,8 @@
 </li>
         <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic.__init__">(galaxy.massModels.Sersic method)</a>
 </li>
+        <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject.__init__">(galaxy.SEDfitting.SEDobject method)</a>
+</li>
       </ul></li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur._alpha_a">_alpha_a (galaxy.massModels.deVaucouleur attribute)</a>
 
@@ -391,6 +398,8 @@
         <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist._alpha_F">(galaxy.massModels.Hernquist attribute)</a>
 </li>
       </ul></li>
+      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject._applyMask">_applyMask() (galaxy.SEDfitting.SEDobject method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur._beta_a">_beta_a (galaxy.massModels.deVaucouleur attribute)</a>
@@ -405,12 +414,18 @@
         <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist._beta_F">(galaxy.massModels.Hernquist attribute)</a>
 </li>
       </ul></li>
+      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject._checkFile">_checkFile() (galaxy.SEDfitting.SEDobject method)</a>
+</li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.MassModelBase._checkR">_checkR() (galaxy.massModels.MassModelBase method)</a>
 
       <ul>
         <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic._checkR">(galaxy.massModels.Sersic method)</a>
 </li>
       </ul></li>
+      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject._loadFits">_loadFits() (galaxy.SEDfitting.SEDobject static method)</a>
+</li>
+      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting._parseConfig">_parseConfig() (in module galaxy.SEDfitting)</a>
+</li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk._ramp_radius">_ramp_radius() (galaxy.massModels.DoubleExponentialDisk property)</a>
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk._ramp_slope">_ramp_slope() (galaxy.massModels.DoubleExponentialDisk property)</a>
@@ -682,6 +697,13 @@
 </li>
       </ul></li>
       <li>
+    galaxy.SEDfitting
+
+      <ul>
+        <li><a href="galaxy/SEDfitting.html#module-galaxy.SEDfitting">module</a>
+</li>
+      </ul></li>
+      <li>
     galfit.galfit
 
       <ul>
@@ -765,11 +787,13 @@
 </li>
       <li><a href="galfit/models.html#index-0">index</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.inferError">inferError() (in module makeLifeSimpler)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.inner_ramp_approximation">inner_ramp_approximation() (galaxy.massModels.DoubleExponentialDisk method)</a>
+</li>
+      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject.insertFilter">insertFilter() (galaxy.SEDfitting.SEDobject method)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.intensity_at_re">intensity_at_re() (in module galaxy.misc)</a>
 </li>
@@ -828,6 +852,8 @@
 </li>
       <li><a href="utilities/strings.html#utilities.strings.maxStringsLen">maxStringsLen() (in module utilities.strings)</a>
 </li>
+      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject.meanMaps">meanMaps() (galaxy.SEDfitting.SEDobject method)</a>
+</li>
       <li><a href="galaxy/misc.html#galaxy.misc.mergeModelsIntoOne">mergeModelsIntoOne() (in module galaxy.misc)</a>
 </li>
       <li><a href="galfit/galfit.html#galfit.galfit.modelFunctions">modelFunctions (in module galfit.galfit)</a>
@@ -851,6 +877,8 @@
         <li><a href="galaxy/morphology/index.html#module-galaxy.morphology">galaxy.morphology</a>
 </li>
         <li><a href="galaxy/photometry/index.html#module-galaxy.photometry">galaxy.photometry</a>
+</li>
+        <li><a href="galaxy/SEDfitting.html#module-galaxy.SEDfitting">galaxy.SEDfitting</a>
 </li>
         <li><a href="galfit/galfit.html#module-galfit.galfit">galfit.galfit</a>
 </li>
@@ -985,6 +1013,8 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject">SEDobject (class in galaxy.SEDfitting)</a>
+</li>
       <li><a href="galaxy/cosmology.html#galaxy.cosmology.separation">separation() (in module galaxy.cosmology)</a>
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic">Sersic (class in galaxy.massModels)</a>
@@ -1116,10 +1146,12 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utilities/io.html#utilities.io.write_array_to_vot">write_array_to_vot() (in module utilities.io)</a>
+      <li><a href="utilities/coloredMessages.html#utilities.coloredMessages.warningMessage">warningMessage() (in module utilities.coloredMessages)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/io.html#utilities.io.write_array_to_vot">write_array_to_vot() (in module utilities.io)</a>
+</li>
       <li><a href="galfit/galfit.html#galfit.galfit.writeConfigs">writeConfigs() (in module galfit.galfit)</a>
 </li>
   </ul></td>

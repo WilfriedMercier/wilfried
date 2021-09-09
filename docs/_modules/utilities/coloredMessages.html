@@ -27,6 +27,7 @@
     
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     
   <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
 
@@ -34,6 +35,8 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -81,6 +84,69 @@
   <a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
  </li>
  <li class="toctree-l1 collapsible-parent">
   <a class="reference internal" href="../../galaxy/index.html">
@@ -169,6 +235,11 @@
     </ul>
     <i class="fas fa-chevron-down">
     </i>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/SEDfitting.html">
+     Galaxy mass models
+    </a>
    </li>
   </ul>
   <i class="fas fa-chevron-down">
@@ -328,6 +399,20 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="k">return</span> <span class="n">col</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">DIM</span> <span class="o">+</span> <span class="n">text</span> <span class="o">+</span> <span class="n">col</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span></div>
+
+<div class="viewcode-block" id="warningMessage"><a class="viewcode-back" href="../../utilities/coloredMessages.html#utilities.coloredMessages.warningMessage">[docs]</a><span class="k">def</span> <span class="nf">warningMessage</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Same as error message but using yellow instead of red.</span>
+
+<span class="sd">    :param str text: text</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: colorised text</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">return</span> <span class="n">col</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">BRIGHT</span> <span class="o">+</span> <span class="n">col</span><span class="o">.</span><span class="n">Fore</span><span class="o">.</span><span class="n">YELLOW</span> <span class="o">+</span> <span class="n">text</span> <span class="o">+</span> <span class="n">col</span><span class="o">.</span><span class="n">Style</span><span class="o">.</span><span class="n">RESET_ALL</span></div>
     
 </pre></div>
 

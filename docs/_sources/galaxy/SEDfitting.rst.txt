@@ -1,0 +1,11 @@
+Pixel per pixel SED fitting
+===========================
+
+.. automodule:: galaxy.SEDfitting
+   :special-members: __init__
+   :members:
+   :private-members:
+   :undoc-members:
+   :show-inheritance:
+
+

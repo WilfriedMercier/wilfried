@@ -8,6 +8,7 @@ List of available functions
 * `dimMessage`_
 * `errorMessage`_
 * `okMessage`_
+* `warningMessage`_
 
 Example
 -------
@@ -50,3 +51,7 @@ Documentation
    .. _okMessage:
    
    .. autofunction:: utilities.coloredMessages.okMessage
+
+   .. _warningMessage:
+
+   .. autofunction:: utilities.coloredMessages.warningMessage

@@ -238,6 +238,11 @@
     <i class="fas fa-chevron-down">
     </i>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SEDfitting.html">
+     Galaxy mass models
+    </a>
+   </li>
   </ul>
   <i class="fas fa-chevron-down">
   </i>
@@ -567,10 +572,10 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>velocity if the disk was razor thin</p>
+<dd class="field-even"><p>velocity in <img class="math" src="../_images/math/8c49ff52b2ee2abd6e8003f0c6c8a87bbaa50b84.png" alt="\rm{km/s}"/></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float or ndarray[float]</p>
+<dd class="field-odd"><p>Astropy Quantity</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>TypeError</strong> – if <strong>R</strong> is neither int, float, np.float16, np.float32, np.foat64 or ndarray</p>
@@ -652,10 +657,13 @@
 <dd class="field-odd"><p><strong>r</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>astropy Quantity</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radius where the velocity profile is computed</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>velocity profile at a radius <strong>r</strong> in km/s</p>
+<dd class="field-even"><p>velocity profile at a radius <strong>r</strong> in <img class="math" src="../_images/math/8c49ff52b2ee2abd6e8003f0c6c8a87bbaa50b84.png" alt="\rm{km/s}"/></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>Astropy Quantity</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>r</strong> is neither int, float, np.float16, np.float32, np.foat64 or ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -798,13 +806,16 @@
 </div><p>where <img class="math" src="../_images/math/89878909dbb648acdc4a44ded1bd982d7bddef5d.png" alt="G"/> is the gravitational constant and <img class="math" src="../_images/math/7ec6020e8a58a0347e6d81f460763fafb223c08f.png" alt="M(&lt;r)"/> is the enclosed mass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>int</em><em> or </em><em>float</em>) – radius where the velocity profile is computed</p>
+<dd class="field-odd"><p><strong>r</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>astropy Quantity</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radius where the velocity profile is computed</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>V(r) in units of G*M/L*F/sqrt(a)</p>
+<dd class="field-even"><p>velocity profile at a radius <strong>r</strong> in <img class="math" src="../_images/math/8c49ff52b2ee2abd6e8003f0c6c8a87bbaa50b84.png" alt="\rm{km/s}"/></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>astropy.units Quantity</p>
+<dd class="field-odd"><p>Astropy Quantity</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>r</strong> is neither int, float, np.float16, np.float32, np.foat64 or ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1353,13 +1364,16 @@ Each element will be passed to the corresponding model. The order is the same as
 </div><p>where <img class="math" src="../_images/math/89878909dbb648acdc4a44ded1bd982d7bddef5d.png" alt="G"/> is the gravitational constant and <img class="math" src="../_images/math/7ec6020e8a58a0347e6d81f460763fafb223c08f.png" alt="M(&lt;r)"/> is the enclosed mass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>r</strong> (<em>int</em><em> or </em><em>float</em>) – radius where the velocity profile is computed</p>
+<dd class="field-odd"><p><strong>r</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>astropy Quantity</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – radius where the velocity profile is computed</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>V(r)</p>
+<dd class="field-even"><p>velocity profile at a radius <strong>r</strong> in <img class="math" src="../_images/math/8c49ff52b2ee2abd6e8003f0c6c8a87bbaa50b84.png" alt="\rm{km/s}"/></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>astropy.units Quantity</p>
+<dd class="field-odd"><p>Astropy Quantity</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>r</strong> is neither int, float, np.float16, np.float32, np.foat64 or ndarray</p>
 </dd>
 </dl>
 </dd></dl>

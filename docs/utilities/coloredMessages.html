@@ -123,8 +123,23 @@
     </a>
     <ul class="collapse-ul">
      <li class="toctree-l3">
+      <a class="reference internal" href="plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
       <a class="reference internal" href="plotUtilities/hst.html">
-       HST related plots
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="plotUtilities/singleContour.html">
+       Contours
       </a>
      </li>
     </ul>
@@ -222,6 +237,11 @@
     </ul>
     <i class="fas fa-chevron-down">
     </i>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../galaxy/SEDfitting.html">
+     Galaxy mass models
+    </a>
    </li>
   </ul>
   <i class="fas fa-chevron-down">
@@ -368,6 +388,7 @@
 <li><p><a class="reference internal" href="#dimmessage">dimMessage</a></p></li>
 <li><p><a class="reference internal" href="#errormessage">errorMessage</a></p></li>
 <li><p><a class="reference internal" href="#okmessage">okMessage</a></p></li>
+<li><p><a class="reference internal" href="#warningmessage">warningMessage</a></p></li>
 </ul>
 </div>
 <div class="section" id="example">
@@ -452,6 +473,24 @@
 <code class="sig-prename descclassname"><span class="pre">utilities.coloredMessages.</span></code><code class="sig-name descname"><span class="pre">okMessage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#okMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.coloredMessages.okMessage" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
 <p>Dim green text for validation messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – text</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>colorised text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="warningmessage"></span><dl class="py function">
+<dt id="utilities.coloredMessages.warningMessage">
+<code class="sig-prename descclassname"><span class="pre">utilities.coloredMessages.</span></code><code class="sig-name descname"><span class="pre">warningMessage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#warningMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.coloredMessages.warningMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Same as error message but using yellow instead of red.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – text</p>

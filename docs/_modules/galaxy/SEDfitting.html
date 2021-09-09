@@ -1,0 +1,650 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.SEDfitting &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galaxy/index.html">
+   Galaxy module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/kinematics.html">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/models.html">
+     Galaxy models
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../galaxy/morphology/index.html">
+     Galaxies morphology
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Morpho.html">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/morphology/Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../galaxy/photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/SEDfitting.html">
+     Pixel per pixel SED fitting
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for galaxy.SEDfitting</h1><div class="highlight"><pre>
+<span></span>    <span class="c1">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. codeauthor:: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">Utilties related to generating 2D mass and SFR maps using either LePhare or CIGALE SED fitting codes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">numpy</span>                     <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os.path</span>                   <span class="k">as</span>     <span class="nn">opath</span>
+<span class="kn">from</span>   <span class="nn">.symlinks.coloredMessages</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span>   <span class="nn">copy</span>                      <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<div class="viewcode-block" id="_parseConfig"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting._parseConfig">[docs]</a><span class="k">def</span> <span class="nf">_parseConfig</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">    Read a config file and return config parameters as dictionary.</span>
+
+<span class="sd">    :param str file: YAML configuration file</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: configuration dictionary</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    </span>
+<span class="sd">    :raises IOError: if **file** does not exist</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">if</span> <span class="n">opath</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1"> could not be cast into dict type.&#39;</span><span class="p">)</span>
+        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
+            
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="SEDobject"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject">[docs]</a><span class="k">class</span> <span class="nc">SEDobject</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Base class implementing the object used to stored SED fitting into.&#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="SEDobject.__init__"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">[],</span> <span class="n">files</span><span class="o">=</span><span class="p">[],</span> <span class="n">errfiles</span><span class="o">=</span><span class="p">[],</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">,</span> <span class="n">texpFactor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">extData</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extErr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">            </span>
+<span class="sd">        Initialise SED objects.</span>
+
+<span class="sd">        :param list[str] filters: (**Optional**) filters used to perform the SED fitting</span>
+<span class="sd">        :param list[str] files: (**Optional**) files corresponding to each filter (order is assumed similar)</span>
+<span class="sd">        :param list[str] errfiles: (**Optional**) error files corresponding to each filter (order is assumed similar)</span>
+<span class="sd">        :param str path: (**Optional**) common path appended before each file name</span>
+<span class="sd">        :param texpFactor: (**Optional**) factor used to correct the exposition time when correcting the error maps</span>
+<span class="sd">        :type texpFactor: int or float</span>
+<span class="sd">        :param bool normalise: (**Optional**) whether to use the normalisation scheme or not</span>
+<span class="sd">        </span>
+<span class="sd">        :param list[int] extData: (**Optional**) list of FITS file extensions for each data file. If None, 0th extension is used by default for each file.</span>
+<span class="sd">        :param list[int] extErr: (**Optional**) list of FITS file extensions for each error file. If None, 0th extension is used by default for each file.</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: </span>
+<span class="sd">            * if **normalise** is not a bool</span>
+<span class="sd">            * if **filters**, **files** and **errfiles** are not all lists</span>
+<span class="sd">            * if **texpFactor** is neither an int nor a float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">normalise</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;normalise parameter has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">normalise</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must be of type bool.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">texpFactor</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;texpFactor parameter has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">texpFactor</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must be of type int or float.&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">filters</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">errfiles</span><span class="p">]]):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;filters, files and errfiles parameters have types </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">errfiles</span><span class="p">)</span><span class="si">}</span><span class="s1"> but they must all be of type list.&#39;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">texpFac</span>  <span class="o">=</span> <span class="n">texpFactor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span>     <span class="o">=</span> <span class="n">normalise</span>
+        
+        <span class="c1"># Init files lists with empty values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span>  <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span>    <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errFiles</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Init data lists with empty values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdrList</span>  <span class="o">=</span> <span class="p">[]</span> <span class="c1"># data header for each filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataList</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># data for each filter</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">ehdrList</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># error map header for each filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errList</span>  <span class="o">=</span> <span class="p">[]</span> <span class="c1"># error map for each filter</span>
+        
+        <span class="n">ll</span>            <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">extData</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extData</span>   <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">ll</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extData</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">extData</span>   <span class="o">=</span> <span class="p">[</span><span class="n">extData</span><span class="p">]</span> <span class="o">*</span> <span class="n">ll</span>
+            
+        <span class="k">if</span> <span class="n">extErr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">extErr</span>    <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">ll</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extErr</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">extErr</span>    <span class="o">=</span> <span class="p">[</span><span class="n">extErr</span><span class="p">]</span> <span class="o">*</span> <span class="n">ll</span>
+        
+        <span class="c1"># Insert filter if data can be correctly loaded</span>
+        <span class="k">for</span> <span class="n">filt</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">extD</span><span class="p">,</span> <span class="n">extE</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">errFiles</span><span class="p">,</span> <span class="n">extData</span><span class="p">,</span> <span class="n">extErr</span><span class="p">):</span>
+            <span class="n">file</span>      <span class="o">=</span> <span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="n">err</span>       <span class="o">=</span> <span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insertFilter</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="n">exetD</span><span class="p">,</span> <span class="n">errExtension</span><span class="o">=</span><span class="n">extE</span><span class="p">)</span>
+            
+        <span class="c1"># Define a mask which hides pixels (default no pixel is hidden)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>     <span class="o">=</span> <span class="kc">False</span></div>
+        
+        
+    <span class="c1">##############################</span>
+    <span class="c1">#       Public methods       #</span>
+    <span class="c1">##############################</span>
+        
+<div class="viewcode-block" id="SEDobject.insertFilter"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject.insertFilter">[docs]</a>    <span class="k">def</span> <span class="nf">insertFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">errFile</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">errExtension</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">        Insert a filter into the database after loading data and error files.</span>
+<span class="sd">        </span>
+<span class="sd">        :param str filt: filter name (must not already be in the filter list)</span>
+<span class="sd">        :param str file: data file name corresponding to the filter</span>
+<span class="sd">        :param str errFile: error file correspond to the data file</span>
+<span class="sd">        </span>
+<span class="sd">        :param int extension: (**Optional**) data fits file extension to load data from</span>
+<span class="sd">        :param int errExtension: (**Optional**) error map fits file extension to load error map from</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if **filt**, **file** and **errFile** are not str, or if **extension** is not an int</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;filt parameter has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must have type str.&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Check that filter does not already exist</span>
+        <span class="k">if</span> <span class="n">filt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">warningMessage</span><span class="p">(</span><span class="s1">&#39;Warning: &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;filter &#39;</span> <span class="o">+</span>  <span class="n">brightMessage</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span> <span class="o">+</span>  <span class="s1">&#39; already present in filter list.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="c1"># Load data and header from FITS file (file and extension checked here)</span>
+        <span class="n">hdr</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadFits</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">extension</span><span class="p">)</span>
+        
+        <span class="c1"># Load error and header from FITS file (file and extension checked here)</span>
+        <span class="n">ehdr</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadFits</span><span class="p">(</span><span class="n">errFile</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="n">errExtension</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">[</span><span class="n">data</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">hdr</span><span class="p">,</span> <span class="n">ehdr</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">(</span><span class="s1">&#39;Skipping filter...&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>                    
+            <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">filt</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>   <span class="n">file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errFiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">errFile</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdrList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">hdr</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">errList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">err</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ehdrList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ehdr</span><span class="p">)</span>
+        
+        <span class="k">return</span></div>
+    
+<div class="viewcode-block" id="SEDobject.meanMaps"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject.meanMaps">[docs]</a>    <span class="k">def</span> <span class="nf">meanMaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maskVal</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Compute the averaged data and error maps over the spectral dimension for non masked pixels.</span>
+<span class="sd">        </span>
+<span class="sd">        :param maskVal: (**Optional**) value to put into masked pixels</span>
+<span class="sd">        :type maskVal: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: averaged data and averaged error map</span>
+<span class="sd">        :rtype: ndarray, ndarray</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if **maskVal** is neither in nor float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maskVal</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;maskVal parameter has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">maskVal</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must have type int or float.&#39;</span><span class="p">)</span>
+            
+        <span class="c1"># Compute masked arrays</span>
+        <span class="n">data</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_applyMask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataList</span><span class="p">)</span>
+        <span class="n">err</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_applyMask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errList</span><span class="p">)</span>
+        
+        <span class="c1"># Compute mean value along spectral dimension</span>
+        <span class="n">data</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">err</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">err</span><span class="p">,</span>  <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="c1"># Replace NaN values</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="n">maskVal</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">err</span><span class="p">,</span>  <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="n">maskVal</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">err</span></div>
+        
+        
+    <span class="c1">###############################</span>
+    <span class="c1">#       Private methods       #</span>
+    <span class="c1">###############################</span>
+    
+<div class="viewcode-block" id="SEDobject._applyMask"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject._applyMask">[docs]</a>    <span class="k">def</span> <span class="nf">_applyMask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">larray</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Apply the mask by placing NaN values onto each array in the list.</span>
+<span class="sd">        </span>
+<span class="sd">        :param list[ndarary] larray: list of arrays to mask</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: list with masked arrays</span>
+<span class="sd">        :rtype: list[ndarray]</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">data</span>                    <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># We make a deep copy to be sure we do not modify the input arrays</span>
+        <span class="k">for</span> <span class="n">arr</span>  <span class="ow">in</span> <span class="n">larray</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
+            <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        
+        <span class="k">return</span> <span class="n">data</span></div>
+        
+<div class="viewcode-block" id="SEDobject._checkFile"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject._checkFile">[docs]</a>    <span class="k">def</span> <span class="nf">_checkFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">            </span>
+<span class="sd">        Check whether a file exists.</span>
+<span class="sd">        </span>
+<span class="sd">        :param str file: file name</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: </span>
+<span class="sd">            * True if the file exists</span>
+<span class="sd">            * False otherwise</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;file has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must have type str.&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">opath</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">(</span><span class="s1">&#39;Error: &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;file &#39;</span> <span class="o">+</span> <span class="n">brightMessage</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; not found.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+        
+<div class="viewcode-block" id="SEDobject._loadFits"><a class="viewcode-back" href="../../galaxy/SEDfitting.html#galaxy.SEDfitting.SEDobject._loadFits">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_loadFits</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Load data and header from a FITS file at the given extension.</span>
+
+<span class="sd">        :param str file: file name</span>
+<span class="sd">        :param int ext: (**Optional**) extension to load data from</span>
+
+<span class="sd">        :returns: </span>
+<span class="sd">            * None, None if the file cannot be loaded as a FITS file or if the hdu extension is too large</span>
+<span class="sd">            * header, data</span>
+<span class="sd">        :rtype: astropy Header, ndarray</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if **ext** is not an int</span>
+<span class="sd">        :raises ValueError: if **ext** is negative</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ext has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must have type int.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ext has value </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s1"> but it must be larger than or equal to 0.&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_checkFile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+                    <span class="n">hdu</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
+                    
+            <span class="c1"># If an error is triggered, we always return None, None</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">(</span><span class="s1">&#39;Error: &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; file &#39;</span> <span class="o">+</span> <span class="n">brightMessage</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; could not be loaded as a FITS file.&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">(</span><span class="s1">&#39;Error: &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; extension number </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s1"> too large.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">hdu</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">hdu</span><span class="o">.</span><span class="n">data</span>
+                
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div></div>
+            
+        
+        
+        
+        
+        
+        
+        
+</pre></div>
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>

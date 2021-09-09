@@ -18,3 +18,4 @@ Galaxy module
    ./models.rst
    ./morphology/index.rst
    ./photometry/index.rst
+   ./SEDfitting.rst
