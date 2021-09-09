@@ -7,9 +7,10 @@ Utilties related to generating 2D mass and SFR maps using either LePhare or CIGA
 """
 
 import yaml
-import os.path                  as     opath
-import symlinks.coloredMessages as     cmsg
-from   copy                     import deepcopy
+import numpy                     as     np
+import os.path                   as     opath
+from   .symlinks.coloredMessages import *
+from   copy                      import deepcopy
 
 def _parseConfig(file):
     '''
@@ -58,7 +59,7 @@ class SEDobject:
         :param list[int] extErr: (**Optional**) list of FITS file extensions for each error file. If None, 0th extension is used by default for each file.
         
         :raises TypeError: 
-            * if **verbose** and **normalise** are not both bools
+            * if **normalise** is not a bool
             * if **filters**, **files** and **errfiles** are not all lists
             * if **texpFactor** is neither an int nor a float
         '''
@@ -133,7 +134,7 @@ class SEDobject:
         
         # Check that filter does not already exist
         if filt in self.filters:
-            print(cmsg.warningMessage('Warning: ') + 'filter ' +  csmg.brightMessage(filt) +  ' already present in filter list.')
+            print(warningMessage('Warning: ') + 'filter ' +  brightMessage(filt) +  ' already present in filter list.')
             return
         
         # Load data and header from FITS file (file and extension checked here)
@@ -143,7 +144,7 @@ class SEDobject:
         ehdr, err = self._loadFits(errFile, ext=errExtension)
         
         if None in [data, err, hdr, ehdr]:
-            print(cmsg.errorMessage('Skipping filter...'))
+            print(errorMessage('Skipping filter...'))
         else:                    
             self.filters.append( filt)
             self.files.append(   file)
@@ -228,7 +229,7 @@ class SEDobject:
             raise TypeError(f'file has type {type(file)} but it must have type str.')
         
         if not opath.isfile(fname):
-            print(cmsg.errorMessage('Error: ') + 'file ' + cmsg.brightMessage(fname) + ' not found.')
+            print(errorMessage('Error: ') + 'file ' + brightMessage(fname) + ' not found.')
             return False
         return True
         
@@ -261,9 +262,9 @@ class SEDobject:
                     
             # If an error is triggered, we always return None, None
             except OSError:
-                print(csmg.errorMessage('Error: ') + ' file ' + csmg.brightMessage(file) + ' could not be loaded as a FITS file.')
+                print(errorMessage('Error: ') + ' file ' + brightMessage(file) + ' could not be loaded as a FITS file.')
             except IndexError:
-                print(csmg.errorMessage('Error: ') + f' extension number {ext} too large.')
+                print(errorMessage('Error: ') + f' extension number {ext} too large.')
             else:
                 return hdu.header, hdu.data
                 
