@@ -49,7 +49,7 @@ def countToMag(data, err, zeropoint):
 
 def countToFlux(data, err, zeropoint):
     r'''
-    Convert data counts and their associated error into flux in :math:`erg/cm^2/s/Hz`.
+    Convert data counts and their associated error into flux in :math:`\rm{erg/cm^2/s/Hz}`.
     
     :param data: data in :math:`electron/s`
     :type data: float or ndarray[float]
