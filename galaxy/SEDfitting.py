@@ -89,7 +89,8 @@ class Filter:
         if not all([isinstance(i, str) for i in [filt, path]]):
             raise TypeError(f'filt, and path parameters have types {type(filt)} and {type(path)} but they must all be of type list.')
             
-        if 
+        if not isinstance(zeropoint, (int, float)):
+            raise TypeError(f'zeropoint parameter has type {type(zeropoint)} but it must have type int or float.')
             
         self.filter          = filt
         self.zpt             = zeropoint
@@ -505,7 +506,7 @@ class FilterList:
         
         self.code     = code.lower()
         if self.code not in ['cigale', 'lephare']:
-            print(WARNING + 'code name {code} could not be resolved. Acceptable values are ' + brightMessage('cigale') + ' or ' brightMessage('lephare') + '. Using ' brightMessage('cigale') + ' as default.')
+            print(WARNING + f'code name {self.code} could not be resolved. Acceptable values are cigale or lephare. Using ' + brightMessage('cigale') + ' as default.')
             self.code = 'cigale'
             
         # Update output table with default parameters
