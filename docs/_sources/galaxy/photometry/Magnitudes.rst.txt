@@ -1,0 +1,6 @@
+Magnitude conversions
+=====================
+
+.. autofunction:: galaxy.photometry.countToFlux
+.. autofunction:: galaxy.photometry.countToMag
+

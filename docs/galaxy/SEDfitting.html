@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Galfit module" href="../galfit/index.html" />
-    <link rel="prev" title="Masses and SFR estimates" href="photometry/Masses_SFR.html" />
+    <link rel="prev" title="Magnitude conversions" href="photometry/Magnitudes.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -234,6 +234,11 @@
        Masses and SFR estimates
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="photometry/Magnitudes.html">
+       Magnitude conversions
+      </a>
+     </li>
     </ul>
     <i class="fas fa-chevron-down">
     </i>
@@ -359,59 +364,33 @@
 <p><em>Code author: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
 <p>Utilties related to generating 2D mass and SFR maps using either LePhare or CIGALE SED fitting codes.</p>
 <dl class="py class">
-<dt id="galaxy.SEDfitting.SEDobject">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.SEDfitting.</span></code><code class="sig-name descname"><span class="pre">SEDobject</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errfiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">texpFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extErr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#SEDobject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.SEDobject" title="Permalink to this definition">¶</a></dt>
+<dt id="galaxy.SEDfitting.Filter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.SEDfitting.</span></code><code class="sig-name descname"><span class="pre">Filter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeropoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extErr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#Filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.Filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class implementing the object used to stored SED fitting into.</p>
+<p>Base class implementing data related to a single filter.</p>
 <dl class="py method">
-<dt id="galaxy.SEDfitting.SEDobject.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errfiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">texpFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extData</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extErr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#SEDobject.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.SEDobject.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="galaxy.SEDfitting.Filter.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeropoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extErr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#Filter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.Filter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
-<p>Initialise SED objects.</p>
+<p>Initialise filter object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filters</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) filters used to perform the SED fitting</p></li>
-<li><p><strong>files</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) files corresponding to each filter (order is assumed similar)</p></li>
-<li><p><strong>errfiles</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) error files corresponding to each filter (order is assumed similar)</p></li>
+<li><p><strong>filt</strong> (<em>str</em>) – filter name</p></li>
+<li><p><strong>file</strong> (<em>str</em>) – data file name. File must exist and be a loadable FITS file.</p></li>
+<li><p><strong>errFile</strong> (<em>str</em>) – error file name. File must exist and be a loadable FITS file. Error file is assumed to be the variance map.</p></li>
+<li><p><strong>zeropoint</strong> (<em>float</em>) – filter AB magnitude zeropoint</p></li>
 <li><p><strong>path</strong> (<em>str</em>) – (<strong>Optional</strong>) common path appended before each file name</p></li>
-<li><p><strong>texpFactor</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) factor used to correct the exposition time when correcting the error maps</p></li>
-<li><p><strong>normalise</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to use the normalisation scheme or not</p></li>
-<li><p><strong>extData</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – (<strong>Optional</strong>) list of FITS file extensions for each data file. If None, 0th extension is used by default for each file.</p></li>
-<li><p><strong>extErr</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – (<strong>Optional</strong>) list of FITS file extensions for each error file. If None, 0th extension is used by default for each file.</p></li>
+<li><p><strong>ext</strong> (<em>int</em>) – (<strong>Optional</strong>) extension in the data FITS file</p></li>
+<li><p><strong>extErr</strong> (<em>int</em>) – (<strong>Optional</strong>) extension in the error FITS file</p></li>
 </ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – <ul class="simple">
-<li><p>if <strong>normalise</strong> is not a bool</p></li>
-<li><p>if <strong>filters</strong>, <strong>files</strong> and <strong>errfiles</strong> are not all lists</p></li>
-<li><p>if <strong>texpFactor</strong> is neither an int nor a float</p></li>
-</ul>
-</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="galaxy.SEDfitting.SEDobject._applyMask">
-<code class="sig-name descname"><span class="pre">_applyMask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">larray</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#SEDobject._applyMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.SEDobject._applyMask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply the mask by placing NaN values onto each array in the list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>larray</strong> (<em>list</em><em>[</em><em>ndarary</em><em>]</em>) – list of arrays to mask</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list with masked arrays</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list[ndarray]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="galaxy.SEDfitting.SEDobject._checkFile">
-<code class="sig-name descname"><span class="pre">_checkFile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#SEDobject._checkFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.SEDobject._checkFile" title="Permalink to this definition">¶</a></dt>
+<dt id="galaxy.SEDfitting.Filter._checkFile">
+<code class="sig-name descname"><span class="pre">_checkFile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#Filter._checkFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.Filter._checkFile" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
 <p>Check whether a file exists.</p>
 <dl class="field-list simple">
@@ -429,9 +408,10 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="galaxy.SEDfitting.SEDobject._loadFits">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_loadFits</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#SEDobject._loadFits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.SEDobject._loadFits" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load data and header from a FITS file at the given extension.</p>
+<dt id="galaxy.SEDfitting.Filter._loadFits">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_loadFits</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#Filter._loadFits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.Filter._loadFits" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Load data and header from a FITS file at the given extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -459,30 +439,97 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="galaxy.SEDfitting.SEDobject.insertFilter">
-<code class="sig-name descname"><span class="pre">insertFilter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errExtension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#SEDobject.insertFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.SEDobject.insertFilter" title="Permalink to this definition">¶</a></dt>
+<dt id="galaxy.SEDfitting.Filter._mask">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#Filter._mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.Filter._mask" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
-<p>Insert a filter into the database after loading data and error files.</p>
+<p>Apply the given mask by placing NaN values onto the array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filt</strong> (<em>str</em>) – filter name (must not already be in the filter list)</p></li>
-<li><p><strong>file</strong> (<em>str</em>) – data file name corresponding to the filter</p></li>
-<li><p><strong>errFile</strong> (<em>str</em>) – error file correspond to the data file</p></li>
-<li><p><strong>extension</strong> (<em>int</em>) – (<strong>Optional</strong>) data fits file extension to load data from</p></li>
-<li><p><strong>errExtension</strong> (<em>int</em>) – (<strong>Optional</strong>) error map fits file extension to load error map from</p></li>
+<li><p><strong>arr</strong> (<em>ndarary</em>) – array to mask</p></li>
+<li><p><strong>mask</strong> (<em>ndarary</em><em>[</em><em>bool</em><em>]</em>) – mask with boolean values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array with masked values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="galaxy.SEDfitting.FilterList">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.SEDfitting.</span></code><code class="sig-name descname"><span class="pre">FilterList</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cigale'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#FilterList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.FilterList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class implementing the object used to stored SED fitting into.</p>
+<dl class="py method">
+<dt id="galaxy.SEDfitting.FilterList.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cigale'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#FilterList.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.FilterList.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Initialise filter list object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filters</strong> (<em>list</em><em>[</em><a class="reference internal" href="#galaxy.SEDfitting.Filter" title="galaxy.SEDfitting.Filter"><em>Filter</em></a><em>]</em>) – filters used to perform the SED fitting</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em><em>[</em><em>bool</em><em>]</em>) – mask for bad pixels</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – (<strong>Optional</strong>) common path appended before each file name</p></li>
+<li><p><strong>code</strong> (<em>str</em>) – (<strong>Optional</strong>) code used to perform the SED fitting. Either ‘lephare’ or ‘cigale’ are accepted.</p></li>
+<li><p><strong>redshift</strong> – (<strong>Optional</strong>) redshift of the galaxy</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – if <strong>filt</strong>, <strong>file</strong> and <strong>errFile</strong> are not str, or if <strong>extension</strong> is not an int</p>
+<dd class="field-even"><p><strong>TypeError</strong> – <ul class="simple">
+<li><p>if <strong>filters</strong> is not a list</p></li>
+<li><p>if <strong>redshift</strong> is neither an int nor a float</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="galaxy.SEDfitting.SEDobject.meanMaps">
-<code class="sig-name descname"><span class="pre">meanMaps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskVal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#SEDobject.meanMaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.SEDobject.meanMaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the averaged data and error maps over the spectral dimension for non masked pixels.</p>
+<dt id="galaxy.SEDfitting.FilterList.clean">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">clean</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zero'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#FilterList.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.FilterList.clean" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Clean given data and error maps by masking pixels and dealing with negative values.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If <strong>method</strong> is ‘zero’, negative values in the data and error maps are set to 0</p></li>
+<li><p>If <strong>method</strong> is ‘min’, negative values in the data and error maps are set to the minimum value in the array</p></li>
+<li><p>If <strong>method</strong> is neither ‘zero’ nor ‘negative’, ‘zero’ is used as default</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – data map</p></li>
+<li><p><strong>var</strong> (<em>ndarray</em>) – variance map</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em><em>[</em><em>bool</em><em>]</em>) – mask used to apply NaN values</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – (<strong>Optional</strong>) method to deal with negative values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cleaned data and variance maps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>method</strong> is not of type str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="galaxy.SEDfitting.FilterList.meanMap">
+<code class="sig-name descname"><span class="pre">meanMap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskVal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#FilterList.meanMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.FilterList.meanMap" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Compute the averaged data and error maps over the spectral dimension for non masked pixels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>maskVal</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) value to put into masked pixels</p>
@@ -494,7 +541,113 @@
 <dd class="field-odd"><p>ndarray, ndarray</p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – if <strong>maskVal</strong> is neither in nor float</p>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>maskVal</strong> is neither int nor float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="galaxy.SEDfitting.FilterList.scale">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">scale</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#FilterList.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.FilterList.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Normalise given data and error maps using a norm map and scale by a certain amount. Necessary for LePhare SED fitting code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – data map</p></li>
+<li><p><strong>var</strong> (<em>ndarray</em>) – variance map</p></li>
+<li><p><strong>norm</strong> (<em>ndarray</em>) – normalisation map which divides data and error maps</p></li>
+<li><p><strong>factor</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) scale factor which multiplies the output array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scaled data and variance maps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if <strong>data</strong> and <strong>norm</strong> do not have the same shapes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="galaxy.SEDfitting.FilterList.setCigale">
+<code class="sig-name descname"><span class="pre">setCigale</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#galaxy.SEDfitting.FilterList.setCigale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set Cigale as fitting code</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="galaxy.SEDfitting.FilterList.setCode">
+<code class="sig-name descname"><span class="pre">setCode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#FilterList.setCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.FilterList.setCode" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Set the SED fitting code.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function also recomputes and rewrites the output table used for the SED fitting.
+If you want a table with different parameters you must run <a class="reference internal" href="#galaxy.SEDfitting.FilterList.toTable" title="galaxy.SEDfitting.FilterList.toTable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FilterList.toTable()</span></code></a> again, for e.g.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>                <span class="c1"># setCode and toTable methods are called with default SED fitting code name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">setCode</span><span class="p">(</span><span class="s1">&#39;lephare&#39;</span><span class="p">)</span>                         <span class="c1"># setCode and toTable methods are called with &#39;lephare&#39; SED fitting code name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">toTable</span><span class="p">(</span><span class="n">cleanMethod</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">scaleFactor</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># toTable is run again with different parameters but still &#39;lephare&#39; SED fitting code name</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>code</strong> (<em>str</em>) – code used for SED fitting acceptable values are cigale and lephare. If code name is not recognised, cigale is set as default value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="galaxy.SEDfitting.FilterList.setLePhare">
+<code class="sig-name descname"><span class="pre">setLePhare</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#galaxy.SEDfitting.FilterList.setLePhare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set LePhare as fitting code</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="galaxy.SEDfitting.FilterList.toTable">
+<code class="sig-name descname"><span class="pre">toTable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cleanMethod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zero'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaleFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#FilterList.toTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.FilterList.toTable" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<p>Generate an input table for the SED fitting codes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cleanMethod</strong> (<em>str</em>) – (<strong>Optional</strong>) method used to clean pixel with negative values. Accepted values are ‘zero’ and ‘min’.</p></li>
+<li><p><strong>scaleFactor</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) factor used to multiply data and std map. Only used if SED fitting code is LePhare.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>output table</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Astropy Table</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if there are no filters in the filter list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="galaxy.SEDfitting.ShapeError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.SEDfitting.</span></code><code class="sig-name descname"><span class="pre">ShapeError</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#ShapeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.ShapeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Error which is caught when two arrays do not share the same shape.</p>
+<dl class="py method">
+<dt id="galaxy.SEDfitting.ShapeError.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/SEDfitting.html#ShapeError.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SEDfitting.ShapeError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init method for this exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr1</strong> (<em>ndarray</em>) – first array</p></li>
+<li><p><strong>arr2</strong> (<em>ndarray</em>) – second array</p></li>
+<li><p><strong>msg</strong> (<em>str</em>) – (<strong>Optional</strong>) message to append at the end</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -530,7 +683,7 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="photometry/Masses_SFR.html" title="previous page">Masses and SFR estimates</a>
+    <a class='left-prev' id="prev-link" href="photometry/Magnitudes.html" title="previous page">Magnitude conversions</a>
     <a class='right-next' id="next-link" href="../galfit/index.html" title="next page">Galfit module</a>
 
         </div>

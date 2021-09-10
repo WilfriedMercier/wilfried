@@ -16,3 +16,5 @@ Functions are split into the following modules:
    ./Fluxes.rst
 
    ./Masses_SFR.rst
+
+   ./Magnitudes.rst

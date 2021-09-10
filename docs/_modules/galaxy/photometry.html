@@ -232,9 +232,19 @@
        Masses and SFR estimates
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../galaxy/photometry/Magnitudes.html">
+       Magnitude conversions
+      </a>
+     </li>
     </ul>
     <i class="fas fa-chevron-down">
     </i>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../galaxy/SEDfitting.html">
+     Pixel per pixel SED fitting
+    </a>
    </li>
   </ul>
   <i class="fas fa-chevron-down">
@@ -331,7 +341,7 @@
   <h1>Source code for galaxy.photometry</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 
 <span class="sd">Photometry functions related to galaxies.</span>
@@ -343,6 +353,64 @@
 
 <span class="c1">#: Cosmology used inthe functions</span>
 <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+
+<span class="c1">###############################################</span>
+<span class="c1">#       Flux and magnitudes conversions       #</span>
+<span class="c1">###############################################</span>
+
+<div class="viewcode-block" id="countToMag"><a class="viewcode-back" href="../../galaxy/photometry/Magnitudes.html#galaxy.photometry.countToMag">[docs]</a><span class="k">def</span> <span class="nf">countToMag</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">zeropoint</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert data counts and their associated error into AB magnitudes using the formula</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        d [{\rm{mag}}] = -2.5 \log_{10} d [{\rm{e^{-}/s}}] + {\rm{zpt}}</span>
+<span class="sd">        </span>
+<span class="sd">    where :math:`d` is the data and :math:`\rm{zpt}` is the magnitude zeropoint. The error is given by</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        \Delta d [{\rm{mag}}] = 1.08 \Delta d [{\rm{e^{-}/s}}] / d [{\rm{e^{-}/s}}]</span>
+<span class="sd">    </span>
+<span class="sd">    :param data: data in electron/s</span>
+<span class="sd">    :type data: float or ndarray[float]</span>
+<span class="sd">    :param err: std errors in electron/s</span>
+<span class="sd">    :type err: float or ndarray[foat]</span>
+<span class="sd">    :param float zeropoint: zeropoint associated to the data</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: AB magnitude and associated error</span>
+<span class="sd">    :rtype: float or ndarray[float], float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">mag</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="n">zeropoint</span>
+    <span class="n">emag</span> <span class="o">=</span> <span class="mf">1.08</span> <span class="o">*</span> <span class="n">err</span><span class="o">/</span><span class="n">data</span>
+    
+    <span class="k">return</span> <span class="n">mag</span><span class="p">,</span> <span class="n">emag</span></div>
+
+<div class="viewcode-block" id="countToFlux"><a class="viewcode-back" href="../../galaxy/photometry/Magnitudes.html#galaxy.photometry.countToFlux">[docs]</a><span class="k">def</span> <span class="nf">countToFlux</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">zeropoint</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Convert data counts and their associated error into flux in :math:`\rm{erg/cm^2/s/Hz}`.</span>
+<span class="sd">    </span>
+<span class="sd">    :param data: data in :math:`electron/s`</span>
+<span class="sd">    :type data: float or ndarray[float]</span>
+<span class="sd">    :param err: std errors in :math:`electron/s`</span>
+<span class="sd">    :type err: float or ndarray[float]</span>
+<span class="sd">    :param float zeropoint: zeropoint associated to the data</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: AB magnitude and associated error</span>
+<span class="sd">    :rtype: float or ndarray[float], float or ndarray[float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">flux</span>  <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span>
+    <span class="n">eflux</span> <span class="o">=</span> <span class="n">err</span>  <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">flux</span><span class="p">,</span> <span class="n">eflux</span></div>
+
+
+<span class="c1">###############################################</span>
+<span class="c1">#       Dust extinction and attenuation       #</span>
+<span class="c1">###############################################</span>
 
 <div class="viewcode-block" id="calzetti_law"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.calzetti_law">[docs]</a><span class="k">def</span> <span class="nf">calzetti_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">4.05</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">2.659</span><span class="p">,</span> <span class="n">b1</span><span class="o">=-</span><span class="mf">1.857</span><span class="p">,</span> <span class="n">c1</span><span class="o">=</span><span class="mf">1.040</span><span class="p">,</span> <span class="n">d1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b2</span><span class="o">=-</span><span class="mf">2.156</span><span class="p">,</span> <span class="n">c2</span><span class="o">=</span><span class="mf">1.509</span><span class="p">,</span> <span class="n">d2</span><span class="o">=-</span><span class="mf">0.198</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mf">0.011</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>

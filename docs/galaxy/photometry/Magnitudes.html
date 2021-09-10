@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Galaxies photometry &#8212; wilfried library 1.0 documentation</title>
+    <title>Magnitude conversions &#8212; wilfried library 1.0 documentation</title>
     
   <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
@@ -40,8 +40,8 @@
     <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Fluxes, colour excess and attenuation" href="Fluxes.html" />
-    <link rel="prev" title="Other Sersic related functions" href="../morphology/Other.html" />
+    <link rel="next" title="Pixel per pixel SED fitting" href="../SEDfitting.html" />
+    <link rel="prev" title="Masses and SFR estimates" href="Masses_SFR.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -220,10 +220,10 @@
     </i>
    </li>
    <li class="toctree-l2 current active collapsible-parent">
-    <a class="current reference internal" href="#">
+    <a class="reference internal" href="index.html">
      Galaxies photometry
     </a>
-    <ul class="collapse-ul">
+    <ul class="current collapse-ul">
      <li class="toctree-l3">
       <a class="reference internal" href="Fluxes.html">
        Fluxes, colour excess and attenuation
@@ -234,8 +234,8 @@
        Masses and SFR estimates
       </a>
      </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="Magnitudes.html">
+     <li class="toctree-l3 current active">
+      <a class="current reference internal" href="#">
        Magnitude conversions
       </a>
      </li>
@@ -311,7 +311,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/galaxy/photometry/index.rst.txt"><button type="button"
+        <a class="dropdown-buttons" href="../../_sources/galaxy/photometry/Magnitudes.rst.txt"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
@@ -331,7 +331,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         
-        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/photometry/index.rst"><button
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/photometry/Magnitudes.rst"><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
     </div>
@@ -351,21 +351,6 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
-        <div class="tocsection onthispage pt-5 pb-3">
-            <i class="fas fa-list"></i>
-            Contents
-        </div>
-        <nav id="bd-toc-nav">
-            <ul class="nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#functions-are-split-into-the-following-modules">
-   Functions are split into the following modules:
-  </a>
- </li>
-</ul>
-
-        </nav>
-        
         </div>
     </div>
 </div>
@@ -374,20 +359,55 @@
         
               <div>
                 
-  <div class="section" id="module-galaxy.photometry">
-<span id="galaxies-photometry"></span><h1>Galaxies photometry<a class="headerlink" href="#module-galaxy.photometry" title="Permalink to this headline">¶</a></h1>
-<p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
-<p>Photometry functions related to galaxies.</p>
-<div class="section" id="functions-are-split-into-the-following-modules">
-<h2>Functions are split into the following modules:<a class="headerlink" href="#functions-are-split-into-the-following-modules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Fluxes.html">Fluxes, colour excess and attenuation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Masses_SFR.html">Masses and SFR estimates</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Magnitudes.html">Magnitude conversions</a></li>
+  <div class="section" id="magnitude-conversions">
+<h1>Magnitude conversions<a class="headerlink" href="#magnitude-conversions" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="galaxy.photometry.countToFlux">
+<code class="sig-prename descclassname"><span class="pre">galaxy.photometry.</span></code><code class="sig-name descname"><span class="pre">countToFlux</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeropoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/photometry.html#countToFlux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.photometry.countToFlux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert data counts and their associated error into flux in <img class="math" src="../../_images/math/f99cc8b94f0836780caeb7f5a636a591ce83cced.png" alt="\rm{erg/cm^2/s/Hz}"/>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – data in <img class="math" src="../../_images/math/f3a488a4c37d08623f5d317696ba4c539e793874.png" alt="electron/s"/></p></li>
+<li><p><strong>err</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – std errors in <img class="math" src="../../_images/math/f3a488a4c37d08623f5d317696ba4c539e793874.png" alt="electron/s"/></p></li>
+<li><p><strong>zeropoint</strong> (<em>float</em>) – zeropoint associated to the data</p></li>
 </ul>
-</div>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>AB magnitude and associated error</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray[float], float or ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="galaxy.photometry.countToMag">
+<code class="sig-prename descclassname"><span class="pre">galaxy.photometry.</span></code><code class="sig-name descname"><span class="pre">countToMag</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeropoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/photometry.html#countToMag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.photometry.countToMag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert data counts and their associated error into AB magnitudes using the formula</p>
+<div class="math">
+<p><img src="../../_images/math/48f46fec06925ed7f2267fba1f4adb1bc6ef91a6.png" alt="d [{\rm{mag}}] = -2.5 \log_{10} d [{\rm{e^{-}/s}}] + {\rm{zpt}}"/></p>
+</div><p>where <img class="math" src="../../_images/math/badad346f6fbe2e237af99bfbd9a93a4da53a3da.png" alt="d"/> is the data and <img class="math" src="../../_images/math/844f755dc52a6b7a8ec684c5ca3fba12b80505ee.png" alt="\rm{zpt}"/> is the magnitude zeropoint. The error is given by</p>
+<div class="math">
+<p><img src="../../_images/math/ca444e6cd73a05114ccd0c8f2d99a9b877809801.png" alt="\Delta d [{\rm{mag}}] = 1.08 \Delta d [{\rm{e^{-}/s}}] / d [{\rm{e^{-}/s}}]"/></p>
+</div><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – data in electron/s</p></li>
+<li><p><strong>err</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>foat</em><em>]</em>) – std errors in electron/s</p></li>
+<li><p><strong>zeropoint</strong> (<em>float</em>) – zeropoint associated to the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>AB magnitude and associated error</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray[float], float or ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -396,8 +416,8 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="../morphology/Other.html" title="previous page">Other Sersic related functions</a>
-    <a class='right-next' id="next-link" href="Fluxes.html" title="next page">Fluxes, colour excess and attenuation</a>
+    <a class='left-prev' id="prev-link" href="Masses_SFR.html" title="previous page">Masses and SFR estimates</a>
+    <a class='right-next' id="next-link" href="../SEDfitting.html" title="next page">Pixel per pixel SED fitting</a>
 
         </div>
         
