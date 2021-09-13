@@ -58,11 +58,11 @@ def countToFlux(data, err, zeropoint):
     :param float zeropoint: zeropoint associated to the data
     
     :returns: AB magnitude and associated error
-    :rtype: float or ndarray[float], float or ndarray[float]
+    :rtype: Astropy Quantity, Astropy Quantity
     '''
 
-    flux  = data * 10**(-(zeropoint+48.6)/2.5)
-    eflux = err  * 10**(-(zeropoint+48.6)/2.5)
+    flux  = u.Quantity(data * 10**(-(zeropoint+48.6)/2.5), unit='erg/(s*Hz*cm^2)')
+    eflux = u.Quantity(err  * 10**(-(zeropoint+48.6)/2.5), unit='erg/(s*Hz*cm^2)')
     
     return flux, eflux
 
