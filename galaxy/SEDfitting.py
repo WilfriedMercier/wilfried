@@ -9,11 +9,12 @@ Utilties related to generating 2D mass and SFR maps using either LePhare or CIGA
 import yaml
 import os.path                   as     opath
 import numpy                     as     np
+import astropy.io.fits           as     fits
 from   astropy.table             import Table
 from   copy                      import deepcopy
 from   functools                 import reduce, partialmethod
 
-from   .photometry               import countToMag
+from   .photometry               import countToMag, countToFlux
 from   .symlinks.coloredMessages import *
 
 # Custom colored messages
@@ -26,6 +27,8 @@ class ShapeError(Exception):
     
     def __init__(self, arr1, arr2, msg='', **kwargs):
         '''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
         Init method for this exception.
         
         :param ndarray arr1: first array
@@ -40,37 +43,10 @@ class ShapeError(Exception):
         super.__init__(f'Array 1 has shape {arr1.shape} but array 2 has shape {arr2.shape}{msg}.')
 
 
-def _parseConfig(file):
-    r'''
-    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
-        
-    Read a config file and return config parameters as dictionary.
-
-    :param str file: YAML configuration file
-    
-    :returns: configuration dictionary
-    :rtype: dict
-    
-    :raises IOError: if **file** does not exist
-    '''
-    
-    if opath.isfile(file):
-        with open(file) as f:
-            out = yaml.load(f, Loader=yaml.Loader)
-        
-        if not isinstance(out, dict):
-            raise TypeError(f'File {file} could not be cast into dict type.')
-        
-    else:
-        raise IOError(f'File {file} not found.')
-            
-    return out
-
-
 class Filter:
     r'''Base class implementing data related to a single filter.'''
     
-    def __init__(self, filt, file, errFile, zeropoint, path='./', ext=0, extErr=0):
+    def __init__(self, filt, file, errFile, zeropoint, ext=0, extErr=0, texpFactor=1):
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
             
@@ -81,21 +57,25 @@ class Filter:
         :param str errFile: error file name. File must exist and be a loadable FITS file. Error file is assumed to be the variance map.
         :param float zeropoint: filter AB magnitude zeropoint
         
-        :param str path: (**Optional**) common path appended before each file name
         :param int ext: (**Optional**) extension in the data FITS file
         :param int extErr: (**Optional**) extension in the error FITS file
+        
+        :raises TypeError:
+            
+            * if **filt** is not of type str
+            * if **zeropoint** is neither an int nor a float
         '''
         
-        if not all([isinstance(i, str) for i in [filt, path]]):
-            raise TypeError(f'filt, and path parameters have types {type(filt)} and {type(path)} but they must all be of type list.')
+        if not isinstance(filt, str):
+            raise TypeError(f'filt parameter has type {type(filt)} but it must be of type list.')
             
         if not isinstance(zeropoint, (int, float)):
-            raise TypeError(f'zeropoint parameter has type {type(zeropoint)} but it must have type int or float.')
+            raise TypeError(f'zeropoint parameter has type {type(zeropoint)} but it must be of type int or float.')
             
         self.filter          = filt
         self.zpt             = zeropoint
-        self.fname           = opath.join(path, file)
-        self.ename           = opath.join(path, errFile)
+        self.fname           = file
+        self.ename           = errFile
         
         self.hdr,  self.data = self._loadFits(self.fname, ext=ext)
         self.ehdr, self.var  = self._loadFits(self.ename, ext=extErr)
@@ -139,18 +119,19 @@ class Filter:
         :returns: 
             * True if the file exists
             * False otherwise
+            
+        :raises TypeError: if **file** is not of type str
         '''
         
         if not isinstance(file, str):
             raise TypeError(f'file has type {type(file)} but it must have type str.')
         
-        if not opath.isfile(fname):
-            print(ERROR + 'file ' + brightMessage(fname) + ' not found.')
+        if not opath.isfile(file):
+            print(ERROR + 'file ' + brightMessage(file) + ' not found.')
             return False
         return True
     
-    @staticmethod
-    def _loadFits(file, ext=0, **kwargs):
+    def _loadFits(self, file, ext=0, **kwargs):
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -177,14 +158,13 @@ class Filter:
             try:
                 with fits.open(file) as hdul:
                     hdu = hdul[ext]
+                    return hdu.header, hdu.data
                     
             # If an error is triggered, we always return None, None
             except OSError:
                 print(ERROR + ' file ' + brightMessage(file) + ' could not be loaded as a FITS file.')
             except IndexError:
                 print(ERROR + f' extension number {ext} too large.')
-            else:
-                return hdu.header, hdu.data
                 
         return None, None
 
@@ -199,15 +179,15 @@ class FilterList:
         Initialise filter list object.
 
         :param list[Filter] filters: filters used to perform the SED fitting
-        :param ndarray[bool] mask: mask for bad pixels
+        :param ndarray[bool] mask: mask for bad pixels (True for bad pixels, False for good ones)
         
-        :param str path: (**Optional**) common path appended before each file name
         :param str code: (**Optional**) code used to perform the SED fitting. Either 'lephare' or 'cigale' are accepted.
         :param redshift: (**Optional**) redshift of the galaxy
         
         :raises TypeError: 
             * if **filters** is not a list
             * if **redshift** is neither an int nor a float
+            * if one of the filters is not of type Filter
         '''
         
         ##############################
@@ -224,7 +204,10 @@ class FilterList:
         #         Init attributes         #
         ###################################
         
-        # :Define a mask which hides pixels (default no pixel is hidden)
+        # :Redshift of the galaxy
+        self.redshift = redshift
+        
+        # :Define a mask which hides pixels
         self.mask     = mask
         
         # :Table used by SED fitting code (default is None)
@@ -245,7 +228,7 @@ class FilterList:
                 if not isinstance(filt, Filter):
                     raise TypeError(f'One of the filters has type {type(filt)} but it must have type Filter.')
                 
-                elif None in [filtObj.data, filtObj.var, filtObj.hdr, filtObj.ehdr]:
+                elif np.any([i is None for i in [filt.data, filt.var, filt.hdr, filt.ehdr]]):
                     print(errorMessage(f'Skipping filter {filt.filter}...'))
                 else:
                     self.filters.append(filt)
@@ -264,7 +247,7 @@ class FilterList:
     #       Table creation       #
     ##############################
     
-    def toTable(self, cleanMethod='zero', scaleFactor=100, **kwargs):
+    def toTable(self, cleanMethod='zero', scaleFactor=100, texpFac=0, **kwargs):
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -273,6 +256,7 @@ class FilterList:
         :param str cleanMethod: (**Optional**) method used to clean pixel with negative values. Accepted values are 'zero' and 'min'.
         :param scaleFactor: (**Optional**) factor used to multiply data and std map. Only used if SED fitting code is LePhare.
         :type scaleFactor: int or float
+        :param int texpFactor: (**Optional**) exposure factor used to divide the exposure time when computing Poisson noise. A value of 0 means no Poisson noise is added to the variance map.
         
         :returns: output table
         :rtype: Astropy Table
@@ -283,75 +267,95 @@ class FilterList:
         if len(self.filters) < 1:
             raise ValueError('At least one filter must be in the filter list to build a table.')
         
-        # Mean map (NaN values are set to 0 afterwards)
-        meanMap           = self.meanMap(maskVal=0)
-        
-        ##################################################
-        #              Loop through filters              #
-        ##################################################
-        
-        dataList          = []
-        stdList           = []
+        # Mean map (NaN values are set to 0 once the mean map is computed)
+        if self.code.lower() == 'lephare':
+            meanMap, _      = self.meanMap(maskVal=0)
+
+        dataList            = []
+        stdList             = []
         for filt in self.filters:
             
             # Clean data and error maps of bad pixels and pixels with negative values
-            data, var     = self.clean(filt.data, filt.var, self.mask, method=cleanMethod)
-            shp           = data.shape
+            data, var       = self.clean(filt.data, filt.var, self.mask, method=cleanMethod)
+            shp             = data.shape
+        
+            # Add Poisson noise to the variance map
+            try:
+                texp        = filt.hdr['TEXPTIME']
+            except KeyError:
+                print(ERROR + f'data header in {filt.filter} does not have TEXPTIME key. Cannot compute poisson variance.')
+            else:
+                var        += self.poissonVar(data, texp=texp, texpFac=texpFac)
             
             # Scaling data for LePhare
-            if self.code == 'lephare':
-                data, var = self.scale(data, var, meanMap, factor=scaleFactor)
+            if self.code.lower() == 'lephare':
+                data, var   = self.scale(data, var, meanMap, factor=scaleFactor)
             
             # Transform data and error maps into 1D vectors
             data.reshape(shp[0]*shp[1])
             var.reshape( shp[0]*shp[1])
             
             # Get rid of NaN values
-            nanMask       = ~(np.isnan(data) | np.isnan(var))
-            data          = data[nanMask]
-            var           = var[ nanMask]
+            nanMask         = ~(np.isnan(data) | np.isnan(var))
+            data            = data[nanMask]
+            var             = var[ nanMask]
             
-            # Convert to flux AB mag (0 values are cast to NaN otherwise mag would be infinite)
-            mask0         = (data == 0 | var == 0)
-            data[mask0]   = np.nan
-            var[ mask0]   = np.nan
-            
-            # We convert variance to std
-            data, std     = countToMag(data, np.sqrt(var), filt.zpt)
-            
-            # Cast back pixels with NaN values to -99 mag to specify they are not to be used in the SED fitting
-            data[mask0]   = -99
-            std[ mask0]   = -99
+            # Convert flux and variance to AB mag for LePhare
+            if self.code.lower() == 'lephare':
+                
+                # 0 values are cast to NaN otherwise corresponding magnitude would be infinite
+                mask0       = (np.asarray(data == 0) | np.asarray(var == 0))
+                data[mask0] = np.nan
+                var[ mask0] = np.nan
+                    
+                # Compute std instead of variance
+                data, std   = countToMag(data, np.sqrt(var), filt.zpt)
+                
+                # Cast back pixels with NaN values to -99 mag to specify they are not to be used in the SED fitting
+                data[mask0] = -99
+                std[ mask0] = -99
+                
+            # Convert to mJy for Cigale
+            elif self.code.lower() == 'cigale':
+                
+                # Compute std and convert std and data to mJy unit
+                data, std   = [i.to('mJy').value for i in countToFlux(data, np.sqrt(var), filt.zpt)]
             
             # Append data and std to list
             dataList.append(data)
             stdList.append( std)
             
         # Keep track of indices with correct values (identical between filters)
-        indices           = np.where(nanMask)[0]
+        indices             = np.where(nanMask)[0]
         
         # Consistency check
-        ll                = len(indices)
+        ll                  = len(indices)
         if ll != len(dataList[0]) or ll != len(stdList[0]):
             raise ValueError(f'indices have length {ll} but dataList and stdList have shapes {np.shape(dataList)} and {np.shape(stdList)}.')
         
-        # Generate columns depending on each SED fitting code
-        if self.code == 'lephare':
+        ####################################
+        #         Generate columns         #
+        ####################################
+        
+        # Shared between LePhare and Cigale
+        zs                  = [self.redshift]*ll
+        
+        if self.code.lower() == 'lephare':
             
             # Compute context (number of filters used - see LePhare documentation) and redshift columns
-            context       = [len(self.filters)]*ll
-            zs            = [self.redshift]*ll
+            context         = [2**len(self.filters) - 1]*ll
+            dtypes          = [int]     + [float]*2*len(self.filters)                                        + [int, float]
+            colnames        = ['ID']    + [val for f in self.filters for val in [f.filter, f'e_{f.filter}']] + ['Context', 'zs']
+            columns         = [indices] + [val for d, s in zip(dataList, stdList) for val in [d, s]]         + [ context, zs]
+        
+        elif self.code.lower() == 'cigale':
             
-            colnames      = ['ID']    + [val for f in self.filters for val in [f.filter, f'e_{f.filter}']] + ['Context', 'zs']
-            columns       = [indices] + [val for d, s in zip(dataList, stdList) for val in [d, s]]         + [ context, zs]
-        elif self.code == 'cigale':
-            raise NotImplementedError('Cigale output table not implemented yet.')
-        else:
-            raise ValueError(f'SED fitting code {self.code} not compatible.')
+            dtypes          = [int, float]       + [float]*len(self.filters)
+            colnames        = ['id', 'redshift'] + [val for f in self.filters for val in [f.filter, f'{f.filter}_err']]
+            columns         = [indices, zs]      + [val for d, s in zip(dataList, stdList) for val in [d, s]]
         
         # Generate the output Table
-        self.table        = Table(columns, names=colnames)
-        self.table['ID']  = self.table['ID'].astype(int)
+        self.table          = Table(columns, names=colnames, dtype=dtypes)
         
         return self.table
      
@@ -446,6 +450,50 @@ class FilterList:
         return data, err
     
     @staticmethod
+    def poissonVar(data, texp=1, texpFac=1, **kwargs):
+        '''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
+        Compute a scaled Poisson variance term from a given flux map. The variance :math:`(\Delta F)^2` is computed as
+        
+        .. math::
+            
+            (\Delta F)^2 = \alpha F
+            
+        where :math:`F` is the flux map and :math:`\alpha` is a scale factor defined as
+        
+        .. math::
+            
+            \alpha = {\rm{TEXP / TEXPFAC}}
+            
+        where :math:`\rm{TEXP}` is the exposure time and :math:`\rm{TEXPFAC}` is a coefficient used to scale it down.
+        
+        :param ndarray data: flux map
+        
+        :param texp: (**Optional**) exposure time in seconds
+        :type text: int or float
+        :param texpFac: (**Optional**) exposure factor
+        :type texpFac: int or float
+        
+        :raises TypeError: if **texp** or **texpFac** are not both int or float
+        :raises ValueError:
+            
+            * if **texp** is less than or equal to 0
+            * if **texpFac** is less than 0
+        '''
+        
+        if not all([isinstance(i, (int, float)) for i in [texp, texpFac]]):
+            raise TypeError(f'texp and texpFac parameters have types {type(texp)} and {type(texpFac)} but they must have type int or float.')
+            
+        if texp <= 0:
+            raise ValueError(f'texp has value {texp} but it must be positive.')
+            
+        if texpFac < 0:
+            raise ValueError(f'texpFac has value {texpFac} but it must be positive or null.')
+        
+        return data * texpFac / texp
+    
+    @staticmethod
     def scale(data, var, norm, factor=100):
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
@@ -469,14 +517,14 @@ class FilterList:
             raise ValueError(f'Incompatible norm and data shapes. norm map has shape {norm.shape} but data map has shape {self.data.shape}.')
         
         # Deep copies to avoid to overwrite input arrays
-        data        = deepcopy(data)
-        var         = deepcopy(var)
+        d        = deepcopy(data)
+        v        = deepcopy(var)
         
-        mask        = norm != 0
-        data[mask] *= factor/norm
-        var[ mask] *= (factor*factor/(norm*norm)) # Variance normalisation is squared
+        mask     = norm != 0
+        d[mask] *= factor/norm[mask]
+        v[mask] *= (factor*factor/(norm[mask]*norm[mask])) # Variance normalisation is squared
         
-        return data, var
+        return d, v
         
         
     ####################
@@ -499,6 +547,8 @@ class FilterList:
             >>> flist.toTable(cleanMethod='min', scaleFactor=50) # toTable is run again with different parameters but still 'lephare' SED fitting code name
         
         :param str code: code used for SED fitting acceptable values are cigale and lephare. If code name is not recognised, cigale is set as default value.
+        
+        :raises TypeError: if **code** is not of type str
         '''
         
         if not isinstance(code, str):
