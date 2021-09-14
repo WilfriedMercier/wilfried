@@ -21,27 +21,10 @@ from   .symlinks.coloredMessages import *
 WARNING = warningMessage('Warning: ')
 ERROR   = errorMessage('Error: ')
 
-# Custom exceptions
-class ShapeError(Exception):
-    '''Error which is caught when two arrays do not share the same shape.'''
-    
-    def __init__(self, arr1, arr2, msg='', **kwargs):
-        '''
-        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
-        
-        Init method for this exception.
-        
-        :param ndarray arr1: first array
-        :param ndarray arr2: second array
-        
-        :param str msg: (**Optional**) message to append at the end
-        '''
-        
-        if not isinstance(msg, str):
-            msg = ''
-        
-        super.__init__(f'Array 1 has shape {arr1.shape} but array 2 has shape {arr2.shape}{msg}.')
 
+################################
+#        Filter objects        #
+################################
 
 class Filter:
     r'''Base class implementing data related to a single filter.'''
@@ -292,8 +275,8 @@ class FilterList:
                 data, var   = self.scale(data, var, meanMap, factor=scaleFactor)
             
             # Transform data and error maps into 1D vectors
-            data.reshape(shp[0]*shp[1])
-            var.reshape( shp[0]*shp[1])
+            data            = data.reshape(shp[0]*shp[1])
+            var             = var.reshape( shp[0]*shp[1])
             
             # Get rid of NaN values
             nanMask         = ~(np.isnan(data) | np.isnan(var))
@@ -575,8 +558,411 @@ class FilterList:
     #: Set LePhare as fitting code
     setLePhare = partialmethod(setCode, 'lephare')
         
+    
+#########################################
+#              SED objects              #
+#########################################
+        
+class SED:
+    '''General SED object used for inheritance.'''
+    
+    def __init__(self, *args, **kwargs):
+        '''Init SED oject.'''
+        
+        # Code associated to the SED
+        self.code       = None
+        
+        # Allowed keys and corresponding types for the SED parameters
+        self.keys       = {}
+        
+        # SED parameter properties
+        self.prop = {}
+        
+    
+    #########################################
+    #     Methods need be reimplemented     #
+    #########################################
+    
+    def genParams(self, *args, **kwargs):
+        '''Generate a parameter file used by the SED fitting code.'''
+        
+        raise NotImplementedError('genParams method not implemented.')
+    
+    def run(self, *args, **kwargs):
+        '''Run the SED fitting code.'''
+        
+        raise NotImplementedError('run method not implemented.')
+        
+    ###########################
+    #     Private methods     #
+    ###########################
+        
+    def __getitem__(self, key):
+        '''
+        Allow to get a SED parameter value using the syntax
+        
+        >>> sed = SED()
+        >>> print(sed['STAR_LIB'])
+        
+        :param str key: SED parameter name
+        :returns: SED parameter value if it is a valid key, or None otherwise
+        '''
+        
+        if key in self.keys:
+            return self.prop[key]
+        else:
+            print(WARNING + f'{key} is not a valid key.')
+        
+        return
+        
+    def __setitem__(self, key, value):
+        '''
+        Allow to set a SED parameter using the syntax
+        
+        >>> sed = SED()
+        >>> sed['STAR_LIB'] = 'LIB_STAR_bc03'
+        
+        :param str key: SED parameter name
+        :param value: value corresponding to this parameter
+        '''
+            
+        if key not in self.keys:
+            print(ERROR + f'key {key} is not a valid key. Accepted keys are {list(self.keys.values())}.')
+        elif not isinstance(value, self.keys[key]):
+            print(ERROR + f'trying to set {key} parameter with value {value} of type {type(value)} but only allowed type(s) is/are {self.keys[key]}.')
+        else:
+            self.prop[key] = value
+        
+        return
+            
+        
+class LePhare(SED):
+    '''Implements LePhare SED object.'''
+    
+    def __init__(self, properties, *args, **kwargs):
+        '''
+        Init LePhare object.
+        
+        :param dict properties: properties to be passed to LePhare to compute the models grid and perform the SED fitting
+        
+        Accepted properties are:
+        
+            * **STAR_SED**: stellar library list file (full path)
+            * **STAR_FSCALE**: stellar flux scale
+            * **STAR_LIB**: stellar library to use (default libraries found at $LEPHAREWORK/lib_bin)
+            * **QSO_SED**: QSO list file (full path)
+            * **QSO_FSCALE**: QSO flux scale
+            * **QSO_LIB**: QSO library to use (default libraries found at $LEPHAREWORK/lib_bin)
+            * **GAL_SED**: galaxy library list file (full path)
+            * **GAL_FSCALE** : galaxy flux scale
+            * **GAL_LIB**: galaxy library to use (default libraries found at $LEPHAREWORK/lib_bin)
+            * **SEL_AGE**: stellar ages list (full path)
+            * **AGE_RANGE**: minimum and maximum ages in years
+            * **FILTER_LIST**: list of filter names used for the fit (must all be located in $LEPHAREDIR/filt directory)
+            * **TRANS_TYPE**: transmission type (0 for Energy, 1 for photons)
+            * **FILTER_CALIB**: filter calibration (0 for fnu=ctt, 1 for nu.fnu=ctt, 2 for fnu=nu, 3=fnu=Black Body @ T=10000K, 4 for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K) 
+            * **FILTER_FILE**: filter file (must be located in $LEPHAREWORK/filt directory)
+            * **STAR_LIB_IN**: input stellar library (dupplicate with **STAR_LIB** ?)
+            * **STAR_LIB_OUT**: output stellar magnitudes
+            * **QSO_LIB_IN**: input QSO library (dupplicate with **QSO_LIB** ?)
+            * **QSO_LIB_OUT**: output QSO magnitudes
+            * **GAL_LIB_IN**: input galaxy library (dupplicate with **GAL_LIB** ?)
+            * **GAL_LIB_OUT**: output galaxy magnitudes
+            
+        .. warning::
+            
+            It is mandatory to define on your OS two environment variables:
+                
+                * $LEPHAREWORK which points to LePhare working directory
+                * $LEPHAREDIR which points to LePhare main directory
+                
+            These paths may be expanded to check whether the given files exist and can be used by the user to shorten some path names when providing the SED properties.
+        '''
+        
+        super().__init__(*args, **kwargs)
+        
+        self.code       = 'lephare'
+        #self.prop       = properties
+        
+        # Allowed keys and corresponding allowed types
+        self.prop = {'STAR_SED'     : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'STAR', 'STAR_MOD.list')),
+                     'STAR_FSCALE'  : Property(3.432e-09, (int, float), minBound=0),
+                     'STAR_LIB'     : PathlikeProperty('LIB_STAR_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin')),
+                     'QSO_SED'      : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'QSO', 'QSO_MOD.list')),
+                     'QSO_FSCALE'   : Property(1, (int, float), minBound=0),
+                     'QSO_LIB'      : PathlikeProperty('LIB_QSO_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin')),
+                     'GAL_SED'      : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'GAL', 'BC03_CHAB', 'BC03_MOD.list')),
+                     'GAL_FSCALE'   : Property(1, (int, float), minBound=0),
+                     'GAL_LIB'      : PathlikeProperty('LIB_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin')),
+                     'SEL_AGE'      : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'GAL', 'BC03_CHAB', 'BC03_AGE.list')),
+                     'AGE_RANGE'    : Property([0, 14e9], list, subtypes=(int, float), minBound=0),
+                     'FILTER_LIST'  : PathlikeProperty(['hst/acs_f435w.pb', 'hst/acs_f606w.pb', 'hst/acs_f775w.pb', 'hst/acs_f850lp.pb'], 
+                                                       path=opath.join('$LEPHAREDIR', 'filt')),
+                     'TRANS_TYPE'   : Property(0, int, minBound=0, maxBound=1),
+                     'FILTER_CALIB' : Property(0, int, minBound=0, maxBound=4),
+                     'FILTER_FILE'  : PathlikeProperty('HDF_bc03.filt', path=opath.join('$LEPHAREWORK', 'filt')),
+                     'STAR_LIB_IN'  : PathlikeProperty('LIB_STAR_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin')),
+                     'STAR_LIB_OUT' : Property('STAR_HDF_bc03', str), # We do not use PathlikeProperty because this is an output file
+                     'QSO_LIB_IN'   : PathlikeProperty('LIB_QSO_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin')),
+                     'QSO_LIB_OUT'  : Property('QSO_HDF_bc03', str), # We do not use PathlikeProperty because this is an output file
+                     'GAL_LIB_IN'   : PathlikeProperty('LIB_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin')),
+                     'GAL_LIB_OUT'  : Property('HDF_bc03', str), # We do not use PathlikeProperty because this is an output file
+                     }
         
         
+        # Param file text
+        self.paramText  = None
+    
+    def genParams(self, *args, **kwargs):
+        '''Generate a parameter file used by the SED fitting code.'''
+        
+        ######################################
+        #         Libraries handling         #
+        ######################################
+        
+        text = f'''\
+        ##############################################################################
+        #                CREATION OF LIBRARIES FROM SEDs List                        #
+        # $LEPHAREDIR/source/sedtolib -t (S/Q/G) -c $LEPHAREDIR/config/zphot.para    #
+        # help : $LEPHAREDIR/source/sedtolib -h (or -help)                           #
+        ##############################################################################
+        #
+        #------      STELLAR LIBRARY (ASCII SEDs)
+        STAR_SED \t{self.prop['STAR_SED']} \t# STAR list (full path)
+        STAR_FSCALE \t{self.prop['STAR_FSCALE']} \t# Arbitrary Flux Scale
+        STAR_LIB \t{self.prop['STAR_LIB']} \t# Bin. STAR LIBRARY -> $LEPHAREWORK/lib_bin
+        #
+        #------      QSO LIBRARY (ASCII SEDs)
+        QSO_SED \t{self.prop['QSO_SED']} \t# QSO list (full path)
+        QSO_FSCALE \t{self.prop['QSO_FSCALE']} \t# Arbitrary Flux Scale 
+        QSO_LIB	\t{self.prop['QSO_LIB']} \t# Bin. QSO LIBRARY -> $LEPHAREWORK/lib_bin
+        #
+        #------      GALAXY LIBRARY (ASCII or BINARY SEDs)
+        GAL_SED	\t{self.prop['GAL_SED']} \t# GAL list (full path)
+        GAL_FSCALE \t{self.prop['GAL_FSCALE']} \t# Arbitrary Flux Scale
+        GAL_LIB	\t{self.prop['GAL_LIB']} \t# Bin. GAL LIBRARY -> $LEPHAREWORK/lib_bin
+        SEL_AGE \t{self.prop['SEL_AGE']} \t# Age list(full path, def=NONE)	
+        AGE_RANGE \t{self.prop['AGE_RANGE']} \t# Age Min-Max in yr
+        #
+        #############################################################################
+        #                           FILTERS                                         #
+        #  $LEPHAREDIR/source/filter  -c $LEPHAREDIR/config/zphot.para              #
+        #  help: $LEPHAREDIR/source/filter  -h (or -help)                           #
+        #############################################################################
+        #  Filter number and context 
+        #   f300 f450 f606 f814 J  H  K 
+        #   1    2    3    4    5  6  7
+        #   1    2    4    8   16  32 64 = 127 
+        #
+        FILTER_LIST \t{self.prop['FILTER_LIST']} \t# (in $LEPHAREDIR/filt/*)
+        TRANS_TYPE \t{self.prop['TRANS_TYPE']} \t# TRANSMISSION TYPE
+        FILTER_CALIB \t{self.prop['FILTER_CALIB']} \t# 0[-def]: fnu=ctt, 1: nu.fnu=ctt, 2: fnu=nu, 3: fnu=Black Body @ T=10000K, 4: for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K
+        FILTER_FILE \t{self.prop['FILTER_FILE']} \t# output name of filter's file -> $LEPHAREWORK/filt/
+        #
+        ############################################################################
+        #                 THEORETICAL  MAGNITUDES                                  #
+        # $LEPHAREDIR/source/mag_star -c  $LEPHAREDIR/config/zphot.para (star only)#
+        # help: $LEPHAREDIR/source/mag_star -h (or -help)                          #
+        # $LEPHAREDIR/source/mag_gal  -t (Q or G) -c $LEPHAREDIR/config/zphot.para #
+        #                                                         (for gal. & QSO) #
+        # help: $LEPHAREDIR/source/mag_gal  -h (or -help)                          #
+        ############################################################################
+        #
+        #-------     From STELLAR LIBRARY
+        STAR_LIB_IN \t{self.prop['STAR_LIB_IN']} \t# Input STELLAR LIBRARY in $LEPHAREWORK/lib_bin/
+        STAR_LIB_OUT \t{self.prop['STAR_LIB_OUT']} \t# Output STELLAR MAGN -> $LEPHAREWORK/lib_mag/
+        #
+        #-------     From QSO     LIBRARY   
+        QSO_LIB_IN \t{self.prop['QSO_LIB_IN']} \t# Input  QSO LIBRARY  in $LEPHAREWORK/lib_bin/
+        QSO_LIB_OUT	\t{self.prop['QSO_LIB_OUT']} \t# Output QSO MAGN     -> $LEPHAREWORK/lib_mag/
+        #
+        #-------     From GALAXY  LIBRARY  
+        GAL_LIB_IN \t{self.prop['GAL_LIB_IN']} \t# Input  GAL LIBRARY  in $LEPHAREWORK/lib_bin/
+        GAL_LIB_OUT	\t{self.prop['GAL_LIB_OUT']} \t# Output GAL LIBRARY  -> $LEPHAREWORK/lib_mag/ 
+        #
+        #-------   MAG + Z_STEP + EXTINCTION + COSMOLOGY
+        '''        
+ 
+
+###################################
+#          Miscellaneous          #
+###################################
+        
+class ShapeError(Exception):
+    '''Error which is caught when two arrays do not share the same shape.'''
+    
+    def __init__(self, arr1, arr2, msg='', **kwargs):
+        '''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
+        Init method for this exception.
+        
+        :param ndarray arr1: first array
+        :param ndarray arr2: second array
+        
+        :param str msg: (**Optional**) message to append at the end
+        '''
+        
+        if not isinstance(msg, str):
+            msg = ''
+        
+        super.__init__(f'Array 1 has shape {arr1.shape} but array 2 has shape {arr2.shape}{msg}.')
+        
+class PathlikeProperty(Property):
+    '''Define a property object where the data stored must be a valid path or file.'''
+    
+    def __init__(self, default, path='', *args, **kwargs):
+        '''
+        Init the path-like object. Path-like type must either be str or list of str.
+        
+        :param default: default value used at init
+        
+        :raises TypeError: if **path** is not of type str
+        
+        .. seealso:: :py:class:`Property`
+        '''
+        
+        if not isinstance(path, str):
+            raise TypeError(f'path has type {type(path)} but it must have type str.')
+        
+        # Set path to append at the beginning of a check
+        self.path    = path
+        
+        super().__init__(name, default, (list, str), subtypes=str, minBound=None, maxBound=None, **kwargs)
+        
+        # Need to call set again since it was called in super
+        self.set(default)
+        self.default = default
         
         
+    def set(self, value, *args, **kwargs):
+        '''
+        Set the current value.
+
+        :param value: new value. Must be of correct type, and within bounds.
+
+        :raises TypeError: 
+            
+            * if **value** does not have correct type (str or list)
+            * if **value** is a list and at least one value in the list is not of correct subtype (str)
         
+        :raises OSError: if expanded path (**value**) is neither a valid path, nor a valid file name
+        '''
+        
+        if not isinstance(value, self.types):
+            raise TypeError(f'cannot set property with value {value} of type {type(value)}. Acceptable types are {self.types}.')
+            
+        if self.types == list:
+            
+            if not all([isinstance(i, self.subtypes) for i in value]):
+                raise TypeError(f'at least one value does not have the type {self.subtypes}.')
+
+            for p in value:    
+                path  = opath.join(self.path, p)
+                epath = opath.expandvars(path)
+                
+                if not opath.exists(path) and not opath.isfile(path):
+                    raise OSError(f'path {path} (expanded as {epath}) does not exist.')
+            
+        else:
+                
+            path     = opath.join(self.path, value)
+            epath    = opath.expandvars(path)
+            if not opath.exists(path) and not opath.isfile(path):
+                raise OSError(f'path {path} (expanded as {epath}) does not exist.')
+        
+        self.value   = value
+        return
+        
+class Property:
+    '''Define a property object used by SED objects to store SED parameters.'''
+    
+    def __init__(self, default, types, subtypes=None, minBound=None, maxBound=None, **kwargs):
+        '''
+        Init the property object.
+
+        :param type: type of the property. If the property is a list, provide the elements type in **subtypes**.
+        :param default: default value used at init
+
+        :param subtypes: (**Optional**) type of the elements if **type** is a list. If None, it is ignored.
+        :param minBound: (**Optional**) minimum value for the property. If None, it is ignored.
+        :param maxBound: (**Optional**) maximum value for the property. If None, it is ignored.
+        '''
+        
+        self.types     = types
+        
+        self.substypes = subtypes
+        self.min       = minBound
+        self.max       = maxBound
+        
+        self.set(default)
+        self.default   = default
+        
+    ##################################
+    #        Built-in methods        #
+    ##################################
+    
+    def __str__(self, *args, **kwargs):
+        '''Implement a string representation of the class.'''
+        
+        typ = type(self.value)
+        
+        if typ == int:
+            return f'{self.value}'
+        elif typ == float:
+            return f'{self.value:.3e}'
+        elif self.types == str:
+            return self.value
+        elif typ == list:
+            
+            subtyp = type(self.value[0])
+            
+            if subtyp == int:
+                return ','.join([f'{i}' for i in self.value])
+            elif subtyp == float:
+                return ','.join([f'{i:.3e}' for i in self.value])
+            elif subtyp == str:
+                return ','.join(self.value)
+            else:
+                raise NotImplementedError('no string representation available for Property object with value of type {self.subtypes}.')
+        else:
+             raise NotImplementedError('no string representation available for Property object with value of type {self.types}.')
+        
+    ###############################
+    #        Miscellaneous        #
+    ###############################
+    
+    def set(self, value, *args, **kwargs):
+        '''
+        Set the current value.
+
+        :param value: new value. Must be of correct type, and within bounds.
+
+        :raises TypeError: 
+            
+            * if **value** does not have correct type
+            * if **value** is a list and at least one value in the list is not of correct subtype
+        
+        :raises ValueError: 
+            
+            * if **value** is below the minimum bound
+            * if **value** is above the maximum bound
+        '''
+        
+        if not isinstance(value, self.types):
+            raise TypeError(f'cannot set property with value {value} of type {type(value)}. Acceptable types are {self.types}.')
+            
+        if self.types == list and not all([isinstance(i, self.subtypes) for i in value]):
+            raise TypeError(f'at least one value does not have the type {self.subtypes}.')
+            
+        if self.min is not None and value < self.min:
+            raise ValueError('value is {value} but minimum acceptable bound is {self.min}.')
+        
+        if self.max is not None and value > self.max:
+            raise ValueError('value is {value} but maximum acceptable bound is {self.max}.')
+        
+        self.value = value
+        return
+    
+    
+    
