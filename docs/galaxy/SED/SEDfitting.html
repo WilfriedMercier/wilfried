@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Galaxies photometry &#8212; wilfried library 1.0 documentation</title>
+    <title>Resolved mass and SFR maps &#8212; wilfried library 1.0 documentation</title>
     
   <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
@@ -40,8 +40,6 @@
     <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Fluxes, colour excess and attenuation" href="Fluxes.html" />
-    <link rel="prev" title="Other Sersic related functions" href="../morphology/Other.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -76,7 +74,7 @@
   </a>
  </li>
 </ul>
-<ul class="current nav sidenav_l1">
+<ul class="nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../../dependencies.html">
    Required dependencies
@@ -150,11 +148,11 @@
   <i class="fas fa-chevron-down">
   </i>
  </li>
- <li class="toctree-l1 current active collapsible-parent">
+ <li class="toctree-l1 collapsible-parent">
   <a class="reference internal" href="../index.html">
    Galaxy module
   </a>
-  <ul class="current collapse-ul">
+  <ul class="collapse-ul">
    <li class="toctree-l2">
     <a class="reference internal" href="../angularMomentum.html">
      Galaxies angular momentum
@@ -219,23 +217,23 @@
     <i class="fas fa-chevron-down">
     </i>
    </li>
-   <li class="toctree-l2 current active collapsible-parent">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../photometry/index.html">
      Galaxies photometry
     </a>
     <ul class="collapse-ul">
      <li class="toctree-l3">
-      <a class="reference internal" href="Fluxes.html">
+      <a class="reference internal" href="../photometry/Fluxes.html">
        Fluxes, colour excess and attenuation
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="Masses_SFR.html">
+      <a class="reference internal" href="../photometry/Masses_SFR.html">
        Masses and SFR estimates
       </a>
      </li>
      <li class="toctree-l3">
-      <a class="reference internal" href="Magnitudes.html">
+      <a class="reference internal" href="../photometry/Magnitudes.html">
        Magnitude conversions
       </a>
      </li>
@@ -306,7 +304,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/galaxy/photometry/index.rst.txt"><button type="button"
+        <a class="dropdown-buttons" href="../../_sources/galaxy/SED/SEDfitting.rst.txt"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.rst</button></a>
         <!-- Download PDF via print -->
@@ -326,7 +324,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         
-        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/photometry/index.rst"><button
+        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/SED/SEDfitting.rst"><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
     </div>
@@ -346,21 +344,6 @@
         <!-- Table of contents -->
         <div class="d-none d-md-block col-md-2 bd-toc show">
             
-        <div class="tocsection onthispage pt-5 pb-3">
-            <i class="fas fa-list"></i>
-            Contents
-        </div>
-        <nav id="bd-toc-nav">
-            <ul class="nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#functions-are-split-into-the-following-modules">
-   Functions are split into the following modules:
-  </a>
- </li>
-</ul>
-
-        </nav>
-        
         </div>
     </div>
 </div>
@@ -369,19 +352,38 @@
         
               <div>
                 
-  <div class="section" id="module-galaxy.photometry">
-<span id="galaxies-photometry"></span><h1>Galaxies photometry<a class="headerlink" href="#module-galaxy.photometry" title="Permalink to this headline">¶</a></h1>
-<p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit&#46;epinat&#37;&#52;&#48;lam&#46;fr">benoit<span>&#46;</span>epinat<span>&#64;</span>lam<span>&#46;</span>fr</a>&gt; &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
-<p>Photometry functions related to galaxies.</p>
-<div class="section" id="functions-are-split-into-the-following-modules">
-<h2>Functions are split into the following modules:<a class="headerlink" href="#functions-are-split-into-the-following-modules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Fluxes.html">Fluxes, colour excess and attenuation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Masses_SFR.html">Masses and SFR estimates</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Magnitudes.html">Magnitude conversions</a></li>
+  <div class="section" id="resolved-mass-and-sfr-maps">
+<h1>Resolved mass and SFR maps<a class="headerlink" href="#resolved-mass-and-sfr-maps" title="Permalink to this headline">¶</a></h1>
+<p>This module contains utility functions to produce resolved stellar mass and SFR maps using pixel per pixel SED fitting techniques.</p>
+<p>Two SED fitting codes can be used: LePhare and Cigale.</p>
+<p>In order for this module to work, you must follow the installation instructions for the code you want to use.</p>
+<p>This module defines three types of classes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>SED objects</p></li>
+<li><p>Filter lists</p></li>
+<li><p>Catalogues</p></li>
 </ul>
-</div>
+</div></blockquote>
+<p>In order to run one of the SED fitting codes on a galaxy, one must:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Generate Filter objects for each observed band</p></li>
+<li><p>Combine the filters into a FilterList. This ensures that data have the same format and that there are no dupplicates. On top of that, masks can be provided and data can be automatically rescaled depending on the code used.</p></li>
+<li><p>Transform the filter list into a Catalogue object comptaible with the code to be used</p></li>
+<li><p>Generate a SED object with the user-defined SED fitting parameters</p></li>
+<li><p>Run the SED fitting by providing the Cataogue to the SED object</p></li>
+</ol>
+</div></blockquote>
+<p>Examples will be given once the code has been tested.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="sed.html">SED objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="catalogues.html">Catalogue objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filter and FilterList definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous classes</a></li>
+</ul>
 </div>
 </div>
 
@@ -391,8 +393,6 @@
         
         <div class='prev-next-bottom'>
             
-    <a class='left-prev' id="prev-link" href="../morphology/Other.html" title="previous page">Other Sersic related functions</a>
-    <a class='right-next' id="next-link" href="Fluxes.html" title="next page">Fluxes, colour excess and attenuation</a>
 
         </div>
         

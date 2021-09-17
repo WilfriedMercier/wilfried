@@ -241,11 +241,6 @@
     <i class="fas fa-chevron-down">
     </i>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/SEDfitting.html">
-     Pixel per pixel SED fitting
-    </a>
-   </li>
   </ul>
   <i class="fas fa-chevron-down">
   </i>
@@ -399,11 +394,11 @@
 <span class="sd">    :param float zeropoint: zeropoint associated to the data</span>
 <span class="sd">    </span>
 <span class="sd">    :returns: AB magnitude and associated error</span>
-<span class="sd">    :rtype: float or ndarray[float], float or ndarray[float]</span>
+<span class="sd">    :rtype: Astropy Quantity, Astropy Quantity</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="n">flux</span>  <span class="o">=</span> <span class="n">data</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span>
-    <span class="n">eflux</span> <span class="o">=</span> <span class="n">err</span>  <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span>
+    <span class="n">flux</span>  <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">data</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s*Hz*cm^2)&#39;</span><span class="p">)</span>
+    <span class="n">eflux</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">err</span>  <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;erg/(s*Hz*cm^2)&#39;</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">flux</span><span class="p">,</span> <span class="n">eflux</span></div>
 

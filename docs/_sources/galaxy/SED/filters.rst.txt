@@ -1,0 +1,9 @@
+Filter and FilterList definitions
+=================================
+
+.. automodule:: galaxy.SED.filters
+   :special-members: __init__
+   :members:
+   :private-members:
+   :undoc-members:
+   :show-inheritance:

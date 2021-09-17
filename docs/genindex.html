@@ -241,10 +241,34 @@
     <i class="fas fa-chevron-down">
     </i>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="galaxy/SEDfitting.html">
-     Pixel per pixel SED fitting
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="galaxy/SED/index.html">
+     Resolved mass and SFR maps
     </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="galaxy/SED/sed.html">
+       SED objects
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="galaxy/SED/catalogues.html">
+       Catalogue objects
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="galaxy/SED/filters.html">
+       Filter and FilterList definitions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="galaxy/SED/misc.html">
+       Miscellaneous classes
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
    </li>
   </ul>
   <i class="fas fa-chevron-down">
@@ -388,11 +412,23 @@
 </li>
         <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic.__init__">(galaxy.massModels.Sersic method)</a>
 </li>
-        <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.Filter.__init__">(galaxy.SEDfitting.Filter method)</a>
+        <li><a href="galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue.__init__">(galaxy.SED.catalogues.Catalogue method)</a>
 </li>
-        <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.__init__">(galaxy.SEDfitting.FilterList method)</a>
+        <li><a href="galaxy/SED/catalogues.html#galaxy.SED.catalogues.LePhareCat.__init__">(galaxy.SED.catalogues.LePhareCat method)</a>
 </li>
-        <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.ShapeError.__init__">(galaxy.SEDfitting.ShapeError method)</a>
+        <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.Filter.__init__">(galaxy.SED.filters.Filter method)</a>
+</li>
+        <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.__init__">(galaxy.SED.filters.FilterList method)</a>
+</li>
+        <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.PathlikeProperty.__init__">(galaxy.SED.misc.PathlikeProperty method)</a>
+</li>
+        <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.Property.__init__">(galaxy.SED.misc.Property method)</a>
+</li>
+        <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.ShapeError.__init__">(galaxy.SED.misc.ShapeError method)</a>
+</li>
+        <li><a href="galaxy/SED/sed.html#galaxy.SED.sed.LePhareSED.__init__">(galaxy.SED.sed.LePhareSED method)</a>
+</li>
+        <li><a href="galaxy/SED/sed.html#galaxy.SED.sed.SED.__init__">(galaxy.SED.sed.SED method)</a>
 </li>
       </ul></li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur._alpha_a">_alpha_a (galaxy.massModels.deVaucouleur attribute)</a>
@@ -401,14 +437,14 @@
         <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist._alpha_a">(galaxy.massModels.Hernquist attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur._alpha_F">_alpha_F (galaxy.massModels.deVaucouleur attribute)</a>
 
       <ul>
         <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist._alpha_F">(galaxy.massModels.Hernquist attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur._beta_a">_beta_a (galaxy.massModels.deVaucouleur attribute)</a>
 
       <ul>
@@ -421,7 +457,7 @@
         <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist._beta_F">(galaxy.massModels.Hernquist attribute)</a>
 </li>
       </ul></li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.Filter._checkFile">_checkFile() (galaxy.SEDfitting.Filter method)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.Filter._checkFile">_checkFile() (galaxy.SED.filters.Filter method)</a>
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.MassModelBase._checkR">_checkR() (galaxy.massModels.MassModelBase method)</a>
 
@@ -429,11 +465,9 @@
         <li><a href="galaxy/massModels.html#galaxy.massModels.Sersic._checkR">(galaxy.massModels.Sersic method)</a>
 </li>
       </ul></li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.Filter._loadFits">_loadFits() (galaxy.SEDfitting.Filter static method)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.Filter._loadFits">_loadFits() (galaxy.SED.filters.Filter method)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.Filter._mask">_mask() (galaxy.SEDfitting.Filter static method)</a>
-</li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting._parseConfig">_parseConfig() (in module galaxy.SEDfitting)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.Filter._mask">_mask() (galaxy.SED.filters.Filter static method)</a>
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk._ramp_radius">_ramp_radius() (galaxy.massModels.DoubleExponentialDisk property)</a>
 </li>
@@ -505,6 +539,8 @@
 </li>
       <li><a href="galaxy/photometry/Fluxes.html#galaxy.photometry.cardelli_law">cardelli_law() (in module galaxy.photometry)</a>
 </li>
+      <li><a href="galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue">Catalogue (class in galaxy.SED.catalogues)</a>
+</li>
       <li><a href="galaxy/morphology/Other.html#galaxy.morphology.centralIntensity">centralIntensity() (in module galaxy.morphology)</a>
 </li>
       <li><a href="galaxy/morphology/MUSE.html#galaxy.MUSE.centreFromHSTtoMUSE">centreFromHSTtoMUSE() (in module galaxy.MUSE)</a>
@@ -519,7 +555,7 @@
 </li>
       <li><a href="utilities/dict.html#utilities.dictionaries.checkInDict">checkInDict() (in module utilities.dictionaries)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.clean">clean() (galaxy.SEDfitting.FilterList static method)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.clean">clean() (galaxy.SED.filters.FilterList static method)</a>
 </li>
       <li><a href="galaxy/kinematics.html#galaxy.kinematics.clean_galaxy">clean_galaxy() (in module galaxy.kinematics)</a>
 </li>
@@ -529,10 +565,10 @@
 </li>
       <li><a href="galaxy/cosmology.html#galaxy.cosmology.comoving_separation">comoving_separation() (in module galaxy.cosmology)</a>
 </li>
-      <li><a href="galaxy/misc.html#galaxy.misc.compute_bn">compute_bn() (in module galaxy.misc)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/misc.html#galaxy.misc.compute_bn">compute_bn() (in module galaxy.misc)</a>
+</li>
       <li><a href="galaxy/morphology/MUSE.html#galaxy.MUSE.compute_lsfw">compute_lsfw() (in module galaxy.MUSE)</a>
 </li>
       <li><a href="galaxy/morphology/Other.html#galaxy.morphology.compute_R22">compute_R22() (in module galaxy.morphology)</a>
@@ -611,9 +647,9 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.Filter">Filter (class in galaxy.SEDfitting)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.Filter">Filter (class in galaxy.SED.filters)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList">FilterList (class in galaxy.SEDfitting)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList">FilterList (class in galaxy.SED.filters)</a>
 </li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.findWhereIsValue">findWhereIsValue() (in module makeLifeSimpler)</a>
 </li>
@@ -716,12 +752,35 @@
 </li>
       </ul></li>
       <li>
-    galaxy.SEDfitting
+    galaxy.SED.catalogues
 
       <ul>
-        <li><a href="galaxy/SEDfitting.html#module-galaxy.SEDfitting">module</a>
+        <li><a href="galaxy/SED/catalogues.html#module-galaxy.SED.catalogues">module</a>
 </li>
       </ul></li>
+      <li>
+    galaxy.SED.filters
+
+      <ul>
+        <li><a href="galaxy/SED/filters.html#module-galaxy.SED.filters">module</a>
+</li>
+      </ul></li>
+      <li>
+    galaxy.SED.misc
+
+      <ul>
+        <li><a href="galaxy/SED/misc.html#module-galaxy.SED.misc">module</a>
+</li>
+      </ul></li>
+      <li>
+    galaxy.SED.sed
+
+      <ul>
+        <li><a href="galaxy/SED/sed.html#module-galaxy.SED.sed">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     galfit.galfit
 
@@ -736,8 +795,6 @@
         <li><a href="galfit/models.html#module-galfit.models">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galfit/galfit.html#galfit.galfit.genConstraint">genConstraint() (in module galfit.galfit)</a>
 </li>
       <li><a href="galfit/models.html#galfit.models.gendeVaucouleur">gendeVaucouleur() (in module galfit.models)</a>
@@ -763,6 +820,8 @@
       <li><a href="galfit/models.html#galfit.models.genMoffat">genMoffat() (in module galfit.models)</a>
 </li>
       <li><a href="galfit/models.html#galfit.models.genNuker">genNuker() (in module galfit.models)</a>
+</li>
+      <li><a href="galaxy/SED/sed.html#galaxy.SED.sed.SED.genParams">genParams() (galaxy.SED.sed.SED method)</a>
 </li>
       <li><a href="galfit/models.html#galfit.models.genPSF">genPSF() (in module galfit.models)</a>
 </li>
@@ -822,10 +881,14 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="galaxy/morphology/MUSE.html#galaxy.MUSE.ListGroups">ListGroups() (in module galaxy.MUSE)</a>
+      <li><a href="galaxy/SED/catalogues.html#galaxy.SED.catalogues.LePhareCat">LePhareCat (class in galaxy.SED.catalogues)</a>
+</li>
+      <li><a href="galaxy/SED/sed.html#galaxy.SED.sed.LePhareSED">LePhareSED (class in galaxy.SED.sed)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/morphology/MUSE.html#galaxy.MUSE.ListGroups">ListGroups() (in module galaxy.MUSE)</a>
+</li>
       <li><a href="utilities/io.html#utilities.io.loadVOtable">loadVOtable() (in module utilities.io)</a>
 </li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.logicalAndFromList">logicalAndFromList() (in module makeLifeSimpler)</a>
@@ -869,7 +932,7 @@
 </li>
       <li><a href="utilities/strings.html#utilities.strings.maxStringsLen">maxStringsLen() (in module utilities.strings)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.meanMap">meanMap() (galaxy.SEDfitting.FilterList method)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.meanMap">meanMap() (galaxy.SED.filters.FilterList method)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.mergeModelsIntoOne">mergeModelsIntoOne() (in module galaxy.misc)</a>
 </li>
@@ -895,7 +958,13 @@
 </li>
         <li><a href="galaxy/photometry/index.html#module-galaxy.photometry">galaxy.photometry</a>
 </li>
-        <li><a href="galaxy/SEDfitting.html#module-galaxy.SEDfitting">galaxy.SEDfitting</a>
+        <li><a href="galaxy/SED/catalogues.html#module-galaxy.SED.catalogues">galaxy.SED.catalogues</a>
+</li>
+        <li><a href="galaxy/SED/filters.html#module-galaxy.SED.filters">galaxy.SED.filters</a>
+</li>
+        <li><a href="galaxy/SED/misc.html#module-galaxy.SED.misc">galaxy.SED.misc</a>
+</li>
+        <li><a href="galaxy/SED/sed.html#module-galaxy.SED.sed">galaxy.SED.sed</a>
 </li>
         <li><a href="galfit/galfit.html#module-galfit.galfit">galfit.galfit</a>
 </li>
@@ -960,6 +1029,12 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/SED/sed.html#galaxy.SED.sed.LePhareSED.parameters">parameters() (galaxy.SED.sed.LePhareSED property)</a>
+</li>
+      <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.PathlikeProperty">PathlikeProperty (class in galaxy.SED.misc)</a>
+</li>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.poissonVar">poissonVar() (galaxy.SED.filters.FilterList static method)</a>
+</li>
       <li><a href="makeLifeSimpler.html#makeLifeSimpler.printSimpleStat">printSimpleStat() (in module makeLifeSimpler)</a>
 </li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.DoubleExponentialDisk.profile">profile() (galaxy.massModels.DoubleExponentialDisk method)</a>
@@ -979,6 +1054,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galaxy/misc.html#galaxy.misc.projectModel2D">projectModel2D() (in module galaxy.misc)</a>
+</li>
+      <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.Property">Property (class in galaxy.SED.misc)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.PSFconvolution2D">PSFconvolution2D() (in module galaxy.misc)</a>
 </li>
@@ -1030,7 +1107,11 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.scale">scale() (galaxy.SEDfitting.FilterList static method)</a>
+      <li><a href="galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue.save">save() (galaxy.SED.catalogues.Catalogue method)</a>
+</li>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.scale">scale() (galaxy.SED.filters.FilterList static method)</a>
+</li>
+      <li><a href="galaxy/SED/sed.html#galaxy.SED.sed.SED">SED (class in galaxy.SED.sed)</a>
 </li>
       <li><a href="galaxy/cosmology.html#galaxy.cosmology.separation">separation() (in module galaxy.cosmology)</a>
 </li>
@@ -1042,19 +1123,25 @@
 </li>
       <li><a href="galaxy/models.html#galaxy.models.sersic_profile">sersic_profile() (in module galaxy.models)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.setCigale">setCigale() (galaxy.SEDfitting.FilterList method)</a>
+      <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.PathlikeProperty.set">set() (galaxy.SED.misc.PathlikeProperty method)</a>
+
+      <ul>
+        <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.Property.set">(galaxy.SED.misc.Property method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.setCode">setCode() (galaxy.SEDfitting.FilterList method)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.setCigale">setCigale() (galaxy.SED.filters.FilterList method)</a>
+</li>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.setCode">setCode() (galaxy.SED.filters.FilterList method)</a>
 </li>
       <li><a href="utilities/dict.html#utilities.dictionaries.setDict">setDict() (in module utilities.dictionaries)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.setLePhare">setLePhare() (galaxy.SEDfitting.FilterList method)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.setLePhare">setLePhare() (galaxy.SED.filters.FilterList method)</a>
 </li>
       <li><a href="galaxy/photometry/Masses_SFR.html#galaxy.photometry.sfr_kennicutt_oii">sfr_kennicutt_oii() (in module galaxy.photometry)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.ShapeError">ShapeError</a>
+      <li><a href="galaxy/SED/misc.html#galaxy.SED.misc.ShapeError">ShapeError</a>
 </li>
       <li><a href="utilities/plotUtilities/singleContour.html#utilities.plotUtilities.singleContour">singleContour() (in module utilities.plotUtilities)</a>
 </li>
@@ -1068,21 +1155,31 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="galfit/galfit.html#galfit.galfit.tags">tags (in module galfit.galfit)</a>
 </li>
+      <li><a href="galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue.text">text() (galaxy.SED.catalogues.Catalogue method)</a>
+
+      <ul>
+        <li><a href="galaxy/SED/catalogues.html#galaxy.SED.catalogues.LePhareCat.text">(galaxy.SED.catalogues.LePhareCat property)</a>
+</li>
+      </ul></li>
       <li><a href="galaxy/morphology/Morpho.html#galaxy.morphology.the_re_equation_for_2_Sersic_profiles">the_re_equation_for_2_Sersic_profiles() (in module galaxy.morphology)</a>
 </li>
       <li><a href="galaxy/misc.html#galaxy.misc.tiltGalaxy">tiltGalaxy() (in module galaxy.misc)</a>
 </li>
-      <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist.todeVaucouleur">todeVaucouleur() (galaxy.massModels.Hernquist property)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.toCatalogue">toCatalogue() (galaxy.SED.filters.FilterList method)</a>
 </li>
-      <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur.toHernquist">toHernquist() (galaxy.massModels.deVaucouleur method)</a>
+      <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist.todeVaucouleur">todeVaucouleur() (galaxy.massModels.Hernquist property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="galaxy/massModels.html#galaxy.massModels.deVaucouleur.toHernquist">toHernquist() (galaxy.massModels.deVaucouleur method)</a>
+</li>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.toLePhareCat">toLePhareCat() (galaxy.SED.filters.FilterList method)</a>
+</li>
       <li><a href="galaxy/massModels.html#galaxy.massModels.Hernquist.toSersic">toSersic() (galaxy.massModels.Hernquist property)</a>
 </li>
       <li><a href="utilities/strings.html#utilities.strings.toStr">toStr() (in module utilities.strings)</a>
 </li>
-      <li><a href="galaxy/SEDfitting.html#galaxy.SEDfitting.FilterList.toTable">toTable() (galaxy.SEDfitting.FilterList method)</a>
+      <li><a href="galaxy/SED/filters.html#galaxy.SED.filters.FilterList.toTable">toTable() (galaxy.SED.filters.FilterList method)</a>
 </li>
       <li><a href="galaxy/morphology/SersicFlux.html#galaxy.morphology.total_flux">total_flux() (in module galaxy.morphology)</a>
 </li>

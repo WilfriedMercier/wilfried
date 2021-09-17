@@ -1,0 +1,1013 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>galaxy.SED.sed &#8212; wilfried library 1.0 documentation</title>
+    
+  <link rel="stylesheet" href="../../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="../../../_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="../../../_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.d3f166471bb80abb5163.js">
+
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../../index.html">
+  
+  
+  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+  
+</a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form>
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+    <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../index.html">
+   Table of content
+  </a>
+ </li>
+</ul>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../dependencies.html">
+   Required dependencies
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../../utilities/index.html">
+   Useful utilities
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../utilities/dict.html">
+     Dictionaries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../utilities/io.html">
+     Input/Output
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../utilities/list.html">
+     List manipulations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../utilities/strings.html">
+     Strings manipulation
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../../galaxy/index.html">
+   Galaxy module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galaxy/angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galaxy/cosmology.html">
+     Cosmology computations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galaxy/kinematics.html">
+     Galaxy kinematics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galaxy/misc.html">
+     Miscellaneous
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galaxy/massModels.html">
+     Galaxy mass models
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galaxy/models.html">
+     Galaxy models
+    </a>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../../galaxy/morphology/index.html">
+     Galaxies morphology
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/morphology/Morpho.html">
+       Morphological parameters
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/morphology/MUSE.html">
+       MUSE related functions
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/morphology/Other.html">
+       Other Sersic related functions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+   <li class="toctree-l2 collapsible-parent">
+    <a class="reference internal" href="../../../galaxy/photometry/index.html">
+     Galaxies photometry
+    </a>
+    <ul class="collapse-ul">
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../galaxy/photometry/Magnitudes.html">
+       Magnitude conversions
+      </a>
+     </li>
+    </ul>
+    <i class="fas fa-chevron-down">
+    </i>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+ <li class="toctree-l1 collapsible-parent">
+  <a class="reference internal" href="../../../galfit/index.html">
+   Galfit module
+  </a>
+  <ul class="collapse-ul">
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../galfit/models.html">
+     Galfit models
+    </a>
+   </li>
+  </ul>
+  <i class="fas fa-chevron-down">
+  </i>
+ </li>
+</ul>
+
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                    title="Fullscreen mode"><i
+                        class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for galaxy.SED.sed</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. codeauthor:: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">Utilties related to generating 2D mass and SFR maps using LePhare SED fitting codes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span>       <span class="k">as</span>     <span class="nn">opath</span>
+<span class="kn">from</span>   <span class="nn">textwrap</span>      <span class="kn">import</span> <span class="n">dedent</span>
+<span class="kn">from</span>   <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span>   <span class="nn">.misc</span>         <span class="kn">import</span> <span class="n">Property</span><span class="p">,</span> <span class="n">PathlikeProperty</span>
+<span class="kn">from</span>   <span class="nn">.catalogues</span>   <span class="kn">import</span> <span class="n">LePhareCat</span>
+
+<div class="viewcode-block" id="SED"><a class="viewcode-back" href="../../../galaxy/SED/sed.html#galaxy.SED.sed.SED">[docs]</a><span class="k">class</span> <span class="nc">SED</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;General SED object used for inheritance.&#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="SED.__init__"><a class="viewcode-back" href="../../../galaxy/SED/sed.html#galaxy.SED.sed.SED.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Init SED oject.&#39;&#39;&#39;</span>
+        
+        <span class="c1"># Code associated to the SED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span>       <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="c1"># Allowed keys and corresponding types for the SED parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span>       <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c1"># SED parameter properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="p">{}</span></div>
+        
+    
+    <span class="c1">#########################################</span>
+    <span class="c1">#     Methods need be reimplemented     #</span>
+    <span class="c1">#########################################</span>
+    
+<div class="viewcode-block" id="SED.genParams"><a class="viewcode-back" href="../../../galaxy/SED/sed.html#galaxy.SED.sed.SED.genParams">[docs]</a>    <span class="k">def</span> <span class="nf">genParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Generate a parameter file used by the SED fitting code.&#39;&#39;&#39;</span>
+        
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;genParams method not implemented.&#39;</span><span class="p">)</span></div>
+    
+    <span class="k">def</span> <span class="nf">__run__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Run the SED fitting code.&#39;&#39;&#39;</span>
+        
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;run method not implemented.&#39;</span><span class="p">)</span>
+        
+    <span class="c1">###########################</span>
+    <span class="c1">#     Private methods     #</span>
+    <span class="c1">###########################</span>
+        
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">        Allow to get a SED parameter value using the syntax</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; sed = SED()</span>
+<span class="sd">        &gt;&gt;&gt; print(sed[&#39;STAR_LIB&#39;])</span>
+<span class="sd">        </span>
+<span class="sd">        :param str key: SED parameter name</span>
+<span class="sd">        :returns: SED parameter value if it is a valid key, or None otherwise</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">WARNING</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> is not a valid key.&#39;</span><span class="p">)</span>
+        
+        <span class="k">return</span>
+        
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">        Allow to set a SED parameter using the syntax</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; sed = SED()</span>
+<span class="sd">        &gt;&gt;&gt; sed[&#39;STAR_LIB&#39;] = &#39;LIB_STAR_bc03&#39;</span>
+<span class="sd">        </span>
+<span class="sd">        :param str key: SED parameter name</span>
+<span class="sd">        :param value: value corresponding to this parameter</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+            
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ERROR</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;key </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> is not a valid key. Accepted keys are </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ERROR</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;trying to set </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> parameter with value </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1"> but only allowed type(s) is/are </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="LePhareSED"><a class="viewcode-back" href="../../../galaxy/SED/sed.html#galaxy.SED.sed.LePhareSED">[docs]</a><span class="k">class</span> <span class="nc">LePhareSED</span><span class="p">(</span><span class="n">SED</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Implements LePhare SED object.&#39;&#39;&#39;</span>
+    
+<div class="viewcode-block" id="LePhareSED.__init__"><a class="viewcode-back" href="../../../galaxy/SED/sed.html#galaxy.SED.sed.LePhareSED.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">        Init LePhare object.</span>
+<span class="sd">        </span>
+<span class="sd">        :param ID: an identifier used to name the output files created during the SED fitting process</span>
+<span class="sd">        </span>
+<span class="sd">        :param dict properties: (**Optional**) properties to be passed to LePhare to compute the models grid and perform the SED fitting</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if one of the properties items is not of type str</span>
+<span class="sd">        :raises ValueError: if one of the properties does not have a valid name (see list below)</span>
+<span class="sd">        </span>
+<span class="sd">        Accepted properties are:</span>
+<span class="sd">        </span>
+<span class="sd">            * **STAR_SED** [str]: stellar library list file (full path)</span>
+<span class="sd">            * **STAR_FSCALE** [int/float]: stellar flux scale</span>
+<span class="sd">            * **STAR_LIB** [str]: stellar library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a stellar library, provide &#39;NONE&#39;.</span>
+<span class="sd">            * **QSO_SED** [str]: QSO list file (full path)</span>
+<span class="sd">            * **QSO_FSCALE** [int, float]: QSO flux scale</span>
+<span class="sd">            * **QSO_LIB** [str]: QSO library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a QSO library, provide &#39;NONE&#39;.</span>
+<span class="sd">            * **GAL_SED** [str]: galaxy library list file (full path)</span>
+<span class="sd">            * **GAL_FSCALE** [int, float]: galaxy flux scale</span>
+<span class="sd">            * **GAL_LIB** [str]: galaxy library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a galaxy library, provide &#39;NONE&#39;.</span>
+<span class="sd">            * **SEL_AGE** [str]: stellar ages list (full path)</span>
+<span class="sd">            * **AGE_RANGE** [list[int/float]]: minimum and maximum ages in years</span>
+<span class="sd">            * **FILTER_LIST** [list[str]]: list of filter names used for the fit (must all be located in $LEPHAREDIR/filt directory)</span>
+<span class="sd">            * **TRANS_TYPE** [int]: transmission type (0 for Energy, 1 for photons)</span>
+<span class="sd">            * **FILTER_CALIB** [int]: filter calibration (0 for fnu=ctt, 1 for nu.fnu=ctt, 2 for fnu=nu, 3=fnu=Black Body @ T=10000K, 4 for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K) </span>
+<span class="sd">            * **FILTER_FILE** [str]: filter file (must be located in $LEPHAREWORK/filt directory)</span>
+<span class="sd">            * **STAR_LIB_IN** [str]: input stellar library (dupplicate with **STAR_LIB** ?)</span>
+<span class="sd">            * **STAR_LIB_OUT** [str]: output stellar magnitudes</span>
+<span class="sd">            * **QSO_LIB_IN** [str]: input QSO library (dupplicate with **QSO_LIB** ?)</span>
+<span class="sd">            * **QSO_LIB_OUT** [str]: output QSO magnitudes</span>
+<span class="sd">            * **GAL_LIB_IN** [str]: input galaxy library (dupplicate with **GAL_LIB** ?)</span>
+<span class="sd">            * **GAL_LIB_OUT** [str]: output galaxy magnitudes</span>
+<span class="sd">            * **MAGTYPE** [str]: magnitude system used (AB or VEGA)</span>
+<span class="sd">            * **Z_STEP** [list[int/float]]: redshift step properties. Values are: redshift step, max redshift, redshift step for redshifts above 6 (coarser sampling).</span>
+<span class="sd">            * **COSMOLOGY** [list[int/float]]: cosmology parameters. Values are: Hubble constant H0, baryon fraction Omegam0, cosmological constant fraction Omegalambda0.</span>
+<span class="sd">            * **MOD_EXTINC** [list[int/float]]: minimum and maximum model extinctions</span>
+<span class="sd">            * **EXTINC_LAW** [str]: extinction law file (in $LEPHAREDIR/ext)</span>
+<span class="sd">            * **EB_V** [list[int/float]]: color excess E(B-V). It must contain less than 50 values.</span>
+<span class="sd">            * **EM_LINES** [str]: whether to consider emission lines or not. Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **BD_SCALE** [int]: number of bands used for scaling (0 means all bands). See LePhare documentation for more details.</span>
+<span class="sd">            * **GLB_CONTEXT** [int]: context number (0 means all bands). See LePhare documentation for more details.</span>
+<span class="sd">            * **ERR_SCALE** [list[int/float]]: magnitude errors per band to add in quadrature</span>
+<span class="sd">            * **ERR_FACTOR** [int/float]: scaling factor to apply to the errors</span>
+<span class="sd">            * **ZPHOTLIB** [list[str]]: librairies used to compute the Chi2. Maximum number is 3.</span>
+<span class="sd">            * **ADD_EMLINES** [str]: whether to add emission lines or not (dupplicate with **EM_LINES** ?). Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **FIR_LIB** [str]: far IR library</span>
+<span class="sd">            * **FIR_LMIN** [int/float]: minimum wavelength (in microns) for the far IR analysis</span>
+<span class="sd">            * **FIR_CONT** [int/float]: far IR continuum. Use -1 for no continuum.</span>
+<span class="sd">            * **FIR_SCALE** [int/float]: far IR flux scale. Use -1 to skip flux scale.</span>
+<span class="sd">            * **FIR_FREESCALE** [str]: whether to let the far IR spectrum freely scale</span>
+<span class="sd">            * **FIR_SUBSTELLAR** [str]: ???</span>
+<span class="sd">            * **PHYS_LIB** [str]: physical stochastic library</span>
+<span class="sd">            * **PHYS_CONT** [int/float]: physical continuum. Use -1 for no continuum.</span>
+<span class="sd">            * **PHYS_SCALE** [int/float]: physical flux scale. Use -1 to skip flux scale.</span>
+<span class="sd">            * **PHYS_NMAX** [int]: ???</span>
+<span class="sd">            * **MAG_ABS** [list[int/float]]: minimum and maximum values for the magnitudes.</span>
+<span class="sd">            * **MAG_REF** [int]: reference band used by **MAG_ABS**</span>
+<span class="sd">            * **Z_RANGE** [list[int/float]]: minimum and maximum redshifts used by the galaxy library</span>
+<span class="sd">            * **EBV_RANGE** [list[int/float]]: minimum and maximum colour excess E(B-V)</span>
+<span class="sd">            * **ZFIX** [str]: whether to fix the redshift or let it free. Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **Z_INTERP** [str]: whether to perform an interpolation to find the redshift. Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **DZ_WIN** [int/float]: window search for second peak. Must be between 0 and 5.</span>
+<span class="sd">            * **MIN_THRES** [int/float]: minimum threshold for second peak. Must be between 0 and 1.</span>
+<span class="sd">            * **MABS_METHOD** [int]: method used to compute magnitudes (0 : obs-&gt;Ref, 1 : best obs-&gt;Ref, 2 : fixed obs-&gt;Ref, 3 : mag from best SED, 4 : Zbin). See LePhare documentation for more details.</span>
+<span class="sd">            * **MABS_CONTEXT** [int]: context for absolute magnitudes. See LePhare documentation for more details.</span>
+<span class="sd">            * **MABS_REF** [int]: reference band used to compute the absolute magnitudes. This is only used if **MABS_METHOD** = 2.</span>
+<span class="sd">            * **MABS_FILT** [list[int]]: filters used in each redshift bin (see **MABS_ZBIN**). This is only used if **MABS_METHOD** = 4.</span>
+<span class="sd">            * **MABS_ZBIN** [list[int/float]]: redshift bins (must be an even number). This is only used if **MABS_METHOD** = 4.</span>
+<span class="sd">            * **SPEC_OUT** [str]: whether to output the spectrum of each object or not. Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **CHI2_OUT** [str]: whether to generate an output file with all the values or not. Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **PDZ_OUT** [str]: output file name for the PDZ analysis. To not do the pdz analysis, provide &#39;NONE&#39;.</span>
+<span class="sd">            * **PDZ_MABS_FILT** [list[int]]: absolute magnitude for reference filters to be extracted. See LePhare documentation for more details.</span>
+<span class="sd">            * **FAST_MODE** [str]: whether to perform a fast computation or not. Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **COL_NUM** [int]: number of colors used</span>
+<span class="sd">            * **COL_SIGMA** [int/float]: quantity by which to enlarge the errors on the colors</span>
+<span class="sd">            * **COL_SEL** [str]: operation used to combine colors. Accepted values are &#39;AND&#39; or &#39;OR&#39;.</span>
+<span class="sd">            * **AUTO_ADAPT** [str]: whether to use an adaptive method with a z-spec sample. Accepted values are &#39;YES&#39; or &#39;NO&#39;.</span>
+<span class="sd">            * **ADAPT_BAND** [list[int]]: reference band, band1 and band2 for colors</span>
+<span class="sd">            * **ADAPT_LIM** [list[int/float]]: magnitude limit for spectro in reference band</span>
+<span class="sd">            * **ADAPT_POLY** [int]: number of coefficients in polynomial. Maximum is 4.</span>
+<span class="sd">            * **ADAPT_METH** [int]: fit method, 1 for color model, 2 for redshift, 3 for models. See LePhare documentation for more details.</span>
+<span class="sd">            * **ADAPT_CONTEXT** [int]: context for the bands used for training. See LePhare documentation for more details.</span>
+<span class="sd">            * **ADAPT_ZBIN** [list[int/float]]: minimum and maximum redshift interval used for training.</span>
+<span class="sd">            </span>
+<span class="sd">        .. warning::</span>
+<span class="sd">            </span>
+<span class="sd">            It is mandatory to define on your OS two environment variables:</span>
+<span class="sd">                </span>
+<span class="sd">                * $LEPHAREWORK which points to LePhare working directory</span>
+<span class="sd">                * $LEPHAREDIR which points to LePhare main directory</span>
+<span class="sd">                </span>
+<span class="sd">            These paths may be expanded to check whether the given files exist and can be used by the user to shorten some path names when providing the SED properties.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="c1"># Will be used to generate a custom directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span>         <span class="o">=</span> <span class="n">ID</span>
+        
+        <span class="c1"># Allowed keys and corresponding allowed types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;STAR_SED&#39;</span>       <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREDIR&#39;</span><span class="p">,</span> <span class="s1">&#39;sed&#39;</span><span class="p">,</span> <span class="s1">&#39;STAR&#39;</span><span class="p">,</span> <span class="s1">&#39;STAR_MOD.list&#39;</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;STAR_FSCALE&#39;</span>    <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mf">3.432e-09</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;STAR_LIB&#39;</span>       <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;LIB_STAR_bc03&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREWORK&#39;</span><span class="p">,</span> <span class="s1">&#39;lib_bin&#39;</span><span class="p">),</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.bin&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;QSO_SED&#39;</span>        <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREDIR&#39;</span><span class="p">,</span> <span class="s1">&#39;sed&#39;</span><span class="p">,</span> <span class="s1">&#39;QSO&#39;</span><span class="p">,</span> <span class="s1">&#39;QSO_MOD.list&#39;</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;QSO_FSCALE&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;QSO_LIB&#39;</span>        <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;LIB_QSO_bc03&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREWORK&#39;</span><span class="p">,</span> <span class="s1">&#39;lib_bin&#39;</span><span class="p">),</span>  <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.bin&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;GAL_SED&#39;</span>        <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREDIR&#39;</span><span class="p">,</span> <span class="s1">&#39;sed&#39;</span><span class="p">,</span> <span class="s1">&#39;GAL&#39;</span><span class="p">,</span> <span class="s1">&#39;BC03_CHAB&#39;</span><span class="p">,</span> <span class="s1">&#39;BC03_MOD.list&#39;</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;GAL_FSCALE&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;GAL_LIB&#39;</span>        <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;LIB_bc03&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREWORK&#39;</span><span class="p">,</span> <span class="s1">&#39;lib_bin&#39;</span><span class="p">),</span>      <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.bin&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;SEL_AGE&#39;</span>        <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREDIR&#39;</span><span class="p">,</span> <span class="s1">&#39;sed&#39;</span><span class="p">,</span> <span class="s1">&#39;GAL&#39;</span><span class="p">,</span> <span class="s1">&#39;BC03_CHAB&#39;</span><span class="p">,</span> <span class="s1">&#39;BC03_AGE.list&#39;</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;AGE_RANGE&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">14e9</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;AGE_RANGE property must be an increasing length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FILTER_LIST&#39;</span>    <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">([</span><span class="s1">&#39;hst/acs_f435w.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;hst/acs_f606w.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;hst/acs_f775w.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;hst/acs_f850lp.pb&#39;</span><span class="p">],</span> 
+                                                         <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREDIR&#39;</span><span class="p">,</span> <span class="s1">&#39;filt&#39;</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;TRANS_TYPE&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FILTER_CALIB&#39;</span>   <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FILTER_FILE&#39;</span>    <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;HDF_bc03.filt&#39;</span><span class="p">,</span> 
+                                                         <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREWORK&#39;</span><span class="p">,</span> <span class="s1">&#39;filt&#39;</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;STAR_LIB_IN&#39;</span>    <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;LIB_STAR_bc03&#39;</span><span class="p">,</span> 
+                                                         <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREWORK&#39;</span><span class="p">,</span> <span class="s1">&#39;lib_bin&#39;</span><span class="p">),</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.bin&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;STAR_LIB_OUT&#39;</span>   <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;STAR_HDF_bc03&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>                                             <span class="c1"># We do not use PathlikeProperty because this is an output file</span>
+                     
+                     <span class="s1">&#39;QSO_LIB_IN&#39;</span>     <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;LIB_QSO_bc03&#39;</span><span class="p">,</span> 
+                                                         <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREWORK&#39;</span><span class="p">,</span> <span class="s1">&#39;lib_bin&#39;</span><span class="p">),</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.bin&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;QSO_LIB_OUT&#39;</span>    <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;QSO_HDF_bc03&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>                                              <span class="c1"># We do not use PathlikeProperty because this is an output file</span>
+                     
+                     <span class="s1">&#39;GAL_LIB_IN&#39;</span>     <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;LIB_bc03&#39;</span><span class="p">,</span> 
+                                                         <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREWORK&#39;</span><span class="p">,</span> <span class="s1">&#39;lib_bin&#39;</span><span class="p">),</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.bin&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;GAL_LIB_OUT&#39;</span>    <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;HDF_bc03&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>                                                  <span class="c1"># We do not use PathlikeProperty because this is an output file</span>
+                     
+                     <span class="s1">&#39;MAGTYPE&#39;</span>        <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;AB&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AB&#39;</span><span class="p">,</span> <span class="s1">&#39;VEGA&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;MAGTYPE must either be AB or VEGA.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;Z_STEP&#39;</span>         <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">3</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;Z_STEP property must be a length 3 list where the last step must be larger than the first one.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;COSMOLOGY&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">70</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MOD_EXTINC&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">27</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;MOD_EXTINC property must be an increasing length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;EXTINC_LAW&#39;</span>     <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;calzetti.dat&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">opath</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;$LEPHAREDIR&#39;</span><span class="p">,</span> <span class="s1">&#39;ext&#39;</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;EB_V&#39;</span>           <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">49</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">((</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">value</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))),</span> 
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;EB_V property must be an increasing list with a maximum length of 49.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;EM_LINES&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;EM_LINES must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;LIB_ASCII&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;YES&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;LIB_ASCII must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;BD_SCALE&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;GLB_CONTEXT&#39;</span>    <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ERR_SCALE&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ERR_FACTOR&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;ZPHOTLIB&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="s1">&#39;HDF_bc03&#39;</span><span class="p">,</span> <span class="s1">&#39;STAR_HDF_bc03&#39;</span><span class="p">,</span> <span class="s1">&#39;QSO_HDF_bc03&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="nb">str</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADD_EMLINES&#39;</span>    <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;ADD_EMLINES must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FIR_LIB&#39;</span>        <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;NONE&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FIR_LMIN&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FIR_CONT&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;FIR_SCALE&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;FIR_FREESCALE&#39;</span>  <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;FIR_FREESCALE must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FIR_SUBSTELLAR&#39;</span> <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;FIR_SUBSTELLAR must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;PHYS_LIB&#39;</span>       <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;NONE&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;PHYS_CONT&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;PHYS_SCALE&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span>
+                     
+                     <span class="s1">&#39;PHYS_NMAX&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MAG_ABS&#39;</span>        <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span><span class="p">,</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;MAG_ABS property must be a length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MAG_REF&#39;</span>        <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;Z_RANGE&#39;</span>        <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;Z_RANGE property must be an increasing length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;EBV_RANGE&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;Z_RANGE property must be an increasing length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ZFIX&#39;</span>           <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;YES&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;ZFIX must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;Z_INTERP&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;Z_INTERP must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;DZ_WIN&#39;</span>         <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MIN_THRES&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MABS_METHOD&#39;</span>    <span class="p">:</span> <span class="n">Property</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MABS_CONTEXT&#39;</span>   <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MABS_REF&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MABS_FILT&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;MABS_ZBIN&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">%</span><span class="mi">2</span><span class="o">!=</span><span class="mi">0</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">([</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">value</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]),</span> 
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;MABS_ZBIN property must be an increasing list with an even length.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;SPEC_OUT&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;SPEC_OUT must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;CHI2_OUT&#39;</span>       <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;CHI2_OUT must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;PDZ_OUT&#39;</span>        <span class="p">:</span> <span class="n">PathlikeProperty</span><span class="p">(</span><span class="s1">&#39;NONE&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;PDZ_MABS_FILT&#39;</span>  <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;FAST_MODE&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;FAST_MODE must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;COL_NUM&#39;</span>        <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;COL_SIGMA&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;COL_SEL&#39;</span>        <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;AND&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AND&#39;</span><span class="p">,</span> <span class="s1">&#39;OR&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;COL_SEL must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;AUTO_ADAPT&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;AUTO_ADAPT must either be YES or NO.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADAPT_BAND&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADAPT_LIM&#39;</span>      <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;ADAPT_LIM property must be an increasing length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADAPT_POLY&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADAPT_METH&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADAPT_CONTEXT&#39;</span>  <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADAPT_ZBIN&#39;</span>     <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;ADAPT_ZBIN property must be an increasing length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ADAPT_MODBIN&#39;</span>   <span class="p">:</span> <span class="n">Property</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxBound</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span> <span class="ow">or</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;ADAPT_MODBIN property must be an increasing length 2 list.&#39;</span><span class="p">),</span>
+                     
+                     <span class="s1">&#39;ERROR_ADAPT&#39;</span>    <span class="p">:</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                                                 <span class="n">testFunc</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;YES&#39;</span><span class="p">],</span>
+                                                 <span class="n">testMsg</span><span class="o">=</span><span class="s1">&#39;ERROR_ADAPT must either be YES or NO.&#39;</span><span class="p">)</span>
+                     <span class="p">}</span>
+        
+        <span class="c1"># Set properties given by the user</span>
+        <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;item in properties has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must have type str&#39;</span><span class="p">)</span>
+            
+            <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;item </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1"> in properties does not correspond to a valid item name.&#39;</span><span class="p">)</span>
+                
+            <span class="c1"># Set Property value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+        
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">        Generate a parameter file used by the SED fitting code.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="c1">######################################</span>
+        <span class="c1">#         Libraries handling         #</span>
+        <span class="c1">######################################</span>
+        
+        <span class="c1"># %INPUTCATALOGUEINFORMATION% is replaced when the run method is launched</span>
+        
+        
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">        ##############################################################################</span>
+<span class="s1">        #                CREATION OF LIBRARIES FROM SEDs List                        #</span>
+<span class="s1">        # $LEPHAREDIR/source/sedtolib -t (S/Q/G) -c $LEPHAREDIR/config/zphot.para    #</span>
+<span class="s1">        # help : $LEPHAREDIR/source/sedtolib -h (or -help)                           #</span>
+<span class="s1">        ##############################################################################</span>
+<span class="s1">        #</span>
+<span class="s1">        #------      STELLAR LIBRARY (ASCII SEDs)</span>
+<span class="s1">        STAR_SED </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;STAR_SED&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># STAR list (full path)</span>
+<span class="s1">        STAR_FSCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;STAR_FSCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Arbitrary Flux Scale</span>
+<span class="s1">        STAR_LIB </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;STAR_LIB&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Bin. STAR LIBRARY -&gt; $LEPHAREWORK/lib_bin</span>
+<span class="s1">        #</span>
+<span class="s1">        #------      QSO LIBRARY (ASCII SEDs)</span>
+<span class="s1">        QSO_SED </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;QSO_SED&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># QSO list (full path)</span>
+<span class="s1">        QSO_FSCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;QSO_FSCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Arbitrary Flux Scale </span>
+<span class="s1">        QSO_LIB	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;QSO_LIB&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Bin. QSO LIBRARY -&gt; $LEPHAREWORK/lib_bin</span>
+<span class="s1">        #</span>
+<span class="s1">        #------      GALAXY LIBRARY (ASCII or BINARY SEDs)</span>
+<span class="s1">        GAL_SED	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;GAL_SED&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># GAL list (full path)</span>
+<span class="s1">        GAL_FSCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;GAL_FSCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Arbitrary Flux Scale</span>
+<span class="s1">        GAL_LIB	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;GAL_LIB&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Bin. GAL LIBRARY -&gt; $LEPHAREWORK/lib_bin</span>
+<span class="s1">        SEL_AGE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;SEL_AGE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Age list(full path, def=NONE)	</span>
+<span class="s1">        AGE_RANGE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;AGE_RANGE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Age Min-Max in yr</span>
+<span class="s1">        #</span>
+<span class="s1">        #############################################################################</span>
+<span class="s1">        #                           FILTERS                                         #</span>
+<span class="s1">        #  $LEPHAREDIR/source/filter  -c $LEPHAREDIR/config/zphot.para              #</span>
+<span class="s1">        #  help: $LEPHAREDIR/source/filter  -h (or -help)                           #</span>
+<span class="s1">        #############################################################################</span>
+<span class="s1">        #  Filter number and context </span>
+<span class="s1">        #   f300 f450 f606 f814 J  H  K </span>
+<span class="s1">        #   1    2    3    4    5  6  7</span>
+<span class="s1">        #   1    2    4    8   16  32 64 = 127 </span>
+<span class="s1">        #</span>
+<span class="s1">        FILTER_LIST </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FILTER_LIST&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># (in $LEPHAREDIR/filt/*)</span>
+<span class="s1">        TRANS_TYPE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;TRANS_TYPE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># TRANSMISSION TYPE</span>
+<span class="s1">        FILTER_CALIB </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FILTER_CALIB&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># 0[-def]: fnu=ctt, 1: nu.fnu=ctt, 2: fnu=nu, 3: fnu=Black Body @ T=10000K, 4: for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K</span>
+<span class="s1">        FILTER_FILE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FILTER_FILE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># output name of filter&#39;s file -&gt; $LEPHAREWORK/filt/</span>
+<span class="s1">        #</span>
+<span class="s1">        ############################################################################</span>
+<span class="s1">        #                 THEORETICAL  MAGNITUDES                                  #</span>
+<span class="s1">        # $LEPHAREDIR/source/mag_star -c  $LEPHAREDIR/config/zphot.para (star only)#</span>
+<span class="s1">        # help: $LEPHAREDIR/source/mag_star -h (or -help)                          #</span>
+<span class="s1">        # $LEPHAREDIR/source/mag_gal  -t (Q or G) -c $LEPHAREDIR/config/zphot.para #</span>
+<span class="s1">        #                                                         (for gal. &amp; QSO) #</span>
+<span class="s1">        # help: $LEPHAREDIR/source/mag_gal  -h (or -help)                          #</span>
+<span class="s1">        ############################################################################</span>
+<span class="s1">        #</span>
+<span class="s1">        #-------     From STELLAR LIBRARY</span>
+<span class="s1">        STAR_LIB_IN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;STAR_LIB_IN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Input STELLAR LIBRARY in $LEPHAREWORK/lib_bin/</span>
+<span class="s1">        STAR_LIB_OUT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;STAR_LIB_OUT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Output STELLAR MAGN -&gt; $LEPHAREWORK/lib_mag/</span>
+<span class="s1">        #</span>
+<span class="s1">        #-------     From QSO     LIBRARY   </span>
+<span class="s1">        QSO_LIB_IN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;QSO_LIB_IN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Input QSO LIBRARY in $LEPHAREWORK/lib_bin/</span>
+<span class="s1">        QSO_LIB_OUT	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;QSO_LIB_OUT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Output QSO MAGN -&gt; $LEPHAREWORK/lib_mag/</span>
+<span class="s1">        #</span>
+<span class="s1">        #-------     From GALAXY  LIBRARY  </span>
+<span class="s1">        GAL_LIB_IN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;GAL_LIB_IN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Input GAL LIBRARY in $LEPHAREWORK/lib_bin/</span>
+<span class="s1">        GAL_LIB_OUT	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;GAL_LIB_OUT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Output GAL LIBRARY -&gt; $LEPHAREWORK/lib_mag/ </span>
+<span class="s1">        #</span>
+<span class="s1">        #-------   MAG + Z_STEP + EXTINCTION + COSMOLOGY</span>
+<span class="s1">        MAGTYPE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MAGTYPE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Magnitude type (AB or VEGA)</span>
+<span class="s1">        Z_STEP </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;Z_STEP&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># dz, zmax, dzsup(if zmax&gt;6)</span>
+<span class="s1">        COSMOLOGY </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;COSMOLOGY&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># H0,om0,lbd0 (if lb0&gt;0-&gt;om0+lbd0=1)</span>
+<span class="s1">        MOD_EXTINC </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MOD_EXTINC&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># model range for extinction </span>
+<span class="s1">        EXTINC_LAW </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;EXTINC_LAW&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># ext. law (in $LEPHAREDIR/ext/*)</span>
+<span class="s1">        EB_V </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;EB_V&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># E(B-V) (&lt;50 values)</span>
+<span class="s1">        EM_LINES </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;EM_LINES&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        # Z_FORM 	8,7,6,5,4,3 	     # Zformation for each SED in GAL_LIB_IN</span>
+<span class="s1">        #</span>
+<span class="s1">        #-------   ASCII OUTPUT FILES OPTION</span>
+<span class="s1">        LIB_ASCII </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;LIB_ASCII&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Writes output in ASCII in working directory</span>
+<span class="s1">        #</span>
+<span class="s1">        ############################################################################</span>
+<span class="s1">        #              PHOTOMETRIC REDSHIFTS                                       #</span>
+<span class="s1">        # $LEPHAREDIR/source/zphot -c $LEPHAREDIR/config/zphot.para                #</span>
+<span class="s1">        # help: $LEPHAREDIR/source/zphot -h (or -help)                             #</span>
+<span class="s1">        ############################################################################ </span>
+<span class="s1">        #  </span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        %INPUTCATALOGUEINFORMATION%</span>
+<span class="s1">        CAT_OUT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">.out </span><span class="se">\t</span><span class="s1"></span>
+<span class="s1">        PARA_OUT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">.para </span><span class="se">\t</span><span class="s1"># Ouput parameter (full path)</span>
+<span class="s1">        BD_SCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;BD_SCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Bands used for scaling (Sum 2^n; n=0-&gt;nbd-1, 0[-def]:all bands)</span>
+<span class="s1">        GLB_CONTEXT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;GLB_CONTEXT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Overwrite Context (Sum 2^n; n=0-&gt;nbd-1, 0 : all bands used, -1[-def]: used context per object)</span>
+<span class="s1">        # FORB_CONTEXT -1                   # context for forbitten bands</span>
+<span class="s1">        ERR_SCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ERR_SCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># errors per band added in quadrature</span>
+<span class="s1">        ERR_FACTOR </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ERR_FACTOR&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># error scaling factor 1.0 [-def]       </span>
+<span class="s1">        #</span>
+<span class="s1">        #-------    Theoretical libraries</span>
+<span class="s1">        ZPHOTLIB </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ZPHOTLIB&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Library used for Chi2 (max:3)</span>
+<span class="s1">        ADD_EMLINES </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADD_EMLINES&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        #</span>
+<span class="s1">        ########    PHOTOMETRIC REDSHIFTS OPTIONS      ###########</span>
+<span class="s1">        # FIR LIBRARY</span>
+<span class="s1">        FIR_LIB </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FIR_LIB&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        FIR_LMIN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FIR_LMIN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Lambda Min (micron) for FIR analysis </span>
+<span class="s1">        FIR_CONT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FIR_CONT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        FIR_SCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FIR_SCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        FIR_FREESCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FIR_FREESCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># ALLOW FOR FREE SCALING </span>
+<span class="s1">        FIR_SUBSTELLAR </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FIR_SUBSTELLAR&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        # PHYSICAL LIBRARY with Stochastic models from  BC07        </span>
+<span class="s1">        PHYS_LIB </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;PHYS_LIB&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1">  </span>
+<span class="s1">        PHYS_CONT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;PHYS_CONT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        PHYS_SCALE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;PHYS_SCALE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        PHYS_NMAX </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;PHYS_NMAX&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"></span>
+<span class="s1">        #</span>
+<span class="s1">        #-------     Priors  </span>
+<span class="s1">        # MASS_SCALE	0.,0.		 # Lg(Scaling) min,max [0,0-def]</span>
+<span class="s1">        MAG_ABS </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MAG_ABS&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Mabs_min, Mabs_max [0,0-def]</span>
+<span class="s1">        MAG_REF </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MAG_REF&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Reference number for band used by Mag_abs</span>
+<span class="s1">        # ZFORM_MIN	5,5,5,5,5,5,3,1	 # Min. Zformation per SED -&gt; Age constraint</span>
+<span class="s1">        Z_RANGE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;Z_RANGE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Z min-max used for the Galaxy library </span>
+<span class="s1">        EBV_RANGE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;EBV_RANGE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># E(B-V) MIN-MAX RANGE of E(B-V) used  </span>
+<span class="s1">        # NZ_PRIOR      4,2,4                # I Band for prior on N(z)</span>
+<span class="s1">        #                          </span>
+<span class="s1">        #-------     Fixed Z   (need format LONG for input Cat)</span>
+<span class="s1">        ZFIX </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ZFIX&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># fixed z and search best model [YES,NO-def]</span>
+<span class="s1">        #</span>
+<span class="s1">        #-------     Parabolic interpolation for Zbest  </span>
+<span class="s1">        Z_INTERP </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;Z_INTERP&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># redshift interpolation [YES,NO-def]</span>
+<span class="s1">        #-------  Analysis of normalized ML(exp-(0.5*Chi^2)) curve </span>
+<span class="s1">        #-------  Secondary peak analysis       </span>
+<span class="s1">        DZ_WIN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;DZ_WIN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Window search for 2nd peaks [0-&gt;5;0.25-def]</span>
+<span class="s1">        MIN_THRES </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MIN_THRES&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Lower threshold for 2nd peaks[0-&gt;1; 0.1-def]</span>
+<span class="s1">        #</span>
+<span class="s1">        #-------  Probability (in %) per redshift intervals</span>
+<span class="s1">        # PROB_INTZ     0,0.5,0.5,1.,1.,1.5     # even number</span>
+<span class="s1">        #</span>
+<span class="s1">        #########    ABSOLUTE MAGNITUDES COMPUTATION   ###########</span>
+<span class="s1">        #</span>
+<span class="s1">        MABS_METHOD	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MABS_METHOD&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># 0[-def] : obs-&gt;Ref, 1 : best  obs-&gt;Ref, 2 : fixed obs-&gt;Ref, 3 : mag from best SED, 4 : Zbin</span>
+<span class="s1">        MABS_CONTEXT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MABS_CONTEXT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># CONTEXT for Band used for MABS </span>
+
+<span class="s1">        MABS_REF </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MABS_REF&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># 0[-def]: filter obs chosen for Mabs (ONLY USED IF MABS_METHOD=2)</span>
+<span class="s1">        MABS_FILT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MABS_FILT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Chosen filters per redshift bin (MABS_ZBIN - ONLY USED IF MABS_METHOD=4)</span>
+<span class="s1">        MABS_ZBIN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;MABS_ZBIN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Redshift bins (even number - ONLY USED IF MABS_METHOD=4)</span>
+<span class="s1">        #########   OUTPUT SPECTRA                     ###########</span>
+<span class="s1">        #</span>
+<span class="s1">        SPEC_OUT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;SPEC_OUT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># spectrum for each object? [YES,NO-def]</span>
+<span class="s1">        CHI2_OUT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;CHI2_OUT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># output file with all values : z,mod,chi2,E(B-V),... BE CAREFUL can take a lot of space !!</span>
+<span class="s1">        #########  OUTPUT PDZ ANALYSIS  </span>
+<span class="s1">        PDZ_OUT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;PDZ_OUT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># pdz output file name [def-NONE] - add automatically PDZ_OUT[.pdz/.mabsx/.mod/.zph] </span>
+<span class="s1">        PDZ_MABS_FILT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;PDZ_MABS_FILT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># MABS for REF FILTERS to be extracted</span>
+<span class="s1">        # </span>
+<span class="s1">        #########   FAST MODE : color-space reduction        #####</span>
+<span class="s1">        #</span>
+<span class="s1">        FAST_MODE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;FAST_MODE&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Fast computation [NO-def] </span>
+<span class="s1">        COL_NUM	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;COL_NUM&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Number of colors used [3-def]</span>
+<span class="s1">        COL_SIGMA </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;COL_SIGMA&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> # Enlarge of the obs. color-errors[3-def]</span>
+<span class="s1">        COL_SEL </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;COL_SEL&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> # Combination between used colors [AND/OR-def]</span>
+<span class="s1">        #</span>
+<span class="s1">        #########   MAGNITUDE SHIFTS applied to libraries   ######</span>
+<span class="s1">        #</span>
+<span class="s1">        # APPLY_SYSSHIFT  0.             # Apply systematic shifts in each band</span>
+<span class="s1">                                         # used only if number of shifts matches</span>
+<span class="s1">                                         # with number of filters in the library    </span>
+<span class="s1">        #</span>
+<span class="s1">        #########   ADAPTIVE METHOD using Z spectro sample     ###</span>
+<span class="s1">        #</span>
+<span class="s1">        AUTO_ADAPT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;AUTO_ADAPT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Adapting method with spectro [NO-def]</span>
+<span class="s1">        ADAPT_BAND </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADAPT_BAND&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Reference band, band1, band2 for color </span>
+<span class="s1">        ADAPT_LIM </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADAPT_LIM&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Mag limits for spectro in Ref band [18,21.5-def]</span>
+<span class="s1">        ADAPT_POLY	</span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADAPT_POLY&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Number of coef in  polynom (max=4) [1-def]</span>
+<span class="s1">        ADAPT_METH </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADAPT_METH&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Fit as a function of 1 : Color Model  [1-def], 2 : Redshift, 3 : Models</span>
+<span class="s1">        ADAPT_CONTEXT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADAPT_CONTEXT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Context for bands used for training, -1[-def] used context per object</span>
+<span class="s1">        ADAPT_ZBIN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADAPT_ZBIN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># Redshift&#39;s interval used for training [0.001,6-Def]</span>
+<span class="s1">        ADAPT_MODBIN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ADAPT_MODBIN&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"># Model&#39;s interval used for training [1,1000-Def]</span>
+<span class="s1">        ERROR_ADAPT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">[</span><span class="s1">&#39;ERROR_ADAPT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> # [YES,NO-def] Add error in quadrature according to the difference between observed and predicted apparent magnitudes </span>
+<span class="s1">        #</span>
+<span class="s1">        &#39;&#39;&#39;</span>      
+        
+        <span class="k">return</span> <span class="n">text</span>
+    
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalogue</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">        Start the SED fitting on the given data using the built-in SED fitting parameters.</span>
+<span class="sd">        </span>
+<span class="sd">        :param LePhareCat catalogue: catalogue to use for the SED-fitting</span>
+<span class="sd">        :param str inputFile: name of the input file containing </span>
+<span class="sd">        </span>
+<span class="sd">        :param str tunit: (**Optional**) unit of the table data. Must either be &#39;M&#39; for magnitude or &#39;F&#39; for flux.</span>
+<span class="sd">        :param str magtype: (**Optional**) magnitude type if data are in magnitude unit. Must either be &#39;AB&#39; or &#39;VEGA&#39;.</span>
+<span class="sd">        :param str tformat: (**Optional**) format of the table. Must either be &#39;MEME&#39; if data and error columns are intertwined or &#39;MMEE&#39; if columns are first data and then errors.</span>
+<span class="sd">        :param str ttype: (**Optional**) data type. Must either be SHORT or LONG.</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">catalogue</span><span class="p">,</span> <span class="n">LePhareCat</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;catalogue has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">catalogue</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must be a LePhareCat instance.&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Make output directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">opath</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            
+        <span class="c1">##########################################</span>
+        <span class="c1">#        Generate parameters file        #</span>
+        <span class="c1">##########################################</span>
+        
+        <span class="n">params</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;%INPUTCATALOGUEINFORMATION%&#39;</span><span class="p">,</span> <span class="n">catalogue</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">dedent</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+        
+        
+        
+        <span class="k">return</span></div>
+ 
+</pre></div>
+
+              </div>
+              
+        
+        <div class='prev-next-bottom'>
+            
+
+        </div>
+        
+        </div>
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Wilfried Mercier<br/>
+        
+            &copy; Copyright 2021, Wilfried Mercier.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    
+  <script src="../../../_static/js/index.d3f166471bb80abb5163.js"></script>
+
+
+    
+  </body>
+</html>
