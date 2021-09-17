@@ -461,7 +461,7 @@ class FilterList:
     
     @staticmethod
     def poissonVar(data, texp=1, texpFac=1, **kwargs):
-        '''
+        r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
         Compute a scaled Poisson variance term from a given flux map. The variance :math:`(\Delta F)^2` is computed as
@@ -469,13 +469,15 @@ class FilterList:
         .. math::
             
             (\Delta F)^2 = \alpha F
-            
+        
+        
         where :math:`F` is the flux map and :math:`\alpha` is a scale factor defined as
         
         .. math::
-            
+                
             \alpha = {\rm{TEXP / TEXPFAC}}
-            
+        
+        
         where :math:`\rm{TEXP}` is the exposure time and :math:`\rm{TEXPFAC}` is a coefficient used to scale it down.
         
         :param ndarray data: flux map

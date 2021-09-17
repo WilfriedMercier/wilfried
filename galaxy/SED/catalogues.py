@@ -44,8 +44,8 @@ class Catalogue:
         
         Save the catalogue into the given file.
         
-        :param *args: parameters passed to Astropy.table.Table.writeto method
-        :param **kwargs: optional parameters passed to Astropy.table.Table.writeto method
+        :param args: parameters passed to Astropy.table.Table.writeto method
+        :param kwargs: optional parameters passed to Astropy.table.Table.writeto method
         '''
             
         self.data.writeto(self.name, *args, **kwargs)
