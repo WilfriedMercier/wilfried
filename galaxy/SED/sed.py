@@ -6,12 +6,17 @@ r"""
 Utilties related to generating 2D mass and SFR maps using LePhare SED fitting codes.
 """
 
+import subprocess
 import os
 import os.path       as     opath
 from   textwrap      import dedent
 from   astropy.table import Table
 from   .misc         import Property, PathlikeProperty
 from   .catalogues   import LePhareCat
+
+from   ..symlinks.coloredMessages import errorMessage
+
+ERROR   = errorMessage('Error: ')
 
 class SED:
     r'''General SED object used for inheritance.'''
@@ -269,7 +274,7 @@ class LePhareSED(SED):
                                                  testFunc=lambda value: value not in ['NO', 'YES'],
                                                  testMsg='EM_LINES must either be YES or NO.'),
                      
-                     'LIB_ASCII'      : Property('YES', str,
+                     'LIB_ASCII'      : Property('NO', str,
                                                  testFunc=lambda value: value not in ['NO', 'YES'],
                                                  testMsg='LIB_ASCII must either be YES or NO.'),
                      
@@ -439,21 +444,21 @@ class LePhareSED(SED):
         ##############################################################################
         #
         #------      STELLAR LIBRARY (ASCII SEDs)
-        STAR_SED \t{self.prop['STAR_SED']} \t# STAR list (full path)
-        STAR_FSCALE \t{self.prop['STAR_FSCALE']} \t# Arbitrary Flux Scale
-        STAR_LIB \t{self.prop['STAR_LIB']} \t# Bin. STAR LIBRARY -> $LEPHAREWORK/lib_bin
+        STAR_SED \t{self.prop['STAR_SED']} \t\t# STAR list (full path)
+        STAR_FSCALE \t{self.prop['STAR_FSCALE']} \t\t\t\t\t# Arbitrary Flux Scale
+        STAR_LIB \t{self.prop['STAR_LIB']} \t\t\t\t\t# Bin. STAR LIBRARY -> $LEPHAREWORK/lib_bin
         #
         #------      QSO LIBRARY (ASCII SEDs)
-        QSO_SED \t{self.prop['QSO_SED']} \t# QSO list (full path)
-        QSO_FSCALE \t{self.prop['QSO_FSCALE']} \t# Arbitrary Flux Scale 
-        QSO_LIB	\t{self.prop['QSO_LIB']} \t# Bin. QSO LIBRARY -> $LEPHAREWORK/lib_bin
+        QSO_SED \t{self.prop['QSO_SED']} \t\t# QSO list (full path)
+        QSO_FSCALE \t{self.prop['QSO_FSCALE']} \t\t\t\t\t\t# Arbitrary Flux Scale 
+        QSO_LIB	\t{self.prop['QSO_LIB']} \t\t\t\t\t# Bin. QSO LIBRARY -> $LEPHAREWORK/lib_bin
         #
         #------      GALAXY LIBRARY (ASCII or BINARY SEDs)
         GAL_SED	\t{self.prop['GAL_SED']} \t# GAL list (full path)
-        GAL_FSCALE \t{self.prop['GAL_FSCALE']} \t# Arbitrary Flux Scale
-        GAL_LIB	\t{self.prop['GAL_LIB']} \t# Bin. GAL LIBRARY -> $LEPHAREWORK/lib_bin
+        GAL_FSCALE \t{self.prop['GAL_FSCALE']} \t\t\t\t\t\t# Arbitrary Flux Scale
+        GAL_LIB	\t{self.prop['GAL_LIB']} \t\t\t\t\t# Bin. GAL LIBRARY -> $LEPHAREWORK/lib_bin
         SEL_AGE \t{self.prop['SEL_AGE']} \t# Age list(full path, def=NONE)	
-        AGE_RANGE \t{self.prop['AGE_RANGE']} \t# Age Min-Max in yr
+        AGE_RANGE \t{self.prop['AGE_RANGE']} \t\t\t\t\t# Age Min-Max in yr
         #
         #############################################################################
         #                           FILTERS                                         #
@@ -466,8 +471,8 @@ class LePhareSED(SED):
         #   1    2    4    8   16  32 64 = 127 
         #
         FILTER_LIST \t{self.prop['FILTER_LIST']} \t# (in $LEPHAREDIR/filt/*)
-        TRANS_TYPE \t{self.prop['TRANS_TYPE']} \t# TRANSMISSION TYPE
-        FILTER_CALIB \t{self.prop['FILTER_CALIB']} \t# 0[-def]: fnu=ctt, 1: nu.fnu=ctt, 2: fnu=nu, 3: fnu=Black Body @ T=10000K, 4: for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K
+        TRANS_TYPE \t{self.prop['TRANS_TYPE']} \t\t# TRANSMISSION TYPE
+        FILTER_CALIB \t{self.prop['FILTER_CALIB']} \t\t# 0[-def]: fnu=ctt, 1: nu.fnu=ctt, 2: fnu=nu, 3: fnu=Black Body @ T=10000K, 4: for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K
         FILTER_FILE \t{self.prop['FILTER_FILE']} \t# output name of filter's file -> $LEPHAREWORK/filt/
         #
         ############################################################################
@@ -485,24 +490,24 @@ class LePhareSED(SED):
         #
         #-------     From QSO     LIBRARY   
         QSO_LIB_IN \t{self.prop['QSO_LIB_IN']} \t# Input QSO LIBRARY in $LEPHAREWORK/lib_bin/
-        QSO_LIB_OUT	\t{self.prop['QSO_LIB_OUT']} \t# Output QSO MAGN -> $LEPHAREWORK/lib_mag/
+        QSO_LIB_OUT\t{self.prop['QSO_LIB_OUT']} \t# Output QSO MAGN -> $LEPHAREWORK/lib_mag/
         #
         #-------     From GALAXY  LIBRARY  
         GAL_LIB_IN \t{self.prop['GAL_LIB_IN']} \t# Input GAL LIBRARY in $LEPHAREWORK/lib_bin/
-        GAL_LIB_OUT	\t{self.prop['GAL_LIB_OUT']} \t# Output GAL LIBRARY -> $LEPHAREWORK/lib_mag/ 
+        GAL_LIB_OUT\t{self.prop['GAL_LIB_OUT']} \t# Output GAL LIBRARY -> $LEPHAREWORK/lib_mag/ 
         #
         #-------   MAG + Z_STEP + EXTINCTION + COSMOLOGY
-        MAGTYPE \t{self.prop['MAGTYPE']} \t# Magnitude type (AB or VEGA)
-        Z_STEP \t{self.prop['Z_STEP']} \t# dz, zmax, dzsup(if zmax>6)
+        MAGTYPE \t{self.prop['MAGTYPE']} \t\t# Magnitude type (AB or VEGA)
+        Z_STEP \t\t{self.prop['Z_STEP']} \t# dz, zmax, dzsup(if zmax>6)
         COSMOLOGY \t{self.prop['COSMOLOGY']} \t# H0,om0,lbd0 (if lb0>0->om0+lbd0=1)
-        MOD_EXTINC \t{self.prop['MOD_EXTINC']} \t# model range for extinction 
+        MOD_EXTINC \t{self.prop['MOD_EXTINC']} \t\t# model range for extinction 
         EXTINC_LAW \t{self.prop['EXTINC_LAW']} \t# ext. law (in $LEPHAREDIR/ext/*)
-        EB_V \t{self.prop['EB_V']} \t# E(B-V) (<50 values)
+        EB_V \t\t{self.prop['EB_V']} \t# E(B-V) (<50 values)
         EM_LINES \t{self.prop['EM_LINES']}
-        # Z_FORM 	8,7,6,5,4,3 	     # Zformation for each SED in GAL_LIB_IN
+        # Z_FORM 	8,7,6,5,4,3 	# Zformation for each SED in GAL_LIB_IN
         #
         #-------   ASCII OUTPUT FILES OPTION
-        LIB_ASCII \t{self.prop['LIB_ASCII']} \t# Writes output in ASCII in working directory
+        LIB_ASCII \t{self.prop['LIB_ASCII']} \t\t# Writes output in ASCII in working directory
         #
         ############################################################################
         #              PHOTOMETRIC REDSHIFTS                                       #
@@ -514,12 +519,12 @@ class LePhareSED(SED):
         #
         %INPUTCATALOGUEINFORMATION%
         CAT_OUT \t{self.id}.out \t
-        PARA_OUT \t{self.id}.para \t# Ouput parameter (full path)
-        BD_SCALE \t{self.prop['BD_SCALE']} \t# Bands used for scaling (Sum 2^n; n=0->nbd-1, 0[-def]:all bands)
-        GLB_CONTEXT \t{self.prop['GLB_CONTEXT']} \t# Overwrite Context (Sum 2^n; n=0->nbd-1, 0 : all bands used, -1[-def]: used context per object)
-        # FORB_CONTEXT -1                   # context for forbitten bands
+        PARA_OUT \t{self.id}.para \t\t# Ouput parameter (full path)
+        BD_SCALE \t{self.prop['BD_SCALE']} \t\t# Bands used for scaling (Sum 2^n; n=0->nbd-1, 0[-def]:all bands)
+        GLB_CONTEXT \t{self.prop['GLB_CONTEXT']} \t\t# Overwrite Context (Sum 2^n; n=0->nbd-1, 0 : all bands used, -1[-def]: used context per object)
+        # FORB_CONTEXT -1               # context for forbitten bands
         ERR_SCALE \t{self.prop['ERR_SCALE']} \t# errors per band added in quadrature
-        ERR_FACTOR \t{self.prop['ERR_FACTOR']} \t# error scaling factor 1.0 [-def]       
+        ERR_FACTOR \t{self.prop['ERR_FACTOR']} \t\t# error scaling factor 1.0 [-def]       
         #
         #-------    Theoretical libraries
         ZPHOTLIB \t{self.prop['ZPHOTLIB']} \t# Library used for Chi2 (max:3)
@@ -540,13 +545,13 @@ class LePhareSED(SED):
         PHYS_NMAX \t{self.prop['PHYS_NMAX']}
         #
         #-------     Priors  
-        # MASS_SCALE	0.,0.		 # Lg(Scaling) min,max [0,0-def]
+        # MASS_SCALE	0.,0.		# Lg(Scaling) min,max [0,0-def]
         MAG_ABS \t{self.prop['MAG_ABS']} \t# Mabs_min, Mabs_max [0,0-def]
-        MAG_REF \t{self.prop['MAG_REF']} \t# Reference number for band used by Mag_abs
-        # ZFORM_MIN	5,5,5,5,5,5,3,1	 # Min. Zformation per SED -> Age constraint
-        Z_RANGE \t{self.prop['Z_RANGE']} \t# Z min-max used for the Galaxy library 
-        EBV_RANGE \t{self.prop['EBV_RANGE']} \t# E(B-V) MIN-MAX RANGE of E(B-V) used  
-        # NZ_PRIOR      4,2,4                # I Band for prior on N(z)
+        MAG_REF \t{self.prop['MAG_REF']} \t\t# Reference number for band used by Mag_abs
+        # ZFORM_MIN	5,5,5,5,5,5,3,1	# Min. Zformation per SED -> Age constraint
+        Z_RANGE \t{self.prop['Z_RANGE']} \t\t# Z min-max used for the Galaxy library 
+        EBV_RANGE \t{self.prop['EBV_RANGE']} \t\t# E(B-V) MIN-MAX RANGE of E(B-V) used  
+        # NZ_PRIOR      4,2,4           # I Band for prior on N(z)
         #                          
         #-------     Fixed Z   (need format LONG for input Cat)
         ZFIX \t{self.prop['ZFIX']} \t# fixed z and search best model [YES,NO-def]
@@ -555,7 +560,7 @@ class LePhareSED(SED):
         Z_INTERP \t{self.prop['Z_INTERP']} \t# redshift interpolation [YES,NO-def]
         #-------  Analysis of normalized ML(exp-(0.5*Chi^2)) curve 
         #-------  Secondary peak analysis       
-        DZ_WIN \t{self.prop['DZ_WIN']} \t# Window search for 2nd peaks [0->5;0.25-def]
+        DZ_WIN \t\t{self.prop['DZ_WIN']} \t# Window search for 2nd peaks [0->5;0.25-def]
         MIN_THRES \t{self.prop['MIN_THRES']} \t# Lower threshold for 2nd peaks[0->1; 0.1-def]
         #
         #-------  Probability (in %) per redshift intervals
@@ -563,26 +568,26 @@ class LePhareSED(SED):
         #
         #########    ABSOLUTE MAGNITUDES COMPUTATION   ###########
         #
-        MABS_METHOD	\t{self.prop['MABS_METHOD']} \t# 0[-def] : obs->Ref, 1 : best  obs->Ref, 2 : fixed obs->Ref, 3 : mag from best SED, 4 : Zbin
-        MABS_CONTEXT \t{self.prop['MABS_CONTEXT']} \t# CONTEXT for Band used for MABS 
+        MABS_METHOD\t{self.prop['MABS_METHOD']} \t\t\t\t# 0[-def] : obs->Ref, 1 : best  obs->Ref, 2 : fixed obs->Ref, 3 : mag from best SED, 4 : Zbin
+        MABS_CONTEXT \t{self.prop['MABS_CONTEXT']} \t\t\t\t# CONTEXT for Band used for MABS 
 
-        MABS_REF \t{self.prop['MABS_REF']} \t# 0[-def]: filter obs chosen for Mabs (ONLY USED IF MABS_METHOD=2)
-        MABS_FILT \t{self.prop['MABS_FILT']} \t# Chosen filters per redshift bin (MABS_ZBIN - ONLY USED IF MABS_METHOD=4)
+        MABS_REF \t{self.prop['MABS_REF']} \t\t\t\t# 0[-def]: filter obs chosen for Mabs (ONLY USED IF MABS_METHOD=2)
+        MABS_FILT \t{self.prop['MABS_FILT']} \t\t\t# Chosen filters per redshift bin (MABS_ZBIN - ONLY USED IF MABS_METHOD=4)
         MABS_ZBIN \t{self.prop['MABS_ZBIN']} \t# Redshift bins (even number - ONLY USED IF MABS_METHOD=4)
         #########   OUTPUT SPECTRA                     ###########
         #
-        SPEC_OUT \t{self.prop['SPEC_OUT']} \t# spectrum for each object? [YES,NO-def]
-        CHI2_OUT \t{self.prop['CHI2_OUT']} \t# output file with all values : z,mod,chi2,E(B-V),... BE CAREFUL can take a lot of space !!
+        SPEC_OUT \t{self.prop['SPEC_OUT']} \t\t# spectrum for each object? [YES,NO-def]
+        CHI2_OUT \t{self.prop['CHI2_OUT']} \t\t# output file with all values : z,mod,chi2,E(B-V),... BE CAREFUL can take a lot of space !!
         #########  OUTPUT PDZ ANALYSIS  
-        PDZ_OUT \t{self.prop['PDZ_OUT']} \t# pdz output file name [def-NONE] - add automatically PDZ_OUT[.pdz/.mabsx/.mod/.zph] 
+        PDZ_OUT \t{self.prop['PDZ_OUT']} \t\t# pdz output file name [def-NONE] - add automatically PDZ_OUT[.pdz/.mabsx/.mod/.zph] 
         PDZ_MABS_FILT \t{self.prop['PDZ_MABS_FILT']} \t# MABS for REF FILTERS to be extracted
         # 
         #########   FAST MODE : color-space reduction        #####
         #
         FAST_MODE \t{self.prop['FAST_MODE']} \t# Fast computation [NO-def] 
         COL_NUM	\t{self.prop['COL_NUM']} \t# Number of colors used [3-def]
-        COL_SIGMA \t{self.prop['COL_SIGMA']} # Enlarge of the obs. color-errors[3-def]
-        COL_SEL \t{self.prop['COL_SEL']} # Combination between used colors [AND/OR-def]
+        COL_SIGMA \t{self.prop['COL_SIGMA']} \t# Enlarge of the obs. color-errors[3-def]
+        COL_SEL \t{self.prop['COL_SEL']} \t# Combination between used colors [AND/OR-def]
         #
         #########   MAGNITUDE SHIFTS applied to libraries   ######
         #
@@ -592,21 +597,21 @@ class LePhareSED(SED):
         #
         #########   ADAPTIVE METHOD using Z spectro sample     ###
         #
-        AUTO_ADAPT \t{self.prop['AUTO_ADAPT']} \t# Adapting method with spectro [NO-def]
-        ADAPT_BAND \t{self.prop['ADAPT_BAND']} \t# Reference band, band1, band2 for color 
-        ADAPT_LIM \t{self.prop['ADAPT_LIM']} \t# Mag limits for spectro in Ref band [18,21.5-def]
-        ADAPT_POLY	\t{self.prop['ADAPT_POLY']} \t# Number of coef in  polynom (max=4) [1-def]
-        ADAPT_METH \t{self.prop['ADAPT_METH']} \t# Fit as a function of 1 : Color Model  [1-def], 2 : Redshift, 3 : Models
-        ADAPT_CONTEXT \t{self.prop['ADAPT_CONTEXT']} \t# Context for bands used for training, -1[-def] used context per object
+        AUTO_ADAPT \t{self.prop['AUTO_ADAPT']} \t\t# Adapting method with spectro [NO-def]
+        ADAPT_BAND \t{self.prop['ADAPT_BAND']} \t\t# Reference band, band1, band2 for color 
+        ADAPT_LIM \t{self.prop['ADAPT_LIM']} \t\t# Mag limits for spectro in Ref band [18,21.5-def]
+        ADAPT_POLY\t{self.prop['ADAPT_POLY']} \t\t# Number of coef in  polynom (max=4) [1-def]
+        ADAPT_METH \t{self.prop['ADAPT_METH']} \t\t# Fit as a function of 1 : Color Model  [1-def], 2 : Redshift, 3 : Models
+        ADAPT_CONTEXT \t{self.prop['ADAPT_CONTEXT']} \t\t# Context for bands used for training, -1[-def] used context per object
         ADAPT_ZBIN \t{self.prop['ADAPT_ZBIN']} \t# Redshift's interval used for training [0.001,6-Def]
-        ADAPT_MODBIN \t{self.prop['ADAPT_MODBIN']}'\t# Model's interval used for training [1,1000-Def]
-        ERROR_ADAPT \t{self.prop['ERROR_ADAPT']} # [YES,NO-def] Add error in quadrature according to the difference between observed and predicted apparent magnitudes 
+        ADAPT_MODBIN \t{self.prop['ADAPT_MODBIN']}'\t\t# Model's interval used for training [1,1000-Def]
+        ERROR_ADAPT \t{self.prop['ERROR_ADAPT']} \t\t# [YES,NO-def] Add error in quadrature according to the difference between observed and predicted apparent magnitudes 
         #
         '''      
         
         return text
     
-    def __call__(self, catalogue, **kwargs):
+    def __call__(self, catalogue, skipSEDgen=False, skipFilterGen=False, skipMagGen=False, **kwargs):
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -615,10 +620,9 @@ class LePhareSED(SED):
         :param LePhareCat catalogue: catalogue to use for the SED-fitting
         :param str inputFile: name of the input file containing 
         
-        :param str tunit: (**Optional**) unit of the table data. Must either be 'M' for magnitude or 'F' for flux.
-        :param str magtype: (**Optional**) magnitude type if data are in magnitude unit. Must either be 'AB' or 'VEGA'.
-        :param str tformat: (**Optional**) format of the table. Must either be 'MEME' if data and error columns are intertwined or 'MMEE' if columns are first data and then errors.
-        :param str ttype: (**Optional**) data type. Must either be SHORT or LONG.
+        :param bool skipSEDgen: (**Optional**) whether to skip the SED models generation. Useful to gain time if the same SED are used for multiple sources.
+        :param bool skipFilterGen: (**Optional**) whether to skip the filters generation. Useful to gain time if the same filters are used for multiple sources.
+        :param bool skipMagGen: (**Optional**) whether to skip the predicted magnitude computations. Useful to gain time if the same libraries/parameters are used for multiple sources.
 
         '''
         
@@ -626,17 +630,109 @@ class LePhareSED(SED):
             raise TypeError(f'catalogue has type {type(catalogue)} but it must be a LePhareCat instance.')
         
         # Make output directory
-        if not opath.isdir(self.id):
-            os.mkdir(self.id)
+        directory = self.id
+        if not opath.isdir(directory):
+            os.mkdir(directory)
             
-        ##########################################
-        #        Generate parameters file        #
-        ##########################################
+        # Generate and write parameters file
+        params  = dedent(self.parameters.replace('%INPUTCATALOGUEINFORMATION%', catalogue.text))
+        pfile   = opath.join(directory, catalogue.name.replace('.in', '.para'))
+        with open(pfile, 'w') as f:
+            f.write(params)
+            
+        # Write catalogue
+        catalogue.save(path=directory)
         
-        params  = self.parameters.replace('%INPUTCATALOGUEINFORMATION%', catalogue.text)
-        print(dedent(params))
+        #########################################
+        #          Generate SED models          #
+        #########################################
         
+        if not skipSEDgen:
+            
+            command = opath.expandvars('$LEPHAREDIR/source/sedtolib')
+            if not opath.isfile(command):
+                raise OSError(f'LePhare script $LEPHAREDIR/source/sedtolib (expanded as {command}) not found.')
+            
+            # Generate QSO, Star and Galaxy models
+            for name in ['QSO', 'Stellar', 'Galaxy']:
+                with subprocess.Popen([command, '-t', name[0], '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+                    for line in p.stdout:
+                        print(line, end='')
+                        
+                if p.returncode != 0:
+                    raise subprocess.CalledProcessError(f'{name} models generation failed.')
+            
+        ####################################
+        #         Generate filters         #
+        ####################################
         
+        command = opath.expandvars('$LEPHAREDIR/source/filter')
+        if not opath.isfile(command):
+            raise OSError(f'LePhare script $LEPHAREDIR/source/filter (expanded as {command}) not found.')
+            
+        with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+            for line in p.stdout:
+                print(line, end='')
+                
+        if p.returncode != 0:
+            raise subprocess.CalledProcessError('filters generation failed.')
+        
+        ##############################################
+        #        Compute predicted magnitudes        #
+        ##############################################
+        
+        if not skipMagGen:
+            
+            # QSO magnitudes
+            command = opath.expandvars('$LEPHAREDIR/source/mag_gal')
+            if not opath.isfile(command):
+                raise OSError(f'LePhare script $LEPHAREDIR/source/mag_gal (expanded as {command}) not found.')
+        
+            with subprocess.Popen([command, '-t', 'Q', '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+                for line in p.stdout:
+                    print(line, end='')
+                
+            if p.returncode != 0:
+                raise subprocess.CalledProcessError('QSO magnitudes failed.')
+                
+            # Star magnitudes
+            command = opath.expandvars('$LEPHAREDIR/source/mag_star')
+            if not opath.isfile(command):
+                raise OSError(f'LePhare script $LEPHAREDIR/source/mag_star (expanded as {command}) not found.')
+        
+            with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+                for line in p.stdout:
+                    print(line, end='')
+                
+            if p.returncode != 0:
+                raise subprocess.CalledProcessError('Stellar magnitudes failed.')
+                
+            # Galaxy magnitudes
+            command = opath.expandvars('$LEPHAREDIR/source/mag_gal')
+            if not opath.isfile(command):
+                raise OSError(f'LePhare script $LEPHAREDIR/source/mag_gal (expanded as {command}) not found.')
+        
+            with subprocess.Popen([command, '-t', 'G', '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+                for line in p.stdout:
+                    print(line, end='')
+                
+            if p.returncode != 0:
+                raise subprocess.CalledProcessError('Galaxy magnitudes failed.')
+        
+        ###################################
+        #         Run SED fitting         #
+        ###################################
+        
+        command = '$LEPHAREDIR/source/zphota'
+        if not opath.isfile(command):
+                raise OSError(f'LePhare script $LEPHAREDIR/source/zphota (expanded as {command}) not found.')
+        
+        with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+            for line in p.stdout:
+                print(line, end='')
+                
+            if p.returncode != 0:
+                raise subprocess.CalledProcessError('SED fitting failed.')
         
         return
  

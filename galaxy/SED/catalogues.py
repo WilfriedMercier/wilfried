@@ -6,8 +6,9 @@
 Base classes used to generate catalogues for LePhare or Cigale SED fitting codes.
 """
 
-from   astropy.table import Table
-from   .misc         import Property
+import os.path                    as     opath
+from   astropy.table              import Table
+from   .misc                      import Property
 
 class Catalogue:
     r'''Class implementing a catalogue consisting of as Astropy Table and additional information used by the SED fitting codes.'''
@@ -18,7 +19,6 @@ class Catalogue:
         
         Init general catalogue. This is supposed to be subclassed to account for specificities of LePhare or Cigale catalogues.
 
-        :param str fname: name of the output file containing the catalogue when it is saved
         :param table: input table
         :type table: Astropy Table
         
@@ -34,21 +34,26 @@ class Catalogue:
         if not isinstance(fname, str):
             raise TypeError(f'fname parameter has type {type(fname)} but it must have type str.')
             
-        self.fname  = fname
+        self.name   = fname
         self.data   = table
         
-        
-    def save(self, *args, **kwargs):
+    def save(self, path='', **kwargs):
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
         Save the catalogue into the given file.
         
-        :param args: parameters passed to Astropy.table.Table.writeto method
+        :param str path:(**Optional**) a path to append to the file name
         :param kwargs: optional parameters passed to Astropy.table.Table.writeto method
+        
+        :raises TypeError: if **path** is not of type str
         '''
+
+        if not isinstance(path, str):
+            raise TypeError(f'path as type {type(path)} but it must have type str.')
             
-        self.data.writeto(self.name, *args, **kwargs)
+        fname = opath.join(path, self.name)
+        self.data.write(self.name, overwrite=True, **kwargs)
         return
     
     def text(self, *args, **kwargs):
@@ -147,13 +152,32 @@ class LePhareCat(Catalogue):
         
         text =  f'''
         #-------    Input Catalog Informations   
-        CAT_IN \t{self.fname}
+        CAT_IN \t\t{self.name}
 
-        INP_TYPE \t{self.unit} \t# Input type (F:Flux or M:MAG)
-        CAT_MAG \t{self.mtype} \t# Input Magnitude (AB or VEGA)
-        CAT_FMT \t{self.format} \t# MEME: (Mag,Err)i or MMEE: (Mag)i,(Err)i  
+        INP_TYPE \t{self.unit} \t\t# Input type (F:Flux or M:MAG)
+        CAT_MAG \t{self.mtype} \t\t# Input Magnitude (AB or VEGA)
+        CAT_FMT \t{self.format} \t\t# MEME: (Mag,Err)i or MMEE: (Mag)i,(Err)i  
         CAT_LINES \t{self.nlines} \t# MIN and MAX RANGE of ROWS used in input cat [def:-99,-99]
-        CAT_TYPE \t{self.ttype} # Input Format (LONG,SHORT-def)
+        CAT_TYPE \t{self.ttype} \t\t# Input Format (LONG,SHORT-def)
         '''
         
         return text
+    
+    def save(self, path='', **kwargs):
+        r'''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
+        Save LePhare catalogue into the given file.
+        
+        :param str path:(**Optional**) a path to append to the file name
+        :param kwargs: optional parameters passed to Astropy.table.Table.writeto method
+        
+        :raises TypeError: if **path** is not of type str
+        '''
+            
+        if not isinstance(path, str):
+            raise TypeError(f'path as type {type(path)} but it must have type str.')
+        
+        fname = opath.join(path, self.name)
+        self.data.write(fname, format='ascii.fast_no_header', overwrite=True, **kwargs)
+        return

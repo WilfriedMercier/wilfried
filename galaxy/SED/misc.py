@@ -75,24 +75,35 @@ class Property:
         Implement a string representation of the class.
         '''
         
-        typ = type(self.value)
-        
         if isinstance(self.value, int):
             return f'{self.value}'
         elif isinstance(self.value, float):
-            return f'{self.value:.3e}'
+            if self.value < 1e-3 or self.value > 1e3:
+                return f'{self.value:.3e}'
+            else:
+                return f'{self.value:.3f}'
         elif isinstance(self.value, str):
             return self.value
         elif isinstance(self.value, list):
             
-            joinL  = [f'{i}' if isinstance(i, int) else f'{i:.3e}' if isinstance(i, float) else i if isinstance(i, str) else None for i in self.value]
+            joinL  = []
+            for i in self.value:
+                if isinstance(i, int):
+                    joinL.append(f'{i}')
+                elif isinstance(i, float):
+                    if i < 1e-3 or i > 1e3:
+                        joinL.append(f'{i:.3e}')
+                    else:
+                        joinL.append(f'{i:.3f}')
+                elif isinstance(i, str):
+                    joinL.append(i)
+                else:
+                    raise NotImplementedError(f'no string representation available for Property object with value {i} of type {type(i)}.')
             
-            if None not in joinL:
-                return ','.join(joinL)
-            else:
-                raise NotImplementedError(f'no string representation available for Property object with value of type {self.subtypes}.')
+            return ','.join(joinL)
+            
         else:
-             raise NotImplementedError(f'no string representation available for Property object with value of type {self.types}.')
+             raise NotImplementedError(f'no string representation available for Property object with value of type {type(self.value)}.')
         
     ###############################
     #        Miscellaneous        #

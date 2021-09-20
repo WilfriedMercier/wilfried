@@ -15,16 +15,12 @@ from   functools                  import partialmethod
 
 from   .catalogues                import LePhareCat
 from   ..photometry               import countToMag, countToFlux
-from   ..symlinks.coloredMessages import *
+from   ..symlinks.coloredMessages import warningMessage, errorMessage
 
 # Custom colored messages
 WARNING = warningMessage('Warning: ')
 ERROR   = errorMessage('Error: ')
 
-
-################################
-#        Filter objects        #
-################################
 
 class Filter:
     r'''Base class implementing data related to a single filter.'''
@@ -226,9 +222,9 @@ class FilterList:
         self.setCode(code)
         
         
-    #############################################
-    #       Table  and catalogue creation       #
-    #############################################
+    ############################################
+    #       Table and catalogue creation       #
+    ############################################
     
     def toCatalogue(self, fname, *args, **kwargs):
         r'''
@@ -253,6 +249,9 @@ class FilterList:
         
         .. seealso:: :py:class:`LePhareCat`
         '''
+        
+        if self.code.lower() != 'lephare':
+            raise ValueError(f'code is {self.code} but it needs to be lephare to build a LePhare catalogue object.')
         
         return LePhareCat(fname, self.table, tunit=tunit, magtype=magtype, tformat=tformat, ttype=ttype)
         
