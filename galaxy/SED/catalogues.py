@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-.. codeauthor:: Hugo Plombat - LUPM & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+.. codeauthor:: Hugo Plombat - LUPM <hugo.plombat@umontpellier.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
 
 Base classes used to generate catalogues for LePhare or Cigale SED fitting codes.
 """
 
+from   abc                        import ABC, abstractmethod
+from   typing                     import List
 import os.path                    as     opath
 from   astropy.table              import Table
-from   .misc                      import Property
+from   .misc                      import TableUnit, MagType, TableFormat, TableType, EnumProperty, ListIntProperty
 
-class Catalogue:
+class Catalogue(ABC):
     r'''Class implementing a catalogue consisting of as Astropy Table and additional information used by the SED fitting codes.'''
     
-    def __init__(self, fname, table, *args, **kwargs):
+    def __init__(self, fname: str, table: Table, *args, **kwargs) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
         Init general catalogue. This is supposed to be subclassed to account for specificities of LePhare or Cigale catalogues.
 
+        :param str fname: name of the catalogue file where the catalogue is written into when saving
         :param table: input table
         :type table: Astropy Table
         
@@ -37,7 +40,7 @@ class Catalogue:
         self.name   = fname
         self.data   = table
         
-    def save(self, path='', **kwargs):
+    def save(self, path: str ='', **kwargs) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -56,20 +59,26 @@ class Catalogue:
         self.data.write(self.name, overwrite=True, **kwargs)
         return
     
-    def text(self, *args, **kwargs):
+    @property
+    @abstractmethod
+    def text(self, *args, **kwargs) -> str:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
         Return a text representation of the catalogue used when making the parameter files.
         '''
         
-        raise NotImplementedError('this method must be implemented in subclasses.')
         return
     
 class LePhareCat(Catalogue):
     r'''Class implementing a catalogue compatible with LePhare SED fitting code.'''
     
-    def __init__(self, fname, table, tunit='M', magtype='AB', tformat='MEME', ttype='LONG', nlines=[0, 100000000]):
+    def __init__(self, fname: str, table: Table, 
+                 tunit: TableUnit     = TableUnit.MAG, 
+                 magtype: MagType     = MagType.AB, 
+                 tformat: TableFormat = TableFormat.MEME, 
+                 ttype: TableType     = TableType.LONG, 
+                 nlines: List[int]    = [0, 100000000]) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -79,29 +88,20 @@ class LePhareCat(Catalogue):
         :param table: input table
         :type table: Astropy Table
         
-        :param str tunit: (**Optional**) unit of the table data. Must either be 'M' for magnitude or 'F' for flux.
-        :param str magtype: (**Optional**) magnitude type if data are in magnitude unit. Must either be 'AB' or 'VEGA'.
-        :param str tformat: (**Optional**) format of the table. Must either be 'MEME' if data and error columns are intertwined or 'MMEE' if columns are first data and then errors.
-        :param str ttype: (**Optional**) data type. Must either be SHORT or LONG.
+        :param TableUnit tunit: (**Optional**) unit of the table data. Must either be TableUnit.MAG for magnitude or TableUnit.FLUX for flux.
+        :param MagType magtype: (**Optional**) magnitude type if data are in magnitude unit. Must either be MagType.AB or MagType.VEGA.
+        :param TableFormat tformat: (**Optional**) format of the table. Must either be TableFormat.MEME if data and error columns are intertwined or TableFormat.MMEE if columns are first data and then errors.
+        :param TableType ttype: (**Optional**) data type. Must either be TableType.SHORT or TableType.LONG.
         :param list[int] nlines: (**Optional**) first and last line of the catalogue to be used during the SED fitting
 
         :raises TypeError:
              
             * if **table** is not an astropy Table
-            * if one of **fname**, **tunit**, **magtype**, **tformat** or **ttype**  is not of type str
+            * if **fname** is not of type str
             * if **nlines** is not a list
             
-        :raises ValueError:
-        
-            * if **tunit** is neither F, nor M
-            * if **magtype** is neither AB nor VEGA
-            * if **tformat** is neither MEME nor MMEE
-            * if **ttype** is neither SHORT nor LONG
-            * if **nlines** values are not int, or if first value is less than 0, or if second value is less than the first one
+        :raises ValueError: if **nlines** values are not int, or if first value is less than 0, or if second value is less than the first one
         ''' 
-            
-        if not all([isinstance(i, str) for i in [tunit, magtype, tformat, ttype]]):
-            raise TypeError(f'one of the parameters in tunit, magtype, tformat or ttype is not of type str.')
             
         super().__init__(fname, table)
         
@@ -109,23 +109,12 @@ class LePhareCat(Catalogue):
         #             Define default properties             #
         #####################################################
         
-        self.unit   = Property('M', str, 
-                               testFunc = lambda value: value not in ['F', 'M'], 
-                               testMsg  = f'tunit has value {tunit} but it must either be F (for flux) or M (for magnitude).')
+        self.unit   = EnumProperty(TableUnit.MAG)
+        self.mtype  = EnumProperty(MagType.AB)
+        self.format = EnumProperty(TableFormat.MEME)
+        self.ttype  = EnumProperty(TableType.LONG)
         
-        self.mtype  = Property('AB', str,
-                               testFunc = lambda value: value not in ['AB', 'VEGA'],
-                               testMsg  = f'magtype has value {magtype} but it must either be AB or VEGA.')
-        
-        self.format = Property('MEME', str,
-                               testFunc = lambda value: value not in ['MEME', 'MMEE'],
-                               testMsg  = f'tformat has value {tformat} but it must either be MEME (if each error column follows its associated magnitude column) or MMEE (if magnitudes are listed first and then errors).')
-        
-        self.ttype  = Property('LONG', str,
-                               testFunc = lambda value: value not in ['SHORT', 'LONG'],
-                               testMsg  = f'ttype has value {ttype} but it must either be SHORT or LONG.')
-        
-        self.nlines = Property([0, 100000000], list, subtypes=int, minBound=0,
+        self.nlines = ListIntProperty([0, 100000000], minBound=0,
                                testFunc = lambda value: value[1] < value[0],
                                testMsg  = f'maximum number of lines ({nlines[1]}) is less than minimum one ({nlines[0]}).')
         
@@ -140,7 +129,7 @@ class LePhareCat(Catalogue):
         self.nlines.set(nlines)
     
     @property
-    def text(self, *args, **kwargs):
+    def text(self, *args, **kwargs) -> str:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -163,7 +152,7 @@ class LePhareCat(Catalogue):
         
         return text
     
-    def save(self, path='', **kwargs):
+    def save(self, path: str = '', **kwargs) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         

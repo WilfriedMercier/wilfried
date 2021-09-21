@@ -11,7 +11,8 @@ import os
 import os.path       as     opath
 from   textwrap      import dedent
 from   astropy.table import Table
-from   .misc         import Property, PathlikeProperty
+from   .misc         import MagType, YESNO, ANDOR, IntProperty, FloatProperty, StrProperty, \
+                            ListIntProperty, ListFloatProperty, ListStrProperty, PathProperty, ListPathProperty, EnumProperty
 from   .catalogues   import LePhareCat
 
 from   ..symlinks.coloredMessages import errorMessage
@@ -201,210 +202,180 @@ class LePhareSED(SED):
         self.id         = ID
         
         # Allowed keys and corresponding allowed types
-        self.prop = {'STAR_SED'       : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'STAR', 'STAR_MOD.list')),
+        self.prop = {'STAR_SED'       : PathProperty(opath.join('$LEPHAREDIR', 'sed', 'STAR', 'STAR_MOD.list')),
                      
-                     'STAR_FSCALE'    : Property(3.432e-09, (int, float), minBound=0),
+                     'STAR_FSCALE'    : FloatProperty(3.432e-09, minBound=0),
                      
-                     'STAR_LIB'       : PathlikeProperty('LIB_STAR_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
+                     'STAR_LIB'       : PathProperty('LIB_STAR_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
-                     'QSO_SED'        : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'QSO', 'QSO_MOD.list')),
+                     'QSO_SED'        : PathProperty(opath.join('$LEPHAREDIR', 'sed', 'QSO', 'QSO_MOD.list')),
                      
-                     'QSO_FSCALE'     : Property(1, (int, float), minBound=0),
+                     'QSO_FSCALE'     : FloatProperty(1, minBound=0),
                      
-                     'QSO_LIB'        : PathlikeProperty('LIB_QSO_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'),  ext='.bin'),
+                     'QSO_LIB'        : PathProperty('LIB_QSO_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
-                     'GAL_SED'        : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'GAL', 'BC03_CHAB', 'BC03_MOD.list')),
+                     'GAL_SED'        : PathProperty(opath.join('$LEPHAREDIR', 'sed', 'GAL', 'BC03_CHAB', 'BC03_MOD.list')),
                      
-                     'GAL_FSCALE'     : Property(1, (int, float), minBound=0),
+                     'GAL_FSCALE'     : FloatProperty(1, minBound=0),
                      
-                     'GAL_LIB'        : PathlikeProperty('LIB_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'),      ext='.bin'),
+                     'GAL_LIB'        : PathProperty('LIB_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
-                     'SEL_AGE'        : PathlikeProperty(opath.join('$LEPHAREDIR', 'sed', 'GAL', 'BC03_CHAB', 'BC03_AGE.list')),
+                     'SEL_AGE'        : PathProperty(opath.join('$LEPHAREDIR', 'sed', 'GAL', 'BC03_CHAB', 'BC03_AGE.list')),
                      
-                     'AGE_RANGE'      : Property([0, 14e9], list, subtypes=(int, float), minBound=0, 
+                     'AGE_RANGE'      : ListFloatProperty([3e9, 11e9], minBound=0, 
                                                  testFunc=lambda value: len(value)!=2 or value[1] < value[0], 
-                                                 testMsg='AGE_RANGE property must be an increasing length 2 list.'),
+                                                 testMsg='AGE_RANGE property must be a length 2 list.'),
                      
-                     'FILTER_LIST'    : PathlikeProperty(['hst/acs_f435w.pb', 'hst/acs_f606w.pb', 'hst/acs_f775w.pb', 'hst/acs_f850lp.pb'], 
+                     'FILTER_LIST'    : ListPathProperty(['hst/acs_f435w.pb', 'hst/acs_f606w.pb', 'hst/acs_f775w.pb', 'hst/acs_f850lp.pb'], 
                                                          path=opath.join('$LEPHAREDIR', 'filt')),
                      
-                     'TRANS_TYPE'     : Property(0, int, minBound=0, maxBound=1),
+                     'TRANS_TYPE'     : IntProperty(0, minBound=0, maxBound=1),
                      
-                     'FILTER_CALIB'   : Property(0, int, minBound=0, maxBound=4),
+                     'FILTER_CALIB'   : IntProperty(0, minBound=0, maxBound=4),
                      
-                     'FILTER_FILE'    : PathlikeProperty('HDF_bc03.filt', 
-                                                         path=opath.join('$LEPHAREWORK', 'filt')),
+                     'FILTER_FILE'    : PathProperty('HDF_bc03.filt', path=opath.join('$LEPHAREWORK', 'filt')),
                      
-                     'STAR_LIB_IN'    : PathlikeProperty('LIB_STAR_bc03', 
-                                                         path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
+                     'STAR_LIB_IN'    : PathProperty('LIB_STAR_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
-                     'STAR_LIB_OUT'   : Property('STAR_HDF_bc03', str),                                             # We do not use PathlikeProperty because this is an output file
+                     'STAR_LIB_OUT'   : StrProperty('STAR_HDF_bc03'),
                      
-                     'QSO_LIB_IN'     : PathlikeProperty('LIB_QSO_bc03', 
-                                                         path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
+                     'QSO_LIB_IN'     : PathProperty('LIB_QSO_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
-                     'QSO_LIB_OUT'    : Property('QSO_HDF_bc03', str),                                              # We do not use PathlikeProperty because this is an output file
+                     'QSO_LIB_OUT'    : StrProperty('QSO_HDF_bc03'),
                      
-                     'GAL_LIB_IN'     : PathlikeProperty('LIB_bc03', 
-                                                         path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
+                     'GAL_LIB_IN'     : PathProperty('LIB_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
-                     'GAL_LIB_OUT'    : Property('HDF_bc03', str),                                                  # We do not use PathlikeProperty because this is an output file
+                     'GAL_LIB_OUT'    : StrProperty('HDF_bc03'),
                      
-                     'MAGTYPE'        : Property('AB', str,
-                                                 testFunc=lambda value: value not in ['AB', 'VEGA'],
-                                                 testMsg='MAGTYPE must either be AB or VEGA.'),
+                     'MAGTYPE'        : EnumProperty(MagType.AB),
                      
-                     'Z_STEP'         : Property([0.01, 2, 0.1], list, subtypes=(int, float), minBound=0,
-                                                 testFunc=lambda value: len(value)!=3 or value[2] < value[0], 
-                                                 testMsg='Z_STEP property must be a length 3 list where the last step must be larger than the first one.'),
+                     'Z_STEP'         : ListFloatProperty([0.01, 2, 0.1], minBound=0,
+                                                          testFunc=lambda value: len(value)!=3 or value[2] < value[0], 
+                                                          testMsg='Z_STEP property must be a length 3 list where the last step must be larger than the first one.'),
                      
-                     'COSMOLOGY'      : Property([70, 0.3, 0.7], list, subtypes=(int, float), minBound=0),
+                     'COSMOLOGY'      : ListFloatProperty([70, 0.3, 0.7], minBound=0,
+                                                          testFunc=lambda value: len(value)!=3, 
+                                                          testMsg='Z_STEP property must be a length 3 list.'),
                      
-                     'MOD_EXTINC'     : Property([0, 27], list, subtypes=(int, float),
+                     'MOD_EXTINC'     : ListIntProperty([0, 27],
                                                  testFunc=lambda value: len(value)!=2 or value[1] < value[0], 
                                                  testMsg='MOD_EXTINC property must be an increasing length 2 list.'),
                      
-                     'EXTINC_LAW'     : PathlikeProperty('calzetti.dat', path=opath.join('$LEPHAREDIR', 'ext')),
+                     'EXTINC_LAW'     : PathProperty('calzetti.dat', path=opath.join('$LEPHAREDIR', 'ext')),
                      
-                     'EB_V'           : Property([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5], list, subtypes=(int, float),
-                                                 testFunc=lambda value: len(value)>49 or any((j<=i for i, j in zip(value[:-1], value[1:]))), 
-                                                 testMsg='EB_V property must be an increasing list with a maximum length of 49.'),
+                     'EB_V'           : ListFloatProperty([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5],
+                                                          testFunc=lambda value: len(value)>49 or any((j<=i for i, j in zip(value[:-1], value[1:]))), 
+                                                          testMsg='EB_V property must be an increasing list with a maximum length of 49.'),
                      
-                     'EM_LINES'       : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='EM_LINES must either be YES or NO.'),
+                     'EM_LINES'       : EnumProperty(YESNO.NO),
                      
-                     'LIB_ASCII'      : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='LIB_ASCII must either be YES or NO.'),
+                     'LIB_ASCII'      : EnumProperty(YESNO.NO),
                      
-                     'BD_SCALE'       : Property(0, int),
+                     'BD_SCALE'       : IntProperty(0, minBound=0),
                      
-                     'GLB_CONTEXT'    : Property(0, int),
+                     'GLB_CONTEXT'    : IntProperty(0, minBound=0),
                      
-                     'ERR_SCALE'      : Property([0.03, 0.03, 0.03, 0.03], list, subtypes=(int, float), minBound=0),
+                     'ERR_SCALE'      : ListFloatProperty([0.03, 0.03, 0.03, 0.03], minBound=0),
                      
-                     'ERR_FACTOR'     : Property(1, (int, float)),
+                     'ERR_FACTOR'     : FloatProperty(1, minBound=0),
                      
-                     'ZPHOTLIB'       : Property(['HDF_bc03', 'STAR_HDF_bc03', 'QSO_HDF_bc03'], list, subtypes=str),
+                     'ZPHOTLIB'       : ListStrProperty(['HDF_bc03', 'STAR_HDF_bc03', 'QSO_HDF_bc03']),
                      
-                     'ADD_EMLINES'    : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='ADD_EMLINES must either be YES or NO.'),
+                     'ADD_EMLINES'    : EnumProperty(YESNO.NO),
                      
-                     'FIR_LIB'        : PathlikeProperty('NONE'),
+                     'FIR_LIB'        : PathProperty('NONE'),
                      
-                     'FIR_LMIN'       : Property(7, (int, float), minBound=0),
+                     'FIR_LMIN'       : FloatProperty(7, minBound=0),
                      
-                     'FIR_CONT'       : Property(-1, (int, float)),
+                     'FIR_CONT'       : FloatProperty(-1),
                      
-                     'FIR_SCALE'      : Property(-1, (int, float)),
+                     'FIR_SCALE'      : FloatProperty(-1),
                      
-                     'FIR_FREESCALE'  : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='FIR_FREESCALE must either be YES or NO.'),
+                     'FIR_FREESCALE'  : YESNO.Property(YESNO.NO),
                      
-                     'FIR_SUBSTELLAR' : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='FIR_SUBSTELLAR must either be YES or NO.'),
+                     'FIR_SUBSTELLAR' : YESNO.Property(YESNO.NO),
                      
-                     'PHYS_LIB'       : PathlikeProperty('NONE'),
+                     'PHYS_LIB'       : PathProperty('NONE'),
                      
-                     'PHYS_CONT'      : Property(-1, (int, float)),
+                     'PHYS_CONT'      : FloatProperty(-1),
                      
-                     'PHYS_SCALE'     : Property(-1, (int, float)),
+                     'PHYS_SCALE'     : FloatProperty(-1),
                      
-                     'PHYS_NMAX'      : Property(100000, int),
+                     'PHYS_NMAX'      : IntProperty(100000),
                      
-                     'MAG_ABS'        : Property([-20, -30], list, subtypes=(int, float),
-                                                 testFunc=lambda value: len(value)!=2,
-                                                 testMsg='MAG_ABS property must be a length 2 list.'),
+                     'MAG_ABS'        : ListFloatProperty([-20, -30],
+                                                          testFunc=lambda value: len(value)!=2,
+                                                          testMsg='MAG_ABS property must be a length 2 list.'),
                      
-                     'MAG_REF'        : Property(1, int, minBound=0),
+                     'MAG_REF'        : IntProperty(1, minBound=0),
                      
-                     'Z_RANGE'        : Property([0, 2], list, subtypes=(int, float), minBound=0,
-                                                 testFunc=lambda value: len(value)!=2 or value[1] < value[0],
-                                                 testMsg='Z_RANGE property must be an increasing length 2 list.'),
+                     'Z_RANGE'        : ListFloatProperty([0.2, 2.0], minBound=0,
+                                                          testFunc=lambda value: len(value)!=2 or value[1] < value[0],
+                                                          testMsg='Z_RANGE property must be an increasing length 2 list.'),
                      
-                     'EBV_RANGE'      : Property([0, 9], list, subtypes=(int, float),
-                                                 testFunc=lambda value: len(value)!=2 or value[1] < value[0],
-                                                 testMsg='Z_RANGE property must be an increasing length 2 list.'),
+                     'EBV_RANGE'      : ListFloatProperty([0, 9],
+                                                          testFunc=lambda value: len(value)!=2 or value[1] < value[0],
+                                                          testMsg='EBV_RANGE_RANGE property must be an increasing length 2 list.'),
                      
-                     'ZFIX'           : Property('YES', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='ZFIX must either be YES or NO.'),
+                     'ZFIX'           : EnumProperty(YESNO.YES),
                      
-                     'Z_INTERP'       : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='Z_INTERP must either be YES or NO.'),
+                     'Z_INTERP'       : EnumProperty(YESNO.NO),
                      
-                     'DZ_WIN'         : Property(0.5, (int, float), minBound=0, maxBound=5),
+                     'DZ_WIN'         : FloatProperty(0.5, minBound=0, maxBound=5),
                      
-                     'MIN_THRES'      : Property(0.1, (int, float), minBound=0, maxBound=1),
+                     'MIN_THRES'      : FloatProperty(0.1, minBound=0, maxBound=1),
                      
-                     'MABS_METHOD'    : Property( 1, int, minBound=0, maxBound=4),
+                     'MABS_METHOD'    : IntProperty( 1, minBound=0, maxBound=4),
                      
-                     'MABS_CONTEXT'   : Property(-1, int),
+                     'MABS_CONTEXT'   : IntProperty(-1),
                      
-                     'MABS_REF'       : Property( 0, int),
+                     'MABS_REF'       : IntProperty( 0),
                      
-                     'MABS_FILT'      : Property([1, 2, 3, 4], list, subtypes=int, minBound=0),
+                     'MABS_FILT'      : ListIntProperty([1, 2, 3, 4], minBound=0),
                      
-                     'MABS_ZBIN'      : Property([0, 0.5, 1, 1.5, 2, 3, 3.5, 4], list, subtypes=(int, float), minBound=0,
-                                                 testFunc=lambda value: len(value)%2!=0 or any([j<=i for i, j in zip(value[:-1], value[1:])]), 
-                                                 testMsg='MABS_ZBIN property must be an increasing list with an even length.'),
+                     'MABS_ZBIN'      : ListFloatProperty([0, 0.5, 1, 1.5, 2, 3, 3.5, 4], minBound=0,
+                                                          testFunc=lambda value: len(value)%2!=0 or any([j<=i for i, j in zip(value[:-1], value[1:])]), 
+                                                          testMsg='MABS_ZBIN property must be an increasing list with an even length.'),
                      
-                     'SPEC_OUT'       : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='SPEC_OUT must either be YES or NO.'),
+                     'SPEC_OUT'       : EnumProperty(YESNO.NO),
                      
-                     'CHI2_OUT'       : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='CHI2_OUT must either be YES or NO.'),
+                     'CHI2_OUT'       : EnumProperty(YESNO.NO),
                      
-                     'PDZ_OUT'        : PathlikeProperty('NONE'),
+                     'PDZ_OUT'        : PathProperty('NONE'),
                      
-                     'PDZ_MABS_FILT'  : Property([2, 10, 14], list, subtypes=int, minBound=0),
+                     'PDZ_MABS_FILT'  : ListIntProperty([2, 10, 14], minBound=0),
                      
-                     'FAST_MODE'      : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='FAST_MODE must either be YES or NO.'),
+                     'FAST_MODE'      : EnumProperty(YESNO.NO),
                      
-                     'COL_NUM'        : Property(3, int, minBound=0),
+                     'COL_NUM'        : IntProperty(3, minBound=0),
                      
-                     'COL_SIGMA'      : Property(3, (int, float), minBound=0),
+                     'COL_SIGMA'      : IntProperty(3, minBound=0),
                      
-                     'COL_SEL'        : Property('AND', str,
-                                                 testFunc=lambda value: value not in ['AND', 'OR'],
-                                                 testMsg='COL_SEL must either be YES or NO.'),
+                     'COL_SEL'        : EnumProperty(ANDOR.AND),
                      
-                     'AUTO_ADAPT'     : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='AUTO_ADAPT must either be YES or NO.'),
+                     'AUTO_ADAPT'     : EnumProperty(YESNO.NO),
                      
-                     'ADAPT_BAND'     : Property([4, 2, 4], list, subtypes=int, minBound=0),
+                     'ADAPT_BAND'     : ListIntProperty([4, 2, 4], minBound=0),
                      
-                     'ADAPT_LIM'      : Property([20, 40], list, subtypes=(int, float),
-                                                 testFunc=lambda value: len(value)!=2 or value[1] < value[0],
-                                                 testMsg='ADAPT_LIM property must be an increasing length 2 list.'),
+                     'ADAPT_LIM'      : ListFloatProperty([20, 40],
+                                                          testFunc=lambda value: len(value)!=2 or value[1] < value[0],
+                                                          testMsg='ADAPT_LIM property must be an increasing length 2 list.'),
                      
-                     'ADAPT_POLY'     : Property( 1, int, minBound=1, maxBound=4),
+                     'ADAPT_POLY'     : IntProperty( 1, minBound=1, maxBound=4),
                      
-                     'ADAPT_METH'     : Property( 1, int, minBound=1, maxBound=3),
+                     'ADAPT_METH'     : IntProperty( 1, minBound=1, maxBound=3),
                      
-                     'ADAPT_CONTEXT'  : Property(-1, int),
+                     'ADAPT_CONTEXT'  : IntProperty(-1),
                      
-                     'ADAPT_ZBIN'     : Property([0.01, 6], list, subtypes=(int, float), minBound=0,
-                                                 testFunc=lambda value: len(value)!=2 or value[1] < value[0],
-                                                 testMsg='ADAPT_ZBIN property must be an increasing length 2 list.'),
+                     'ADAPT_ZBIN'     : ListFloatProperty([0.01, 6], minBound=0,
+                                                          testFunc=lambda value: len(value)!=2 or value[1] < value[0],
+                                                          testMsg='ADAPT_ZBIN property must be an increasing length 2 list.'),
                      
-                     'ADAPT_MODBIN'   : Property([1, 1000], list, subtypes=int, minBound=1, maxBound=1000,
-                                                 testFunc=lambda value: len(value)!=2 or value[1] < value[0],
-                                                 testMsg='ADAPT_MODBIN property must be an increasing length 2 list.'),
+                     'ADAPT_MODBIN'   : ListIntProperty([1, 1000], minBound=1, maxBound=1000,
+                                                        testFunc=lambda value: len(value)!=2 or value[1] < value[0],
+                                                        testMsg='ADAPT_MODBIN property must be an increasing length 2 list.'),
                      
-                     'ERROR_ADAPT'    : Property('NO', str,
-                                                 testFunc=lambda value: value not in ['NO', 'YES'],
-                                                 testMsg='ERROR_ADAPT must either be YES or NO.')
+                     'ERROR_ADAPT'    : EnumProperty(YESNO.NO)
                      }
         
         # Set properties given by the user
@@ -435,7 +406,6 @@ class LePhareSED(SED):
         
         # %INPUTCATALOGUEINFORMATION% is replaced when the run method is launched
         
-        
         text = f'''\
         ##############################################################################
         #                CREATION OF LIBRARIES FROM SEDs List                        #
@@ -444,35 +414,34 @@ class LePhareSED(SED):
         ##############################################################################
         #
         #------      STELLAR LIBRARY (ASCII SEDs)
-        STAR_SED \t{self.prop['STAR_SED']} \t\t# STAR list (full path)
-        STAR_FSCALE \t{self.prop['STAR_FSCALE']} \t\t\t\t\t# Arbitrary Flux Scale
-        STAR_LIB \t{self.prop['STAR_LIB']} \t\t\t\t\t# Bin. STAR LIBRARY -> $LEPHAREWORK/lib_bin
+        #
+        STAR_SED \t{self.prop['STAR_SED']} \t# STAR list (full path)
+        STAR_FSCALE\t{self.prop['STAR_FSCALE']} \t# Arbitrary Flux Scale
+        STAR_LIB \t{self.prop['STAR_LIB']} \t# Bin. STAR LIBRARY -> $LEPHAREWORK/lib_bin
         #
         #------      QSO LIBRARY (ASCII SEDs)
-        QSO_SED \t{self.prop['QSO_SED']} \t\t# QSO list (full path)
-        QSO_FSCALE \t{self.prop['QSO_FSCALE']} \t\t\t\t\t\t# Arbitrary Flux Scale 
-        QSO_LIB	\t{self.prop['QSO_LIB']} \t\t\t\t\t# Bin. QSO LIBRARY -> $LEPHAREWORK/lib_bin
+        #
+        QSO_SED \t{self.prop['QSO_SED']} \t# QSO list (full path)
+        QSO_FSCALE \t{self.prop['QSO_FSCALE']} \t# Arbitrary Flux Scale 
+        QSO_LIB	\t{self.prop['QSO_LIB']} \t# Bin. QSO LIBRARY -> $LEPHAREWORK/lib_bin
         #
         #------      GALAXY LIBRARY (ASCII or BINARY SEDs)
+        #
         GAL_SED	\t{self.prop['GAL_SED']} \t# GAL list (full path)
-        GAL_FSCALE \t{self.prop['GAL_FSCALE']} \t\t\t\t\t\t# Arbitrary Flux Scale
-        GAL_LIB	\t{self.prop['GAL_LIB']} \t\t\t\t\t# Bin. GAL LIBRARY -> $LEPHAREWORK/lib_bin
+        GAL_FSCALE \t{self.prop['GAL_FSCALE']} \t# Arbitrary Flux Scale
+        GAL_LIB	\t{self.prop['GAL_LIB']} \t# Bin. GAL LIBRARY -> $LEPHAREWORK/lib_bin
         SEL_AGE \t{self.prop['SEL_AGE']} \t# Age list(full path, def=NONE)	
-        AGE_RANGE \t{self.prop['AGE_RANGE']} \t\t\t\t\t# Age Min-Max in yr
+        AGE_RANGE \t{self.prop['AGE_RANGE']} \t# Age Min-Max in yr
         #
         #############################################################################
         #                           FILTERS                                         #
         #  $LEPHAREDIR/source/filter  -c $LEPHAREDIR/config/zphot.para              #
         #  help: $LEPHAREDIR/source/filter  -h (or -help)                           #
         #############################################################################
-        #  Filter number and context 
-        #   f300 f450 f606 f814 J  H  K 
-        #   1    2    3    4    5  6  7
-        #   1    2    4    8   16  32 64 = 127 
         #
         FILTER_LIST \t{self.prop['FILTER_LIST']} \t# (in $LEPHAREDIR/filt/*)
-        TRANS_TYPE \t{self.prop['TRANS_TYPE']} \t\t# TRANSMISSION TYPE
-        FILTER_CALIB \t{self.prop['FILTER_CALIB']} \t\t# 0[-def]: fnu=ctt, 1: nu.fnu=ctt, 2: fnu=nu, 3: fnu=Black Body @ T=10000K, 4: for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K
+        TRANS_TYPE \t\t{self.prop['TRANS_TYPE']} \t# TRANSMISSION TYPE
+        FILTER_CALIB \t{self.prop['FILTER_CALIB']} \t# 0[-def]: fnu=ctt, 1: nu.fnu=ctt, 2: fnu=nu, 3: fnu=Black Body @ T=10000K, 4: for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K
         FILTER_FILE \t{self.prop['FILTER_FILE']} \t# output name of filter's file -> $LEPHAREWORK/filt/
         #
         ############################################################################
@@ -485,19 +454,23 @@ class LePhareSED(SED):
         ############################################################################
         #
         #-------     From STELLAR LIBRARY
+        #
         STAR_LIB_IN \t{self.prop['STAR_LIB_IN']} \t# Input STELLAR LIBRARY in $LEPHAREWORK/lib_bin/
         STAR_LIB_OUT \t{self.prop['STAR_LIB_OUT']} \t# Output STELLAR MAGN -> $LEPHAREWORK/lib_mag/
         #
         #-------     From QSO     LIBRARY   
-        QSO_LIB_IN \t{self.prop['QSO_LIB_IN']} \t# Input QSO LIBRARY in $LEPHAREWORK/lib_bin/
-        QSO_LIB_OUT\t{self.prop['QSO_LIB_OUT']} \t# Output QSO MAGN -> $LEPHAREWORK/lib_mag/
+        #
+        QSO_LIB_IN \t\t{self.prop['QSO_LIB_IN']} \t# Input QSO LIBRARY in $LEPHAREWORK/lib_bin/
+        QSO_LIB_OUT \t{self.prop['QSO_LIB_OUT']} \t# Output QSO MAGN -> $LEPHAREWORK/lib_mag/
         #
         #-------     From GALAXY  LIBRARY  
-        GAL_LIB_IN \t{self.prop['GAL_LIB_IN']} \t# Input GAL LIBRARY in $LEPHAREWORK/lib_bin/
-        GAL_LIB_OUT\t{self.prop['GAL_LIB_OUT']} \t# Output GAL LIBRARY -> $LEPHAREWORK/lib_mag/ 
+        #
+        GAL_LIB_IN \t\t{self.prop['GAL_LIB_IN']} \t# Input GAL LIBRARY in $LEPHAREWORK/lib_bin/
+        GAL_LIB_OUT \t{self.prop['GAL_LIB_OUT']} \t# Output GAL LIBRARY -> $LEPHAREWORK/lib_mag/ 
         #
         #-------   MAG + Z_STEP + EXTINCTION + COSMOLOGY
-        MAGTYPE \t{self.prop['MAGTYPE']} \t\t# Magnitude type (AB or VEGA)
+        #
+        MAGTYPE \t{self.prop['MAGTYPE']} \t# Magnitude type (AB or VEGA)
         Z_STEP \t\t{self.prop['Z_STEP']} \t# dz, zmax, dzsup(if zmax>6)
         COSMOLOGY \t{self.prop['COSMOLOGY']} \t# H0,om0,lbd0 (if lb0>0->om0+lbd0=1)
         MOD_EXTINC \t{self.prop['MOD_EXTINC']} \t\t# model range for extinction 
@@ -507,79 +480,91 @@ class LePhareSED(SED):
         # Z_FORM 	8,7,6,5,4,3 	# Zformation for each SED in GAL_LIB_IN
         #
         #-------   ASCII OUTPUT FILES OPTION
-        LIB_ASCII \t{self.prop['LIB_ASCII']} \t\t# Writes output in ASCII in working directory
+        #
+        LIB_ASCII \t{self.prop['LIB_ASCII']} \t# Writes output in ASCII in working directory
         #
         ############################################################################
         #              PHOTOMETRIC REDSHIFTS                                       #
         # $LEPHAREDIR/source/zphot -c $LEPHAREDIR/config/zphot.para                #
         # help: $LEPHAREDIR/source/zphot -h (or -help)                             #
         ############################################################################ 
-        #  
-        #
         #
         %INPUTCATALOGUEINFORMATION%
         CAT_OUT \t{self.id}.out \t
-        PARA_OUT \t{self.id}.para \t\t# Ouput parameter (full path)
-        BD_SCALE \t{self.prop['BD_SCALE']} \t\t# Bands used for scaling (Sum 2^n; n=0->nbd-1, 0[-def]:all bands)
-        GLB_CONTEXT \t{self.prop['GLB_CONTEXT']} \t\t# Overwrite Context (Sum 2^n; n=0->nbd-1, 0 : all bands used, -1[-def]: used context per object)
+        PARA_OUT \t{self.id}_output.para \t# Ouput parameter (full path)
+        BD_SCALE \t{self.prop['BD_SCALE']} \t# Bands used for scaling (Sum 2^n; n=0->nbd-1, 0[-def]:all bands)
+        GLB_CONTEXT\t{self.prop['GLB_CONTEXT']} \t# Overwrite Context (Sum 2^n; n=0->nbd-1, 0 : all bands used, -1[-def]: used context per object)
         # FORB_CONTEXT -1               # context for forbitten bands
         ERR_SCALE \t{self.prop['ERR_SCALE']} \t# errors per band added in quadrature
-        ERR_FACTOR \t{self.prop['ERR_FACTOR']} \t\t# error scaling factor 1.0 [-def]       
+        ERR_FACTOR \t{self.prop['ERR_FACTOR']} \t# error scaling factor 1.0 [-def]       
         #
         #-------    Theoretical libraries
+        #
         ZPHOTLIB \t{self.prop['ZPHOTLIB']} \t# Library used for Chi2 (max:3)
-        ADD_EMLINES \t{self.prop['ADD_EMLINES']}
+        ADD_EMLINES\t{self.prop['ADD_EMLINES']}
         #
         ########    PHOTOMETRIC REDSHIFTS OPTIONS      ###########
+        #
         # FIR LIBRARY
-        FIR_LIB \t{self.prop['FIR_LIB']}
-        FIR_LMIN \t{self.prop['FIR_LMIN']} \t# Lambda Min (micron) for FIR analysis 
-        FIR_CONT \t{self.prop['FIR_CONT']}
-        FIR_SCALE \t{self.prop['FIR_SCALE']}
+        #
+        FIR_LIB \t\t{self.prop['FIR_LIB']}
+        FIR_LMIN \t\t{self.prop['FIR_LMIN']} \t# Lambda Min (micron) for FIR analysis 
+        FIR_CONT \t\t{self.prop['FIR_CONT']}
+        FIR_SCALE \t\t{self.prop['FIR_SCALE']}
         FIR_FREESCALE \t{self.prop['FIR_FREESCALE']} \t# ALLOW FOR FREE SCALING 
         FIR_SUBSTELLAR \t{self.prop['FIR_SUBSTELLAR']}
-        # PHYSICAL LIBRARY with Stochastic models from  BC07        
-        PHYS_LIB \t{self.prop['PHYS_LIB']}  
-        PHYS_CONT \t{self.prop['PHYS_CONT']}
-        PHYS_SCALE \t{self.prop['PHYS_SCALE']}
-        PHYS_NMAX \t{self.prop['PHYS_NMAX']}
+        #
+        # PHYSICAL LIBRARY with Stochastic models from  BC07  
+        #
+        PHYS_LIB \t\t{self.prop['PHYS_LIB']}  
+        PHYS_CONT \t\t{self.prop['PHYS_CONT']}
+        PHYS_SCALE \t\t{self.prop['PHYS_SCALE']}
+        PHYS_NMAX \t\t{self.prop['PHYS_NMAX']}
         #
         #-------     Priors  
+        #
         # MASS_SCALE	0.,0.		# Lg(Scaling) min,max [0,0-def]
         MAG_ABS \t{self.prop['MAG_ABS']} \t# Mabs_min, Mabs_max [0,0-def]
-        MAG_REF \t{self.prop['MAG_REF']} \t\t# Reference number for band used by Mag_abs
+        MAG_REF \t{self.prop['MAG_REF']} \t# Reference number for band used by Mag_abs
         # ZFORM_MIN	5,5,5,5,5,5,3,1	# Min. Zformation per SED -> Age constraint
-        Z_RANGE \t{self.prop['Z_RANGE']} \t\t# Z min-max used for the Galaxy library 
-        EBV_RANGE \t{self.prop['EBV_RANGE']} \t\t# E(B-V) MIN-MAX RANGE of E(B-V) used  
+        Z_RANGE \t{self.prop['Z_RANGE']} \t# Z min-max used for the Galaxy library 
+        EBV_RANGE \t{self.prop['EBV_RANGE']} \t# E(B-V) MIN-MAX RANGE of E(B-V) used  
         # NZ_PRIOR      4,2,4           # I Band for prior on N(z)
         #                          
         #-------     Fixed Z   (need format LONG for input Cat)
+        #
         ZFIX \t{self.prop['ZFIX']} \t# fixed z and search best model [YES,NO-def]
         #
         #-------     Parabolic interpolation for Zbest  
+        #
         Z_INTERP \t{self.prop['Z_INTERP']} \t# redshift interpolation [YES,NO-def]
+        #
         #-------  Analysis of normalized ML(exp-(0.5*Chi^2)) curve 
         #-------  Secondary peak analysis       
+        #
         DZ_WIN \t\t{self.prop['DZ_WIN']} \t# Window search for 2nd peaks [0->5;0.25-def]
         MIN_THRES \t{self.prop['MIN_THRES']} \t# Lower threshold for 2nd peaks[0->1; 0.1-def]
         #
         #-------  Probability (in %) per redshift intervals
+        #
         # PROB_INTZ     0,0.5,0.5,1.,1.,1.5     # even number
         #
         #########    ABSOLUTE MAGNITUDES COMPUTATION   ###########
         #
-        MABS_METHOD\t{self.prop['MABS_METHOD']} \t\t\t\t# 0[-def] : obs->Ref, 1 : best  obs->Ref, 2 : fixed obs->Ref, 3 : mag from best SED, 4 : Zbin
-        MABS_CONTEXT \t{self.prop['MABS_CONTEXT']} \t\t\t\t# CONTEXT for Band used for MABS 
-
-        MABS_REF \t{self.prop['MABS_REF']} \t\t\t\t# 0[-def]: filter obs chosen for Mabs (ONLY USED IF MABS_METHOD=2)
-        MABS_FILT \t{self.prop['MABS_FILT']} \t\t\t# Chosen filters per redshift bin (MABS_ZBIN - ONLY USED IF MABS_METHOD=4)
+        MABS_METHOD \t{self.prop['MABS_METHOD']} \t# 0[-def] : obs->Ref, 1 : best  obs->Ref, 2 : fixed obs->Ref, 3 : mag from best SED, 4 : Zbin
+        MABS_CONTEXT \t{self.prop['MABS_CONTEXT']} \t# CONTEXT for Band used for MABS 
+        MABS_REF \t{self.prop['MABS_REF']} \t# 0[-def]: filter obs chosen for Mabs (ONLY USED IF MABS_METHOD=2)
+        MABS_FILT \t{self.prop['MABS_FILT']} \t# Chosen filters per redshift bin (MABS_ZBIN - ONLY USED IF MABS_METHOD=4)
         MABS_ZBIN \t{self.prop['MABS_ZBIN']} \t# Redshift bins (even number - ONLY USED IF MABS_METHOD=4)
+        #
         #########   OUTPUT SPECTRA                     ###########
         #
         SPEC_OUT \t{self.prop['SPEC_OUT']} \t\t# spectrum for each object? [YES,NO-def]
         CHI2_OUT \t{self.prop['CHI2_OUT']} \t\t# output file with all values : z,mod,chi2,E(B-V),... BE CAREFUL can take a lot of space !!
+        #
         #########  OUTPUT PDZ ANALYSIS  
-        PDZ_OUT \t{self.prop['PDZ_OUT']} \t\t# pdz output file name [def-NONE] - add automatically PDZ_OUT[.pdz/.mabsx/.mod/.zph] 
+        #
+        PDZ_OUT \t\t{self.prop['PDZ_OUT']} \t# pdz output file name [def-NONE] - add automatically PDZ_OUT[.pdz/.mabsx/.mod/.zph] 
         PDZ_MABS_FILT \t{self.prop['PDZ_MABS_FILT']} \t# MABS for REF FILTERS to be extracted
         # 
         #########   FAST MODE : color-space reduction        #####
@@ -597,21 +582,21 @@ class LePhareSED(SED):
         #
         #########   ADAPTIVE METHOD using Z spectro sample     ###
         #
-        AUTO_ADAPT \t{self.prop['AUTO_ADAPT']} \t\t# Adapting method with spectro [NO-def]
-        ADAPT_BAND \t{self.prop['ADAPT_BAND']} \t\t# Reference band, band1, band2 for color 
-        ADAPT_LIM \t{self.prop['ADAPT_LIM']} \t\t# Mag limits for spectro in Ref band [18,21.5-def]
-        ADAPT_POLY\t{self.prop['ADAPT_POLY']} \t\t# Number of coef in  polynom (max=4) [1-def]
-        ADAPT_METH \t{self.prop['ADAPT_METH']} \t\t# Fit as a function of 1 : Color Model  [1-def], 2 : Redshift, 3 : Models
-        ADAPT_CONTEXT \t{self.prop['ADAPT_CONTEXT']} \t\t# Context for bands used for training, -1[-def] used context per object
-        ADAPT_ZBIN \t{self.prop['ADAPT_ZBIN']} \t# Redshift's interval used for training [0.001,6-Def]
-        ADAPT_MODBIN \t{self.prop['ADAPT_MODBIN']}'\t\t# Model's interval used for training [1,1000-Def]
-        ERROR_ADAPT \t{self.prop['ERROR_ADAPT']} \t\t# [YES,NO-def] Add error in quadrature according to the difference between observed and predicted apparent magnitudes 
+        AUTO_ADAPT \t\t{self.prop['AUTO_ADAPT']} \t# Adapting method with spectro [NO-def]
+        ADAPT_BAND \t\t{self.prop['ADAPT_BAND']} \t# Reference band, band1, band2 for color 
+        ADAPT_LIM \t\t{self.prop['ADAPT_LIM']} \t# Mag limits for spectro in Ref band [18,21.5-def]
+        ADAPT_POLY \t\t{self.prop['ADAPT_POLY']} \t# Number of coef in  polynom (max=4) [1-def]
+        ADAPT_METH \t\t{self.prop['ADAPT_METH']} \t# Fit as a function of 1 : Color Model  [1-def], 2 : Redshift, 3 : Models
+        ADAPT_CONTEXT \t{self.prop['ADAPT_CONTEXT']} \t# Context for bands used for training, -1[-def] used context per object
+        ADAPT_ZBIN \t\t{self.prop['ADAPT_ZBIN']} \t# Redshift's interval used for training [0.001,6-Def]
+        ADAPT_MODBIN \t{self.prop['ADAPT_MODBIN']} \t# Model's interval used for training [1,1000-Def]
+        ERROR_ADAPT \t{self.prop['ERROR_ADAPT']} \t# [YES,NO-def] Add error in quadrature according to the difference between observed and predicted apparent magnitudes 
         #
         '''      
         
         return text
     
-    def __call__(self, catalogue, skipSEDgen=False, skipFilterGen=False, skipMagGen=False, **kwargs):
+    def __call__(self, catalogue, skipSEDgen=False, skipFilterGen=False, skipMagQSO=False, skipMagStar=False, skipMagGal=False, **kwargs):
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -622,7 +607,9 @@ class LePhareSED(SED):
         
         :param bool skipSEDgen: (**Optional**) whether to skip the SED models generation. Useful to gain time if the same SED are used for multiple sources.
         :param bool skipFilterGen: (**Optional**) whether to skip the filters generation. Useful to gain time if the same filters are used for multiple sources.
-        :param bool skipMagGen: (**Optional**) whether to skip the predicted magnitude computations. Useful to gain time if the same libraries/parameters are used for multiple sources.
+        :param bool skipMagQSO: (**Optional**) whether to skip the predicted magnitude computations for the QS0. Useful to gain time if the same libraries/parameters are used for multiple sources.
+        :param bool skipMagStar: (**Optional**) whether to skip the predicted magnitude computations for the stars. Useful to gain time if the same libraries/parameters are used for multiple sources.
+        :param bool skipMagGal: (**Optional**) whether to skip the predicted magnitude computations for the galaxies. Useful to gain time if the same libraries/parameters are used for multiple sources.
 
         '''
         
@@ -660,30 +647,32 @@ class LePhareSED(SED):
                         print(line, end='')
                         
                 if p.returncode != 0:
-                    raise subprocess.CalledProcessError(f'{name} models generation failed.')
+                    raise OSError(f'{name} models generation failed.')
             
         ####################################
         #         Generate filters         #
         ####################################
         
-        command = opath.expandvars('$LEPHAREDIR/source/filter')
-        if not opath.isfile(command):
-            raise OSError(f'LePhare script $LEPHAREDIR/source/filter (expanded as {command}) not found.')
-            
-        with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
-            for line in p.stdout:
-                print(line, end='')
+        if not skipFilterGen:
+
+            command = opath.expandvars('$LEPHAREDIR/source/filter')
+            if not opath.isfile(command):
+                raise OSError(f'LePhare script $LEPHAREDIR/source/filter (expanded as {command}) not found.')
                 
-        if p.returncode != 0:
-            raise subprocess.CalledProcessError('filters generation failed.')
+            with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+                for line in p.stdout:
+                    print(line, end='')
+                    
+            if p.returncode != 0:
+                raise OSError('filters generation failed.')
         
         ##############################################
         #        Compute predicted magnitudes        #
         ##############################################
         
-        if not skipMagGen:
+        # QSO magnitudes
+        if not skipMagQSO:
             
-            # QSO magnitudes
             command = opath.expandvars('$LEPHAREDIR/source/mag_gal')
             if not opath.isfile(command):
                 raise OSError(f'LePhare script $LEPHAREDIR/source/mag_gal (expanded as {command}) not found.')
@@ -693,9 +682,11 @@ class LePhareSED(SED):
                     print(line, end='')
                 
             if p.returncode != 0:
-                raise subprocess.CalledProcessError('QSO magnitudes failed.')
-                
-            # Star magnitudes
+                raise OSError('QSO magnitudes failed.')
+            
+        # Star magnitudes
+        if not skipMagStar:
+            
             command = opath.expandvars('$LEPHAREDIR/source/mag_star')
             if not opath.isfile(command):
                 raise OSError(f'LePhare script $LEPHAREDIR/source/mag_star (expanded as {command}) not found.')
@@ -705,9 +696,10 @@ class LePhareSED(SED):
                     print(line, end='')
                 
             if p.returncode != 0:
-                raise subprocess.CalledProcessError('Stellar magnitudes failed.')
+                raise OSError('Stellar magnitudes failed.')
                 
-            # Galaxy magnitudes
+        # Galaxy magnitudes
+        if not skipMagGal:
             command = opath.expandvars('$LEPHAREDIR/source/mag_gal')
             if not opath.isfile(command):
                 raise OSError(f'LePhare script $LEPHAREDIR/source/mag_gal (expanded as {command}) not found.')
@@ -717,13 +709,13 @@ class LePhareSED(SED):
                     print(line, end='')
                 
             if p.returncode != 0:
-                raise subprocess.CalledProcessError('Galaxy magnitudes failed.')
+                raise OSError('Galaxy magnitudes failed.')
         
         ###################################
         #         Run SED fitting         #
         ###################################
         
-        command = '$LEPHAREDIR/source/zphota'
+        command = opath.expandvars('$LEPHAREDIR/source/zphota')
         if not opath.isfile(command):
                 raise OSError(f'LePhare script $LEPHAREDIR/source/zphota (expanded as {command}) not found.')
         
@@ -732,7 +724,7 @@ class LePhareSED(SED):
                 print(line, end='')
                 
             if p.returncode != 0:
-                raise subprocess.CalledProcessError('SED fitting failed.')
+                raise OSError('SED fitting failed.')
         
         return
  

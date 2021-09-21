@@ -13,7 +13,11 @@ from   astropy.table              import Table
 from   copy                       import deepcopy
 from   functools                  import partialmethod
 
-from   .catalogues                import LePhareCat
+from   numpy                      import ndarray
+from   typing                     import Tuple, List, Union, Any
+
+from   .misc                      import SEDcode, CleanMethod, TableUnit
+from   .catalogues                import LePhareCat, Catalogue
 from   ..photometry               import countToMag, countToFlux
 from   ..symlinks.coloredMessages import warningMessage, errorMessage
 
@@ -21,11 +25,10 @@ from   ..symlinks.coloredMessages import warningMessage, errorMessage
 WARNING = warningMessage('Warning: ')
 ERROR   = errorMessage('Error: ')
 
-
 class Filter:
     r'''Base class implementing data related to a single filter.'''
     
-    def __init__(self, filt, file, errFile, zeropoint, ext=0, extErr=0, texpFactor=1):
+    def __init__(self, filt: str, file: str, errFile: str, zeropoint: float, ext: int = 0, extErr: int = 0) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
             
@@ -68,7 +71,7 @@ class Filter:
     ###############################
     
     @staticmethod
-    def _mask(arr, mask, *args, **kwargs):
+    def _mask(arr: ndarray, mask: ndarray, *args, **kwargs) -> ndarray:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -87,7 +90,7 @@ class Filter:
         
         return arr
             
-    def _checkFile(self, file, *args, **kwargs):
+    def _checkFile(self, file: str, *args, **kwargs) -> bool:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
             
@@ -110,7 +113,7 @@ class Filter:
             return False
         return True
     
-    def _loadFits(self, file, ext=0, **kwargs):
+    def _loadFits(self, file: str, ext: int = 0, **kwargs) -> Tuple[Any]:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -151,7 +154,7 @@ class Filter:
 class FilterList:
     r'''Base class implementing the object used to stored SED fitting into.'''
     
-    def __init__(self, filters, mask, code='cigale', redshift=0, **kwargs):
+    def __init__(self, filters: List[Filter], mask: ndarray, code: SEDcode = SEDcode.LEPHARE, redshift: Union[int, float] = 0, **kwargs) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
             
@@ -160,8 +163,9 @@ class FilterList:
         :param list[Filter] filters: filters used to perform the SED fitting
         :param ndarray[bool] mask: mask for bad pixels (True for bad pixels, False for good ones)
         
-        :param str code: (**Optional**) code used to perform the SED fitting. Either 'lephare' or 'cigale' are accepted.
+        :param SEDcode code: (**Optional**) code used to perform the SED fitting. Either SEDcode.LEPHARE or SEDcode.CIGALE or accepted.
         :param redshift: (**Optional**) redshift of the galaxy
+        :type redshift: int or float
         
         :raises TypeError: 
             * if **filters** is not a list
@@ -226,7 +230,7 @@ class FilterList:
     #       Table and catalogue creation       #
     ############################################
     
-    def toCatalogue(self, fname, *args, **kwargs):
+    def toCatalogue(self, fname: str, *args, **kwargs) -> Catalogue:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -239,7 +243,11 @@ class FilterList:
         
         return Catalogue(fname, self.table, *args, **kwargs)
     
-    def toLePhareCat(self, fname, tunit='M', magtype='AB', tformat='MEME', ttype='LONG', **kwargs):
+    def toLePhareCat(self, fname: str, 
+                     tunit: TableUnit = TableUnit.MAG, 
+                     magtype: str = 'AB', 
+                     tformat: str = 'MEME', 
+                     ttype: str = 'LONG', **kwargs) -> LePhareCat:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -250,19 +258,19 @@ class FilterList:
         .. seealso:: :py:class:`LePhareCat`
         '''
         
-        if self.code.lower() != 'lephare':
-            raise ValueError(f'code is {self.code} but it needs to be lephare to build a LePhare catalogue object.')
+        if self.code is not SEDcode.LEPHARE:
+            raise ValueError(f'code is {self.code} but it needs to be SED.SEDcode to build a LePhare catalogue object.')
         
         return LePhareCat(fname, self.table, tunit=tunit, magtype=magtype, tformat=tformat, ttype=ttype)
         
     
-    def toTable(self, cleanMethod='zero', scaleFactor=100, texpFac=0, **kwargs):
+    def toTable(self, cleanMethod: CleanMethod = CleanMethod.ZERO, scaleFactor: int = 100, texpFac : int = 0, **kwargs) -> Table:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
         Generate an input table for the SED fitting codes.
         
-        :param str cleanMethod: (**Optional**) method used to clean pixel with negative values. Accepted values are 'zero' and 'min'.
+        :param CleanMethod cleanMethod: (**Optional**) method used to clean pixel with negative values. Accepted values are CleanMethod.ZERO or CleanMethod.MIN.
         :param scaleFactor: (**Optional**) factor used to multiply data and std map. Only used if SED fitting code is LePhare.
         :type scaleFactor: int or float
         :param int texpFactor: (**Optional**) exposure factor used to divide the exposure time when computing Poisson noise. A value of 0 means no Poisson noise is added to the variance map.
@@ -277,7 +285,7 @@ class FilterList:
             raise ValueError('At least one filter must be in the filter list to build a table.')
         
         # Mean map (NaN values are set to 0 once the mean map is computed)
-        if self.code.lower() == 'lephare':
+        if self.code is SEDcode.LEPHARE:
             meanMap, _      = self.meanMap(maskVal=0)
 
         dataList            = []
@@ -287,6 +295,8 @@ class FilterList:
             # Clean data and error maps of bad pixels and pixels with negative values
             data, var       = self.clean(filt.data, filt.var, self.mask, method=cleanMethod)
             shp             = data.shape
+            
+            #print(np.where(data<0))
         
             # Add Poisson noise to the variance map
             try:
@@ -294,10 +304,10 @@ class FilterList:
             except KeyError:
                 print(ERROR + f'data header in {filt.filter} does not have TEXPTIME key. Cannot compute poisson variance.')
             else:
-                var        += self.poissonVar(data, texp=texp, texpFac=texpFac)
-            
+                var         = self.poissonVar(data, texp=texp, texpFac=texpFac)
+    
             # Scaling data for LePhare
-            if self.code.lower() == 'lephare':
+            if self.code is SEDcode.LEPHARE:
                 data, var   = self.scale(data, var, meanMap, factor=scaleFactor)
             
             # Transform data and error maps into 1D vectors
@@ -310,13 +320,13 @@ class FilterList:
             var             = var[ nanMask]
             
             # Convert flux and variance to AB mag for LePhare
-            if self.code.lower() == 'lephare':
+            if self.code is SEDcode.LEPHARE:
                 
                 # 0 values are cast to NaN otherwise corresponding magnitude would be infinite
                 mask0       = (np.asarray(data == 0) | np.asarray(var == 0))
                 data[mask0] = np.nan
                 var[ mask0] = np.nan
-                    
+                
                 # Compute std instead of variance
                 data, std   = countToMag(data, np.sqrt(var), filt.zpt)
                 
@@ -325,7 +335,7 @@ class FilterList:
                 std[ mask0] = -99
                 
             # Convert to mJy for Cigale
-            elif self.code.lower() == 'cigale':
+            elif self.code is SEDcode.CIGALE:
                 
                 # Compute std and convert std and data to mJy unit
                 data, std   = [i.to('mJy').value for i in countToFlux(data, np.sqrt(var), filt.zpt)]
@@ -349,7 +359,7 @@ class FilterList:
         # Shared between LePhare and Cigale
         zs                  = [self.redshift]*ll
         
-        if self.code.lower() == 'lephare':
+        if self.code is SEDcode.LEPHARE:
             
             # Compute context (number of filters used - see LePhare documentation) and redshift columns
             context         = [2**len(self.filters) - 1]*ll
@@ -357,7 +367,7 @@ class FilterList:
             colnames        = ['ID']    + [val for f in self.filters for val in [f.filter, f'e_{f.filter}']] + ['Context', 'zs']
             columns         = [indices] + [val for d, s in zip(dataList, stdList) for val in [d, s]]         + [ context, zs]
         
-        elif self.code.lower() == 'cigale':
+        elif self.code is SEDcode.CIGALE:
             
             dtypes          = [int, float]       + [float]*len(self.filters)
             colnames        = ['id', 'redshift'] + [val for f in self.filters for val in [f.filter, f'{f.filter}_err']]
@@ -374,7 +384,7 @@ class FilterList:
     #############################
     
     @staticmethod
-    def clean(data, var, mask, method='zero', **kwargs):
+    def clean(data: ndarray, var: ndarray, mask: ndarray, method: CleanMethod = CleanMethod.ZERO, **kwargs) -> Tuple[ndarray]:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -382,29 +392,22 @@ class FilterList:
         
         .. note::
                 
-            * If **method** is 'zero', negative values in the data and error maps are set to 0
-            * If **method** is 'min', negative values in the data and error maps are set to the minimum value in the array
-            * If **method** is neither 'zero' nor 'negative', 'zero' is used as default
+            * If **method** is CleanMethod.ZERO, negative values in the data and error maps are set to 0
+            * If **method** is CleanMethod.MIN, negative values in the data and error maps are set to the minimum value in the array
+            * If **method** is neither, 'zero' is used as default
             
         :param ndarray data: data map
         :param ndarray var: variance map
         :param ndarray[bool] mask: mask used to apply NaN values
         
-        :param str method: (**Optional**) method to deal with negative values
+        :param CleanMethod method: (**Optional**) method to deal with negative values
         
         :returns: cleaned data and variance maps
         :rtype: ndarray, ndarray
-        
-        :raises TypeError: if **method** is not of type str
         '''
         
-        if not isinstance(method, str):
-            raise TypeError(f'method parameter has type {type(method)} but it must have type str.')
-        
-        method            = method.lower()
-        if method not in ['zero', 'min']:
-            print(WARNING + f'method {method} not recognised. Using ' +  brightMessage('zero') +  ' as default.')
-            method        = 'zero'
+        if not isinstance(method, CleanMethod):
+            raise TypeError(f'method parameter has type {type(method)} but it must have type CleanMethod.')
         
         # Deep copies to avoid to overwrite input arrays
         data              = deepcopy(data)
@@ -416,17 +419,17 @@ class FilterList:
         
         # Mask pixels having negative values
         negMask           = (data < 0) | (var < 0)
-        if method == 'zero':
+        if method is CleanMethod.ZERO:
             data[negMask] = 0
             var[ negMask] = 0
-        elif method == 'min':
+        elif method == CleanMethod.MIN:
             mini          = np.nanmin(data[~negMask])
             data[negMask] = mini
             var[ negMask] = mini
             
         return data, var
     
-    def meanMap(self, maskVal=0, **kwargs):
+    def meanMap(self, maskVal: Union[int, float] = 0, **kwargs) -> Tuple[ndarray]:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -459,7 +462,7 @@ class FilterList:
         return data, err
     
     @staticmethod
-    def poissonVar(data, texp=1, texpFac=1, **kwargs):
+    def poissonVar(data: ndarray, texp: Union[int, float] = 1, texpFac: Union[int, float] = 1, **kwargs) -> ndarray:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -467,7 +470,7 @@ class FilterList:
         
         .. math::
             
-            (\Delta F)^2 = \alpha F
+            (\Delta F)^2 = | \alpha F |
         
         
         where :math:`F` is the flux map and :math:`\alpha` is a scale factor defined as
@@ -502,10 +505,10 @@ class FilterList:
         if texpFac < 0:
             raise ValueError(f'texpFac has value {texpFac} but it must be positive or null.')
         
-        return data * texpFac / texp
+        return np.abs(data) * texpFac / texp
     
     @staticmethod
-    def scale(data, var, norm, factor=100):
+    def scale(data: ndarray, var: ndarray, norm: ndarray, factor: Union[int, float] = 100) -> Tuple[ndarray]:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -542,7 +545,7 @@ class FilterList:
     #       Misc       #
     ####################    
     
-    def setCode(self, code, *args, **kwargs):
+    def setCode(self, code: SEDcode, *args, **kwargs) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -553,26 +556,23 @@ class FilterList:
             This function also recomputes and rewrites the output table used for the SED fitting.
             If you want a table with different parameters you must run :py:meth:`FilterList.toTable` again, for e.g.
             
-            >>> flist = FilterList(filters, mask)                # setCode and toTable methods are called with default SED fitting code name
-            >>> flist.setCode('lephare')                         # setCode and toTable methods are called with 'lephare' SED fitting code name
-            >>> flist.toTable(cleanMethod='min', scaleFactor=50) # toTable is run again with different parameters but still 'lephare' SED fitting code name
+            >>> from SED.misc import SEDcode, CleanMethod
+            >>> flist = FilterList(filters, mask)                          # setCode and toTable methods are called with default SED fitting code name
+            >>> flist.setCode(SEDcode.LEPHARE)                             # setCode and toTable methods are called with 'lephare' SED fitting code name
+            >>> flist.toTable(cleanMethod=CleanMethod.MIN, scaleFactor=50) # toTable is run again with different parameters but still 'lephare' SED fitting code name
         
-        :param str code: code used for SED fitting acceptable values are cigale and lephare. If code name is not recognised, cigale is set as default value.
+        :param SEDcode code: code used for SED fitting. Acceptable values are SEDcode.CIGALE and SEDcode.LEPHARE.
         
         :raises TypeError: if **code** is not of type str
         '''
         
-        if not isinstance(code, str):
-            raise TypeError(f'code parameter has type {type(code)} but it must be of type str.')
+        if not isinstance(code, SEDcode):
+            raise TypeError(f'code parameter has type {type(code)} but it must be of type SEDcode.')
         
-        self.code     = code.lower()
-        if self.code not in ['cigale', 'lephare']:
-            print(WARNING + f'code name {self.code} could not be resolved. Acceptable values are cigale or lephare. Using ' + brightMessage('cigale') + ' as default.')
-            self.code = 'cigale'
+        self.code = code
             
         # Update output table with default parameters
         self.toTable()
-            
         return
     
     
@@ -581,7 +581,7 @@ class FilterList:
     #############################
     
     #: Set Cigale as fitting code
-    setCigale  = partialmethod(setCode, 'cigale')
+    setCigale  = partialmethod(setCode, SEDcode.CIGALE)
     
     #: Set LePhare as fitting code
-    setLePhare = partialmethod(setCode, 'lephare')
+    setLePhare = partialmethod(setCode, SEDcode.LEPHARE)
