@@ -21,6 +21,8 @@ from   .catalogues                import LePhareCat, Catalogue
 from   ..photometry               import countToMag, countToFlux
 from   ..symlinks.coloredMessages import warningMessage, errorMessage
 
+import warnings
+
 # Custom colored messages
 WARNING = warningMessage('Warning: ')
 ERROR   = errorMessage('Error: ')
@@ -452,9 +454,11 @@ class FilterList:
         err   = [f._mask(f.var,  self.mask) for f in self.filters]
         
         # Compute mean value along spectral dimension
-        data  = np.nanmean(data, axis=0)
-        err   = np.nanmean(err,  axis=0)
-        
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', 'Mean of empty slice')
+            data  = np.nanmean(data, axis=0)
+            err   = np.nanmean(err,  axis=0)
+            
         # Replace NaN values
         np.nan_to_num(data, copy=False, nan=maskVal)
         np.nan_to_num(err,  copy=False, nan=maskVal)
