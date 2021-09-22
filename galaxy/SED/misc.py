@@ -60,12 +60,11 @@ def check_type(dtype):
         '''
     
         def wrap(*args, **kwargs):
-        
-            if not len(args) > 0:
+            if not len(args) > 1:
                 raise ValueError('Cannot check type for data with length 0.')
             
-            value = args[0]
-            if not isinstance(value, dtype):
+            value = args[1]
+            if value != '-1' and not isinstance(value, dtype):
                 raise TypeError(f'parameter has type {type(value)} but it must have type {dtype}.')
                 
             return func(*args, **kwargs)
@@ -91,10 +90,10 @@ def check_type_in_list(dtype):
         
         def wrap(*args, **kwargs):
             
-            if len(args) < 1 or len(args[0]) < 1:
+            if len(args) < 1 or len(args[1]) < 1:
                 raise ValueError('Cannot check type for data with length 0.')
             
-            value = args[0]
+            value = args[1]
             if any((not isinstance(i, dtype) for i in value)):
                 raise TypeError(f'at least one parameter element does not have type {dtype}.')
                 
@@ -341,7 +340,10 @@ class FloatProperty(Property):
         Implement a string representation of the class.
         '''
         
-        if self.value == 0 or (self.value > 1e-3 and self.value < 1e3):
+        # -1 is the value which indicates no value in LePhare
+        if self.value == '-1':
+            return self.value
+        elif self.value == 0 or (self.value > 1e-3 and self.value < 1e3):
             return f'{self.value:.3f}'
         else:
             return f'{self.value:.3e}'
@@ -355,7 +357,9 @@ class FloatProperty(Property):
         :param float value: new value. Must be within bounds.
         '''
         
-        self.check_bounds(value, self.min, self.max, self._testFunc, self._testMsg)
+        if value != '-1':
+            self.check_bounds(value, self.min, self.max, self._testFunc, self._testMsg)
+            
         self.value = value
         return
     
@@ -446,7 +450,6 @@ class ListProperty(Property):
     ###############################
     
     @staticmethod
-    @check_type(list)
     def check_bounds(value: List[Any], mini: Any, maxi: Any, func: Callable, msg: str) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
