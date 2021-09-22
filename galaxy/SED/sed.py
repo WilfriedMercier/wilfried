@@ -210,13 +210,13 @@ class LePhareSED(SED):
                      
                      'QSO_SED'        : PathProperty(opath.join('$LEPHAREDIR', 'sed', 'QSO', 'QSO_MOD.list')),
                      
-                     'QSO_FSCALE'     : FloatProperty(1, minBound=0),
+                     'QSO_FSCALE'     : FloatProperty(1.0, minBound=0),
                      
                      'QSO_LIB'        : PathProperty('LIB_QSO_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
                      'GAL_SED'        : PathProperty(opath.join('$LEPHAREDIR', 'sed', 'GAL', 'BC03_CHAB', 'BC03_MOD.list')),
                      
-                     'GAL_FSCALE'     : FloatProperty(1, minBound=0),
+                     'GAL_FSCALE'     : FloatProperty(1.0, minBound=0),
                      
                      'GAL_LIB'        : PathProperty('LIB_bc03', path=opath.join('$LEPHAREWORK', 'lib_bin'), ext='.bin'),
                      
@@ -249,11 +249,11 @@ class LePhareSED(SED):
                      
                      'MAGTYPE'        : EnumProperty(MagType.AB),
                      
-                     'Z_STEP'         : ListFloatProperty([0.01, 2, 0.1], minBound=0,
+                     'Z_STEP'         : ListFloatProperty([0.01, 2.0, 0.1], minBound=0,
                                                           testFunc=lambda value: len(value)!=3 or value[2] < value[0], 
                                                           testMsg='Z_STEP property must be a length 3 list where the last step must be larger than the first one.'),
                      
-                     'COSMOLOGY'      : ListFloatProperty([70, 0.3, 0.7], minBound=0,
+                     'COSMOLOGY'      : ListFloatProperty([70.0, 0.3, 0.7], minBound=0,
                                                           testFunc=lambda value: len(value)!=3, 
                                                           testMsg='Z_STEP property must be a length 3 list.'),
                      
@@ -263,7 +263,7 @@ class LePhareSED(SED):
                      
                      'EXTINC_LAW'     : PathProperty('calzetti.dat', path=opath.join('$LEPHAREDIR', 'ext')),
                      
-                     'EB_V'           : ListFloatProperty([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5],
+                     'EB_V'           : ListFloatProperty([0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5],
                                                           testFunc=lambda value: len(value)>49 or any((j<=i for i, j in zip(value[:-1], value[1:]))), 
                                                           testMsg='EB_V property must be an increasing list with a maximum length of 49.'),
                      
@@ -277,7 +277,7 @@ class LePhareSED(SED):
                      
                      'ERR_SCALE'      : ListFloatProperty([0.03, 0.03, 0.03, 0.03], minBound=0),
                      
-                     'ERR_FACTOR'     : FloatProperty(1, minBound=0),
+                     'ERR_FACTOR'     : FloatProperty('-1', minBound=0),
                      
                      'ZPHOTLIB'       : ListStrProperty(['HDF_bc03', 'STAR_HDF_bc03', 'QSO_HDF_bc03']),
                      
@@ -285,25 +285,25 @@ class LePhareSED(SED):
                      
                      'FIR_LIB'        : PathProperty('NONE'),
                      
-                     'FIR_LMIN'       : FloatProperty(7, minBound=0),
+                     'FIR_LMIN'       : FloatProperty(7.0, minBound=0),
                      
-                     'FIR_CONT'       : FloatProperty(-1),
+                     'FIR_CONT'       : FloatProperty('-1'),
                      
-                     'FIR_SCALE'      : FloatProperty(-1),
+                     'FIR_SCALE'      : FloatProperty('-1'),
                      
-                     'FIR_FREESCALE'  : YESNO.Property(YESNO.NO),
+                     'FIR_FREESCALE'  : YESNO(YESNO.NO),
                      
-                     'FIR_SUBSTELLAR' : YESNO.Property(YESNO.NO),
+                     'FIR_SUBSTELLAR' : YESNO(YESNO.NO),
                      
                      'PHYS_LIB'       : PathProperty('NONE'),
                      
-                     'PHYS_CONT'      : FloatProperty(-1),
+                     'PHYS_CONT'      : FloatProperty('-1'),
                      
-                     'PHYS_SCALE'     : FloatProperty(-1),
+                     'PHYS_SCALE'     : FloatProperty('-1'),
                      
                      'PHYS_NMAX'      : IntProperty(100000),
                      
-                     'MAG_ABS'        : ListFloatProperty([-20, -30],
+                     'MAG_ABS'        : ListFloatProperty([-20.0, -30.0],
                                                           testFunc=lambda value: len(value)!=2,
                                                           testMsg='MAG_ABS property must be a length 2 list.'),
                      
@@ -313,7 +313,7 @@ class LePhareSED(SED):
                                                           testFunc=lambda value: len(value)!=2 or value[1] < value[0],
                                                           testMsg='Z_RANGE property must be an increasing length 2 list.'),
                      
-                     'EBV_RANGE'      : ListFloatProperty([0, 9],
+                     'EBV_RANGE'      : ListFloatProperty([0.0, 9.0],
                                                           testFunc=lambda value: len(value)!=2 or value[1] < value[0],
                                                           testMsg='EBV_RANGE_RANGE property must be an increasing length 2 list.'),
                      
@@ -333,7 +333,7 @@ class LePhareSED(SED):
                      
                      'MABS_FILT'      : ListIntProperty([1, 2, 3, 4], minBound=0),
                      
-                     'MABS_ZBIN'      : ListFloatProperty([0, 0.5, 1, 1.5, 2, 3, 3.5, 4], minBound=0,
+                     'MABS_ZBIN'      : ListFloatProperty([0.0, 0.5, 1.0, 1.5, 2.0, 3.0, 3.5, 4.0], minBound=0,
                                                           testFunc=lambda value: len(value)%2!=0 or any([j<=i for i, j in zip(value[:-1], value[1:])]), 
                                                           testMsg='MABS_ZBIN property must be an increasing list with an even length.'),
                      
@@ -357,7 +357,7 @@ class LePhareSED(SED):
                      
                      'ADAPT_BAND'     : ListIntProperty([4, 2, 4], minBound=0),
                      
-                     'ADAPT_LIM'      : ListFloatProperty([20, 40],
+                     'ADAPT_LIM'      : ListFloatProperty([20.0, 40.0],
                                                           testFunc=lambda value: len(value)!=2 or value[1] < value[0],
                                                           testMsg='ADAPT_LIM property must be an increasing length 2 list.'),
                      
@@ -367,7 +367,7 @@ class LePhareSED(SED):
                      
                      'ADAPT_CONTEXT'  : IntProperty(-1),
                      
-                     'ADAPT_ZBIN'     : ListFloatProperty([0.01, 6], minBound=0,
+                     'ADAPT_ZBIN'     : ListFloatProperty([0.01, 6.0], minBound=0,
                                                           testFunc=lambda value: len(value)!=2 or value[1] < value[0],
                                                           testMsg='ADAPT_ZBIN property must be an increasing length 2 list.'),
                      
