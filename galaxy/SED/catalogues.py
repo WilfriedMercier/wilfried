@@ -115,9 +115,9 @@ class LePhareCat(Catalogue):
         self.ttype  = EnumProperty(TableType.LONG)
         
         self.nlines = ListIntProperty([0, 100000000], minBound=0,
-                               testFunc = lambda value: value[1] < value[0],
-                               testMsg  = f'maximum number of lines ({nlines[1]}) is less than minimum one ({nlines[0]}).')
-        
+                                      testFunc = lambda value: value[1] < value[0],
+                                      testMsg  = f'maximum number of lines ({nlines[1]}) is less than minimum one ({nlines[0]}).')
+         
         #################################################
         #              Set to given values              #
         #################################################
