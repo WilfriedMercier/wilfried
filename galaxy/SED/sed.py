@@ -8,25 +8,28 @@ Utilties related to generating 2D mass and SFR maps using LePhare SED fitting co
 
 import subprocess
 import os
-import os.path       as     opath
-from   textwrap      import dedent
-from   astropy.table import Table
-from   .misc         import MagType, YESNO, ANDOR, IntProperty, FloatProperty, StrProperty, \
-                            ListIntProperty, ListFloatProperty, ListStrProperty, PathProperty, ListPathProperty, EnumProperty
-from   .catalogues   import LePhareCat
+import os.path                    as     opath
 
-from   ..symlinks.coloredMessages import errorMessage
+from   copy                       import deepcopy
+from   typing                     import List, Any
+from   io                         import TextIOBase
+from   abc                        import ABC, abstractmethod
+from   textwrap                   import dedent
+from   functools                  import partialmethod
 
-ERROR   = errorMessage('Error: ')
+from   astropy.table              import Table
+from   .catalogues                import LePhareCat
+from   ..symlinks.coloredMessages import errorMessage, warningMessage
+from   .misc                      import MagType, YESNO, ANDOR, IntProperty, FloatProperty, StrProperty, ListIntProperty, ListFloatProperty, ListStrProperty, PathProperty, ListPathProperty, EnumProperty
+                              
+ERROR   = errorMessage('Error:')
+WARNING = warningMessage('Warning:')
 
-class SED:
-    r'''General SED object used for inheritance.'''
+class SED(ABC):
+    r'''Abstract SED object used for inheritance.'''
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         r'''Init SED oject.'''
-        
-        # Code associated to the SED
-        self.code       = None
         
         # Allowed keys and corresponding types for the SED parameters
         self.keys       = {}
@@ -34,26 +37,19 @@ class SED:
         # SED parameter properties
         self.prop = {}
         
+        self.log = []
     
-    #########################################
-    #     Methods need be reimplemented     #
-    #########################################
-    
-    def genParams(self, *args, **kwargs):
-        r'''Generate a parameter file used by the SED fitting code.'''
+    @abstractmethod
+    def __call__(self, *args, **kwargs):
+        r'''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
-        raise NotImplementedError('genParams method not implemented.')
-    
-    def __run__(self, *args, **kwargs):
-        r'''Run the SED fitting code.'''
+        Run the SED fitting code.
+        '''
         
-        raise NotImplementedError('run method not implemented.')
+        return
         
-    ###########################
-    #     Private methods     #
-    ###########################
-        
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> Any:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -73,7 +69,7 @@ class SED:
         
         return
         
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -87,18 +83,100 @@ class SED:
         '''
             
         if key not in self.keys:
-            print(ERROR + f'key {key} is not a valid key. Accepted keys are {list(self.keys.values())}.')
+            print(f'{ERROR} key {key} is not a valid key. Accepted keys are {list(self.keys.values())}.')
         elif not isinstance(value, self.keys[key]):
-            print(ERROR + f'trying to set {key} parameter with value {value} of type {type(value)} but only allowed type(s) is/are {self.keys[key]}.')
+            print(f'{ERROR} trying to set {key} parameter with value {value} of type {type(value)} but only allowed type(s) is/are {self.keys[key]}.')
         else:
             self.prop[key].set(value)
         
         return
+    
+    def appendLog(self, text: str, f: TextIOBase, verbose: bool = False, **kwargs) -> None:
+        r'''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
+        Append a new text line to the log file.
+        
+        :param str text: text to append
+        :param file-like f: file-like opened obect to write into
+        
+        :param bool verbose: (**Optional**) whether to also print the log line or not
+        
+        :raises TypeError:
+            
+            * if **text** is not of type str
+            * if **verbose** is not of type bool
+            * if **f** is not of type TextIOBase
+        '''
+        
+        if not isinstance(text, str):
+            raise TypeError(f'log text has type {type(text)} but it must have type str.')
+            
+        if not isinstance(verbose, bool):
+            raise TypeError(f'verbose parameter has type {type(verbose)} but it must have type bool.')
+            
+        if not isinstance(f, TextIOBase):
+            raise TypeError(f'f parameter has type {type(f)} but it must have type TextIOBase.')
+            
+        if verbose:
+            print(text, end='')
+        
+        f.write(text)
+        return
+    
+    def startProcess(self, commands: List[str], log: TextIOBase = None, errMsg: str = ''):
+        '''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+
+        Start a process.
+        
+        :param list[str] commands: list of commands to use with Popen
+        
+        :param TextIOBase log: (**Optional**) oppened log file
+        :param str errMsg: (**Optional**) message error to show if the process failed
+        
+        :raises TypeError: 
+            
+            * if **errMsg** is not of type str
+            * if **commands** is not of type list
+            * if one of the commands in **commands** is not of type str
+            
+        :raises OSError: if the first command in **commands** is not a valid file/script name
+        :raises ValueError: if **log** is None
+        '''
+
+        if not isinstance(errMsg, str):
+            raise TypeError(f'errMsg parameter has type {type(errMsg)} but it must have type str.')
+        
+        if not isinstance(commands, list):
+            raise TypeError(f'commands parameter has type {type(commands)} but it must have type list.')
+            
+        if any((not isinstance(command, str) for command in commands)):
+            raise TypeError('one of the commands does not have the type str.')
+            
+        if log is None:
+            raise ValueError('You need to provide a log file-like object.')
+            
+        command     = opath.expandvars(commands[0])
+        if not opath.isfile(command):
+            raise OSError(f'script {commands[0]} (expanded as {command}) not found.')
+
+        commands[0] = command
+
+        with subprocess.Popen(commands, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
+            for line in p.stdout:
+                self.appendLog(line, log, verbose=True)
+                
+        if p.returncode != 0:
+            raise OSError(errMsg)
+                
+        return
+
 
 class LePhareSED(SED):
     r'''Implements LePhare SED object.'''
     
-    def __init__(self, ID, properties={}, **kwargs):
+    def __init__(self, ID: Any, properties: dict = {}, **kwargs) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -114,16 +192,16 @@ class LePhareSED(SED):
         Accepted properties are:
         
             * **STAR_SED** [str]: stellar library list file (full path)
-            * **STAR_FSCALE** [int/float]: stellar flux scale
+            * **STAR_FSCALE** [float]: stellar flux scale
             * **STAR_LIB** [str]: stellar library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a stellar library, provide 'NONE'.
             * **QSO_SED** [str]: QSO list file (full path)
-            * **QSO_FSCALE** [int, float]: QSO flux scale
+            * **QSO_FSCALE** [float]: QSO flux scale
             * **QSO_LIB** [str]: QSO library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a QSO library, provide 'NONE'.
             * **GAL_SED** [str]: galaxy library list file (full path)
-            * **GAL_FSCALE** [int, float]: galaxy flux scale
+            * **GAL_FSCALE** [float]: galaxy flux scale
             * **GAL_LIB** [str]: galaxy library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a galaxy library, provide 'NONE'.
             * **SEL_AGE** [str]: stellar ages list (full path)
-            * **AGE_RANGE** [list[int/float]]: minimum and maximum ages in years
+            * **AGE_RANGE** [list[float]]: minimum and maximum ages in years
             * **FILTER_LIST** [list[str]]: list of filter names used for the fit (must all be located in $LEPHAREDIR/filt directory)
             * **TRANS_TYPE** [int]: transmission type (0 for Energy, 1 for photons)
             * **FILTER_CALIB** [int]: filter calibration (0 for fnu=ctt, 1 for nu.fnu=ctt, 2 for fnu=nu, 3=fnu=Black Body @ T=10000K, 4 for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K) 
@@ -196,10 +274,17 @@ class LePhareSED(SED):
             These paths may be expanded to check whether the given files exist and can be used by the user to shorten some path names when providing the SED properties.
         '''
         
+        if not isinstance(properties, dict):
+            raise TypeError(f'properties parameter has type {type(properties)} but it must be a dict.')
+        
         super().__init__(**kwargs)
         
         # Will be used to generate a custom directory
-        self.id         = ID
+        self.id              = ID
+        
+        # Output parameter file is defined through the ID
+        self.outputParamFile = f'{self.id}_output.para'
+        self.outParam        = {i : False for i in ['Z_BEST', 'Z_BEST68_LOW', 'Z_BEST68_HIGH', 'Z_ML', 'Z_ML68_LOW', 'Z_ML68_HIGH', 'Z_BEST90_LOW', 'Z_BEST90_HIGH', 'Z_BEST99_LOW', 'Z_BEST99_HIGH', 'CHI_BEST', 'MOD_BEST', 'EXTLAW_BEST', 'EBV_BEST', 'ZF_BEST', 'MAG_ABS_BEST', 'PDZ_BEST', 'SCALE_BEST', 'DIST_MOD_BEST', 'NBAND_USED', 'NBAND_ULIM', 'Z_SEC', 'CHI_SEC', 'MOD_SEC', 'AGE_SEC', 'EBV_SEC', 'ZF_SEC', 'MAG_ABS_SEC', 'PDZ_SEC', 'SCALE_SEC', 'Z_QSO', 'CHI_QSO', 'MOD_QSO', 'MAG_ABS_QSO', 'DIST_MOD_QSO', 'MOD_STAR', 'CHI_STAR', 'MAG_OBS()', 'ERR_MAG_OBS()', 'MAG_MOD()', 'K_COR()', 'MAG_ABS()', 'MABS_FILT()', 'K_COR_QSO()', 'MAG_ABS_QSO()', 'PDZ()', 'CONTEXT', 'ZSPEC', 'STRING_INPUT', 'LUM_TIR_BEST', 'LIB_FIR', 'MOD_FIR', 'CHI2_FIR', 'FSCALE_FIR', 'NBAND_FIR', 'LUM_TIR_MED', 'LUM_TIR_INF', 'LUM_TIR_SUP', 'MAG_MOD_FIR()', 'MAG_ABS_FIR()', 'K_COR_FIR()', 'AGE_BEST', 'AGE_INF', 'AGE_MED', 'AGE_SUP', 'LDUST_BEST', 'LDUST_INF', 'LDUST_MED', 'LDUST_SUP', 'MASS_BEST', 'MASS_INF', 'MASS_MED', 'MASS_SUP', 'SFR_BEST', 'SFR_INF', 'SFR_MED', 'SFR_SUP', 'SSFR_BEST', 'SSFR_INF', 'SSFR_MED', 'SSFR_SUP', 'LUM_NUV_BEST', 'LUM_R_BEST', 'LUM_K_BEST', 'PHYS_CHI2_BEST', 'PHYS_MOD_BEST', 'PHYS_MAG_MOD()', 'PHYS_MAG_ABS()', 'PHYS_K_COR()', 'PHYS_PARA1_BEST', 'PHYS_PARA2_BEST', 'PHYS_PARA3_BEST', 'PHYS_PARA4_BEST', 'PHYS_PARA5_BEST', 'PHYS_PARA6_BEST', 'PHYS_PARA7_BEST', 'PHYS_PARA8_BEST', 'PHYS_PARA9_BEST', 'PHYS_PARA10_BEST', 'PHYS_PARA11_BEST', 'PHYS_PARA12_BEST', 'PHYS_PARA13_BEST', 'PHYS_PARA14_BEST', 'PHYS_PARA15_BEST', 'PHYS_PARA16_BEST', 'PHYS_PARA17_BEST', 'PHYS_PARA18_BEST', 'PHYS_PARA19_BEST', 'PHYS_PARA20_BEST', 'PHYS_PARA21_BEST', 'PHYS_PARA22_BEST', 'PHYS_PARA23_BEST', 'PHYS_PARA24_BEST', 'PHYS_PARA25_BEST', 'PHYS_PARA26_BEST', 'PHYS_PARA27_BEST', 'PHYS_PARA1_MED', 'PHYS_PARA2_MED', 'PHYS_PARA3_MED', 'PHYS_PARA4_MED', 'PHYS_PARA5_MED', 'PHYS_PARA6_MED', 'PHYS_PARA7_MED', 'PHYS_PARA8_MED', 'PHYS_PARA9_MED', 'PHYS_PARA10_MED', 'PHYS_PARA11_MED', 'PHYS_PARA12_MED', 'PHYS_PARA13_MED', 'PHYS_PARA14_MED', 'PHYS_PARA15_MED', 'PHYS_PARA16_MED', 'PHYS_PARA17_MED', 'PHYS_PARA18_MED', 'PHYS_PARA19_MED', 'PHYS_PARA20_MED', 'PHYS_PARA21_MED', 'PHYS_PARA22_MED', 'PHYS_PARA23_MED', 'PHYS_PARA24_MED', 'PHYS_PARA25_MED', 'PHYS_PARA26_MED', 'PHYS_PARA27_MED', 'PHYS_PARA1_INF', 'PHYS_PARA2_INF', 'PHYS_PARA3_INF', 'PHYS_PARA4_INF', 'PHYS_PARA5_INF', 'PHYS_PARA6_INF', 'PHYS_PARA7_INF', 'PHYS_PARA8_INF', 'PHYS_PARA9_INF', 'PHYS_PARA10_INF', 'PHYS_PARA11_INF', 'PHYS_PARA12_INF', 'PHYS_PARA13_INF', 'PHYS_PARA14_INF', 'PHYS_PARA15_INF', 'PHYS_PARA16_INF', 'PHYS_PARA17_INF', 'PHYS_PARA18_INF', 'PHYS_PARA19_INF', 'PHYS_PARA20_INF', 'PHYS_PARA21_INF', 'PHYS_PARA22_INF', 'PHYS_PARA23_INF', 'PHYS_PARA24_INF', 'PHYS_PARA25_INF', 'PHYS_PARA26_INF', 'PHYS_PARA27_INF', 'PHYS_PARA1_SUP', 'PHYS_PARA2_SUP', 'PHYS_PARA3_SUP', 'PHYS_PARA4_SUP', 'PHYS_PARA5_SUP', 'PHYS_PARA6_SUP', 'PHYS_PARA7_SUP', 'PHYS_PARA8_SUP', 'PHYS_PARA9_SUP', 'PHYS_PARA10_SUP', 'PHYS_PARA11_SUP', 'PHYS_PARA12_SUP', 'PHYS_PARA13_SUP', 'PHYS_PARA14_SUP', 'PHYS_PARA15_SUP', 'PHYS_PARA16_SUP', 'PHYS_PARA17_SUP', 'PHYS_PARA18_SUP', 'PHYS_PARA19_SUP', 'PHYS_PARA20_SUP', 'PHYS_PARA21_SUP', 'PHYS_PARA22_SUP', 'PHYS_PARA23_SUP', 'PHYS_PARA24_SUP', 'PHYS_PARA25_SUP', 'PHYS_PARA26_SUP', 'PHYS_PARA27_SUP']}
         
         # Allowed keys and corresponding allowed types
         self.prop = {'STAR_SED'       : PathProperty(opath.join('$LEPHAREDIR', 'sed', 'STAR', 'STAR_MOD.list')),
@@ -277,7 +362,7 @@ class LePhareSED(SED):
                      
                      'ERR_SCALE'      : ListFloatProperty([0.03, 0.03, 0.03, 0.03], minBound=0),
                      
-                     'ERR_FACTOR'     : FloatProperty('-1', minBound=0),
+                     'ERR_FACTOR'     : FloatProperty(1.0, minBound=0),
                      
                      'ZPHOTLIB'       : ListStrProperty(['HDF_bc03', 'STAR_HDF_bc03', 'QSO_HDF_bc03']),
                      
@@ -391,18 +476,56 @@ class LePhareSED(SED):
             # Set Property value
             self.prop[item].set(value)
         
+        
+    ###############################
+    #       Text formatting       #
+    ###############################
     
+    def output_parameters(self, params: List[str] = [], *args, **kwargs) -> str:
+        r'''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
+        :param list[str] params: list of parameters to activate in the ouput parameters file
+        
+        Generate an output parameter file used by the SED fitting code.
+        
+        .. note ::
+            
+            To know which output parameters can be passed print outParam property, i.e.
+            
+            >>> sed = LePhareSED('identifier')
+            >>> print(sed.outParams)
+        '''
+        
+        if not isinstance(params, list):
+            raise TypeError(f'params has type {type(params)} but it must have type list.')
+            
+        if any((not isinstance(param, str) for param in params)):
+            raise TypeError(f'one of the values in params is not of type str.')
+        
+        # Check and then set given parameters to True
+        newParams                = deepcopy(self.outParam)
+        for param in params:
+            
+            if param not in newParams:
+                print(f'{WARNING} invalid parameter name {param}.')
+            else:
+                newParams[param] = True
+        
+        # Produce the formatted string
+        return 'IDENT\n' + '\n'.join([f'{key}' if value else f'#{key}' for key, value in newParams.items()])
+        
     @property
-    def parameters(self, *args, **kwargs):
+    def parameters(self, *args, **kwargs) -> str:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
         Generate a parameter file used by the SED fitting code.
         '''
         
-        ######################################
-        #         Libraries handling         #
-        ######################################
+        text = f'''\
+            
+        '''
         
         # %INPUTCATALOGUEINFORMATION% is replaced when the run method is launched
         
@@ -491,7 +614,7 @@ class LePhareSED(SED):
         #
         %INPUTCATALOGUEINFORMATION%
         CAT_OUT \t{self.id}.out \t
-        PARA_OUT \t{self.id}_output.para \t# Ouput parameter (full path)
+        PARA_OUT \t{self.outputParamFile} \t# Ouput parameter (full path)
         BD_SCALE \t{self.prop['BD_SCALE']} \t# Bands used for scaling (Sum 2^n; n=0->nbd-1, 0[-def]:all bands)
         GLB_CONTEXT\t{self.prop['GLB_CONTEXT']} \t# Overwrite Context (Sum 2^n; n=0->nbd-1, 0 : all bands used, -1[-def]: used context per object)
         # FORB_CONTEXT -1               # context for forbitten bands
@@ -596,7 +719,40 @@ class LePhareSED(SED):
         
         return text
     
-    def __call__(self, catalogue, skipSEDgen=False, skipFilterGen=False, skipMagQSO=False, skipMagStar=False, skipMagGal=False, **kwargs):
+    #############################
+    #        Run methods        #
+    #############################
+    
+    def runScript(self, commands: List[str], file: str = '', log: TextIOBase = None, errMsg:str = '') -> None:
+        r'''
+        .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+        
+        Wrapper around default :py:meth:`SED.startProcess` which allows to separately provide the commands and the file.
+        
+        :param list[str] commands: list of commands to use with Popen
+        
+        :param str file: (**Optional**) file to run the process or script against
+        :param TextIOBase log: (**Optional**) oppened log file
+        :param str errMsg: (**Optional**) message error to show if the process failed
+        '''
+        
+        if not isinstance(commands, list):
+            raise TypeError(f'commands parameter has type {type(commands)} but it must have type list.')
+        
+        return self.startProcess(commands + [file], log=log, errMsg=errMsg)
+    
+    genQSOModel  = partialmethod(runScript, ['$LEPHAREDIR/source/sedtolib', '-t', 'QSO',     '-c'], errMsg='QSO models generation failed.')
+    genGalModel  = partialmethod(runScript, ['$LEPHAREDIR/source/sedtolib', '-t', 'Galaxy',  '-c'], errMsg='Galaxy models generation failed.')
+    genStarModel = partialmethod(runScript, ['$LEPHAREDIR/source/sedtolib', '-t', 'Stellar', '-c'], errMsg='Stellar models generation failed.')
+    genFilters   = partialmethod(runScript, ['$LEPHAREDIR/source/filter', '-c'],                    errMsg='Filters generation failed.')
+    genMagQSO    = partialmethod(runScript, ['$LEPHAREDIR/source/mag_gal', '-t', 'Q', '-c'],        errMsg='QSO magnitudes failed.')
+    genMagStar   = partialmethod(runScript, ['$LEPHAREDIR/source/mag_star', '-c'],                  errMsg='Stellar magnitudes failed.')
+    genMagGal    = partialmethod(runScript, ['$LEPHAREDIR/source/mag_gal', '-t', 'G', '-c'],        errMsg='Galaxy magnitudes failed.')
+    startLePhare = partialmethod(runScript, ['$LEPHAREDIR/source/zphota', '-c'],                    errMsg='SED fitting failed.')
+    
+    def __call__(self, catalogue: LePhareCat, outputParams: List[str] = [], 
+                 skipSEDgen: bool = False, skipFilterGen: bool = False, skipMagQSO: bool = False, 
+                 skipMagStar: bool = False, skipMagGal: bool = False, **kwargs) -> None:
         r'''
         .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
         
@@ -605,12 +761,14 @@ class LePhareSED(SED):
         :param LePhareCat catalogue: catalogue to use for the SED-fitting
         :param str inputFile: name of the input file containing 
         
+        :param list[str]
         :param bool skipSEDgen: (**Optional**) whether to skip the SED models generation. Useful to gain time if the same SED are used for multiple sources.
         :param bool skipFilterGen: (**Optional**) whether to skip the filters generation. Useful to gain time if the same filters are used for multiple sources.
         :param bool skipMagQSO: (**Optional**) whether to skip the predicted magnitude computations for the QS0. Useful to gain time if the same libraries/parameters are used for multiple sources.
         :param bool skipMagStar: (**Optional**) whether to skip the predicted magnitude computations for the stars. Useful to gain time if the same libraries/parameters are used for multiple sources.
         :param bool skipMagGal: (**Optional**) whether to skip the predicted magnitude computations for the galaxies. Useful to gain time if the same libraries/parameters are used for multiple sources.
 
+        :raises TypeError: if **catalogue** is not of type :py:class:`LePhareCat`
         '''
         
         if not isinstance(catalogue, LePhareCat):
@@ -622,109 +780,68 @@ class LePhareSED(SED):
             os.mkdir(directory)
             
         # Generate and write parameters file
-        params  = dedent(self.parameters.replace('%INPUTCATALOGUEINFORMATION%', catalogue.text))
-        pfile   = opath.join(directory, catalogue.name.replace('.in', '.para'))
+        params    = dedent(self.parameters.replace('%INPUTCATALOGUEINFORMATION%', catalogue.text))
+        paramFile = catalogue.name.replace('.in', '.para')
+        pfile     = opath.join(directory, paramFile)
         with open(pfile, 'w') as f:
             f.write(params)
             
         # Write catalogue
         catalogue.save(path=directory)
         
-        #########################################
-        #          Generate SED models          #
-        #########################################
+        # Generate and write output parameters file
+        oparams   = self.output_parameters(outputParams)
+        ofile     = opath.join(directory, self.outputParamFile)
+        with open(ofile, 'w') as f:
+            f.write(oparams)
         
-        if not skipSEDgen:
-            
-            command = opath.expandvars('$LEPHAREDIR/source/sedtolib')
-            if not opath.isfile(command):
-                raise OSError(f'LePhare script $LEPHAREDIR/source/sedtolib (expanded as {command}) not found.')
+        logFile   = opath.join(directory, catalogue.name.replace('.in', '.log'))
+        with open(logFile, 'a') as log:
+
+            #########################################
+            #          Generate SED models          #
+            #########################################
             
             # Generate QSO, Star and Galaxy models
-            for name in ['QSO', 'Stellar', 'Galaxy']:
-                with subprocess.Popen([command, '-t', name[0], '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
-                    for line in p.stdout:
-                        print(line, end='')
-                        
-                if p.returncode != 0:
-                    raise OSError(f'{name} models generation failed.')
-            
-        ####################################
-        #         Generate filters         #
-        ####################################
-        
-        if not skipFilterGen:
-
-            command = opath.expandvars('$LEPHAREDIR/source/filter')
-            if not opath.isfile(command):
-                raise OSError(f'LePhare script $LEPHAREDIR/source/filter (expanded as {command}) not found.')
+            if not skipSEDgen:
+                self.genQSOModel( file=pfile, log=log)
+                self.genStarModel(file=pfile, log=log)
+                self.genGalModel( file=pfile, log=log)
                 
-            with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
-                for line in p.stdout:
-                    print(line, end='')
+            ####################################
+            #         Generate filters         #
+            ####################################
+            
+            if not skipFilterGen:
+                self.genFilters(file=pfile, log=log)
+            
+            ##############################################
+            #        Compute predicted magnitudes        #
+            ##############################################
+            
+            # QSO magnitudes
+            if not skipMagQSO:
+                self.genMagQSO(file=pfile, log=log)
+                
+            # Star magnitudes
+            if not skipMagStar:
+                self.genMagStar(file=pfile, log=log)
                     
-            if p.returncode != 0:
-                raise OSError('filters generation failed.')
-        
-        ##############################################
-        #        Compute predicted magnitudes        #
-        ##############################################
-        
-        # QSO magnitudes
-        if not skipMagQSO:
+            # Galaxy magnitudes
+            if not skipMagGal:
+                self.genMagGal(file=pfile, log=log)
             
-            command = opath.expandvars('$LEPHAREDIR/source/mag_gal')
-            if not opath.isfile(command):
-                raise OSError(f'LePhare script $LEPHAREDIR/source/mag_gal (expanded as {command}) not found.')
-        
-            with subprocess.Popen([command, '-t', 'Q', '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
-                for line in p.stdout:
-                    print(line, end='')
-                
-            if p.returncode != 0:
-                raise OSError('QSO magnitudes failed.')
+            ###################################
+            #         Run SED fitting         #
+            ###################################
             
-        # Star magnitudes
-        if not skipMagStar:
+            # Move to directory
+            os.chdir(directory)
             
-            command = opath.expandvars('$LEPHAREDIR/source/mag_star')
-            if not opath.isfile(command):
-                raise OSError(f'LePhare script $LEPHAREDIR/source/mag_star (expanded as {command}) not found.')
-        
-            with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
-                for line in p.stdout:
-                    print(line, end='')
-                
-            if p.returncode != 0:
-                raise OSError('Stellar magnitudes failed.')
-                
-        # Galaxy magnitudes
-        if not skipMagGal:
-            command = opath.expandvars('$LEPHAREDIR/source/mag_gal')
-            if not opath.isfile(command):
-                raise OSError(f'LePhare script $LEPHAREDIR/source/mag_gal (expanded as {command}) not found.')
-        
-            with subprocess.Popen([command, '-t', 'G', '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
-                for line in p.stdout:
-                    print(line, end='')
-                
-            if p.returncode != 0:
-                raise OSError('Galaxy magnitudes failed.')
-        
-        ###################################
-        #         Run SED fitting         #
-        ###################################
-        
-        command = opath.expandvars('$LEPHAREDIR/source/zphota')
-        if not opath.isfile(command):
-                raise OSError(f'LePhare script $LEPHAREDIR/source/zphota (expanded as {command}) not found.')
-        
-        with subprocess.Popen([command, '-c', pfile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True) as p:
-            for line in p.stdout:
-                print(line, end='')
-                
-            if p.returncode != 0:
-                raise OSError('SED fitting failed.')
-        
+            self.startLePhare(file=paramFile, log=log)
+            
+            # Move back to parent directory
+            os.chdir('..')
+            
         return
  
