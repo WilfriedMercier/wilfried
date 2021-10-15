@@ -91,7 +91,7 @@ def momentum(rt, vt, n=1, Re=10, Ie=10, normalise=True):
         raise ValueError('Plateau velocity must be positive only. Cheers !')
         
     if normalise:
-        norm = sersic_kthMoment(1, 0, np.inf, n=n, Re=Re, Ie=Ie)
+        norm = 2*np.pi*sersic_kthMoment(1, 0, np.inf, n=n, Re=Re, Ie=Ie)
     else:
         norm = 1
         
@@ -103,4 +103,4 @@ def momentum(rt, vt, n=1, Re=10, Ie=10, normalise=True):
     inner = sersic_kthMoment(3, 0,  rt,     n=n, Re=Re, Ie=Ie)/rt
     outer = sersic_kthMoment(2, rt, np.inf, n=n, Re=Re, Ie=Ie)
         
-    return vt*(inner+outer)/norm
+    return 2*np.pi*vt*(inner+outer)/(norm)
