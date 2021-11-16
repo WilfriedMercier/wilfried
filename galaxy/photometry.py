@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 r"""
-.. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+.. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr> & Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu> & Hugo Plombat - LUPM <hugo.plombat@umontpellier.fr>
 
 Photometry functions related to galaxies.
 """
@@ -9,8 +9,10 @@ Photometry functions related to galaxies.
 import numpy             as np
 import astropy.units     as u
 from   astropy.cosmology import FlatLambdaCDM
+from   numpy             import ndarray
+from   typing            import Union, Tuple
 
-#: Cosmology used inthe functions
+#: Astropy cosmology used in the functions
 cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 
 
@@ -18,8 +20,10 @@ cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 #       Flux and magnitudes conversions       #
 ###############################################
 
-def countToMag(data, err, zeropoint):
+def countToMag(data: ndarray, err: ndarray, zeropoint: Union[float, ndarray]) -> Tuple[ndarray]:
     r'''
+    .. codeauthor:: Hugo Plombat - LUPM <hugo.plombat@umontpellier.fr>
+    
     Convert data counts and their associated error into AB magnitudes using the formula
     
     .. math::
@@ -47,8 +51,10 @@ def countToMag(data, err, zeropoint):
     
     return mag, emag
 
-def countToFlux(data, err, zeropoint):
+def countToFlux(data: ndarray, err: ndarray, zeropoint: Union[float, ndarray]) -> Tuple[ndarray]:
     r'''
+    .. codeauthor:: Hugo Plombat - LUPM <hugo.plombat@umontpellier.fr>
+    
     Convert data counts and their associated error into flux in :math:`\rm{erg/cm^2/s/Hz}`.
     
     :param data: data in :math:`electron/s`
@@ -71,7 +77,45 @@ def countToFlux(data, err, zeropoint):
 #       Dust extinction and attenuation       #
 ###############################################
 
-def calzetti_law(lbda, rv=4.05, a=2.659, b1=-1.857, c1=1.040, d1=0, e1=0, b2=-2.156, c2=1.509, d2=-0.198, e2=0.011):
+def av_Gilbank(lmstar: Union[float, ndarray], a: float=51.201, b: float=-11.199, c: float=0.615) -> Union[float, ndarray]:
+    r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu> 
+    
+    Compute and return the intrinsic extinction in the V band from Gilbank et al., 2010 prescription.
+    
+    :param lmstar: log10 of the stellar mass in solar masses
+    :type lmstar: float or ndarray[float]
+    
+    :param float a: (**Optional**) first coefficient from Gilbank et al., 2010
+    :param float b: (**Optional**) second coefficient from Gilbank et al., 2010
+    :param float c: (**Optional**) third coefficient from Gilbank et al., 2010
+    
+    :returns: intrinsic extinction in the V band (Av) from Gilbank et al., 2010 prescription.
+    :rtype: float or ndarray[float]
+    '''
+    
+    def prescription(lmstar):
+        return 51.201 - 11.199*lmstar + 0.615*lmstar**2
+    
+    # If an array
+    if isinstance(lmstar, np.ndarray):
+        
+        # Gilbank et al., 2010 say to fit to a constant value below 10^9 solar masses
+        aHalpha       = np.full(lmstar.shape, prescription(9))
+        mask          = lmstar > 9
+        aHalpha[mask] = prescription(lmstar[mask])
+    
+    elif isinstance(lmstar, (float, np.float16, np.float32, np.float64)):
+        
+        if lmstar <= 9:
+            aHalpha   = prescription(9)
+        else:
+            aHalpha   = prescription(lmstar)
+        
+    return aHalpha * calzetti_law(0.550) / calzetti_law(0.656)
+
+def calzetti_law(lbda: Union[float, ndarray], rv: float=4.05, 
+                 a: float=2.659, b1: float=-1.857, c1: float=1.040, d1: float=0, e1: float=0, b2: float=-2.156, c2: float=1.509, d2: float=-0.198, e2: float=0.011) -> Union[float, ndarray]:
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
@@ -112,7 +156,7 @@ def calzetti_law(lbda, rv=4.05, a=2.659, b1=-1.857, c1=1.040, d1=0, e1=0, b2=-2.
     k[cond2] = a * (b2 + c2 / lbda[cond2] + d2 / lbda[cond2] ** 2 + e2 / lbda[cond2] ** 3) + rv
     return k
 
-def dust_attenuation_calzetti(lbda, ebv, rv=4.05):
+def dust_attenuation_calzetti(lbda: Union[float, ndarray], ebv: float, rv: float=4.05) -> Union[float, ndarray]:
     '''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
@@ -130,7 +174,7 @@ def dust_attenuation_calzetti(lbda, ebv, rv=4.05):
     
     return ebv * calzetti_law(lbda, rv=rv)
 
-def cardelli_law(lbda, rv=3.1):
+def cardelli_law(lbda: Union[float, ndarray], rv: float=3.1) -> Union[float, ndarray]:
     '''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
@@ -184,7 +228,7 @@ def cardelli_law(lbda, rv=3.1):
     
     return k
 
-def dust_attenuation_cardelli(lbda, ebv, rv=3.1):
+def dust_attenuation_cardelli(lbda: Union[float, ndarray], ebv: float, rv: float=3.1) -> Union[float, ndarray]:
     '''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
@@ -202,91 +246,23 @@ def dust_attenuation_cardelli(lbda, ebv, rv=3.1):
     
     return ebv * cardelli_law(lbda, rv=rv) 
 
-def flux_to_lum(floii, z, av_fast=None, ebv=None, lbda=0.3728):
-    r'''
-    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
-    
-    Convert a flux into a luminosity. If an attenuation and a colour excess are given, the flux is corrected beforehand.
 
-    :param floii: flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.
-    :type floii: float or ndarray[float]
-    :param z: redshift
-    :type z: float or ndarray[float]
-    
-    :param av_fast: (**Optional**) attenuation from FAST
-    :type av_fast: float or ndarray[float]
-    :param ebv: (**Optional**) colour excess
-    :type ebv: float or ndarray[float]
-    :param lbda: (**Optional**) rest-frame wavelength in microns
-    :type lbda: float or ndarray[float]
-    
-    :returns: luminosity in :math:`\rm{erg/s}`
-    :rtype: float or ndarray[float]
-    '''
-    
-    # Make astropy Quantity
-    if not hasattr(floii, 'unit'):
-        floii              = u.Quantity(floii, unit='erg/(s.cm^2)')
-        
-    # Correct flux of attenuation
-    if av_fast is not None and ebv is not None and lbda is not None:
-        
-       # If an array
-       if isinstance(floii.value, np.ndarray):
-               
-           # Where there is nan, we do not apply the correction
-           mask            = np.isnan(av_fast) | np.isnan(ebv) | np.isnan(lbda)
-           
-           # Redshift mask
-           if isinstance(z, np.ndarray):
-               zmask       = z[~mask]
-           else:
-               zmask       = z
-             
-           # Av mask
-           if isinstance(av_fast, np.ndarray):
-               av_fastmask = av_fast[~mask]
-           else:
-               av_fastmask = av_fast
-    
-           # Colour excess mask
-           if isinstance(ebv, np.ndarray):
-               ebvmask     = ebv[~mask]
-           else:
-               ebvmask     = ebv
-               
-           # Rest-frame wavelength mask
-           if isinstance(lbda, np.ndarray):
-               lbdamask    = lbda[~mask]
-           else:
-               lbdamask    = lbda
-               
-           # Extract unit and value to apply the correction
-           unit            = floii.unit
-           floii           = floii.value
-           floii[~mask]    = correct_extinction(floii[~mask], zmask, av_fastmask, ebvmask, lbda=lbda)
-           
-           # Reconstruct the Quantity object
-           floii           = u.Quantity(floii, unit=unit)
-           
-       # If a float and we can apply a correction
-       elif not np.isnan(av_fast) and not np.isnan(ebv) and not np.isnan(lbda):
-           floii           = correct_extinction(floii, z, av_fast, ebv, lbda=lbda)
-    
-    dl                     = cosmo.luminosity_distance(z)
-    loii                   = (floii * 4 * np.pi * dl**2).to('erg/s').value
-    
-    return loii
+#############################################
+#      Flux and luminosity corrections      #
+#############################################
 
-
-def correct_extinction(floii, z, av_fast, ebv, lbda=0.3728):
+def correct_extinction(floii: Union[float, ndarray], z: Union[float, ndarray], av: Union[float, ndarray], ebv: Union[float, ndarray], 
+                       lbda: Union[float, ndarray]=0.3728) -> Union[float, ndarray]:
     '''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
-    Correct for both galactic extinction and internal extinction.
+    Correct for both galactic extinction and internal extinction. We use the following attenuation curves:
+        
+        * Cardelli for the Galactic extinction
+        * Calzetti for the intrinsic extinction
 
-    :param av_fast: attenuation from FAST
-    :type av_fast: float or ndarray[float]
+    :param av: attenuation in V band
+    :type av: float or ndarray[float]
     :param ebv: colour excess
     :type ebv: float or ndarray[float]
     :param floii: ionised gas flux
@@ -310,8 +286,8 @@ def correct_extinction(floii, z, av_fast, ebv, lbda=0.3728):
     abs_gal        = dust_attenuation_cardelli(lbda_obs, ebv, rv=3.1)
     
     # Convert the extinction from FAST to the observed wavelength
-    ext_fast       = av_fast / calzetti_law(np.array(.550))
-    abs_fast       = dust_attenuation_calzetti(lbda, ext_fast, rv=4.05)
+    EBV_fast       = av / calzetti_law(np.array(.550))
+    abs_fast       = dust_attenuation_calzetti(lbda, EBV_fast, rv=4.05)
     
     # Apply the flux correction from the Milky Way and the intrinsic extinction
     flux_corr_gal  = floii * 10 ** (0.4 * abs_gal)
@@ -319,12 +295,89 @@ def correct_extinction(floii, z, av_fast, ebv, lbda=0.3728):
     
     return flux_corr_fast
 
+def flux_to_lum(floii: Union[float, ndarray], z: Union[float, ndarray], 
+                av: Union[float, ndarray]=None, ebv: Union[float, ndarray]=None, lbda: Union[float, ndarray]=0.3728) -> Union[float, ndarray]:
+    r'''
+    .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
+    
+    Convert a flux into a luminosity. If an attenuation and a colour excess are given, the flux is corrected beforehand.
+
+    :param floii: flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.
+    :type floii: float or ndarray[float]
+    :param z: redshift
+    :type z: float or ndarray[float]
+    
+    :param av: (**Optional**) attenuation in V band
+    :type av: float or ndarray[float]
+    :param ebv: (**Optional**) colour excess
+    :type ebv: float or ndarray[float]
+    :param lbda: (**Optional**) rest-frame wavelength in microns
+    :type lbda: float or ndarray[float]
+    
+    :returns: luminosity in :math:`\rm{erg/s}`
+    :rtype: float or ndarray[float]
+    '''
+    
+    # Make astropy Quantity
+    if not hasattr(floii, 'unit'):
+        floii              = u.Quantity(floii, unit='erg/(s.cm^2)')
+        
+    # Correct flux of attenuation
+    if av is not None and ebv is not None and lbda is not None:
+        
+       # If an array
+       if isinstance(floii.value, np.ndarray):
+               
+           # Where there is nan, we do not apply the correction
+           mask            = np.isnan(av) | np.isnan(ebv) | np.isnan(lbda)
+           
+           # Redshift mask
+           if isinstance(z, np.ndarray):
+               zmask       = z[~mask]
+           else:
+               zmask       = z
+             
+           # Av mask
+           if isinstance(av, np.ndarray):
+               av_mask     = av[~mask]
+           else:
+               av_mask     = av
+    
+           # Colour excess mask
+           if isinstance(ebv, np.ndarray):
+               ebvmask     = ebv[~mask]
+           else:
+               ebvmask     = ebv
+               
+           # Rest-frame wavelength mask
+           if isinstance(lbda, np.ndarray):
+               lbdamask    = lbda[~mask]
+           else:
+               lbdamask    = lbda
+               
+           # Extract unit and value to apply the correction
+           unit            = floii.unit
+           floii           = floii.value
+           floii[~mask]    = correct_extinction(floii[~mask], zmask, av_mask, ebvmask, lbda=lbdamask)
+           
+           # Reconstruct the Quantity object
+           floii           = u.Quantity(floii, unit=unit)
+           
+       # If a float and we can apply a correction
+       elif not np.isnan(av) and not np.isnan(ebv) and not np.isnan(lbda):
+           floii           = correct_extinction(floii, z, av, ebv, lbda=lbda)
+    
+    dl                     = cosmo.luminosity_distance(z)
+    loii                   = (floii * 4 * np.pi * dl**2).to('erg/s').value
+    
+    return loii
+
 
 ####################################################
 #             Infer gas masses and SFR             #
 #################################################### 
 
-def mass_gas_sfr(sfr, rd):
+def mass_gas_sfr(sfr: Union[float, ndarray], rd: Union[float, ndarray]) -> Union[float, ndarray]:
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
@@ -349,7 +402,8 @@ def mass_gas_sfr(sfr, rd):
     return (np.pi * (2.2*rd)**2) ** (2/7) * (sfr / 2.5e-10) ** (5/7)
 
 
-def mass_gas_kennicutt(floii, rd, z, av_fast=None, ebv=None, lbda=0.3728):
+def mass_gas_kennicutt(floii: Union[float, ndarray], rd: Union[float, ndarray], z: Union[float, ndarray], 
+                       av: Union[float, ndarray]=None, ebv: Union[float, ndarray]=None, lbda: Union[float, ndarray]=0.3728) -> Union[float, ndarray]:
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
@@ -362,8 +416,8 @@ def mass_gas_kennicutt(floii, rd, z, av_fast=None, ebv=None, lbda=0.3728):
     :param z: redshift
     :type z: float or ndarray[float]
     
-    :param av_fast: (**Optional**) attenuation from FAST
-    :type av_fast: float or ndarray[float]
+    :param av: (**Optional**) attenuation in V band
+    :type av: float or ndarray[float]
     :param ebv: (**Optional**) colour excess
     :type ebv: float or ndarray[float]
     :param lbda: (**Optional**) rest-frame wavelength in microns
@@ -376,14 +430,15 @@ def mass_gas_kennicutt(floii, rd, z, av_fast=None, ebv=None, lbda=0.3728):
     if hasattr(rd, 'unit'):
         rd.to('pc').value
     
-    loii     = flux_to_lum(floii, z, av_fast=av_fast, ebv=ebv, lbda=lbda)
-    mgas     = ((np.pi * (2.2*rd)**2) ** (2/7) * 4.7564e-23 * loii ** (5/7)).value
-    dmgas    = ((np.pi * (2.2*rd)**2) ** (2/7) * 1.9438e-23 * loii ** (5/7)).value
+    loii  = flux_to_lum(floii, z, av=av, ebv=ebv, lbda=lbda)
+    mgas  = (np.pi * (2.2*rd)**2) ** (2/7) * 4.7564e-23 * loii ** (5/7)
+    dmgas = (np.pi * (2.2*rd)**2) ** (2/7) * 1.9438e-23 * loii ** (5/7)
     
     return mgas, dmgas
 
 
-def sfr_kennicutt_oii(floii, z, av_fast=None, ebv=None, lbda=0.3728):
+def sfr_kennicutt_oii(floii: Union[float, ndarray], z: Union[float, ndarray], 
+                      av: Union[float, ndarray]=None, ebv: Union[float, ndarray]=None, lbda: Union[float, ndarray]=0.3728) -> Union[float, ndarray]:
     r'''
     .. codeauthor:: Epinat Benoit - LAM <benoit.epinat@lam.fr>
     
@@ -394,8 +449,8 @@ def sfr_kennicutt_oii(floii, z, av_fast=None, ebv=None, lbda=0.3728):
     :param z: redshift
     :type z: float or ndarray[float]
     
-    :param av_fast: (**Optional**) attenuation from FAST
-    :type av_fast: float or ndarray[float]
+    :param av: (**Optional**) attenuation in V band
+    :type av: float or ndarray[float]
     :param ebv: (**Optional**) colour excess
     :type ebv: float or ndarray[float]
     :param lbda: (**Optional**) rest-frame wavelength in microns
@@ -404,8 +459,21 @@ def sfr_kennicutt_oii(floii, z, av_fast=None, ebv=None, lbda=0.3728):
     :returns: SFR in :math:`M_{\odot}/{\rm{yr}}` and its error.
     '''
     
-    loii     = flux_to_lum(floii, z, av_fast=av_fast, ebv=ebv, lbda=lbda)
-    sfr      = 1.4e-41 * loii
-    dsfr     = 0.4e-41 * loii
+    loii = flux_to_lum(floii, z, av=av, ebv=ebv, lbda=lbda)
+    sfr  = 1.4e-41 * loii
+    dsfr = 0.4e-41 * loii
     
     return sfr, dsfr
+
+
+def sfr_Gilbank_oii(floii, z, lmstar):
+    r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu> 
+    '''
+    
+    tanh = -1.424 * np.tanh((lmstar - 9.827)/0.572)
+    
+    # Do not correct [OII] luminosity for extinction with Gilbank
+    loii = flux_to_lum(floii, z, av=None, ebv=None, lbda=None)
+    
+    return loii / 3.8e40 / (tanh + 1.7)
