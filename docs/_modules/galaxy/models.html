@@ -2,374 +2,314 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>galaxy.models &#8212; wilfried library 1.0 documentation</title>
-    
-  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
-
-    
-  <link rel="stylesheet"
-    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-  <link rel="stylesheet"
-    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
-
-    
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    
-  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
-
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-
-
-
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>galaxy.models — wilfried library 1.0 documentation</title>
+<link href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css">
+<link href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css">
+<link href="../../_static/copybutton.css" rel="stylesheet" type="text/css">
+<link as="script" href="../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+<script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../genindex.html" rel="index" title="Index">
+<link href="../../search.html" rel="search" title="Search">
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></link></link></link></link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
 <div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<div class="navbar-brand-box">
 <a class="navbar-brand text-wrap" href="../../index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
-  
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
 </a>
-</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</div><form action="../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
 </form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../index.html">
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../index.html">
    Table of content
   </a>
- </li>
+</li>
 </ul>
 <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../dependencies.html">
+<li class="toctree-l1">
+<a class="reference internal" href="../../dependencies.html">
    Required dependencies
   </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../makeLifeSimpler.html">
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../utilities/index.html">
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../utilities/index.html">
    Useful utilities
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/coloredMessages.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/coloredMessages.html">
      Colored messages
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/dict.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/dict.html">
      Dictionaries
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/io.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/io.html">
      Input/Output
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/list.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/list.html">
      List manipulations
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/strings.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/strings.html">
      Strings manipulation
     </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../utilities/plotUtilities/index.html">
      Plot utilities
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
        Histograms
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/hst.html">
        Galfit related plots
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/misc.html">
        Miscellaneous
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
        Contours
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../galaxy/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galaxy/index.html">
    Galaxy module
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/angularMomentum.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/angularMomentum.html">
      Galaxies angular momentum
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/cosmology.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/cosmology.html">
      Cosmology computations
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/kinematics.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/kinematics.html">
      Galaxy kinematics
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/misc.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/misc.html">
      Miscellaneous
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/massModels.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/massModels.html">
      Galaxy mass models
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/models.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/models.html">
      Galaxy models
     </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../galaxy/morphology/index.html">
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/morphology/index.html">
      Galaxies morphology
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
        Sersic fluxes
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/Morpho.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Morpho.html">
        Morphological parameters
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/Thickness.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Thickness.html">
        Galaxies thickness
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/MUSE.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/MUSE.html">
        MUSE related functions
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/Other.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Other.html">
        Other Sersic related functions
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../galaxy/photometry/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/photometry/index.html">
      Galaxies photometry
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
        Fluxes, colour excess and attenuation
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
        Masses and SFR estimates
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/photometry/Magnitudes.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Magnitudes.html">
        Magnitude conversions
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../galaxy/SED/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/SED/index.html">
      Resolved mass and SFR maps
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/SED/sed.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/SED/sed.html">
        SED objects
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/SED/catalogues.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/SED/catalogues.html">
        Catalogue objects
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/SED/filters.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/SED/filters.html">
        Filter and FilterList definitions
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/SED/misc.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/SED/misc.html">
        Miscellaneous classes
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../galfit/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galfit/index.html">
    Galfit module
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galfit/galfit.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/galfit.html">
      Galfit auto-routines
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galfit/models.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/models.html">
      Galfit models
     </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
+</li>
 </ul>
-
-</nav> <!-- To handle the deprecated key -->
-
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav> 
 <div class="navbar_extra_footer">
   Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
 </div>
-
 </div>
-
-
-          
-
-
-          
 <main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-            <!-- Source interaction buttons -->
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
 
 <div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        
-    </div>
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+</div>
 </div>
 
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
-            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                    title="Fullscreen mode"><i
-                        class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-        </div>
-    </div>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <h1>Source code for galaxy.models</h1><div class="highlight"><pre>
+
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<h1>Source code for galaxy.models</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 
 <span class="sd">Useful functions for galaxy modelling and other related computation.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>                              <span class="k">as</span>     <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">astropy.modeling.functional_models</span> <span class="k">as</span>     <span class="nn">astmod</span>
@@ -389,7 +329,7 @@
 <span class="c1">####################################################################################################################</span>
 
 <div class="viewcode-block" id="bulge"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.bulge">[docs]</a><span class="k">def</span> <span class="nf">bulge</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">b4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Computes the value of the intensity of a de Vaucouleur bulge at position r defined as</span>
@@ -410,7 +350,7 @@
 <span class="sd">        </span>
 <span class="sd">    :returns: surface brightness</span>
 <span class="sd">    :rtype: float</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     
     <span class="n">b4</span><span class="p">,</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">b4</span><span class="p">])</span>
     <span class="n">Ie</span>  <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ie</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">b4</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
@@ -419,7 +359,7 @@
 
 
 <div class="viewcode-block" id="exponential_disk"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.exponential_disk">[docs]</a><span class="k">def</span> <span class="nf">exponential_disk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Computes the value of the intensity of an exponential disk at position r defined as</span>
@@ -440,7 +380,7 @@
 <span class="sd">        </span>
 <span class="sd">    :returns: surface brightness</span>
 <span class="sd">    :rtype: float</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     
     <span class="n">b1</span><span class="p">,</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">b1</span><span class="p">])</span>
     <span class="n">Ie</span>  <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ie</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
@@ -449,7 +389,7 @@
 
 
 <div class="viewcode-block" id="hernquist"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.hernquist">[docs]</a><span class="k">def</span> <span class="nf">hernquist</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Hernquist profile defined as</span>
@@ -472,36 +412,36 @@
 <span class="sd">    </span>
 <span class="sd">    :raises TypeError: if **r**, **M** and **a** are neither int, nor float</span>
 <span class="sd">    :raises ValueError: if np.any(**r**) &lt; 0, if **a** &lt;= 0 or if **M** &lt; 0</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    '''</span>
     
     <span class="c1"># Checking dtypes and values</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
         <span class="k">if</span>   <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;r must be positive only. Cheers !&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'r must be positive only. Cheers !'</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">r</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
         
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;r must be positive only. Cheers !&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'r must be positive only. Cheers !'</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">r</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">r</span><span class="o">==</span><span class="mi">0</span>
         
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;r must either be int or float, or a numpy array of the same types. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'r must either be int or float, or a numpy array of the same types. Cheers !'</span><span class="p">)</span>
         
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;M must be int or float only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'M must be int or float only. Cheers !'</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;a must be int or float only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'a must be int or float only. Cheers !'</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">a</span><span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;a must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'a must be positive only. Cheers !'</span><span class="p">)</span>
         
     <span class="k">if</span>   <span class="n">M</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span><span class="o">*</span><span class="n">r</span>
     <span class="k">elif</span> <span class="n">M</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;M must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'M must be positive only. Cheers !'</span><span class="p">)</span>
     
     <span class="n">out</span>        <span class="o">=</span> <span class="n">r</span><span class="o">*</span><span class="mi">0</span>
     <span class="n">out</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
@@ -511,7 +451,7 @@
 
 
 <div class="viewcode-block" id="nfw"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.nfw">[docs]</a><span class="k">def</span> <span class="nf">nfw</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">rs</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    NFW profile defined as</span>
@@ -534,32 +474,32 @@
 <span class="sd">    </span>
 <span class="sd">    :raises TypeError: if **r**, **c** and **rs** are neither int, nor float</span>
 <span class="sd">    :raises ValueError: if np.any(**r**)&lt;0, if c&lt;=0, or if rs&lt;=0</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    '''</span>
     
     <span class="c1"># Checking dtypes and values</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
         <span class="k">if</span>   <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;r must be positive only. Cheers !&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'r must be positive only. Cheers !'</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">r</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;r must be positive only. Cheers !&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'r must be positive only. Cheers !'</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">r</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">r</span><span class="o">==</span><span class="mi">0</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;r must either be int or float, or a numpy array of the same types. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'r must either be int or float, or a numpy array of the same types. Cheers !'</span><span class="p">)</span>
         
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;c must be int or float only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'c must be int or float only. Cheers !'</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;rs must be int or float only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'rs must be int or float only. Cheers !'</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;c must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'c must be positive only. Cheers !'</span><span class="p">)</span>
         
     <span class="k">if</span> <span class="n">rs</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;rs must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'rs must be positive only. Cheers !'</span><span class="p">)</span>
     
     <span class="n">deltaC</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">200</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">c</span><span class="p">))</span>
     <span class="n">rhoCrit</span>    <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">G</span><span class="p">)</span>
@@ -571,7 +511,7 @@
 
 
 <div class="viewcode-block" id="sersic_profile"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.sersic_profile">[docs]</a><span class="k">def</span> <span class="nf">sersic_profile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    General Sersic profile defined as </span>
@@ -599,7 +539,7 @@
 <span class="sd">        </span>
 <span class="sd">    :returns: surface brightness</span>
 <span class="sd">    :rtype: float</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     
     <span class="n">bn</span><span class="p">,</span> <span class="o">=</span> <span class="n">check_bns</span><span class="p">([</span><span class="n">n</span><span class="p">],</span> <span class="p">[</span><span class="n">bn</span><span class="p">])</span>
     <span class="n">Ie</span>  <span class="o">=</span> <span class="n">checkAndComputeIe</span><span class="p">(</span><span class="n">Ie</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">bn</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
@@ -612,38 +552,38 @@
 <span class="c1">####################################################################################################</span>
 
 <span class="k">def</span> <span class="nf">_checkParams</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">samplingZone</span><span class="p">,</span> <span class="n">fineSampling</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;&#39;Check that given parameters are ok.&#39;&#39;&#39;</span>
+    <span class="sd">''''Check that given parameters are ok.'''</span>
     
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplingZone</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;where&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samplingZone</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplingZone</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">'where'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samplingZone</span><span class="p">:</span>
         
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sampling zone was not provided or syntax was incorrect. Thus, performing sampling (if relevant) on the full array.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'sampling zone was not provided or syntax was incorrect. Thus, performing sampling (if relevant) on the full array.'</span><span class="p">)</span>
             
-        <span class="n">samplingZone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;all&#39;</span><span class="p">}</span>
+        <span class="n">samplingZone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'where'</span><span class="p">:</span><span class="s1">'all'</span><span class="p">}</span>
         
-    <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;centre&#39;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;where&#39; keyword in samplingZone dictionnary should be either &#39;all&#39; or &#39;centre&#39;. Cheers !&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">'where'</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'all'</span><span class="p">,</span> <span class="s1">'centre'</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"'where' keyword in samplingZone dictionnary should be either 'all' or 'centre'. Cheers !"</span><span class="p">)</span>
         
-    <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;centre&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s1">&#39;dx&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samplingZone</span> <span class="ow">or</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samplingZone</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;&#39;dx&#39; and &#39;dy&#39; keywords were missing in samplingZone dictionnary with &#39;where&#39; keyword equal to &#39;centre&#39;. Please provide values for the sampling box size around the centre. Cheers !&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">'where'</span><span class="p">]</span><span class="o">==</span><span class="s1">'centre'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">'dx'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samplingZone</span> <span class="ow">or</span> <span class="s1">'dy'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samplingZone</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">"'dx' and 'dy' keywords were missing in samplingZone dictionnary with 'where' keyword equal to 'centre'. Please provide values for the sampling box size around the centre. Cheers !"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;At least one of the following keys in samplingZone dictionnary was not given as an integer: &#39;dx&#39; or &#39;dy&#39;. Please provide these as int. Cheers !&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dx'</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dy'</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"At least one of the following keys in samplingZone dictionnary was not given as an integer: 'dx' or 'dy'. Please provide these as int. Cheers !"</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fineSampling</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;One of the following parameter is not an integer, which is not valid: fineSampling (</span><span class="si">%s</span><span class="s1">), nx (</span><span class="si">%s</span><span class="s1">), ny (</span><span class="si">%s</span><span class="s1">).&#39;</span> <span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">fineSampling</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">ny</span><span class="p">)))</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'One of the following parameter is not an integer, which is not valid: fineSampling (</span><span class="si">%s</span><span class="s1">), nx (</span><span class="si">%s</span><span class="s1">), ny (</span><span class="si">%s</span><span class="s1">).'</span> <span class="o">%</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">fineSampling</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">ny</span><span class="p">)))</span>
 
     <span class="k">if</span> <span class="n">fineSampling</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Fine sampling cannot be less than 1.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Fine sampling cannot be less than 1.'</span><span class="p">)</span>
         
     <span class="k">return</span> <span class="n">samplingZone</span>
 
 
 <div class="viewcode-block" id="bulgeDiskOnSky"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.bulgeDiskOnSky">[docs]</a><span class="k">def</span> <span class="nf">bulgeDiskOnSky</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetD</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetB</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inclination</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">PA</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                   <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Gaussian2D&#39;</span><span class="p">,</span> <span class="s1">&#39;FWHMX&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;FWHMY&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;sigmaX&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;sigmaY&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="s1">&#39;arcsec&#39;</span><span class="p">},</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
-                   <span class="n">fineSampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span> <span class="n">skipCheck</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+                   <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">'name'</span><span class="p">:</span><span class="s1">'Gaussian2D'</span><span class="p">,</span> <span class="s1">'FWHMX'</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">'FWHMY'</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">'sigmaX'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'sigmaY'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">:</span><span class="s1">'arcsec'</span><span class="p">},</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+                   <span class="n">fineSampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">'where'</span><span class="p">:</span><span class="s1">'centre'</span><span class="p">,</span> <span class="s1">'dx'</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'dy'</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span> <span class="n">skipCheck</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">'''</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Generate a bulge + (sky projected) disk 2D model (with PSF convolution).</span>
@@ -659,8 +599,8 @@
 <span class="sd">   </span>
 <span class="sd">    **fineSampling** parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</span>
 <span class="sd">    </span>
-<span class="sd">    * if the sampling is performed everywhere (&#39;where&#39; keyword in **samplingZone** equal to &#39;all&#39;), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)</span>
-<span class="sd">    * if the sampling is performed around the centre (&#39;where&#39; equal to &#39;centre&#39;), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        </span>
+<span class="sd">    * if the sampling is performed everywhere ('where' keyword in **samplingZone** equal to 'all'), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)</span>
+<span class="sd">    * if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        </span>
 <span class="sd">       </span>
 <span class="sd">    .. warning::</span>
 <span class="sd">        </span>
@@ -689,9 +629,9 @@
 <span class="sd">    :param dict PSF: (**Optional**) Dictionnary of the PSF (and its parameters) to use for the convolution. For now, only 2D Gaussians are accepted as PSF. </span>
 <span class="sd">    :param dict samplingZone: where to perform the over sampling. Dictionnaries should have the following keys:</span>
 <span class="sd">    </span>
-<span class="sd">        * &#39;where&#39; (type str) -&gt; either &#39;all&#39; to perform everywhere or &#39;centre&#39; to perform around the centre</span>
-<span class="sd">        * &#39;dx&#39;    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, &#39;dx&#39; does not need to be provided.</span>
-<span class="sd">        * &#39;dy&#39;    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, &#39;dy&#39; does not need to be provided.</span>
+<span class="sd">        * 'where' (type str) -&gt; either 'all' to perform everywhere or 'centre' to perform around the centre</span>
+<span class="sd">        * 'dx'    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.</span>
+<span class="sd">        * 'dy'    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.</span>
 <span class="sd">               </span>
 <span class="sd">    :param bool skipCheck: whether to skip the checking part or not</span>
 <span class="sd">    :param x0: x-axis centre position. Default is None so that nx//2 will be used.</span>
@@ -702,7 +642,7 @@
 <span class="sd">    </span>
 <span class="sd">    :returns: X, Y grids and the total (sky projected + PSF convolved) model of the bulge + disk decomposition</span>
 <span class="sd">    :rtype: 2D ndarray, 2D ndarray, 2D ndarray</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    '''</span>
     
     <span class="c1">##############################################</span>
     <span class="c1">#          Checking input parameters         #</span>
@@ -712,10 +652,10 @@
         <span class="n">samplingZone</span> <span class="o">=</span> <span class="n">_checkParams</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">samplingZone</span><span class="p">,</span> <span class="n">fineSampling</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="p">]]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rb, Rd, arcsecToGrid.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rb, Rd, arcsecToGrid.'</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">PA</span><span class="o">&lt;-</span><span class="mi">90</span> <span class="ow">or</span> <span class="n">PA</span><span class="o">&gt;</span><span class="mi">90</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PA should be given in the range -90° &lt;= PA &lt;= 90°, counting angles anti clock-wise (0° means major axis is vetically aligned). Cheers !&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'PA should be given in the range -90° &lt;= PA &lt;= 90°, counting angles anti clock-wise (0° means major axis is vetically aligned). Cheers !'</span><span class="p">)</span>
        
     <span class="c1">##################################</span>
     <span class="c1">#         Compute models         #</span>
@@ -729,19 +669,19 @@
         <span class="k">if</span> <span class="n">magD</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offsetD</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">Id</span>  <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="n">listn</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">magD</span><span class="p">,</span> <span class="n">Rd</span><span class="p">,</span> <span class="n">offsetD</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">listbn</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Id is None, but magD or offsetD is also None. If no Id is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Id is None, but magD or offsetD is also None. If no Id is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !"</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">Ib</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">magB</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offsetB</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">Ib</span>  <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="n">listn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">magB</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">offsetB</span><span class="p">,</span> <span class="n">bn</span><span class="o">=</span><span class="n">listbn</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Ib is None, but magB or offsetB is also None. If no Ib is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensity. Cheers !"</span><span class="p">)</span>
 
     <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">Sersic2D</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="p">[</span><span class="n">Rd</span><span class="p">,</span> <span class="n">Rb</span><span class="p">],</span> <span class="n">x0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span> <span class="n">listIe</span><span class="o">=</span><span class="p">[</span><span class="n">Id</span><span class="p">,</span> <span class="n">Ib</span><span class="p">],</span> <span class="n">listInclination</span><span class="o">=</span><span class="p">[</span><span class="n">inclination</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">listPA</span><span class="o">=</span><span class="p">[</span><span class="n">PA</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">fineSampling</span><span class="o">=</span><span class="n">fineSampling</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="n">samplingZone</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">noPSF</span><span class="p">:</span>
         <span class="c1"># If we perform fine sampling only in the central part, Sersic2D function rebins the data in the end, so the arcsec to pixel conversion factor does not need to be updated since we do not have a finer pixel scale</span>
-        <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;centre&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">'where'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'centre'</span><span class="p">:</span>
             <span class="n">fineSampling</span>   <span class="o">=</span> <span class="mi">1</span>
         
         <span class="k">if</span> <span class="n">combine</span><span class="p">:</span>
@@ -754,9 +694,9 @@
 
 
 <div class="viewcode-block" id="bulge2D"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.bulge2D">[docs]</a><span class="k">def</span> <span class="nf">bulge2D</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Ib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inclination</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">PA</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
-            <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Gaussian2D&#39;</span><span class="p">,</span> <span class="s1">&#39;FWHMX&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;FWHMY&#39;</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;sigmaX&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;sigmaY&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">:</span><span class="s1">&#39;arcsec&#39;</span><span class="p">},</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
-            <span class="n">fineSampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span> <span class="n">skipCheck</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+            <span class="n">PSF</span><span class="o">=</span><span class="p">{</span><span class="s1">'name'</span><span class="p">:</span><span class="s1">'Gaussian2D'</span><span class="p">,</span> <span class="s1">'FWHMX'</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">'FWHMY'</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">'sigmaX'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'sigmaY'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">:</span><span class="s1">'arcsec'</span><span class="p">},</span> <span class="n">noPSF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+            <span class="n">fineSampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">'where'</span><span class="p">:</span><span class="s1">'centre'</span><span class="p">,</span> <span class="s1">'dx'</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'dy'</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span> <span class="n">skipCheck</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Generate a 2D model for a de Vaucouleur bulge. This model can be sky projected and PSF convolved.</span>
@@ -781,8 +721,8 @@
 <span class="sd">  </span>
 <span class="sd">    **fineSampling** parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</span>
 <span class="sd">        </span>
-<span class="sd">    * if the sampling is performed everywhere (&#39;where&#39; keyword in **samplingZone** equal to &#39;all&#39;), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)</span>
-<span class="sd">    * if the sampling is performed around the centre (&#39;where&#39; equal to &#39;centre&#39;), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        </span>
+<span class="sd">    * if the sampling is performed everywhere ('where' keyword in **samplingZone** equal to 'all'), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)</span>
+<span class="sd">    * if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        </span>
 
 <span class="sd">    :param int nx: size of the model for the x-axis</span>
 <span class="sd">    :param int ny: size of the model for the y-axis</span>
@@ -804,9 +744,9 @@
 <span class="sd">    :param int(&gt;0) fineSampling: fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</span>
 <span class="sd">    :param dict samplingZone: where to perform the over sampling. Dictionnaries should have the following keys:</span>
 <span class="sd">    </span>
-<span class="sd">        * &#39;where&#39; (type str) -&gt; either &#39;all&#39; to perform everywhere or &#39;centre&#39; to perform around the centre</span>
-<span class="sd">        * &#39;dx&#39;    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, &#39;dx&#39; does not need to be provided.</span>
-<span class="sd">        * &#39;dy&#39;    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, &#39;dy&#39; does not need to be provided.</span>
+<span class="sd">        * 'where' (type str) -&gt; either 'all' to perform everywhere or 'centre' to perform around the centre</span>
+<span class="sd">        * 'dx'    (type int) -&gt; x-axis maximum distance from the centre coordinate. A sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.</span>
+<span class="sd">        * 'dy'    (type int) -&gt; y-axis maximum distance from the centre coordinate. A sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.</span>
 <span class="sd">               </span>
 <span class="sd">    :param bool skipCheck: whether to skip the checking part or not</span>
 <span class="sd">    :param bool verbose: (**Optional**) whether to print info on stdout or not</span>
@@ -840,16 +780,16 @@
 <span class="sd">        </span>
 <span class="sd">        # Bulge model with fine sampling and with PSF convolution (FWHM=0.8 arcsec)</span>
 <span class="sd">        X, Y, bulge3 = mod.bulge2D(100, 100, 35, mag=20, offset=30, noPSF=False, fineSampling=81,</span>
-<span class="sd">                                  PSF={&#39;name&#39;:&#39;Gaussian2D&#39;, &#39;FWHMX&#39;:0.8, &#39;FWHMY&#39;:0.8, &#39;unit&#39;:&#39;arcsec&#39;}, arcsecToGrid=0.03)</span>
+<span class="sd">                                  PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'unit':'arcsec'}, arcsecToGrid=0.03)</span>
 <span class="sd">        </span>
 <span class="sd">        ###############################</span>
 <span class="sd">        #          Plot part          #</span>
 <span class="sd">        ###############################</span>
 <span class="sd">        </span>
 <span class="sd">        # Setup figure and axes</span>
-<span class="sd">        rc(&#39;font&#39;, **{&#39;family&#39;: &#39;serif&#39;, &#39;serif&#39;: [&#39;Times&#39;]})</span>
-<span class="sd">        rc(&#39;text&#39;, usetex=True)</span>
-<span class="sd">        mpl.rcParams[&#39;text.latex.preamble&#39;] = r&#39;\usepackage{newtxmath}&#39;</span>
+<span class="sd">        rc('font', **{'family': 'serif', 'serif': ['Times']})</span>
+<span class="sd">        rc('text', usetex=True)</span>
+<span class="sd">        mpl.rcParams['text.latex.preamble'] = r'\usepackage{newtxmath}'</span>
 <span class="sd">        </span>
 <span class="sd">        f            = plt.figure(figsize=(9, 3))</span>
 <span class="sd">        gs           = GridSpec(1, 3, figure=f, wspace=0, hspace=0, left=0.2, right=0.8, top=0.9, bottom=0.3)</span>
@@ -858,27 +798,27 @@
 <span class="sd">        ax2          = f.add_subplot(gs[1])</span>
 <span class="sd">        ax3          = f.add_subplot(gs[2])</span>
 <span class="sd">        </span>
-<span class="sd">        ax1.set_title(r&#39;No fine sampling&#39;,      size=15)</span>
-<span class="sd">        ax2.set_title(r&#39;Fine sampling = $9^2$&#39;, size=15)</span>
-<span class="sd">        ax3.set_title(r&#39;Fine sampling \&amp; PSF&#39;,  size=15)</span>
+<span class="sd">        ax1.set_title(r'No fine sampling',      size=15)</span>
+<span class="sd">        ax2.set_title(r'Fine sampling = $9^2$', size=15)</span>
+<span class="sd">        ax3.set_title(r'Fine sampling \&amp; PSF',  size=15)</span>
 <span class="sd">        </span>
 <span class="sd">        for a in [ax1, ax2, ax3]:</span>
 <span class="sd">           a.set_xticklabels([])</span>
 <span class="sd">           a.set_yticklabels([])</span>
-<span class="sd">           a.tick_params(axis=&#39;x&#39;, which=&#39;both&#39;, direction=&#39;in&#39;)</span>
-<span class="sd">           a.tick_params(axis=&#39;y&#39;, which=&#39;both&#39;, direction=&#39;in&#39;)</span>
-<span class="sd">           a.yaxis.set_ticks_position(&#39;both&#39;)</span>
-<span class="sd">           a.xaxis.set_ticks_position(&#39;both&#39;)</span>
+<span class="sd">           a.tick_params(axis='x', which='both', direction='in')</span>
+<span class="sd">           a.tick_params(axis='y', which='both', direction='in')</span>
+<span class="sd">           a.yaxis.set_ticks_position('both')</span>
+<span class="sd">           a.xaxis.set_ticks_position('both')</span>
 <span class="sd">        </span>
 <span class="sd">        # Show bulges</span>
-<span class="sd">        ret1  = ax1.imshow(bulge1, origin=&#39;lower&#39;, norm=LogNorm(), cmap=&#39;plasma&#39;)</span>
-<span class="sd">        ret2  = ax2.imshow(bulge2, origin=&#39;lower&#39;, norm=LogNorm(), cmap=&#39;plasma&#39;)</span>
-<span class="sd">        ret3  = ax3.imshow(bulge3, origin=&#39;lower&#39;, norm=LogNorm(), cmap=&#39;plasma&#39;)</span>
+<span class="sd">        ret1  = ax1.imshow(bulge1, origin='lower', norm=LogNorm(), cmap='plasma')</span>
+<span class="sd">        ret2  = ax2.imshow(bulge2, origin='lower', norm=LogNorm(), cmap='plasma')</span>
+<span class="sd">        ret3  = ax3.imshow(bulge3, origin='lower', norm=LogNorm(), cmap='plasma')</span>
 <span class="sd">        </span>
 <span class="sd">        # Add colorbar</span>
 <span class="sd">        cb_ax = f.add_axes([0.2, 0.2, 0.6, 0.025])</span>
-<span class="sd">        cbar  = f.colorbar(ret1, cax=cb_ax, orientation=&#39;horizontal&#39;)</span>
-<span class="sd">        cbar.set_label(r&#39;Surface brightness [arbitrary unit]&#39;, size=15)</span>
+<span class="sd">        cbar  = f.colorbar(ret1, cax=cb_ax, orientation='horizontal')</span>
+<span class="sd">        cbar.set_label(r'Surface brightness [arbitrary unit]', size=15)</span>
 <span class="sd">        cbar.ax.tick_params(labelsize=15)</span>
 <span class="sd">        </span>
 <span class="sd">        plt.show()</span>
@@ -904,27 +844,27 @@
 <span class="sd">        #     Generate 2D models     #</span>
 <span class="sd">        ##############################</span>
 <span class="sd">        </span>
-<span class="sd">        X, Y, bulge1 = mod.bulge2D(100, 100, 15, mag=21, offset=30, noPSF=True,  fineSampling=81, samplingZone={&#39;where&#39;:&#39;centre&#39;, &#39;dx&#39;:5, &#39;dy&#39;:5})</span>
-<span class="sd">        X, Y, bulge2 = mod.bulge2D(100, 100, 15, mag=21, offset=30, noPSF=False, fineSampling=81, samplingZone={&#39;where&#39;:&#39;centre&#39;, &#39;dx&#39;:5, &#39;dy&#39;:5},</span>
-<span class="sd">                                  PSF={&#39;name&#39;:&#39;Gaussian2D&#39;, &#39;FWHMX&#39;:0.087, &#39;FWHMY&#39;:0.087, &#39;unit&#39;:&#39;arcsec&#39;}, arcsecToGrid=0.03)</span>
+<span class="sd">        X, Y, bulge1 = mod.bulge2D(100, 100, 15, mag=21, offset=30, noPSF=True,  fineSampling=81, samplingZone={'where':'centre', 'dx':5, 'dy':5})</span>
+<span class="sd">        X, Y, bulge2 = mod.bulge2D(100, 100, 15, mag=21, offset=30, noPSF=False, fineSampling=81, samplingZone={'where':'centre', 'dx':5, 'dy':5},</span>
+<span class="sd">                                  PSF={'name':'Gaussian2D', 'FWHMX':0.087, 'FWHMY':0.087, 'unit':'arcsec'}, arcsecToGrid=0.03)</span>
 <span class="sd">        </span>
 <span class="sd">        #####################################</span>
 <span class="sd">        #     Load GALFIT output images     #</span>
 <span class="sd">        #####################################</span>
 <span class="sd">        </span>
-<span class="sd">        with fits.open(&#39;/home/wilfried/wilfried_libs/galaxy/.test/bulge_withoutPSF.fits&#39;) as hdul:</span>
+<span class="sd">        with fits.open('/home/wilfried/wilfried_libs/galaxy/.test/bulge_withoutPSF.fits') as hdul:</span>
 <span class="sd">           bulge_nopsf = hdul[0].data</span>
 <span class="sd">        </span>
-<span class="sd">        with fits.open(&#39;/home/wilfried/wilfried_libs/galaxy/.test/bulge_withPSF.fits&#39;) as hdul:</span>
+<span class="sd">        with fits.open('/home/wilfried/wilfried_libs/galaxy/.test/bulge_withPSF.fits') as hdul:</span>
 <span class="sd">           bulge_psf   = hdul[0].data</span>
 <span class="sd">        </span>
 <span class="sd">        ##########################</span>
 <span class="sd">        #       Plot parts       #</span>
 <span class="sd">        ##########################</span>
 <span class="sd">        </span>
-<span class="sd">        rc(&#39;font&#39;, **{&#39;family&#39;: &#39;serif&#39;, &#39;serif&#39;: [&#39;Times&#39;]})</span>
-<span class="sd">        rc(&#39;text&#39;, usetex=True)</span>
-<span class="sd">        mpl.rcParams[&#39;text.latex.preamble&#39;] = r&#39;\usepackage{newtxmath}&#39;</span>
+<span class="sd">        rc('font', **{'family': 'serif', 'serif': ['Times']})</span>
+<span class="sd">        rc('text', usetex=True)</span>
+<span class="sd">        mpl.rcParams['text.latex.preamble'] = r'\usepackage{newtxmath}'</span>
 <span class="sd">        </span>
 <span class="sd">        f            = plt.figure(figsize=(9, 6))</span>
 <span class="sd">        gs           = GridSpec(2, 3, figure=f, wspace=0, hspace=0, left=0.1, right=0.9, top=0.95, bottom=0.15)</span>
@@ -933,21 +873,21 @@
 <span class="sd">        for i in gs:</span>
 <span class="sd">           axs.append(f.add_subplot(i))</span>
 <span class="sd">        </span>
-<span class="sd">        axs[0].set_ylabel(r&#39;without PSF&#39;, size=15)</span>
-<span class="sd">        axs[0].set_title(r&#39;bulge2D&#39;,      size=15)</span>
-<span class="sd">        axs[1].set_title(r&#39;Galfit bulge&#39;, size=15)</span>
-<span class="sd">        axs[2].set_title(r&#39;Residuals&#39;,    size=15)</span>
-<span class="sd">        axs[3].set_ylabel(r&#39;with PSF&#39;,    size=15)</span>
+<span class="sd">        axs[0].set_ylabel(r'without PSF', size=15)</span>
+<span class="sd">        axs[0].set_title(r'bulge2D',      size=15)</span>
+<span class="sd">        axs[1].set_title(r'Galfit bulge', size=15)</span>
+<span class="sd">        axs[2].set_title(r'Residuals',    size=15)</span>
+<span class="sd">        axs[3].set_ylabel(r'with PSF',    size=15)</span>
 <span class="sd">        </span>
 <span class="sd">        </span>
 <span class="sd">        for a in axs:</span>
 <span class="sd">           a.set_xticklabels([])</span>
 <span class="sd">           a.set_yticklabels([])</span>
 <span class="sd">        </span>
-<span class="sd">           a.tick_params(axis=&#39;x&#39;, which=&#39;both&#39;, direction=&#39;in&#39;)</span>
-<span class="sd">           a.tick_params(axis=&#39;y&#39;, which=&#39;both&#39;, direction=&#39;in&#39;)</span>
-<span class="sd">           a.yaxis.set_ticks_position(&#39;both&#39;)</span>
-<span class="sd">           a.xaxis.set_ticks_position(&#39;both&#39;)</span>
+<span class="sd">           a.tick_params(axis='x', which='both', direction='in')</span>
+<span class="sd">           a.tick_params(axis='y', which='both', direction='in')</span>
+<span class="sd">           a.yaxis.set_ticks_position('both')</span>
+<span class="sd">           a.xaxis.set_ticks_position('both')</span>
 <span class="sd">        </span>
 <span class="sd">        # First line</span>
 <span class="sd">        mmax  = np.nanmax([bulge1, bulge2, bulge_nopsf, bulge_psf])</span>
@@ -958,38 +898,38 @@
 <span class="sd">        dmax  = np.nanmax([diff1, diff2])</span>
 <span class="sd">        dmin  = np.nanmin([diff1, diff2])</span>
 <span class="sd">        </span>
-<span class="sd">        ret11 = axs[0].imshow(bulge1,      origin=&#39;lower&#39;, cmap=&#39;plasma&#39;,  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
-<span class="sd">        ret12 = axs[1].imshow(bulge_nopsf, origin=&#39;lower&#39;, cmap=&#39;plasma&#39;,  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
-<span class="sd">        ret13 = axs[2].imshow(diff1,       origin=&#39;lower&#39;, cmap=&#39;viridis&#39;, norm=Normalize(vmin=dmin, vmax=dmax))</span>
+<span class="sd">        ret11 = axs[0].imshow(bulge1,      origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
+<span class="sd">        ret12 = axs[1].imshow(bulge_nopsf, origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
+<span class="sd">        ret13 = axs[2].imshow(diff1,       origin='lower', cmap='viridis', norm=Normalize(vmin=dmin, vmax=dmax))</span>
 <span class="sd">        </span>
 <span class="sd">        # Second line</span>
-<span class="sd">        ret21 = axs[3].imshow(bulge2,      origin=&#39;lower&#39;, cmap=&#39;plasma&#39;,  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
-<span class="sd">        ret22 = axs[4].imshow(bulge_psf,   origin=&#39;lower&#39;, cmap=&#39;plasma&#39;,  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
-<span class="sd">        ret23 = axs[5].imshow(diff2,       origin=&#39;lower&#39;, cmap=&#39;viridis&#39;, norm=Normalize(vmin=dmin, vmax=dmax))</span>
+<span class="sd">        ret21 = axs[3].imshow(bulge2,      origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
+<span class="sd">        ret22 = axs[4].imshow(bulge_psf,   origin='lower', cmap='plasma',  norm=LogNorm(  vmin=mmin, vmax=mmax))</span>
+<span class="sd">        ret23 = axs[5].imshow(diff2,       origin='lower', cmap='viridis', norm=Normalize(vmin=dmin, vmax=dmax))</span>
 <span class="sd">        </span>
 <span class="sd">        # Add colorbar 1</span>
 <span class="sd">        cb_ax1 = f.add_axes([0.1, 0.1, 0.53, 0.025])</span>
-<span class="sd">        cbar1  = f.colorbar(ret11, cax=cb_ax1, orientation=&#39;horizontal&#39;)</span>
-<span class="sd">        cbar1.set_label(r&#39;Surface brightness [arbitrary unit]&#39;, size=15)</span>
+<span class="sd">        cbar1  = f.colorbar(ret11, cax=cb_ax1, orientation='horizontal')</span>
+<span class="sd">        cbar1.set_label(r'Surface brightness [arbitrary unit]', size=15)</span>
 <span class="sd">        cbar1.ax.tick_params(labelsize=15)</span>
 <span class="sd">        </span>
 <span class="sd">        # Add colorbar 2</span>
 <span class="sd">        cb_ax2 = f.add_axes([0.64, 0.1, 0.26, 0.025])</span>
-<span class="sd">        cbar2  = f.colorbar(ret13, cax=cb_ax2, orientation=&#39;horizontal&#39;)</span>
-<span class="sd">        cbar2.set_label(r&#39;Relative difference (\%)&#39;, size=15)</span>
+<span class="sd">        cbar2  = f.colorbar(ret13, cax=cb_ax2, orientation='horizontal')</span>
+<span class="sd">        cbar2.set_label(r'Relative difference (\%)', size=15)</span>
 <span class="sd">        cbar2.ax.tick_params(labelsize=15)</span>
 <span class="sd">        </span>
 <span class="sd">        plt.show()</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    '''</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">skipCheck</span><span class="p">:</span>
         <span class="n">samplingZone</span> <span class="o">=</span> <span class="n">_checkParams</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">samplingZone</span><span class="p">,</span> <span class="n">fineSampling</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Rb</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="p">]]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rb, arcsecToGrid.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'At least one of the following parameters was provided as a negative number, which is not correct: nx, ny, Rb, arcsecToGrid.'</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">PA</span><span class="o">&lt;-</span><span class="mi">90</span> <span class="ow">or</span> <span class="n">PA</span><span class="o">&gt;</span><span class="mi">90</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PA should be given in the range -90° &lt;= PA &lt;= 90°, counting angles anti clock-wise (0° means major axis is vetically aligned). Cheers !&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'PA should be given in the range -90° &lt;= PA &lt;= 90°, counting angles anti clock-wise (0° means major axis is vetically aligned). Cheers !'</span><span class="p">)</span>
     
     <span class="c1"># Generating bulge model</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">Sersic2D</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="n">Rb</span><span class="p">],</span>
@@ -1003,7 +943,7 @@
         
         <span class="c1"># If we perform fine sampling only in the central part, Sersic2D function rebins the data at the end of the function,</span>
         <span class="c1"># So the arcsec to pixel conversion factor does not need to be updated since we do not have a finer pixel scale in our model</span>
-        <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;centre&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">'where'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'centre'</span><span class="p">:</span>
             <span class="n">fineSampling</span> <span class="o">=</span> <span class="mi">1</span>
     
         <span class="n">model</span> <span class="o">=</span> <span class="n">PSFconvolution2D</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">PSF</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="o">=</span><span class="n">arcsecToGrid</span><span class="o">/</span><span class="n">fineSampling</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -1012,9 +952,9 @@
 
 
 <div class="viewcode-block" id="Sersic2D"><a class="viewcode-back" href="../../galaxy/models.html#galaxy.models.Sersic2D">[docs]</a><span class="k">def</span> <span class="nf">Sersic2D</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listIe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listMag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listOffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listInclination</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listPA</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-            <span class="n">fineSampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;where&#39;</span><span class="p">:</span><span class="s1">&#39;centre&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span> 
+            <span class="n">fineSampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">samplingZone</span><span class="o">=</span><span class="p">{</span><span class="s1">'where'</span><span class="p">:</span><span class="s1">'centre'</span><span class="p">,</span> <span class="s1">'dx'</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'dy'</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span> 
             <span class="n">skipCheck</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">"""</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Generate a (sky projected) 2D model (image) of a sum of Sersic profiles. Neither PSF smoothing, nor projections onto the sky whatsoever are applied here.</span>
@@ -1030,8 +970,8 @@
 <span class="sd">  </span>
 <span class="sd">    **fineSampling** parameter can be used to rebin the data. The shape of the final image will depend on the samplingZone used</span>
 <span class="sd">        </span>
-<span class="sd">    * if the sampling is performed everywhere (&#39;where&#39; keyword in **samplingZone** equal to &#39;all&#39;), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)</span>
-<span class="sd">    * if the sampling is performed around the centre (&#39;where&#39; equal to &#39;centre&#39;), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        </span>
+<span class="sd">    * if the sampling is performed everywhere ('where' keyword in **samplingZone** equal to 'all'), the final image will have dimensions (**nx*fineSampling**, **ny*fineSampling**)</span>
+<span class="sd">    * if the sampling is performed around the centre ('where' equal to 'centre'), the central part is over-sampled, but needs to be binned in the end so that pixels have the same size in the central part and around. Thus, the final image will have the dimension (**nx**, **ny**).        </span>
 <span class="sd">       </span>
 <span class="sd">    :param listn: list of Sersic index for each profile</span>
 <span class="sd">    :type listn: list[int] or list[float]</span>
@@ -1050,9 +990,9 @@
 <span class="sd">    :param int(&gt;0) fineSampling: (**Optional**) fine sampling for the pixel grid used to make high resolution models. For instance, a value of 2 means that a pixel will be split into two subpixels.</span>
 <span class="sd">    :param dict samplingZone: (**Optional**) where to perform the sampling. Default is everywhere. Dictionnaries should have the following keys:</span>
 <span class="sd">       </span>
-<span class="sd">        * &#39;where&#39; (type str) -&gt; either &#39;all&#39; to perform everywhere or &#39;centre&#39; to perform around the centre</span>
-<span class="sd">        * &#39;dx&#39;    (type int) -&gt; x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, &#39;dx&#39; does not need to be provided.</span>
-<span class="sd">        * &#39;dy&#39;    (type int) -&gt; y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, &#39;dy&#39; does not need to be provided.</span>
+<span class="sd">        * 'where' (type str) -&gt; either 'all' to perform everywhere or 'centre' to perform around the centre</span>
+<span class="sd">        * 'dx'    (type int) -&gt; x-axis maximum distance from the centre coordinate. An sub-array with x-axis values within [xpos-dx, xpos+dx] will be selected. If the sampling is performed everywhere, 'dx' does not need to be provided.</span>
+<span class="sd">        * 'dy'    (type int) -&gt; y-axis maximum distance from the centre coordinate. An sub-array with y-axis values within [ypos-dy, ypos+dy] will be selected. If the sampling is performed everywhere, 'dy' does not need to be provided.</span>
 <span class="sd">          </span>
 <span class="sd">    :param bool skipCheck: (**Optional**) whether to skip the checking part or not</span>
 <span class="sd">    :param bool verbose: (**Optional**) whether to print info on stdout or not</span>
@@ -1068,18 +1008,18 @@
 <span class="sd">        </span>
 <span class="sd">    :raises TypeError: </span>
 <span class="sd">        </span>
-<span class="sd">        * if &#39;dx&#39; and &#39;dy&#39; keys are not in **samplingZone**</span>
+<span class="sd">        * if 'dx' and 'dy' keys are not in **samplingZone**</span>
 <span class="sd">        * if **fineSampling**, **nx** and **ny** are neither int, nor np.integer</span>
 <span class="sd">        </span>
 <span class="sd">    :raises ValueError:</span>
 <span class="sd">        </span>
-<span class="sd">        * if &#39;where&#39; key value in **samplingZone** is neither &#39;all&#39;, nor &#39;centre&#39;</span>
+<span class="sd">        * if 'where' key value in **samplingZone** is neither 'all', nor 'centre'</span>
 <span class="sd">        * if nx, ny or arcsecToGrid are &lt; 0</span>
 <span class="sd">        * if at least one n or one Re is &lt; 0</span>
 <span class="sd">        * if **fineSampling** &lt; 1</span>
 <span class="sd">        * if at least one PA is not in the range [-90, 90] deg</span>
 <span class="sd">        * if Ie and mag and offset are None</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     
     <span class="k">def</span> <span class="nf">computeSersic</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">nbModels</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listIe</span><span class="p">,</span> <span class="n">listInclination</span><span class="p">,</span> <span class="n">listPA</span><span class="p">):</span>
         
@@ -1112,21 +1052,21 @@
         <span class="n">samplingZone</span> <span class="o">=</span> <span class="n">_checkParams</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">samplingZone</span><span class="p">,</span> <span class="n">fineSampling</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">]]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of the following parameters was provided as a negative number, which is not correct: nx, ny.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'At least one of the following parameters was provided as a negative number, which is not correct: nx, ny.'</span><span class="p">)</span>
             
         <span class="k">for</span> <span class="n">ll</span> <span class="ow">in</span> <span class="p">[</span><span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">]:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ll</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one element in listn or listRe is a negative number, which is not correct.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'At least one element in listn or listRe is a negative number, which is not correct.'</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">pa</span><span class="o">&lt;-</span><span class="mi">90</span> <span class="k">for</span> <span class="n">pa</span> <span class="ow">in</span> <span class="n">listPA</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">([</span><span class="n">pa</span><span class="o">&gt;</span><span class="mi">90</span> <span class="k">for</span> <span class="n">pa</span> <span class="ow">in</span> <span class="n">listPA</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PA should be given in the range -90° &lt;= PA &lt;= +90°, counting angles anti clock-wise. Cheers !&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'PA should be given in the range -90° &lt;= PA &lt;= +90°, counting angles anti clock-wise. Cheers !'</span><span class="p">)</span>
         
 
     <span class="k">if</span> <span class="n">listIe</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">listIe</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">listMag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">listOffset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">listIe</span>         <span class="o">=</span> <span class="n">intensity_at_re</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listn</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listMag</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listRe</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">listOffset</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"listIe is None, but listMag or listOffset is also None. If no listIe is given, please provide a value for the total magnitude and magnitude offset in order to compute the intensities. Cheers !"</span><span class="p">)</span>
 
     <span class="n">nbModels</span>               <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">listn</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">listInclination</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1152,8 +1092,8 @@
     <span class="n">pixHeight</span>              <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">fineSampling</span>
     
     <span class="c1"># We centre the coordinate X and Y grids to the given centre coordinates</span>
-    <span class="c1"># The centre is recentred inside an &#39;original&#39; pixel because of fine sampling (to not break any symmetry when rebinning)</span>
-    <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;where&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+    <span class="c1"># The centre is recentred inside an 'original' pixel because of fine sampling (to not break any symmetry when rebinning)</span>
+    <span class="k">if</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">'where'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'all'</span><span class="p">:</span>
         <span class="n">newX0</span>              <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pixWidth</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
         <span class="n">newY0</span>              <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pixHeight</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
         <span class="n">listX</span>              <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">pixWidth</span><span class="p">)</span>  <span class="o">-</span> <span class="n">newX0</span>
@@ -1162,14 +1102,14 @@
         <span class="n">intensity</span>          <span class="o">=</span> <span class="n">computeSersic</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">nbModels</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listIe</span><span class="p">,</span> <span class="n">listInclination</span><span class="p">,</span> <span class="n">listPA</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">fineSampling</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         
         <span class="c1"># Rebinning intensity map in the central part</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+        <span class="sd">'''</span>
 <span class="sd">        intensity   = intensity.reshape(int(intensity.shape[0] / fineSampling), fineSampling, int(intensity.shape[1] / fineSampling), fineSampling)</span>
 <span class="sd">        intensity   = intensity.mean(1).mean(2)</span>
 <span class="sd">        </span>
 <span class="sd">        listX              = np.arange(0, nx, 1) - x0</span>
 <span class="sd">        listY              = np.arange(0, ny, 1) - y0</span>
 <span class="sd">        X, Y               = np.meshgrid(listX, listY)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        '''</span>
         
     <span class="k">else</span><span class="p">:</span>
         
@@ -1180,8 +1120,8 @@
         <span class="n">intensity</span>          <span class="o">=</span> <span class="n">computeSersic</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">nbModels</span><span class="p">,</span> <span class="n">listn</span><span class="p">,</span> <span class="n">listRe</span><span class="p">,</span> <span class="n">listIe</span><span class="p">,</span> <span class="n">listInclination</span><span class="p">,</span> <span class="n">listPA</span><span class="p">)</span>
         
         <span class="c1"># We generate a subarray around the centre in the given box, using the given over-sampling factor</span>
-        <span class="n">maxX</span>               <span class="o">=</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">fineSampling</span><span class="p">)</span> <span class="c1"># Weird but that&#39;s what comes out of a few diagrams</span>
-        <span class="n">maxY</span>               <span class="o">=</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">fineSampling</span><span class="p">)</span>
+        <span class="n">maxX</span>               <span class="o">=</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dx'</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">fineSampling</span><span class="p">)</span> <span class="c1"># Weird but that's what comes out of a few diagrams</span>
+        <span class="n">maxY</span>               <span class="o">=</span> <span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dy'</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">fineSampling</span><span class="p">)</span>
         <span class="n">listXcenPart</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">maxX</span><span class="p">,</span> <span class="n">maxX</span><span class="o">+</span><span class="n">pixWidth</span><span class="p">,</span> <span class="n">pixWidth</span><span class="p">)</span>
         <span class="n">listYcenPart</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">maxY</span><span class="p">,</span> <span class="n">maxY</span><span class="o">+</span><span class="n">pixHeight</span><span class="p">,</span> <span class="n">pixHeight</span><span class="p">)</span>
         
@@ -1193,7 +1133,7 @@
         <span class="n">intensityCenPart</span>   <span class="o">=</span> <span class="n">intensityCenPart</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">fineSampling</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         
         <span class="c1"># Combining back the central part into the original array</span>
-        <span class="n">intensity</span><span class="p">[</span><span class="n">y0</span><span class="o">-</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]:</span><span class="n">y0</span><span class="o">+</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x0</span><span class="o">-</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]:</span><span class="n">x0</span><span class="o">+</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">intensityCenPart</span>
+        <span class="n">intensity</span><span class="p">[</span><span class="n">y0</span><span class="o">-</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dy'</span><span class="p">]:</span><span class="n">y0</span><span class="o">+</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dy'</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x0</span><span class="o">-</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dx'</span><span class="p">]:</span><span class="n">x0</span><span class="o">+</span><span class="n">samplingZone</span><span class="p">[</span><span class="s1">'dx'</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">intensityCenPart</span>
         
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">intensity</span></div>
 
@@ -1202,37 +1142,24 @@
 
 
 </pre></div>
-
-              </div>
-              
-        
-        <div class='prev-next-bottom'>
-            
-
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
+</div>
+<div class="prev-next-bottom">
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
         
           By Wilfried Mercier<br/>
         
-            &copy; Copyright 2021, Wilfried Mercier.<br/>
-      </p>
-    </div>
-  </footer>
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
 </main>
-
-
-      </div>
-    </div>
-
-    
-  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
-  </body>
+</div>
+</div>
+<script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
 </html>

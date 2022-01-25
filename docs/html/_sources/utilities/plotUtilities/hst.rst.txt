@@ -1,5 +1,0 @@
-Galfit related plots
-====================
-
-.. autofunction:: utilities.plotUtilities.display_hst_models
-.. autofunction:: utilities.plotUtilities.genMeThatPDF

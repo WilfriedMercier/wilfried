@@ -1,396 +1,138 @@
 
 <!DOCTYPE html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Miscellaneous &#8212; wilfried library 1.0 documentation</title>
-    
-  <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
-
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-  <link rel="stylesheet"
-    href="../_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
-
-    
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    
-  <link rel="preload" as="script" href="../_static/js/index.d3f166471bb80abb5163.js">
-
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Galaxy mass models" href="massModels.html" />
-    <link rel="prev" title="Galaxy kinematics" href="kinematics.html" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-
-
-
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-<a class="navbar-brand text-wrap" href="../index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
-  
-</a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../index.html">
-   Table of content
-  </a>
- </li>
+<html lang="en">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+<title>Miscellaneous | wilfried library 1.0 documentation</title>
+<link href="../_static/pygments.css" rel="stylesheet"/>
+<link href="../_static/theme.313ea551d1799b2102b1.css" rel="stylesheet"/>
+<link href="../_static/plot_directive.css" rel="stylesheet"/>
+<link href="../_static/copybutton.css" rel="stylesheet"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="massModels.html" rel="next" title="Galaxy mass models"/>
+<link href="kinematics.html" rel="prev" title="Galaxy kinematics"/>
+</head>
+<body class="antialiased text-gray">
+<div class="h-screen xl:grid xl:grid-layout" data-action="keydown@window-&gt;search#focus" data-controller="sidebar search" id="page">
+<a class="block text-xl bg-white py-4 z-20 absolute top-0 h-18 inset-x-0 text-center transform -translate-y-full focus:translate-y-0 focus:outline-none transition-transform duration-75" href="#miscellaneous" title="Skip navigation links">Skip to content</a>
+<header class="grid-area-header z-10 h-14 sm:h-18">
+<div class="bg-gray-dark shadow-md flex items-center h-full xl:px-2 relative"><div class="flex items-center">
+<button class="xl:hidden h-14 w-14 sm:h-18 sm:w-18 leading-14 sm:leading-18 text-gray-100 hover:bg-gray-700 hover:text-brand focus:outline-none focus:bg-gray-700 focus:text-brand" data-action="sidebar#open" data-sidebar-target="hamburger">
+<span class="sr-only">Open navigation menu</span>
+<svg aria-hidden="true" class="fill-current h-8 w-8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+</button><a aria-label="Back to homepage" class="hover:bg-gray-700 focus:bg-gray-700 focus:outline-none tooltipped tooltipped-sw" href="../index.html"><span class="hidden lg:inline-block shrink-0 font-medium text-gray-100 mx-5 leading-14 sm:leading-18 tracking-wider">wilfried library 1.0 documentation</span>
+</a></div><div class="flex justify-end items-center flex-1"><form action="../search.html" class="flex print:hidden justify-between items-center leading-14 sm:leading-18 md:ml-4 bg-gray-dark text-gray-300 focus-within:bg-gray-50 focus-within:text-gray-800 focus-within:absolute focus-within:inset-x-0 focus-within:top-0 md:focus-within:w-full md:focus-within:static" data-action="click-&gt;search#focusSearchInput" id="searchbox" method="get">
+<button aria-label="Get search results" class="text-inherit h-14 w-14 sm:h-18 sm:w-18" tabindex="-1">
+<svg aria-hidden="true" class="fill-current stroke-current h-8 w-8" stroke-width="0.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+</button>
+<input aria-label="Search the docs" class="pr-2 bg-transparent text-inherit focus:outline-none w-0 md:w-auto focus:w-full transition-all duration-100" data-search-target="searchInput" id="search-input" name="q" placeholder="Search the docs" type="search"/>
+</form></div>
+</div>
+</header>
+<aside class="grid-area-sidebar h-full fixed xl:relative inset-y-0 left-0 z-20 xl:z-0 print:hidden overflow-y-auto transition-all transform transform-gpu -translate-x-full opacity-0 duration-300 xl:translate-x-0 xl:opacity-100" data-sidebar-target="sidebar">
+<nav class="h-full overflow-y-auto bg-white text-gray-600 pt-8 flex flex-col" role="navigation">
+<div class="nav-toc flex-1 pl-6"><ul class="current">
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../dependencies.html">Required dependencies</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../makeLifeSimpler.html">makeLifeSimpler</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/index.html">Useful utilities</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html">Colored messages</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#example">Example</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#module-utilities.coloredMessages">Documentation</a></div></li>
 </ul>
-<ul class="current nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../dependencies.html">
-   Required dependencies
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../makeLifeSimpler.html">
-   makeLifeSimpler
-  </a>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../utilities/index.html">
-   Useful utilities
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/coloredMessages.html">
-     Colored messages
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/dict.html">
-     Dictionaries
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/io.html">
-     Input/Output
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/list.html">
-     List manipulations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/strings.html">
-     Strings manipulation
-    </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../utilities/plotUtilities/index.html">
-     Plot utilities
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/asManyHists.html">
-       Histograms
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/hst.html">
-       Galfit related plots
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/misc.html">
-       Miscellaneous
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/singleContour.html">
-       Contours
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 current active collapsible-parent">
-  <a class="reference internal" href="index.html">
-   Galaxy module
-  </a>
-  <ul class="current collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="angularMomentum.html">
-     Galaxies angular momentum
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="cosmology.html">
-     Cosmology computations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="kinematics.html">
-     Galaxy kinematics
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Miscellaneous
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="massModels.html">
-     Galaxy mass models
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="models.html">
-     Galaxy models
-    </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="morphology/index.html">
-     Galaxies morphology
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="morphology/SersicFlux.html">
-       Sersic fluxes
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="morphology/Morpho.html">
-       Morphological parameters
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="morphology/Thickness.html">
-       Galaxies thickness
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="morphology/MUSE.html">
-       MUSE related functions
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="morphology/Other.html">
-       Other Sersic related functions
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="photometry/index.html">
-     Galaxies photometry
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="photometry/Fluxes.html">
-       Fluxes, colour excess and attenuation
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="photometry/Masses_SFR.html">
-       Masses and SFR estimates
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="photometry/Magnitudes.html">
-       Magnitude conversions
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="SED/index.html">
-     Resolved mass and SFR maps
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="SED/sed.html">
-       SED objects
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="SED/catalogues.html">
-       Catalogue objects
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="SED/filters.html">
-       Filter and FilterList definitions
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="SED/misc.html">
-       Miscellaneous classes
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../galfit/index.html">
-   Galfit module
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galfit/galfit.html">
-     Galfit auto-routines
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galfit/models.html">
-     Galfit models
-    </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html">Dictionaries</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#module-utilities.dictionaries">Documentation</a></div></li>
 </ul>
-
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html">Input/Output</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#module-utilities.io">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html">List manipulations</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#module-utilities.lists">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html">Strings manipulation</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#module-utilities.strings">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/index.html">Plot utilities</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/asManyHists.html">Histograms</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/hst.html">Galfit related plots</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/singleContour.html">Contours</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current expanded"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="index.html">Galaxy module</a></div><ul class="current">
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="angularMomentum.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="cosmology.html">Cosmology computations</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="geometry.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="kinematics.html">Galaxy kinematics</a></div></li>
+<li class="toctree-l2 current expanded"><div class="nav-link"><a class="current reference internal" data-action="click-&gt;sidebar#close" href="#">Miscellaneous</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="massModels.html">Galaxy mass models</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="models.html">Galaxy models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="models.html#d-profiles">1D profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="models.html#id1">2D profiles</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="morphology/index.html">Galaxies morphology</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="morphology/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="photometry/index.html">Galaxies photometry</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="photometry/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/index.html">Galfit module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/galfit.html">Galfit auto-routines</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html">Galfit models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#miscellaneous">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#galfit-profiles">Galfit profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#galfit-additional-tags">Galfit additional tags</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/galaxy/misc.rst.txt"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/misc.rst"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                    title="Fullscreen mode"><i
-                        class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-        </div>
-    </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <div class="section" id="module-galaxy.misc">
-<span id="miscellaneous"></span><h1>Miscellaneous<a class="headerlink" href="#module-galaxy.misc" title="Permalink to this headline">¶</a></h1>
-<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<button class="text-4xl text-gray-800 p-4 bottom-0 hover:text-brand xl:hidden focus:text-brand self-center" data-action="" title="Close navigation menu">
+<span class="sr-only">Close navigation menu</span>
+<svg aria-hidden="true" class="fill-current stroke-current h-6 w-6" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</aside>
+<main class="px-10 xl:ml-fluid grid-area-main overflow-y-auto flex flex-col h-full mx-0 md:mx-auto xl:mr-0" data-action="scroll-&gt;scroll#showButton" data-controller="scroll"><nav aria-label="breadcrumbs" class="print:hidden mt-12 text-sm text-gray-light" role="navigation">
+<a class="text-gray-light text-sm hover:text-gray-dark font-medium focus:text-gray-dark" href="../index.html">wilfried library 1.0 documentation</a>
+<span class="mr-1">/</span><a class="text-gray-light text-sm hover:text-gray-dark" href="index.html">Galaxy module</a>
+<span class="mr-1">/</span><span aria-current="page">Miscellaneous</span>
+</nav>
+<article class="flex-1" role="main">
+<section id="module-galaxy.misc">
+<span id="miscellaneous"></span><h1>Miscellaneous<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-galaxy.misc">¶</a></h1>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Miscellaneous functions related to galaxy computations.</p>
-<dl class="py function">
-<dt id="galaxy.misc.PSFconvolution2D">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">PSFconvolution2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecToGrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.03</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'FWHMX':</span> <span class="pre">0.8,</span> <span class="pre">'FWHMY':</span> <span class="pre">0.8,</span> <span class="pre">'name':</span> <span class="pre">'Gaussian2D',</span> <span class="pre">'sigmaX':</span> <span class="pre">None,</span> <span class="pre">'sigmaY':</span> <span class="pre">None,</span> <span class="pre">'unit':</span> <span class="pre">'arcsec'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#PSFconvolution2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.PSFconvolution2D" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.PSFconvolution2D">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">PSFconvolution2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">arcsecToGrid</span><span class="o">=</span><span class="default_value">0.03</span></em>, <em class="sig-param"><span class="n">model</span><span class="o">=</span><span class="default_value">{'FWHMX': 0.8, 'FWHMY': 0.8, 'name': 'Gaussian2D', 'sigmaX': None, 'sigmaY': None, 'unit': 'arcsec'}</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#PSFconvolution2D"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.PSFconvolution2D">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Convolve using fast FFT a 2D array with a pre-defined (2D) PSF.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -422,16 +164,16 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.checkAndComputeIe">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">checkAndComputeIe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ie</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noError</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#checkAndComputeIe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.checkAndComputeIe" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.checkAndComputeIe">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">checkAndComputeIe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Ie</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">bn</span></em>, <em class="sig-param"><span class="n">re</span></em>, <em class="sig-param"><span class="n">mag</span></em>, <em class="sig-param"><span class="n">offset</span></em>, <em class="sig-param"><span class="n">noError</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#checkAndComputeIe"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.checkAndComputeIe">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Check whether Ie is provided. If not, but the magnitude and magnitude offset are, it computes it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bn</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – bn factor appearing in the Sersic profile (see <a class="reference internal" href="#galaxy.misc.compute_bn" title="galaxy.misc.compute_bn"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_bn()</span></code></a>)</p></li>
+<li><p><strong>bn</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – bn factor appearing in the Sersic profile (see <a class="reference internal" href="#galaxy.misc.compute_bn" title="galaxy.misc.compute_bn"><code class="xref py py-func docutils literal notranslate">compute_bn()</code></a>)</p></li>
 <li><p><strong>Ie</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – intensity at effective radius</p></li>
 <li><p><strong>mag</strong> (<em>float</em><em> or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – total integrated magnitude</p></li>
 <li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>] or </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – Sersic index</p></li>
@@ -451,11 +193,11 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.check_bns">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">check_bns</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listbn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#check_bns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.check_bns" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.check_bns">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">check_bns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listn</span></em>, <em class="sig-param"><span class="n">listbn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#check_bns"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.check_bns">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Given a list of bn values, check those which are not given (i.e. equal to None), and compute their value using the related Sersic index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -472,14 +214,14 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.compute_bn">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">compute_bn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#compute_bn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.compute_bn" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.compute_bn">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">compute_bn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#compute_bn"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.compute_bn">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Compute the value of bn used in the definition of a Sersic profile</p>
 <div class="math">
-<p><img src="../_images/math/8d279bae4c0e3472487c92a6b9c11fba49228082.png" alt="2\gamma(2n, b_n) = \Gamma(2n)"/></p>
+<p><img alt="2\gamma(2n, b_n) = \Gamma(2n)" src="../_images/math/8d279bae4c0e3472487c92a6b9c11fba49228082.png"/></p>
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>list</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>float</em><em>] or </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – Sersic index of the profile</p>
@@ -492,11 +234,11 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.fromStructuredArrayOrNot">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">fromStructuredArrayOrNot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noStructuredArray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#fromStructuredArrayOrNot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.fromStructuredArrayOrNot" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.fromStructuredArrayOrNot">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">fromStructuredArrayOrNot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gal</span></em>, <em class="sig-param"><span class="n">magD</span></em>, <em class="sig-param"><span class="n">magB</span></em>, <em class="sig-param"><span class="n">Rd</span></em>, <em class="sig-param"><span class="n">Rb</span></em>, <em class="sig-param"><span class="n">noStructuredArray</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#fromStructuredArrayOrNot"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.fromStructuredArrayOrNot">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Store values of the disk magnitude, the bulge magnitude, the disk effective radius and the bulge effective radius either directly from the given values or from a numpy structured array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -517,11 +259,11 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.intensity_at_re">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">intensity_at_re</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#intensity_at_re"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.intensity_at_re" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.intensity_at_re">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">intensity_at_re</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">mag</span></em>, <em class="sig-param"><span class="n">re</span></em>, <em class="sig-param"><span class="n">offset</span></em>, <em class="sig-param"><span class="n">bn</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#intensity_at_re"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.intensity_at_re">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Compute the intensity of a given Sersic profile with index n at the position of the half-light radius re. This assumes to know the integrated magnitude of the profile, as well as the offset used for the magnitude definition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -541,12 +283,15 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.mergeModelsIntoOne">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">mergeModelsIntoOne</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listModels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixWidth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixHeight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#mergeModelsIntoOne"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.mergeModelsIntoOne" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.mergeModelsIntoOne">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">mergeModelsIntoOne</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listX</span></em>, <em class="sig-param"><span class="n">listY</span></em>, <em class="sig-param"><span class="n">listModels</span></em>, <em class="sig-param"><span class="n">pixWidth</span></em>, <em class="sig-param"><span class="n">pixHeight</span></em>, <em class="sig-param"><span class="n">xlim</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ylim</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#mergeModelsIntoOne"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.mergeModelsIntoOne">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Sum the contribution of different models with distorted X and Y grids into a single image with a regular grid.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.0: </span>This function is deprecated and may be removed soon.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>How to use</strong></p>
@@ -560,9 +305,9 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ndarray</strong><strong>] </strong><strong>listX</strong> (<em>list</em><em>[</em><em>2D</em>) – list of X arrays for each model</p></li>
-<li><p><strong>ndarray</strong><strong>] </strong><strong>listY</strong> (<em>list</em><em>[</em><em>2D</em>) – list of Y arrays for each model</p></li>
-<li><p><strong>ndarray</strong><strong>] </strong><strong>listModels</strong> (<em>list</em><em>[</em><em>2D</em>) – list of intensity maps for each model</p></li>
+<li><p><strong>listX</strong> (<em>list</em><em>[</em><em>2D ndarray</em><em>]</em>) – list of X arrays for each model</p></li>
+<li><p><strong>listY</strong> (<em>list</em><em>[</em><em>2D ndarray</em><em>]</em>) – list of Y arrays for each model</p></li>
+<li><p><strong>listModels</strong> (<em>list</em><em>[</em><em>2D ndarray</em><em>]</em>) – list of intensity maps for each model</p></li>
 <li><p><strong>pixWidth</strong> (<em>float</em>) – width (x-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Nx pixels between xmin and xmax values, so that each pixel would have a width of (xmax-xmin)/Nx.</p></li>
 <li><p><strong>pixHeight</strong> (<em>float</em>) – height (y-axis size) of a single pixel. With numpy meshgrid, it is possible to generate grids with Ny pixels between ymin and ymax values, so that each pixel would have a height of (ymax-ymin)/Ny.</p></li>
 <li><p><strong>xlim</strong> (<em>2-tuple</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) lower and upper bounds (in that order) for the x-axis. If None, a symmetric grid in X is done, using the maximum absolute X value found.</p></li>
@@ -580,12 +325,15 @@ You can provide either the FWHM or sigma. If both are given, sigma is used.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.projectModel2D">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">projectModel2D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splineOrder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillVal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#projectModel2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.projectModel2D" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.projectModel2D">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">projectModel2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">inclination</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">PA</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">splineOrder</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">fillVal</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#projectModel2D"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.projectModel2D">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Project onto the sky a 2D model of a galaxy viewed face-on.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.0: </span>This function is deprecated and may be removed soon.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <dl class="simple">
@@ -619,15 +367,15 @@ By default, no transform whatsoever is applied.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.realGammainc">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">realGammainc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#realGammainc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.realGammainc" title="Permalink to this definition">¶</a></dt>
-<dd><p>‘
-.. codeauthor:: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.realGammainc">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">realGammainc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#realGammainc"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.realGammainc">¶</a></dt>
+<dd>
+<p>‘
+.. codeauthor:: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</p>
 <p>Unnormalised lower incomplete gamma function</p>
 <div class="math">
-<p><img src="../_images/math/b3438afd8183b26a945d50f5faaa526afe1bb419.png" alt="\gamma(a, x) = \int_0^x dt~t^{a-1} e^{-t}"/></p>
+<p><img alt="\gamma(a, x) = \int_0^x dt~t^{a-1} e^{-t}" src="../_images/math/b3438afd8183b26a945d50f5faaa526afe1bb419.png"/></p>
 </div><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -643,12 +391,15 @@ By default, no transform whatsoever is applied.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.rotateGalaxy">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">rotateGalaxy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splineOrder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillVal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#rotateGalaxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.rotateGalaxy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.rotateGalaxy">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">rotateGalaxy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">PA</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">splineOrder</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">fitIn</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fillVal</span><span class="o">=</span><span class="default_value">nan</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#rotateGalaxy"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.rotateGalaxy">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Apply PA rotation to a galaxy image.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.0: </span>This function is deprecated and may be removed soon.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -670,12 +421,15 @@ By default, no transform whatsoever is applied.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galaxy.misc.tiltGalaxy">
-<code class="sig-prename descclassname"><span class="pre">galaxy.misc.</span></code><code class="sig-name descname"><span class="pre">tiltGalaxy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splineOrder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fillVal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">nan</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#tiltGalaxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.misc.tiltGalaxy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galaxy.misc.tiltGalaxy">
+<code class="sig-prename descclassname">galaxy.misc.</code><code class="sig-name descname">tiltGalaxy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">inclination</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">splineOrder</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">fillVal</span><span class="o">=</span><span class="default_value">nan</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/misc.html#tiltGalaxy"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.misc.tiltGalaxy">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Tilt a galaxy image around the South-North axis (assumed vertical) passing through the image centre.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.0: </span>This function is deprecated and may be removed soon.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -697,42 +451,22 @@ By default, no transform whatsoever is applied.</p>
 </dd>
 </dl>
 </dd></dl>
-
+</section>
+</article>
+<footer>
+<div class="mt-20 mb-4 text-sm text-gray-700">© 2022, Wilfried Mercier Made with <a href="https://www.sphinx-doc.org">Sphinx 4.4.0</a></div>
+</footer></main>
+<button class="fixed bottom-0 right-0 z-20 opacity-0 p-4 m-4 tracking-wide bg-gray-900 text-gray-100 transition transform transform-gpu duration-500 translate-y-full" data-action="search#hideSnackbar" data-search-target="snackbar">
+  Clear highlights
+</button><div class="fixed hidden inset-0 bg-black bg-opacity-50" data-action="click-&gt;sidebar#close" data-sidebar-target="screen">
 </div>
-
-
-              </div>
-              
-        
-        <div class='prev-next-bottom'>
-            
-    <a class='left-prev' id="prev-link" href="kinematics.html" title="previous page">Galaxy kinematics</a>
-    <a class='right-next' id="next-link" href="massModels.html" title="next page">Galaxy mass models</a>
-
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
-        
-          By Wilfried Mercier<br/>
-        
-            &copy; Copyright 2021, Wilfried Mercier.<br/>
-      </p>
-    </div>
-  </footer>
-</main>
-
-
-      </div>
-    </div>
-
-    
-  <script src="../_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
-  </body>
+</div>
+<script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+<script src="../_static/jquery.js"></script>
+<script src="../_static/underscore.js"></script>
+<script src="../_static/doctools.js"></script>
+<script src="../_static/clipboard.min.js"></script>
+<script src="../_static/copybutton.js"></script>
+<script src="../_static/theme.3666d2347a4c66e5d7a8.js"></script>
+</body>
 </html>

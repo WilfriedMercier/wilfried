@@ -1,388 +1,133 @@
 
 <!DOCTYPE html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Colored messages &#8212; wilfried library 1.0 documentation</title>
-    
-  <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
-
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-  <link rel="stylesheet"
-    href="../_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
-
-    
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    
-  <link rel="preload" as="script" href="../_static/js/index.d3f166471bb80abb5163.js">
-
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Dictionaries" href="dict.html" />
-    <link rel="prev" title="Useful utilities" href="index.html" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-
-
-
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-<a class="navbar-brand text-wrap" href="../index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
-  
-</a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../index.html">
-   Table of content
-  </a>
- </li>
+<html lang="en">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+<title>Colored messages | wilfried library 1.0 documentation</title>
+<link href="../_static/pygments.css" rel="stylesheet"/>
+<link href="../_static/theme.313ea551d1799b2102b1.css" rel="stylesheet"/>
+<link href="../_static/plot_directive.css" rel="stylesheet"/>
+<link href="../_static/copybutton.css" rel="stylesheet"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="dict.html" rel="next" title="Dictionaries"/>
+<link href="index.html" rel="prev" title="Useful utilities"/>
+</head>
+<body class="antialiased text-gray">
+<div class="h-screen xl:grid xl:grid-layout" data-action="keydown@window-&gt;search#focus" data-controller="sidebar search" id="page">
+<a class="block text-xl bg-white py-4 z-20 absolute top-0 h-18 inset-x-0 text-center transform -translate-y-full focus:translate-y-0 focus:outline-none transition-transform duration-75" href="#colored-messages" title="Skip navigation links">Skip to content</a>
+<header class="grid-area-header z-10 h-14 sm:h-18">
+<div class="bg-gray-dark shadow-md flex items-center h-full xl:px-2 relative"><div class="flex items-center">
+<button class="xl:hidden h-14 w-14 sm:h-18 sm:w-18 leading-14 sm:leading-18 text-gray-100 hover:bg-gray-700 hover:text-brand focus:outline-none focus:bg-gray-700 focus:text-brand" data-action="sidebar#open" data-sidebar-target="hamburger">
+<span class="sr-only">Open navigation menu</span>
+<svg aria-hidden="true" class="fill-current h-8 w-8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+</button><a aria-label="Back to homepage" class="hover:bg-gray-700 focus:bg-gray-700 focus:outline-none tooltipped tooltipped-sw" href="../index.html"><span class="hidden lg:inline-block shrink-0 font-medium text-gray-100 mx-5 leading-14 sm:leading-18 tracking-wider">wilfried library 1.0 documentation</span>
+</a></div><div class="flex justify-end items-center flex-1"><form action="../search.html" class="flex print:hidden justify-between items-center leading-14 sm:leading-18 md:ml-4 bg-gray-dark text-gray-300 focus-within:bg-gray-50 focus-within:text-gray-800 focus-within:absolute focus-within:inset-x-0 focus-within:top-0 md:focus-within:w-full md:focus-within:static" data-action="click-&gt;search#focusSearchInput" id="searchbox" method="get">
+<button aria-label="Get search results" class="text-inherit h-14 w-14 sm:h-18 sm:w-18" tabindex="-1">
+<svg aria-hidden="true" class="fill-current stroke-current h-8 w-8" stroke-width="0.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+</button>
+<input aria-label="Search the docs" class="pr-2 bg-transparent text-inherit focus:outline-none w-0 md:w-auto focus:w-full transition-all duration-100" data-search-target="searchInput" id="search-input" name="q" placeholder="Search the docs" type="search"/>
+</form></div>
+</div>
+</header>
+<aside class="grid-area-sidebar h-full fixed xl:relative inset-y-0 left-0 z-20 xl:z-0 print:hidden overflow-y-auto transition-all transform transform-gpu -translate-x-full opacity-0 duration-300 xl:translate-x-0 xl:opacity-100" data-sidebar-target="sidebar">
+<nav class="h-full overflow-y-auto bg-white text-gray-600 pt-8 flex flex-col" role="navigation">
+<div class="nav-toc flex-1 pl-6"><ul class="current">
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../dependencies.html">Required dependencies</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../makeLifeSimpler.html">makeLifeSimpler</a></div></li>
+<li class="toctree-l1 current expanded"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="index.html">Useful utilities</a></div><ul class="current">
+<li class="toctree-l2 current expanded"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="current reference internal" data-action="click-&gt;sidebar#close" href="#">Colored messages</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="#example">Example</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="#module-utilities.coloredMessages">Documentation</a></div></li>
 </ul>
-<ul class="current nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../dependencies.html">
-   Required dependencies
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../makeLifeSimpler.html">
-   makeLifeSimpler
-  </a>
- </li>
- <li class="toctree-l1 current active collapsible-parent">
-  <a class="reference internal" href="index.html">
-   Useful utilities
-  </a>
-  <ul class="current collapse-ul">
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Colored messages
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="dict.html">
-     Dictionaries
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="io.html">
-     Input/Output
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="list.html">
-     List manipulations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="strings.html">
-     Strings manipulation
-    </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="plotUtilities/index.html">
-     Plot utilities
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="plotUtilities/asManyHists.html">
-       Histograms
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="plotUtilities/hst.html">
-       Galfit related plots
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="plotUtilities/misc.html">
-       Miscellaneous
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="plotUtilities/singleContour.html">
-       Contours
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../galaxy/index.html">
-   Galaxy module
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/angularMomentum.html">
-     Galaxies angular momentum
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/cosmology.html">
-     Cosmology computations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/kinematics.html">
-     Galaxy kinematics
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/misc.html">
-     Miscellaneous
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/massModels.html">
-     Galaxy mass models
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/models.html">
-     Galaxy models
-    </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../galaxy/morphology/index.html">
-     Galaxies morphology
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/SersicFlux.html">
-       Sersic fluxes
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/Morpho.html">
-       Morphological parameters
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/Thickness.html">
-       Galaxies thickness
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/MUSE.html">
-       MUSE related functions
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/Other.html">
-       Other Sersic related functions
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../galaxy/photometry/index.html">
-     Galaxies photometry
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/photometry/Fluxes.html">
-       Fluxes, colour excess and attenuation
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/photometry/Masses_SFR.html">
-       Masses and SFR estimates
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/SEDfitting.html">
-     Galaxy mass models
-    </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../galfit/index.html">
-   Galfit module
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galfit/galfit.html">
-     Galfit auto-routines
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galfit/models.html">
-     Galfit models
-    </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="dict.html">Dictionaries</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="dict.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="dict.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="dict.html#module-utilities.dictionaries">Documentation</a></div></li>
 </ul>
-
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/utilities/coloredMessages.rst.txt"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/utilities/coloredMessages.rst"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                    title="Fullscreen mode"><i
-                        class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-        <div class="tocsection onthispage pt-5 pb-3">
-            <i class="fas fa-list"></i>
-            Contents
-        </div>
-        <nav id="bd-toc-nav">
-            <ul class="nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#list-of-available-functions">
-   List of available functions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#example">
-   Example
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-utilities.coloredMessages">
-   Documentation
-  </a>
- </li>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="io.html">Input/Output</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="io.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="io.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="io.html#module-utilities.io">Documentation</a></div></li>
 </ul>
-
-        </nav>
-        
-        </div>
-    </div>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="list.html">List manipulations</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="list.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="list.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="list.html#module-utilities.lists">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="strings.html">Strings manipulation</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="strings.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="strings.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="strings.html#module-utilities.strings">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="plotUtilities/index.html">Plot utilities</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="plotUtilities/asManyHists.html">Histograms</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="plotUtilities/hst.html">Galfit related plots</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="plotUtilities/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="plotUtilities/singleContour.html">Contours</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/index.html">Galaxy module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/angularMomentum.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/cosmology.html">Cosmology computations</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/geometry.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/kinematics.html">Galaxy kinematics</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/massModels.html">Galaxy mass models</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html">Galaxy models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html#d-profiles">1D profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html#id1">2D profiles</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/morphology/index.html">Galaxies morphology</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/morphology/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/photometry/index.html">Galaxies photometry</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/photometry/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/index.html">Galfit module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/galfit.html">Galfit auto-routines</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html">Galfit models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#miscellaneous">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#galfit-profiles">Galfit profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#galfit-additional-tags">Galfit additional tags</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <div class="section" id="colored-messages">
-<h1>Colored messages<a class="headerlink" href="#colored-messages" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="list-of-available-functions">
-<h2>List of available functions<a class="headerlink" href="#list-of-available-functions" title="Permalink to this headline">¶</a></h2>
+<button class="text-4xl text-gray-800 p-4 bottom-0 hover:text-brand xl:hidden focus:text-brand self-center" data-action="" title="Close navigation menu">
+<span class="sr-only">Close navigation menu</span>
+<svg aria-hidden="true" class="fill-current stroke-current h-6 w-6" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</aside>
+<main class="px-10 xl:ml-fluid grid-area-main overflow-y-auto flex flex-col h-full mx-0 md:mx-auto xl:mr-0" data-action="scroll-&gt;scroll#showButton" data-controller="scroll"><nav aria-label="breadcrumbs" class="print:hidden mt-12 text-sm text-gray-light" role="navigation">
+<a class="text-gray-light text-sm hover:text-gray-dark font-medium focus:text-gray-dark" href="../index.html">wilfried library 1.0 documentation</a>
+<span class="mr-1">/</span><a class="text-gray-light text-sm hover:text-gray-dark" href="index.html">Useful utilities</a>
+<span class="mr-1">/</span><span aria-current="page">Colored messages</span>
+</nav>
+<article class="flex-1" role="main">
+<section id="colored-messages">
+<h1>Colored messages<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#colored-messages">¶</a></h1>
+<section id="list-of-available-functions">
+<h2>List of available functions<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#list-of-available-functions">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="#brightmessage">brightMessage</a></p></li>
 <li><p><a class="reference internal" href="#dimmessage">dimMessage</a></p></li>
@@ -390,34 +135,37 @@
 <li><p><a class="reference internal" href="#okmessage">okMessage</a></p></li>
 <li><p><a class="reference internal" href="#warningmessage">warningMessage</a></p></li>
 </ul>
-</div>
-<div class="section" id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="example">
+<h2>Example<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#example">¶</a></h2>
 <p>Below is an example on how to generate colored texts.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wilfried.utilities</span> <span class="kn">import</span> <span class="n">coloredMessages</span> <span class="k">as</span> <span class="n">cmsg</span>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="kn">from</span> <span class="nn">wilfried.utilities</span> <span class="kn">import</span> <span class="n">coloredMessages</span> <span class="k">as</span> <span class="n">cmsg</span>
 
-<span class="n">bright</span> <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">brightMessage</span><span class="p">(</span><span class="s1">&#39;A bright message !&#39;</span><span class="p">)</span>
-<span class="n">dim</span>    <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">dimMessage</span><span class="p">(</span>   <span class="s1">&#39;A dim message !&#39;</span><span class="p">)</span>
-<span class="n">error</span>  <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">errorMessage</span><span class="p">(</span> <span class="s1">&#39;An error message !&#39;</span><span class="p">)</span>
-<span class="n">ok</span>     <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">okMessage</span><span class="p">(</span>    <span class="s1">&#39;A message to say everything is fine !&#39;</span><span class="p">)</span>
+<span class="n">bright</span> <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">brightMessage</span><span class="p">(</span><span class="s1">'A bright message !'</span><span class="p">)</span>
+<span class="n">dim</span>    <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">dimMessage</span><span class="p">(</span>   <span class="s1">'A dim message !'</span><span class="p">)</span>
+<span class="n">error</span>  <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">errorMessage</span><span class="p">(</span> <span class="s1">'An error message !'</span><span class="p">)</span>
+<span class="n">ok</span>     <span class="o">=</span> <span class="n">cmsg</span><span class="o">.</span><span class="n">okMessage</span><span class="p">(</span>    <span class="s1">'A message to say everything is fine !'</span><span class="p">)</span>
 
 <span class="c1"># Just print them one by one</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">bright</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">ok</span><span class="p">]:</span>
    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
 <span class="c1"># You can also combine them together</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">bright</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="s1">&#39;A normal text in the middle.&#39;</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">ok</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="module-utilities.coloredMessages">
-<span id="documentation"></span><h2>Documentation<a class="headerlink" href="#module-utilities.coloredMessages" title="Permalink to this headline">¶</a></h2>
-<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<span class="nb">print</span><span class="p">(</span><span class="n">bright</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="s1">'A normal text in the middle.'</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">ok</span><span class="p">)</span>
+</code></pre></div></div>
+</section>
+<section id="module-utilities.coloredMessages">
+<span id="documentation"></span><h2>Documentation<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-utilities.coloredMessages">¶</a></h2>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>General functions to format io output using ANSII sequences using colorama.</p>
-<span class="target" id="brightmessage"></span><dl class="py function">
-<dt id="utilities.coloredMessages.brightMessage">
-<code class="sig-prename descclassname"><span class="pre">utilities.coloredMessages.</span></code><code class="sig-name descname"><span class="pre">brightMessage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#brightMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.coloredMessages.brightMessage" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<span class="target" id="brightmessage"></span><dl class="py function code-definition">
+<dt class="sig sig-object py" id="utilities.coloredMessages.brightMessage">
+<code class="sig-prename descclassname">utilities.coloredMessages.</code><code class="sig-name descname">brightMessage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#brightMessage"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#utilities.coloredMessages.brightMessage">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Emphasize a text by brightening it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -431,11 +179,11 @@
 </dd>
 </dl>
 </dd></dl>
-
-<span class="target" id="dimmessage"></span><dl class="py function">
-<dt id="utilities.coloredMessages.dimMessage">
-<code class="sig-prename descclassname"><span class="pre">utilities.coloredMessages.</span></code><code class="sig-name descname"><span class="pre">dimMessage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#dimMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.coloredMessages.dimMessage" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<span class="target" id="dimmessage"></span><dl class="py function code-definition">
+<dt class="sig sig-object py" id="utilities.coloredMessages.dimMessage">
+<code class="sig-prename descclassname">utilities.coloredMessages.</code><code class="sig-name descname">dimMessage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#dimMessage"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#utilities.coloredMessages.dimMessage">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Dim a text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -449,11 +197,11 @@
 </dd>
 </dl>
 <span class="target" id="errormessage"></span></dd></dl>
-
-<dl class="py function">
-<dt id="utilities.coloredMessages.errorMessage">
-<code class="sig-prename descclassname"><span class="pre">utilities.coloredMessages.</span></code><code class="sig-name descname"><span class="pre">errorMessage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#errorMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.coloredMessages.errorMessage" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="utilities.coloredMessages.errorMessage">
+<code class="sig-prename descclassname">utilities.coloredMessages.</code><code class="sig-name descname">errorMessage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#errorMessage"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#utilities.coloredMessages.errorMessage">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Colorise text in red and emphasise it for error messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -467,11 +215,11 @@
 </dd>
 </dl>
 </dd></dl>
-
-<span class="target" id="okmessage"></span><dl class="py function">
-<dt id="utilities.coloredMessages.okMessage">
-<code class="sig-prename descclassname"><span class="pre">utilities.coloredMessages.</span></code><code class="sig-name descname"><span class="pre">okMessage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#okMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.coloredMessages.okMessage" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<span class="target" id="okmessage"></span><dl class="py function code-definition">
+<dt class="sig sig-object py" id="utilities.coloredMessages.okMessage">
+<code class="sig-prename descclassname">utilities.coloredMessages.</code><code class="sig-name descname">okMessage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#okMessage"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#utilities.coloredMessages.okMessage">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Dim green text for validation messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -485,11 +233,11 @@
 </dd>
 </dl>
 </dd></dl>
-
-<span class="target" id="warningmessage"></span><dl class="py function">
-<dt id="utilities.coloredMessages.warningMessage">
-<code class="sig-prename descclassname"><span class="pre">utilities.coloredMessages.</span></code><code class="sig-name descname"><span class="pre">warningMessage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#warningMessage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.coloredMessages.warningMessage" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<span class="target" id="warningmessage"></span><dl class="py function code-definition">
+<dt class="sig sig-object py" id="utilities.coloredMessages.warningMessage">
+<code class="sig-prename descclassname">utilities.coloredMessages.</code><code class="sig-name descname">warningMessage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/coloredMessages.html#warningMessage"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#utilities.coloredMessages.warningMessage">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Same as error message but using yellow instead of red.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -503,43 +251,23 @@
 </dd>
 </dl>
 </dd></dl>
-
+</section>
+</section>
+</article>
+<footer>
+<div class="mt-20 mb-4 text-sm text-gray-700">© 2022, Wilfried Mercier Made with <a href="https://www.sphinx-doc.org">Sphinx 4.4.0</a></div>
+</footer></main>
+<button class="fixed bottom-0 right-0 z-20 opacity-0 p-4 m-4 tracking-wide bg-gray-900 text-gray-100 transition transform transform-gpu duration-500 translate-y-full" data-action="search#hideSnackbar" data-search-target="snackbar">
+  Clear highlights
+</button><div class="fixed hidden inset-0 bg-black bg-opacity-50" data-action="click-&gt;sidebar#close" data-sidebar-target="screen">
 </div>
 </div>
-
-
-              </div>
-              
-        
-        <div class='prev-next-bottom'>
-            
-    <a class='left-prev' id="prev-link" href="index.html" title="previous page">Useful utilities</a>
-    <a class='right-next' id="next-link" href="dict.html" title="next page">Dictionaries</a>
-
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
-        
-          By Wilfried Mercier<br/>
-        
-            &copy; Copyright 2021, Wilfried Mercier.<br/>
-      </p>
-    </div>
-  </footer>
-</main>
-
-
-      </div>
-    </div>
-
-    
-  <script src="../_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
-  </body>
+<script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+<script src="../_static/jquery.js"></script>
+<script src="../_static/underscore.js"></script>
+<script src="../_static/doctools.js"></script>
+<script src="../_static/clipboard.min.js"></script>
+<script src="../_static/copybutton.js"></script>
+<script src="../_static/theme.3666d2347a4c66e5d7a8.js"></script>
+</body>
 </html>

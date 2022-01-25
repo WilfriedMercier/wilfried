@@ -1,371 +1,142 @@
 
 <!DOCTYPE html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Galfit auto-routines &#8212; wilfried library 1.0 documentation</title>
-    
-  <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
-
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-  <link rel="stylesheet"
-    href="../_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
-
-    
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    
-  <link rel="preload" as="script" href="../_static/js/index.d3f166471bb80abb5163.js">
-
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Galfit models" href="models.html" />
-    <link rel="prev" title="Galfit module" href="index.html" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-
-
-
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-<a class="navbar-brand text-wrap" href="../index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
-  
-</a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../index.html">
-   Table of content
-  </a>
- </li>
+<html lang="en">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="Docutils 0.17.1: http://docutils.sourceforge.net/" name="generator"/>
+<title>Galfit auto-routines | wilfried library 1.0 documentation</title>
+<link href="../_static/pygments.css" rel="stylesheet"/>
+<link href="../_static/theme.313ea551d1799b2102b1.css" rel="stylesheet"/>
+<link href="../_static/plot_directive.css" rel="stylesheet"/>
+<link href="../_static/copybutton.css" rel="stylesheet"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="models.html" rel="next" title="Galfit models"/>
+<link href="index.html" rel="prev" title="Galfit module"/>
+</head>
+<body class="antialiased text-gray">
+<div class="h-screen xl:grid xl:grid-layout" data-action="keydown@window-&gt;search#focus" data-controller="sidebar search" id="page">
+<a class="block text-xl bg-white py-4 z-20 absolute top-0 h-18 inset-x-0 text-center transform -translate-y-full focus:translate-y-0 focus:outline-none transition-transform duration-75" href="#galfit-auto-routines" title="Skip navigation links">Skip to content</a>
+<header class="grid-area-header z-10 h-14 sm:h-18">
+<div class="bg-gray-dark shadow-md flex items-center h-full xl:px-2 relative"><div class="flex items-center">
+<button class="xl:hidden h-14 w-14 sm:h-18 sm:w-18 leading-14 sm:leading-18 text-gray-100 hover:bg-gray-700 hover:text-brand focus:outline-none focus:bg-gray-700 focus:text-brand" data-action="sidebar#open" data-sidebar-target="hamburger">
+<span class="sr-only">Open navigation menu</span>
+<svg aria-hidden="true" class="fill-current h-8 w-8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+</button><a aria-label="Back to homepage" class="hover:bg-gray-700 focus:bg-gray-700 focus:outline-none tooltipped tooltipped-sw" href="../index.html"><span class="hidden lg:inline-block shrink-0 font-medium text-gray-100 mx-5 leading-14 sm:leading-18 tracking-wider">wilfried library 1.0 documentation</span>
+</a></div><div class="flex justify-end items-center flex-1"><form action="../search.html" class="flex print:hidden justify-between items-center leading-14 sm:leading-18 md:ml-4 bg-gray-dark text-gray-300 focus-within:bg-gray-50 focus-within:text-gray-800 focus-within:absolute focus-within:inset-x-0 focus-within:top-0 md:focus-within:w-full md:focus-within:static" data-action="click-&gt;search#focusSearchInput" id="searchbox" method="get">
+<button aria-label="Get search results" class="text-inherit h-14 w-14 sm:h-18 sm:w-18" tabindex="-1">
+<svg aria-hidden="true" class="fill-current stroke-current h-8 w-8" stroke-width="0.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+</button>
+<input aria-label="Search the docs" class="pr-2 bg-transparent text-inherit focus:outline-none w-0 md:w-auto focus:w-full transition-all duration-100" data-search-target="searchInput" id="search-input" name="q" placeholder="Search the docs" type="search"/>
+</form></div>
+</div>
+</header>
+<aside class="grid-area-sidebar h-full fixed xl:relative inset-y-0 left-0 z-20 xl:z-0 print:hidden overflow-y-auto transition-all transform transform-gpu -translate-x-full opacity-0 duration-300 xl:translate-x-0 xl:opacity-100" data-sidebar-target="sidebar">
+<nav class="h-full overflow-y-auto bg-white text-gray-600 pt-8 flex flex-col" role="navigation">
+<div class="nav-toc flex-1 pl-6"><ul class="current">
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../dependencies.html">Required dependencies</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../makeLifeSimpler.html">makeLifeSimpler</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/index.html">Useful utilities</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html">Colored messages</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#example">Example</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#module-utilities.coloredMessages">Documentation</a></div></li>
 </ul>
-<ul class="current nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../dependencies.html">
-   Required dependencies
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../makeLifeSimpler.html">
-   makeLifeSimpler
-  </a>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../utilities/index.html">
-   Useful utilities
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/coloredMessages.html">
-     Colored messages
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/dict.html">
-     Dictionaries
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/io.html">
-     Input/Output
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/list.html">
-     List manipulations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../utilities/strings.html">
-     Strings manipulation
-    </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../utilities/plotUtilities/index.html">
-     Plot utilities
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/asManyHists.html">
-       Histograms
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/hst.html">
-       Galfit related plots
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/misc.html">
-       Miscellaneous
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../utilities/plotUtilities/singleContour.html">
-       Contours
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../galaxy/index.html">
-   Galaxy module
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/angularMomentum.html">
-     Galaxies angular momentum
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/cosmology.html">
-     Cosmology computations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/kinematics.html">
-     Galaxy kinematics
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/misc.html">
-     Miscellaneous
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/massModels.html">
-     Galaxy mass models
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/models.html">
-     Galaxy models
-    </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../galaxy/morphology/index.html">
-     Galaxies morphology
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/SersicFlux.html">
-       Sersic fluxes
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/Morpho.html">
-       Morphological parameters
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/Thickness.html">
-       Galaxies thickness
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/MUSE.html">
-       MUSE related functions
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/morphology/Other.html">
-       Other Sersic related functions
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../galaxy/photometry/index.html">
-     Galaxies photometry
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/photometry/Fluxes.html">
-       Fluxes, colour excess and attenuation
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../galaxy/photometry/Masses_SFR.html">
-       Masses and SFR estimates
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../galaxy/SEDfitting.html">
-     Galaxy mass models
-    </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 current active collapsible-parent">
-  <a class="reference internal" href="index.html">
-   Galfit module
-  </a>
-  <ul class="current collapse-ul">
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     Galfit auto-routines
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="models.html">
-     Galfit models
-    </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html">Dictionaries</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#module-utilities.dictionaries">Documentation</a></div></li>
 </ul>
-
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html">Input/Output</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#module-utilities.io">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html">List manipulations</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#module-utilities.lists">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html">Strings manipulation</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#module-utilities.strings">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/index.html">Plot utilities</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/asManyHists.html">Histograms</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/hst.html">Galfit related plots</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/singleContour.html">Contours</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/index.html">Galaxy module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/angularMomentum.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/cosmology.html">Cosmology computations</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/geometry.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/kinematics.html">Galaxy kinematics</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/massModels.html">Galaxy mass models</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html">Galaxy models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html#d-profiles">1D profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html#id1">2D profiles</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/morphology/index.html">Galaxies morphology</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/morphology/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/photometry/index.html">Galaxies photometry</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/photometry/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current expanded"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="index.html">Galfit module</a></div><ul class="current">
+<li class="toctree-l2 current expanded"><div class="nav-link"><a class="current reference internal" data-action="click-&gt;sidebar#close" href="#">Galfit auto-routines</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="models.html">Galfit models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="models.html#miscellaneous">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="models.html#galfit-profiles">Galfit profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="models.html#galfit-additional-tags">Galfit additional tags</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/galfit/galfit.rst.txt"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galfit/galfit.rst"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                    title="Fullscreen mode"><i
-                        class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-        </div>
-    </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <div class="section" id="module-galfit.galfit">
-<span id="galfit-auto-routines"></span><h1>Galfit auto-routines<a class="headerlink" href="#module-galfit.galfit" title="Permalink to this headline">¶</a></h1>
-<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<button class="text-4xl text-gray-800 p-4 bottom-0 hover:text-brand xl:hidden focus:text-brand self-center" data-action="" title="Close navigation menu">
+<span class="sr-only">Close navigation menu</span>
+<svg aria-hidden="true" class="fill-current stroke-current h-6 w-6" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</aside>
+<main class="px-10 xl:ml-fluid grid-area-main overflow-y-auto flex flex-col h-full mx-0 md:mx-auto xl:mr-0" data-action="scroll-&gt;scroll#showButton" data-controller="scroll"><nav aria-label="breadcrumbs" class="print:hidden mt-12 text-sm text-gray-light" role="navigation">
+<a class="text-gray-light text-sm hover:text-gray-dark font-medium focus:text-gray-dark" href="../index.html">wilfried library 1.0 documentation</a>
+<span class="mr-1">/</span><a class="text-gray-light text-sm hover:text-gray-dark" href="index.html">Galfit module</a>
+<span class="mr-1">/</span><span aria-current="page">Galfit auto-routines</span>
+</nav>
+<article class="flex-1" role="main">
+<section id="module-galfit.galfit">
+<span id="galfit-auto-routines"></span><h1>Galfit auto-routines<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-galfit.galfit">¶</a></h1>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Functions related to automating galfit modelling.</p>
-<dl class="py function">
-<dt id="galfit.galfit.genConstraint">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">genConstraint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#genConstraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.galfit.genConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.genConstraint">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">genConstraint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dicts</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#genConstraint"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.genConstraint">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Make a galfit CONSTRAINT file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>constraintNames</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – list of constraint dictionaries. <strong>See</strong> <a class="reference internal" href="#galfit.galfit.run_galfit" title="galfit.galfit.run_galfit"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_galfit()</span></code></a> <strong>for more information</strong>.</p>
+<dd class="field-odd"><p><strong>constraintNames</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – list of constraint dictionaries. <strong>See</strong> <a class="reference internal" href="#galfit.galfit.run_galfit" title="galfit.galfit.run_galfit"><code class="xref py py-func docutils literal notranslate">run_galfit()</code></a> <strong>for more information</strong>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>CONSTRAINT file as formatted text</p>
@@ -393,17 +164,17 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galfit.galfit.genFeedme">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">genFeedme</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listProfiles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#genFeedme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.galfit.genFeedme" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.genFeedme">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">genFeedme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">header</span></em>, <em class="sig-param"><span class="n">listProfiles</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#genFeedme"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.genFeedme">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Make a galfit FEEDME configuration file using the given profiles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>header</strong> (<em>dict</em>) – (<strong>Optional</strong>) dictionnary with key names corresponding to input parameter names in :py:func:genHeader function</p></li>
-<li><p><strong>listProfiles</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – (<strong>Optional</strong>) list of profiles (models). <strong>See</strong> <a class="reference internal" href="#galfit.galfit.run_galfit" title="galfit.galfit.run_galfit"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_galfit()</span></code></a> <strong>for more information</strong>.</p></li>
+<li><p><strong>listProfiles</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – (<strong>Optional</strong>) list of profiles (models). <strong>See</strong> <a class="reference internal" href="#galfit.galfit.run_galfit" title="galfit.galfit.run_galfit"><code class="xref py py-func docutils literal notranslate">run_galfit()</code></a> <strong>for more information</strong>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -420,11 +191,11 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galfit.galfit.genHeader">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">genHeader</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputImage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputImage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'output.fits'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmaImage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psfImage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskImage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">couplingFile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ymax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizeConvX</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizeConvY</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psfSamplingFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeroPointMag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arcsecPerPixel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.03,</span> <span class="pre">0.03]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displayType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'regular'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#genHeader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.galfit.genHeader" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.genHeader">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">genHeader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputImage</span><span class="o">=</span><span class="default_value">'none'</span></em>, <em class="sig-param"><span class="n">outputImage</span><span class="o">=</span><span class="default_value">'output.fits'</span></em>, <em class="sig-param"><span class="n">sigmaImage</span><span class="o">=</span><span class="default_value">'none'</span></em>, <em class="sig-param"><span class="n">psfImage</span><span class="o">=</span><span class="default_value">'none'</span></em>, <em class="sig-param"><span class="n">maskImage</span><span class="o">=</span><span class="default_value">'none'</span></em>, <em class="sig-param"><span class="n">couplingFile</span><span class="o">=</span><span class="default_value">'none'</span></em>, <em class="sig-param"><span class="n">xmin</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">xmax</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">ymin</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ymax</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">sizeConvX</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sizeConvY</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">psfSamplingFactor</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">zeroPointMag</span><span class="o">=</span><span class="default_value">30.0</span></em>, <em class="sig-param"><span class="n">arcsecPerPixel</span><span class="o">=</span><span class="default_value">[0.03, 0.03]</span></em>, <em class="sig-param"><span class="n">displayType</span><span class="o">=</span><span class="default_value">'regular'</span></em>, <em class="sig-param"><span class="n">option</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#genHeader"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.genHeader">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Constructs a galfit FEEDME header as general as possible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -455,8 +226,8 @@
 <li><p><strong>xmin</strong> (<em>int</em>) – minimum x coordinate of the fitting region box (in pixel)</p></li>
 <li><p><strong>ymax</strong> (<em>int</em>) – maximum y coordinate of the fitting region box (in pixel)</p></li>
 <li><p><strong>ymin</strong> (<em>int</em>) – minimum y coordinate of the fitting region box (in pixel)</p></li>
-<li><p><strong>float</strong><strong>] </strong><strong>arcsecPerPixel</strong> (<em>[</em><em>float</em><em>,</em>) – (<strong>Optional</strong>) angular resolution (in arcsec) of image pixels. First element is the angular resolution in the x direction, second element in the y direction.</p></li>
-<li><p><strong>displayType</strong> (<em>&quot;regular&quot;</em><em>, </em><em>&quot;both&quot;</em><em> or </em><em>&quot;curses&quot;</em>) – <p>(<strong>Optional</strong>) galfit display mode</p>
+<li><p><strong>arcsecPerPixel</strong> (<em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – (<strong>Optional</strong>) angular resolution (in arcsec) of image pixels. First element is the angular resolution in the x direction, second element in the y direction.</p></li>
+<li><p><strong>displayType</strong> (<em>"regular"</em><em>, </em><em>"both"</em><em> or </em><em>"curses"</em>) – <p>(<strong>Optional</strong>) galfit display mode</p>
 <ul>
 <li><p>”Regular” mode does not allow any interaction</p></li>
 <li><p>”Both” and “curses” modes allow you to interact with galfit during the fitting routine (both will display a xterm terminal).</p></li>
@@ -484,8 +255,8 @@
 <li><p><strong>sizeConvY</strong> (<em>int</em>) – y size of the convolution box (in px)</p></li>
 <li><p><strong>zeroPointMag</strong> (<em>float</em>) – <p>zero point magnitude used in the definition</p>
 <div class="math">
-<p><img src="../_images/math/6ab824be1392bd070581f9528564f3a9f56e548f.png" alt="m = -2.5 \log_{10} ({\rm{ADU}}/t_{\rm{exp}}) + {\rm{zeropoint}},"/></p>
-</div><p>where <img class="math" src="../_images/math/8e9cca92ac22040cb2a16184a22c9442b4ea8c95.png" alt="t_{\rm{exp}}"/> if the exposition time (generally found in the input .fits file header).</p>
+<p><img alt="m = -2.5 \log_{10} ({\rm{ADU}}/t_{\rm{exp}}) + {\rm{zeropoint}}," src="../_images/math/6ab824be1392bd070581f9528564f3a9f56e548f.png"/></p>
+</div><p>where <img alt="t_{\rm{exp}}" class="math" src="../_images/math/8e9cca92ac22040cb2a16184a22c9442b4ea8c95.png"/> if the exposition time (generally found in the input .fits file header).</p>
 </p></li>
 </ul>
 </dd>
@@ -497,28 +268,30 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py data">
-<dt id="galfit.galfit.modelFunctions">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">modelFunctions</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'bending':</span> <span class="pre">&lt;function</span> <span class="pre">bendingModes&gt;,</span> <span class="pre">'boxyness':</span> <span class="pre">&lt;function</span> <span class="pre">boxy_diskyness&gt;,</span> <span class="pre">'deVaucouleur':</span> <span class="pre">&lt;function</span> <span class="pre">gendeVaucouleur&gt;,</span> <span class="pre">'edgeOnDisk':</span> <span class="pre">&lt;function</span> <span class="pre">genEdgeOnDisk&gt;,</span> <span class="pre">'expDisk':</span> <span class="pre">&lt;function</span> <span class="pre">genExpDisk&gt;,</span> <span class="pre">'ferrer':</span> <span class="pre">&lt;function</span> <span class="pre">genFerrer&gt;,</span> <span class="pre">'fourier':</span> <span class="pre">&lt;function</span> <span class="pre">fourierModes&gt;,</span> <span class="pre">'gaussian':</span> <span class="pre">&lt;function</span> <span class="pre">genGaussian&gt;,</span> <span class="pre">'king':</span> <span class="pre">&lt;function</span> <span class="pre">genKing&gt;,</span> <span class="pre">'moffat':</span> <span class="pre">&lt;function</span> <span class="pre">genMoffat&gt;,</span> <span class="pre">'nuker':</span> <span class="pre">&lt;function</span> <span class="pre">genNuker&gt;,</span> <span class="pre">'psf':</span> <span class="pre">&lt;function</span> <span class="pre">genPSF&gt;,</span> <span class="pre">'sersic':</span> <span class="pre">&lt;function</span> <span class="pre">genSersic&gt;,</span> <span class="pre">'sky':</span> <span class="pre">&lt;function</span> <span class="pre">genSky&gt;}</span></em><a class="headerlink" href="#galfit.galfit.modelFunctions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recognised models</p>
+<dl class="py data code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.modelFunctions">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">modelFunctions</code><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>{'bending': &lt;function bendingModes&gt;, 'boxyness': &lt;function boxy_diskyness&gt;, 'deVaucouleur': &lt;function gendeVaucouleur&gt;, 'edgeOnDisk': &lt;function genEdgeOnDisk&gt;, 'expDisk': &lt;function genExpDisk&gt;, 'ferrer': &lt;function genFerrer&gt;, 'fourier': &lt;function fourierModes&gt;, 'gaussian': &lt;function genGaussian&gt;, 'king': &lt;function genKing&gt;, 'moffat': &lt;function genMoffat&gt;, 'nuker': &lt;function genNuker&gt;, 'psf': &lt;function genPSF&gt;, 'sersic': &lt;function genSersic&gt;, 'sky': &lt;function genSky&gt;}</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.modelFunctions">¶</a></dt>
+<dd>
+<p>Recognised models</p>
 </dd></dl>
-
-<dl class="py data">
-<dt id="galfit.galfit.myPDFViewer">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">myPDFViewer</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'okular'</span></em><a class="headerlink" href="#galfit.galfit.myPDFViewer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default pdf viewer</p>
+<dl class="py data code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.myPDFViewer">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">myPDFViewer</code><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>'okular'</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.myPDFViewer">¶</a></dt>
+<dd>
+<p>Default pdf viewer</p>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galfit.galfit.run_galfit">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">run_galfit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feedmeFiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listProfiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraintNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathFeedme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./feedme/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./inputs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./outputs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathConstraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./constraints/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathLog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./log/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathRecap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./recap/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forceConfig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noGalfit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noPDF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showRecapFiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showLog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divergingNorm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numThreads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#run_galfit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.galfit.run_galfit" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.run_galfit">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">run_galfit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">feedmeFiles</span></em>, <em class="sig-param"><span class="n">header</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">listProfiles</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">inputNames</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">outputNames</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">constraintNames</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">pathFeedme</span><span class="o">=</span><span class="default_value">'./feedme/'</span></em>, <em class="sig-param"><span class="n">pathIn</span><span class="o">=</span><span class="default_value">'./inputs/'</span></em>, <em class="sig-param"><span class="n">pathOut</span><span class="o">=</span><span class="default_value">'./outputs/'</span></em>, <em class="sig-param"><span class="n">pathConstraints</span><span class="o">=</span><span class="default_value">'./constraints/'</span></em>, <em class="sig-param"><span class="n">pathLog</span><span class="o">=</span><span class="default_value">'./log/'</span></em>, <em class="sig-param"><span class="n">pathRecap</span><span class="o">=</span><span class="default_value">'./recap/'</span></em>, <em class="sig-param"><span class="n">constraints</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">forceConfig</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">noGalfit</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">noPDF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">showRecapFiles</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">showLog</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">divergingNorm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">numThreads</span><span class="o">=</span><span class="default_value">8</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#run_galfit"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.run_galfit">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Run GALFIT given some models and a header. If necessary, it creates GALFIT config files.</p>
 <p>If the FEEDME and CONSTRAINT files already exist, just use the following command to run GALFIT on all the galaxies</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">run_galfit</span><span class="p">(</span><span class="n">yourList</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">run_galfit</span><span class="p">(</span><span class="n">yourList</span><span class="p">)</span>
+</code></pre></div></div>
 <p>where yourList is a list of FEEDME files.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -528,7 +301,7 @@
 <li><p>a list of profiles (models)</p></li>
 <li><p>input (HST) file names</p></li>
 </ul>
-<p><strong>See</strong> <a class="reference internal" href="#galfit.galfit.writeConfigs" title="galfit.galfit.writeConfigs"><code class="xref py py-func docutils literal notranslate"><span class="pre">writeConfigs()</span></code></a> <strong>function for more information.</strong></p>
+<p><strong>See</strong> <a class="reference internal" href="#galfit.galfit.writeConfigs" title="galfit.galfit.writeConfigs"><code class="xref py py-func docutils literal notranslate">writeConfigs()</code></a> <strong>function for more information.</strong></p>
 <p>Using the correct optional arguments, one can <strong>skip</strong> the following steps:</p>
 <ul class="simple">
 <li><p>FEEDME and CONSTRAINT files creation by setting <strong>forceConfig</strong> to False. This is done by default in order to avoid to destroy already existing input files.</p></li>
@@ -582,33 +355,43 @@
 </li>
 </ul>
 <p class="rubric"><strong>Example</strong></p>
-<p>Let us assume we want to model two Sersic components such that we have <code class="samp docutils literal notranslate"><span class="pre">listProfiles=[sersic1,</span> <span class="pre">sersic2]</span></code> where</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sersic1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;sersic&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;fixedParams&#39;</span><span class="p">:[</span><span class="s1">&#39;n&#39;</span><span class="p">],</span>                 <span class="s1">&#39;re&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;mag&#39;</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;PA&#39;</span><span class="p">:</span><span class="mi">40</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sersic2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;sersic&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fixedParams&#39;</span><span class="p">:[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;PA&#39;</span><span class="p">,</span> <span class="s1">&#39;bOvera&#39;</span><span class="p">],</span> <span class="s1">&#39;re&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>  <span class="s1">&#39;mag&#39;</span><span class="p">:</span><span class="mi">25</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>Assume we want to constrain the X coordinate of <code class="samp docutils literal notranslate"><span class="pre">sersic1</span></code> and <code class="samp docutils literal notranslate"><span class="pre">sersic2</span></code> to always be similar, then we can do</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;components&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;constraint&#39;</span><span class="p">:{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}}</span>
-</pre></div>
-</div>
+<p>Let us assume we want to model two Sersic components such that we have <code class="samp docutils literal notranslate">listProfiles=[sersic1, sersic2]</code> where</p>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sersic1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span><span class="s1">'sersic'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">'n'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'fixedParams'</span><span class="p">:[</span><span class="s1">'n'</span><span class="p">],</span>                 <span class="s1">'re'</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'mag'</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="s1">'PA'</span><span class="p">:</span><span class="mi">40</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sersic2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span><span class="s1">'sersic'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">'n'</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'fixedParams'</span><span class="p">:[</span><span class="s1">'n'</span><span class="p">,</span> <span class="s1">'PA'</span><span class="p">,</span> <span class="s1">'bOvera'</span><span class="p">],</span> <span class="s1">'re'</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>  <span class="s1">'mag'</span><span class="p">:</span><span class="mi">25</span><span class="p">}</span>
+</code></pre></div></div>
+<p>Assume we want to constrain the X coordinate of <code class="samp docutils literal notranslate">sersic1</code> and <code class="samp docutils literal notranslate">sersic2</code> to always be similar, then we can do</p>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">c1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'components'</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">'parameter'</span><span class="p">:</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'constraint'</span><span class="p">:{</span><span class="s1">'type'</span><span class="p">:</span><span class="s1">'offset'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}}</span>
+</code></pre></div></div>
 <p>Similarly, for the Y coordinate, we can do</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;components&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;constraint&#39;</span><span class="p">:{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}}</span>
-</pre></div>
-</div>
-<p>In both cases, the number 1 refers to the first model appearing in listProfiles (i.e. <code class="samp docutils literal notranslate"><span class="pre">sersic1</span></code>), and the number 2 to <code class="samp docutils literal notranslate"><span class="pre">sersic2</span></code>.</p>
-<p>Additionnaly, let us say we want to force the X and Y coordinates to be allowed to change by <img class="math" src="../_images/math/f414ede1ddcc9a15dba07e006ab8321ca8dfd515.png" alt="\pm 10"/> relative to the initial value. This can be done with</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c3</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;components&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;constraint&#39;</span><span class="p">:{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;relativeRange&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]}}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c4</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;components&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;constraint&#39;</span><span class="p">:{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;relativeRange&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]}}</span>
-</pre></div>
-</div>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">c2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'components'</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">'parameter'</span><span class="p">:</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'constraint'</span><span class="p">:{</span><span class="s1">'type'</span><span class="p">:</span><span class="s1">'offset'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}}</span>
+</code></pre></div></div>
+<p>In both cases, the number 1 refers to the first model appearing in listProfiles (i.e. <code class="samp docutils literal notranslate">sersic1</code>), and the number 2 to <code class="samp docutils literal notranslate">sersic2</code>.</p>
+<p>Additionnaly, let us say we want to force the X and Y coordinates to be allowed to change by <img alt="\pm 10" class="math" src="../_images/math/f414ede1ddcc9a15dba07e006ab8321ca8dfd515.png"/> relative to the initial value. This can be done with</p>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">c3</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'components'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'parameter'</span><span class="p">:</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'constraint'</span><span class="p">:{</span><span class="s1">'type'</span><span class="p">:</span><span class="s1">'relativeRange'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">:[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c4</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'components'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'parameter'</span><span class="p">:</span><span class="s1">'y'</span><span class="p">,</span> <span class="s1">'constraint'</span><span class="p">:{</span><span class="s1">'type'</span><span class="p">:</span><span class="s1">'relativeRange'</span><span class="p">,</span> <span class="s1">'value'</span><span class="p">:[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">]}}</span>
+</code></pre></div></div>
 <p>Now, it still remains to build the constraint list, so that we write</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">constraint</span> <span class="o">=</span> <span class="p">[</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">c3</span><span class="p">,</span> <span class="n">c4</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>And we provide <code class="samp docutils literal notranslate"><span class="pre">constraints=constraint</span></code> when calling <a class="reference internal" href="#galfit.galfit.run_galfit" title="galfit.galfit.run_galfit"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_galfit()</span></code></a>.</p>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">constraint</span> <span class="o">=</span> <span class="p">[</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">c3</span><span class="p">,</span> <span class="n">c4</span><span class="p">]</span>
+</code></pre></div></div>
+<p>And we provide <code class="samp docutils literal notranslate">constraints=constraint</code> when calling <a class="reference internal" href="#galfit.galfit.run_galfit" title="galfit.galfit.run_galfit"><code class="xref py py-func docutils literal notranslate">run_galfit()</code></a>.</p>
 </p></li>
 <li><p><strong>forceConfig</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to make all the configuration files no matter if they exist or not</p></li>
-<li><p><strong>header</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary with key names corresponding to input parameter names in <a class="reference internal" href="#galfit.galfit.genHeader" title="galfit.galfit.genHeader"><code class="xref py py-func docutils literal notranslate"><span class="pre">genHeader()</span></code></a> function</p>
+<li><p><strong>header</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary with key names corresponding to input parameter names in <a class="reference internal" href="#galfit.galfit.genHeader" title="galfit.galfit.genHeader"><code class="xref py py-func docutils literal notranslate">genHeader()</code></a> function</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You do not need to provide an input and an output image files as this is given with the inputNames keyword.</p>
@@ -644,23 +427,29 @@
 <li><p>’bending’</p></li>
 <li><p>’boxyness’</p></li>
 </ul>
-<p>These keys must also contain dictionnaries whose keys are the parameters of the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">fourierModes()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">bendingModes()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">boxy_diskyness()</span></code>.</p>
+<p>These keys must also contain dictionnaries whose keys are the parameters of the functions <code class="xref py py-func docutils literal notranslate">fourierModes()</code>, <code class="xref py py-func docutils literal notranslate">bendingModes()</code> and <code class="xref py py-func docutils literal notranslate">boxy_diskyness()</code>.</p>
 </div>
 <p class="rubric"><strong>Example</strong></p>
-<p>Let us assume we want to model two Sersic components such that we have <code class="samp docutils literal notranslate"><span class="pre">listProfiles=[sersic1,</span> <span class="pre">sersic2]</span></code>, where <code class="samp docutils literal notranslate"><span class="pre">sersic1</span></code> is an exponential disk (Sersic with n=1), and <code class="samp docutils literal notranslate"><span class="pre">sersic2</span></code> is a de Vaucouleurs bulge (Sersic n=4) with fixed axis ratio and PA.</p>
-<p>If we look at the function declaration for the <code class="xref py py-func docutils literal notranslate"><span class="pre">genSersic()</span></code> function we find the following parameters</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">genSersic</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span> <span class="n">re</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bOvera</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">PA</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">skipComponentInResidual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fixedParams</span><span class="o">=</span><span class="p">[],</span> <span class="n">comments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noComments</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-</pre></div>
-</div>
+<p>Let us assume we want to model two Sersic components such that we have <code class="samp docutils literal notranslate">listProfiles=[sersic1, sersic2]</code>, where <code class="samp docutils literal notranslate">sersic1</code> is an exponential disk (Sersic with n=1), and <code class="samp docutils literal notranslate">sersic2</code> is a de Vaucouleurs bulge (Sersic n=4) with fixed axis ratio and PA.</p>
+<p>If we look at the function declaration for the <code class="xref py py-func docutils literal notranslate">genSersic()</code> function we find the following parameters</p>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="k">def</span> <span class="nf">genSersic</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span> <span class="n">re</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bOvera</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">PA</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">skipComponentInResidual</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fixedParams</span><span class="o">=</span><span class="p">[],</span> <span class="n">comments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">noComments</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</code></pre></div></div>
 <p>For the exponential disk, we only need the Sersic index to be fixed, and we can plug typical values for the other parameters</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sersic1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;sersic&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;fixedParams&#39;</span><span class="p">:[</span><span class="s1">&#39;n&#39;</span><span class="p">],</span> <span class="s1">&#39;re&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;mag&#39;</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="s1">&#39;PA&#39;</span><span class="p">:</span><span class="mi">40</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>For the de Vaucouleur bulge, we use the same centre, a slightly smaller bulge, and we also fix the <code class="samp docutils literal notranslate"><span class="pre">PA</span></code> and <code class="samp docutils literal notranslate"><span class="pre">bOvera</span></code></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sersic2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;sersic&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fixedParams&#39;</span><span class="p">:[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;PA&#39;</span><span class="p">,</span> <span class="s1">&#39;bOvera&#39;</span><span class="p">],</span> <span class="s1">&#39;re&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;mag&#39;</span><span class="p">:</span><span class="mi">25</span><span class="p">}</span>
-</pre></div>
-</div>
-<p>We do not provide the <code class="samp docutils literal notranslate"><span class="pre">'bOvera'</span></code> and <code class="samp docutils literal notranslate"><span class="pre">'PA'</span></code> values because default values are <code class="samp docutils literal notranslate"><span class="pre">bOvera=1</span></code> and <code class="samp docutils literal notranslate"><span class="pre">PA=0</span></code> which is perfect for this example.</p>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sersic1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span><span class="s1">'sersic'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">'n'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'fixedParams'</span><span class="p">:[</span><span class="s1">'n'</span><span class="p">],</span> <span class="s1">'re'</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'mag'</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="s1">'PA'</span><span class="p">:</span><span class="mi">40</span><span class="p">}</span>
+</code></pre></div></div>
+<p>For the de Vaucouleur bulge, we use the same centre, a slightly smaller bulge, and we also fix the <code class="samp docutils literal notranslate">PA</code> and <code class="samp docutils literal notranslate">bOvera</code></p>
+<div class="code-wrapper" data-controller="code">
+<div class="code-header">
+<span class="code-lang">python</span></div>
+<div class="highlight"><pre><code><span class="gp">&gt;&gt;&gt; </span><span class="n">sersic2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span><span class="s1">'sersic'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span> <span class="s1">'n'</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'fixedParams'</span><span class="p">:[</span><span class="s1">'n'</span><span class="p">,</span> <span class="s1">'PA'</span><span class="p">,</span> <span class="s1">'bOvera'</span><span class="p">],</span> <span class="s1">'re'</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'mag'</span><span class="p">:</span><span class="mi">25</span><span class="p">}</span>
+</code></pre></div></div>
+<p>We do not provide the <code class="samp docutils literal notranslate">'bOvera'</code> and <code class="samp docutils literal notranslate">'PA'</code> values because default values are <code class="samp docutils literal notranslate">bOvera=1</code> and <code class="samp docutils literal notranslate">PA=0</code> which is perfect for this example.</p>
 </p></li>
 <li><p><strong>noGalfit</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not run galfit or not</p></li>
 <li><p><strong>noPDF</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to make the pdf recap files or not</p></li>
@@ -680,17 +469,17 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py data">
-<dt id="galfit.galfit.tags">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">tags</span></code><em class="property"> <span class="pre">=</span> <span class="pre">['fourier',</span> <span class="pre">'bending',</span> <span class="pre">'boxyness']</span></em><a class="headerlink" href="#galfit.galfit.tags" title="Permalink to this definition">¶</a></dt>
-<dd><p>Additional tag functions</p>
+<dl class="py data code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.tags">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">tags</code><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>['fourier', 'bending', 'boxyness']</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.tags">¶</a></dt>
+<dd>
+<p>Additional tag functions</p>
 </dd></dl>
-
-<dl class="py function">
-<dt id="galfit.galfit.writeConfigs">
-<code class="sig-prename descclassname"><span class="pre">galfit.galfit.</span></code><code class="sig-name descname"><span class="pre">writeConfigs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listProfiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputNames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feedmeNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraintNames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathFeedme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./feedme/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathIn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./inputs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./outputs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathConstraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./constraints/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#writeConfigs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.galfit.writeConfigs" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<dl class="py function code-definition">
+<dt class="sig sig-object py" id="galfit.galfit.writeConfigs">
+<code class="sig-prename descclassname">galfit.galfit.</code><code class="sig-name descname">writeConfigs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">header</span></em>, <em class="sig-param"><span class="n">listProfiles</span></em>, <em class="sig-param"><span class="n">inputNames</span></em>, <em class="sig-param"><span class="n">outputNames</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">feedmeNames</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">constraintNames</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">constraints</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pathFeedme</span><span class="o">=</span><span class="default_value">'./feedme/'</span></em>, <em class="sig-param"><span class="n">pathIn</span><span class="o">=</span><span class="default_value">'./inputs/'</span></em>, <em class="sig-param"><span class="n">pathOut</span><span class="o">=</span><span class="default_value">'./outputs/'</span></em>, <em class="sig-param"><span class="n">pathConstraints</span><span class="o">=</span><span class="default_value">'./constraints/'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/galfit.html#writeConfigs"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.galfit.writeConfigs">¶</a></dt>
+<dd>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu<svg aria-hidden="true" class="external-link-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"></path></svg></a>&gt;</em></p>
 <p>Make galfit FEEDME and CONSTRAINT files using the same profiles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -715,42 +504,22 @@
 </dd>
 </dl>
 </dd></dl>
-
+</section>
+</article>
+<footer>
+<div class="mt-20 mb-4 text-sm text-gray-700">© 2022, Wilfried Mercier Made with <a href="https://www.sphinx-doc.org">Sphinx 4.4.0</a></div>
+</footer></main>
+<button class="fixed bottom-0 right-0 z-20 opacity-0 p-4 m-4 tracking-wide bg-gray-900 text-gray-100 transition transform transform-gpu duration-500 translate-y-full" data-action="search#hideSnackbar" data-search-target="snackbar">
+  Clear highlights
+</button><div class="fixed hidden inset-0 bg-black bg-opacity-50" data-action="click-&gt;sidebar#close" data-sidebar-target="screen">
 </div>
-
-
-              </div>
-              
-        
-        <div class='prev-next-bottom'>
-            
-    <a class='left-prev' id="prev-link" href="index.html" title="previous page">Galfit module</a>
-    <a class='right-next' id="next-link" href="models.html" title="next page">Galfit models</a>
-
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
-        
-          By Wilfried Mercier<br/>
-        
-            &copy; Copyright 2021, Wilfried Mercier.<br/>
-      </p>
-    </div>
-  </footer>
-</main>
-
-
-      </div>
-    </div>
-
-    
-  <script src="../_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
-  </body>
+</div>
+<script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+<script src="../_static/jquery.js"></script>
+<script src="../_static/underscore.js"></script>
+<script src="../_static/doctools.js"></script>
+<script src="../_static/clipboard.min.js"></script>
+<script src="../_static/copybutton.js"></script>
+<script src="../_static/theme.3666d2347a4c66e5d7a8.js"></script>
+</body>
 </html>

@@ -1,0 +1,5 @@
+Galaxies angular momentum
+=========================
+
+.. automodule:: galaxy.geometry
+   :members:

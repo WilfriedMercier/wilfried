@@ -12,10 +12,10 @@ Galaxy module
 
    ./angularMomentum.rst
    ./cosmology.rst
+   ./geometry.rst
    ./kinematics.rst
    ./misc.rst
    ./massModels.rst
    ./models.rst
    ./morphology/index.rst
    ./photometry/index.rst
-   ./SED/index.rst

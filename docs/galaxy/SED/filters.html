@@ -2,369 +2,301 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Filter and FilterList definitions &#8212; wilfried library 1.0 documentation</title>
-    
-  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
-
-    
-  <link rel="stylesheet"
-    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-  <link rel="stylesheet"
-    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
-
-    
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    
-  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
-
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-
-
-
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Filter and FilterList definitions — wilfried library 1.0 documentation</title>
+<link href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css">
+<link href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css">
+<link href="../../_static/copybutton.css" rel="stylesheet" type="text/css">
+<link as="script" href="../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+<script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../genindex.html" rel="index" title="Index">
+<link href="../../search.html" rel="search" title="Search">
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></link></link></link></link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
 <div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<div class="navbar-brand-box">
 <a class="navbar-brand text-wrap" href="../../index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
-  
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
 </a>
-</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</div><form action="../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
 </form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../index.html">
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../index.html">
    Table of content
   </a>
- </li>
+</li>
 </ul>
 <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../dependencies.html">
+<li class="toctree-l1">
+<a class="reference internal" href="../../dependencies.html">
    Required dependencies
   </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../makeLifeSimpler.html">
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../utilities/index.html">
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../utilities/index.html">
    Useful utilities
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/coloredMessages.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/coloredMessages.html">
      Colored messages
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/dict.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/dict.html">
      Dictionaries
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/io.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/io.html">
      Input/Output
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/list.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/list.html">
      List manipulations
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../utilities/strings.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/strings.html">
      Strings manipulation
     </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../utilities/plotUtilities/index.html">
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../utilities/plotUtilities/index.html">
      Plot utilities
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
        Histograms
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/hst.html">
        Galfit related plots
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/misc.html">
        Miscellaneous
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
        Contours
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../index.html">
    Galaxy module
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../angularMomentum.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../angularMomentum.html">
      Galaxies angular momentum
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../cosmology.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../cosmology.html">
      Cosmology computations
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../kinematics.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../kinematics.html">
      Galaxy kinematics
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../misc.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../misc.html">
      Miscellaneous
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../massModels.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../massModels.html">
      Galaxy mass models
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../models.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../models.html">
      Galaxy models
     </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../morphology/index.html">
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../morphology/index.html">
      Galaxies morphology
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../morphology/SersicFlux.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/SersicFlux.html">
        Sersic fluxes
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../morphology/Morpho.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Morpho.html">
        Morphological parameters
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../morphology/Thickness.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Thickness.html">
        Galaxies thickness
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../morphology/MUSE.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/MUSE.html">
        MUSE related functions
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../morphology/Other.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Other.html">
        Other Sersic related functions
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../photometry/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../photometry/index.html">
      Galaxies photometry
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../photometry/Fluxes.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Fluxes.html">
        Fluxes, colour excess and attenuation
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../photometry/Masses_SFR.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Masses_SFR.html">
        Masses and SFR estimates
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../photometry/Magnitudes.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Magnitudes.html">
        Magnitude conversions
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../galfit/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galfit/index.html">
    Galfit module
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galfit/galfit.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/galfit.html">
      Galfit auto-routines
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galfit/models.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/models.html">
      Galfit models
     </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
+</li>
 </ul>
-
-</nav> <!-- To handle the deprecated key -->
-
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav> 
 <div class="navbar_extra_footer">
   Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
 </div>
-
 </div>
-
-
-          
-
-
-          
 <main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
 <div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
+<button aria-label="Download this page" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fas fa-download"></i></button>
+<div class="dropdown-buttons">
 
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../../_sources/galaxy/SED/filters.rst.txt"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
+
+<a class="dropdown-buttons" href="../../_sources/galaxy/SED/filters.rst.txt"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Download source file" type="button">.rst</button></a>
+
+<button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" id="download-print" onclick="window.print()" title="Print to PDF" type="button">.pdf</button>
 </div>
-
-            <!-- Source interaction buttons -->
+</div>
 
 <div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        <a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/SED/filters.rst"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+<a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/SED/filters.rst"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Edit this page" type="button"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+</div>
 </div>
 
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
-            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                    title="Fullscreen mode"><i
-                        class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-        </div>
-    </div>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <div class="section" id="module-galaxy.SED.filters">
-<span id="filter-and-filterlist-definitions"></span><h1>Filter and FilterList definitions<a class="headerlink" href="#module-galaxy.SED.filters" title="Permalink to this headline">¶</a></h1>
-<p><em>Code author: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<div class="section" id="module-galaxy.SED.filters">
+<span id="filter-and-filterlist-definitions"></span><h1>Filter and FilterList definitions<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-galaxy.SED.filters">¶</a></h1>
+<p><em>Code author: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Base classes used to generate resolved stellar and SFR maps with LePhare or Cigale SED fitting codes.</p>
 <dl class="py class">
 <dt id="galaxy.SED.filters.Filter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.SED.filters.</span></code><code class="sig-name descname"><span class="pre">Filter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeropoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extErr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">texpFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.Filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">galaxy.SED.filters.</code><code class="sig-name descname">Filter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filt</span></em>, <em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">errFile</span></em>, <em class="sig-param"><span class="n">zeropoint</span></em>, <em class="sig-param"><span class="n">ext</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">extErr</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">texpFactor</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate">object</code></p>
 <p>Base class implementing data related to a single filter.</p>
 <dl class="py method">
 <dt id="galaxy.SED.filters.Filter.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeropoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extErr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">texpFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.Filter.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filt</span></em>, <em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">errFile</span></em>, <em class="sig-param"><span class="n">zeropoint</span></em>, <em class="sig-param"><span class="n">ext</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">extErr</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">texpFactor</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter.__init__"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter.__init__">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Initialise filter object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -386,11 +318,10 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.Filter._checkFile">
-<code class="sig-name descname"><span class="pre">_checkFile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._checkFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.Filter._checkFile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">_checkFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._checkFile"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter._checkFile">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Check whether a file exists.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -408,11 +339,10 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.Filter._loadFits">
-<code class="sig-name descname"><span class="pre">_loadFits</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._loadFits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.Filter._loadFits" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">_loadFits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">ext</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._loadFits"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter._loadFits">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Load data and header from a FITS file at the given extension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -439,11 +369,10 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.Filter._mask">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.Filter._mask" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<em class="property">static </em><code class="sig-name descname">_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arr</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._mask"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter._mask">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Apply the given mask by placing NaN values onto the array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -460,18 +389,16 @@
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py class">
 <dt id="galaxy.SED.filters.FilterList">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">galaxy.SED.filters.</span></code><code class="sig-name descname"><span class="pre">FilterList</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cigale'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">galaxy.SED.filters.</code><code class="sig-name descname">FilterList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">code</span><span class="o">=</span><span class="default_value">'cigale'</span></em>, <em class="sig-param"><span class="n">redshift</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate">object</code></p>
 <p>Base class implementing the object used to stored SED fitting into.</p>
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cigale'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">code</span><span class="o">=</span><span class="default_value">'cigale'</span></em>, <em class="sig-param"><span class="n">redshift</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.__init__"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.__init__">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Initialise filter list object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -492,11 +419,10 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.clean">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">clean</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zero'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.clean" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<em class="property">static </em><code class="sig-name descname">clean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'zero'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.clean"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.clean">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Clean given data and error maps by masking pixels and dealing with negative values.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -526,11 +452,10 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.meanMap">
-<code class="sig-name descname"><span class="pre">meanMap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskVal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.meanMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.meanMap" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">meanMap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">maskVal</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.meanMap"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.meanMap">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Compute the averaged data and error maps over the spectral dimension for non masked pixels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -547,18 +472,17 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.poissonVar">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">poissonVar</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">texp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">texpFac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.poissonVar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.poissonVar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
-<p>Compute a scaled Poisson variance term from a given flux map. The variance <img class="math" src="../../_images/math/07292f283c92d1df75423cae4f34ccd4e465de99.png" alt="(\Delta F)^2"/> is computed as</p>
+<em class="property">static </em><code class="sig-name descname">poissonVar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">texp</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">texpFac</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.poissonVar"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.poissonVar">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Compute a scaled Poisson variance term from a given flux map. The variance <img alt="(\Delta F)^2" class="math" src="../../_images/math/07292f283c92d1df75423cae4f34ccd4e465de99.png"/> is computed as</p>
 <div class="math">
-<p><img src="../../_images/math/bcb397e02a21830f6e9c7521e40e9a9d651874fb.png" alt="(\Delta F)^2 = \alpha F"/></p>
-</div><p>where <img class="math" src="../../_images/math/df00656702b70b4b6f7ffbf6a9aa9a334bab1914.png" alt="F"/> is the flux map and <img class="math" src="../../_images/math/2f5aa019312e1bbc969deab8dca8b00f76025404.png" alt="\alpha"/> is a scale factor defined as</p>
+<p><img alt="(\Delta F)^2 = \alpha F" src="../../_images/math/bcb397e02a21830f6e9c7521e40e9a9d651874fb.png"/></p>
+</div><p>where <img alt="F" class="math" src="../../_images/math/df00656702b70b4b6f7ffbf6a9aa9a334bab1914.png"/> is the flux map and <img alt="\alpha" class="math" src="../../_images/math/2f5aa019312e1bbc969deab8dca8b00f76025404.png"/> is a scale factor defined as</p>
 <div class="math">
-<p><img src="../../_images/math/027d0fd23daa8ff572de23e43c20678147b037a5.png" alt="\alpha = {\rm{TEXP / TEXPFAC}}"/></p>
-</div><p>where <img class="math" src="../../_images/math/81b6f0c96a4f0a609bee021ad0d6254487b9f968.png" alt="\rm{TEXP}"/> is the exposure time and <img class="math" src="../../_images/math/2acf0fa7b34a1a3cdf10c733add0353c8aca16c7.png" alt="\rm{TEXPFAC}"/> is a coefficient used to scale it down.</p>
+<p><img alt="\alpha = {\rm{TEXP / TEXPFAC}}" src="../../_images/math/027d0fd23daa8ff572de23e43c20678147b037a5.png"/></p>
+</div><p>where <img alt="\rm{TEXP}" class="math" src="../../_images/math/81b6f0c96a4f0a609bee021ad0d6254487b9f968.png"/> is the exposure time and <img alt="\rm{TEXPFAC}" class="math" src="../../_images/math/2acf0fa7b34a1a3cdf10c733add0353c8aca16c7.png"/> is a coefficient used to scale it down.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -579,11 +503,10 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.scale">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">scale</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.scale" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<em class="property">static </em><code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">norm</span></em>, <em class="sig-param"><span class="n">factor</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.scale"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.scale">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Normalise given data and error maps using a norm map and scale by a certain amount. Necessary for LePhare SED fitting code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -605,25 +528,23 @@
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.setCigale">
-<code class="sig-name descname"><span class="pre">setCigale</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#galaxy.SED.filters.FilterList.setCigale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">setCigale</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.setCigale">¶</a></dt>
 <dd><p>Set Cigale as fitting code</p>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.setCode">
-<code class="sig-name descname"><span class="pre">setCode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.setCode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.setCode" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">setCode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.setCode"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.setCode">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Set the SED fitting code.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This function also recomputes and rewrites the output table used for the SED fitting.
-If you want a table with different parameters you must run <a class="reference internal" href="#galaxy.SED.filters.FilterList.toTable" title="galaxy.SED.filters.FilterList.toTable"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FilterList.toTable()</span></code></a> again, for e.g.</p>
+If you want a table with different parameters you must run <a class="reference internal" href="#galaxy.SED.filters.FilterList.toTable" title="galaxy.SED.filters.FilterList.toTable"><code class="xref py py-meth docutils literal notranslate">FilterList.toTable()</code></a> again, for e.g.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>                <span class="c1"># setCode and toTable methods are called with default SED fitting code name</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">setCode</span><span class="p">(</span><span class="s1">&#39;lephare&#39;</span><span class="p">)</span>                         <span class="c1"># setCode and toTable methods are called with &#39;lephare&#39; SED fitting code name</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">toTable</span><span class="p">(</span><span class="n">cleanMethod</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">scaleFactor</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># toTable is run again with different parameters but still &#39;lephare&#39; SED fitting code name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">setCode</span><span class="p">(</span><span class="s1">'lephare'</span><span class="p">)</span>                         <span class="c1"># setCode and toTable methods are called with 'lephare' SED fitting code name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">toTable</span><span class="p">(</span><span class="n">cleanMethod</span><span class="o">=</span><span class="s1">'min'</span><span class="p">,</span> <span class="n">scaleFactor</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># toTable is run again with different parameters but still 'lephare' SED fitting code name</span>
 </pre></div>
 </div>
 </div>
@@ -636,17 +557,15 @@ If you want a table with different parameters you must run <a class="reference i
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.setLePhare">
-<code class="sig-name descname"><span class="pre">setLePhare</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#galaxy.SED.filters.FilterList.setLePhare" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">setLePhare</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.setLePhare">¶</a></dt>
 <dd><p>Set LePhare as fitting code</p>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.toCatalogue">
-<code class="sig-name descname"><span class="pre">toCatalogue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toCatalogue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.toCatalogue" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">toCatalogue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toCatalogue"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.toCatalogue">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Construct a Catalogue instance given the table associated to the filter list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -655,14 +574,13 @@ If you want a table with different parameters you must run <a class="reference i
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Catalogue</span></code></p>
+<p><code class="xref py py-class docutils literal notranslate">Catalogue</code></p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.toLePhareCat">
-<code class="sig-name descname"><span class="pre">toLePhareCat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tunit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'M'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'AB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MEME'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LONG'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toLePhareCat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.toLePhareCat" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">toLePhareCat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">tunit</span><span class="o">=</span><span class="default_value">'M'</span></em>, <em class="sig-param"><span class="n">magtype</span><span class="o">=</span><span class="default_value">'AB'</span></em>, <em class="sig-param"><span class="n">tformat</span><span class="o">=</span><span class="default_value">'MEME'</span></em>, <em class="sig-param"><span class="n">ttype</span><span class="o">=</span><span class="default_value">'LONG'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toLePhareCat"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.toLePhareCat">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Construct a Catalogue instance given the table associated to the filter list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -671,14 +589,13 @@ If you want a table with different parameters you must run <a class="reference i
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-class docutils literal notranslate"><span class="pre">LePhareCat</span></code></p>
+<p><code class="xref py py-class docutils literal notranslate">LePhareCat</code></p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt id="galaxy.SED.filters.FilterList.toTable">
-<code class="sig-name descname"><span class="pre">toTable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cleanMethod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zero'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaleFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">texpFac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.SED.filters.FilterList.toTable" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried&#46;mercier&#37;&#52;&#48;irap&#46;omp&#46;eu">wilfried<span>&#46;</span>mercier<span>&#64;</span>irap<span>&#46;</span>omp<span>&#46;</span>eu</a>&gt;</em></p>
+<code class="sig-name descname">toTable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cleanMethod</span><span class="o">=</span><span class="default_value">'zero'</span></em>, <em class="sig-param"><span class="n">scaleFactor</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">texpFac</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toTable"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.toTable">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
 <p>Generate an input table for the SED fitting codes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -699,42 +616,26 @@ If you want a table with different parameters you must run <a class="reference i
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
 </div>
-
-
-              </div>
-              
-        
-        <div class='prev-next-bottom'>
-            
-
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
+</div>
+<div class="prev-next-bottom">
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
         
           By Wilfried Mercier<br/>
         
-            &copy; Copyright 2021, Wilfried Mercier.<br/>
-      </p>
-    </div>
-  </footer>
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
 </main>
-
-
-      </div>
-    </div>
-
-    
-  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
-  </body>
+</div>
+</div>
+<script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
 </html>

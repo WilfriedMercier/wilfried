@@ -1,282 +1,144 @@
 
 <!DOCTYPE html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>galaxy.angularMomentum &#8212; wilfried library 1.0 documentation</title>
-    
-  <link rel="stylesheet" href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
-
-    
-  <link rel="stylesheet"
-    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-  <link rel="stylesheet"
-    href="../../_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="../../_static/vendor/lato_latin-ext/1.44.1/index.css">
-
-    
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
-    
-  <link rel="preload" as="script" href="../../_static/js/index.d3f166471bb80abb5163.js">
-
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-
-
-
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-<a class="navbar-brand text-wrap" href="../../index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
-  
-</a>
-</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../index.html">
-   Table of content
-  </a>
- </li>
+<html lang="en">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<title>galaxy.angularMomentum | wilfried library 1.0 documentation</title>
+<link href="../../_static/pygments.css" rel="stylesheet"/>
+<link href="../../_static/theme.313ea551d1799b2102b1.css" rel="stylesheet"/>
+<link href="../../_static/plot_directive.css" rel="stylesheet"/>
+<link href="../../_static/copybutton.css" rel="stylesheet"/>
+<link href="../../search.html" rel="search" title="Search"/>
+<link href="../../genindex.html" rel="index" title="Index"/>
+</head>
+<body class="antialiased text-gray">
+<div class="h-screen xl:grid xl:grid-layout" data-action="keydown@window-&gt;search#focus" data-controller="sidebar search" id="page">
+<a class="block text-xl bg-white py-4 z-20 absolute top-0 h-18 inset-x-0 text-center transform -translate-y-full focus:translate-y-0 focus:outline-none transition-transform duration-75" href="#galaxy-angularmomentum" title="Skip navigation links">Skip to content</a>
+<header class="grid-area-header z-10 h-14 sm:h-18">
+<div class="bg-gray-dark shadow-md flex items-center h-full xl:px-2 relative"><div class="flex items-center">
+<button class="xl:hidden h-14 w-14 sm:h-18 sm:w-18 leading-14 sm:leading-18 text-gray-100 hover:bg-gray-700 hover:text-brand focus:outline-none focus:bg-gray-700 focus:text-brand" data-action="sidebar#open" data-sidebar-target="hamburger">
+<span class="sr-only">Open navigation menu</span>
+<svg aria-hidden="true" class="fill-current h-8 w-8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+</button><a aria-label="Back to homepage" class="hover:bg-gray-700 focus:bg-gray-700 focus:outline-none tooltipped tooltipped-sw" href="../../index.html"><span class="hidden lg:inline-block shrink-0 font-medium text-gray-100 mx-5 leading-14 sm:leading-18 tracking-wider">wilfried library 1.0 documentation</span>
+</a></div><div class="flex justify-end items-center flex-1"><form action="../../search.html" class="flex print:hidden justify-between items-center leading-14 sm:leading-18 md:ml-4 bg-gray-dark text-gray-300 focus-within:bg-gray-50 focus-within:text-gray-800 focus-within:absolute focus-within:inset-x-0 focus-within:top-0 md:focus-within:w-full md:focus-within:static" data-action="click-&gt;search#focusSearchInput" id="searchbox" method="get">
+<button aria-label="Get search results" class="text-inherit h-14 w-14 sm:h-18 sm:w-18" tabindex="-1">
+<svg aria-hidden="true" class="fill-current stroke-current h-8 w-8" stroke-width="0.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+</button>
+<input aria-label="Search the docs" class="pr-2 bg-transparent text-inherit focus:outline-none w-0 md:w-auto focus:w-full transition-all duration-100" data-search-target="searchInput" id="search-input" name="q" placeholder="Search the docs" type="search"/>
+</form></div>
+</div>
+</header>
+<aside class="grid-area-sidebar h-full fixed xl:relative inset-y-0 left-0 z-20 xl:z-0 print:hidden overflow-y-auto transition-all transform transform-gpu -translate-x-full opacity-0 duration-300 xl:translate-x-0 xl:opacity-100" data-sidebar-target="sidebar">
+<nav class="h-full overflow-y-auto bg-white text-gray-600 pt-8 flex flex-col" role="navigation">
+<div class="nav-toc flex-1 pl-6"><ul>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../dependencies.html">Required dependencies</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../makeLifeSimpler.html">makeLifeSimpler</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/index.html">Useful utilities</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html">Colored messages</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html#example">Example</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html#module-utilities.coloredMessages">Documentation</a></div></li>
 </ul>
-<ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../dependencies.html">
-   Required dependencies
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../makeLifeSimpler.html">
-   makeLifeSimpler
-  </a>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../galaxy/index.html">
-   Galaxy module
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/angularMomentum.html">
-     Galaxies angular momentum
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/cosmology.html">
-     Cosmology computations
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/kinematics.html">
-     Galaxy kinematics
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/misc.html">
-     Miscellaneous
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/massModels.html">
-     Galaxy mass models
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galaxy/models.html">
-     Galaxy models
-    </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../galaxy/morphology/index.html">
-     Galaxies morphology
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
-       Sersic fluxes
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/Morpho.html">
-       Morphological parameters
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/Thickness.html">
-       Galaxies thickness
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/MUSE.html">
-       MUSE related functions
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/morphology/Other.html">
-       Other Sersic related functions
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../galaxy/photometry/index.html">
-     Galaxies photometry
-    </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
-       Fluxes, colour excess and attenuation
-      </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
-       Masses and SFR estimates
-      </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../galfit/index.html">
-   Galfit module
-  </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galfit/galfit.html">
-     Galfit auto-routines
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../galfit/models.html">
-     Galfit models
-    </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html">Dictionaries</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html#module-utilities.dictionaries">Documentation</a></div></li>
 </ul>
-
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html">Input/Output</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html#module-utilities.io">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html">List manipulations</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html#module-utilities.lists">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html">Strings manipulation</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html#module-utilities.strings">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/index.html">Plot utilities</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/asManyHists.html">Histograms</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/hst.html">Galfit related plots</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/singleContour.html">Contours</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/index.html">Galaxy module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/angularMomentum.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/cosmology.html">Cosmology computations</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/geometry.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/kinematics.html">Galaxy kinematics</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/massModels.html">Galaxy mass models</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/models.html">Galaxy models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/models.html#d-profiles">1D profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/models.html#id1">2D profiles</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/morphology/index.html">Galaxies morphology</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/morphology/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/photometry/index.html">Galaxies photometry</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/photometry/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/index.html">Galfit module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/galfit.html">Galfit auto-routines</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html">Galfit models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html#miscellaneous">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html#galfit-profiles">Galfit profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html#galfit-additional-tags">Galfit additional tags</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        
-    </div>
-</div>
-
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                    title="Fullscreen mode"><i
-                        class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-        </div>
-    </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <h1>Source code for galaxy.angularMomentum</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python3</span>
+<button class="text-4xl text-gray-800 p-4 bottom-0 hover:text-brand xl:hidden focus:text-brand self-center" data-action="" title="Close navigation menu">
+<span class="sr-only">Close navigation menu</span>
+<svg aria-hidden="true" class="fill-current stroke-current h-6 w-6" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</aside>
+<main class="px-10 xl:ml-fluid grid-area-main overflow-y-auto flex flex-col h-full mx-0 md:mx-auto xl:mr-0" data-action="scroll-&gt;scroll#showButton" data-controller="scroll"><nav aria-label="breadcrumbs" class="print:hidden mt-12 text-sm text-gray-light" role="navigation">
+<a class="text-gray-light text-sm hover:text-gray-dark font-medium focus:text-gray-dark" href="../../index.html">wilfried library 1.0 documentation</a>
+<span class="mr-1">/</span><a class="text-gray-light text-sm hover:text-gray-dark" href="../index.html">Module code</a>
+<span class="mr-1">/</span><span aria-current="page">galaxy.angularMomentum</span>
+</nav>
+<article class="flex-1" role="main">
+<h1>Source code for galaxy.angularMomentum</h1><div class="highlight"><pre>
+<code><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">*Author:* Wilfried Mercier - IRAP</span>
+<span class="sd">"""</span>
+<span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 
-<span class="sd">Computations related to angular momenta of galaxies.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions and classes related to angular momenta of galaxies.</span>
+<span class="sd">"""</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>         <span class="k">as</span>     <span class="nn">np</span>
-<span class="kn">from</span>   <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">gammainc</span><span class="p">,</span> <span class="n">gamma</span>
-<span class="kn">from</span>   <span class="nn">.models</span>       <span class="kn">import</span> <span class="n">compute_bn</span>
+<span class="kn">import</span> <span class="nn">numpy</span>           <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">from</span>   <span class="nn">scipy.special</span>   <span class="kn">import</span> <span class="n">gammainc</span><span class="p">,</span> <span class="n">gamma</span>
+<span class="kn">from</span>   <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">quad</span>
+<span class="kn">from</span>   <span class="nn">.models</span>         <span class="kn">import</span> <span class="n">compute_bn</span><span class="p">,</span> <span class="n">sersic_profile</span>
+<span class="kn">from</span>   <span class="nn">typing</span>          <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span>
 
-<div class="viewcode-block" id="sersic_kthMoment"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.sersic_kthMoment">[docs]</a><span class="k">def</span> <span class="nf">sersic_kthMoment</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="sersic_kthMoment"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.sersic_kthMoment">[docs]</a><span class="k">def</span> <span class="nf">sersic_kthMoment</span><span class="p">(</span><span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">vmin</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">vmax</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
+                     <span class="n">n</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">Ie</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    Compute the kth radial moment for a Sérsic profile</span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
@@ -299,10 +161,10 @@
 <span class="sd">    :returns: kth order moment</span>
 <span class="sd">    :rtype: int or float</span>
 <span class="sd">    :raises ValueError: if vmin&lt;0 or vmin &gt;= vmax</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    '''</span>
     
     <span class="k">if</span> <span class="n">vmin</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">vmin</span> <span class="o">&gt;=</span> <span class="n">vmax</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either vmin or vmax is wrong.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Either vmin or vmax is wrong.'</span><span class="p">)</span>
         
     <span class="n">bn</span>        <span class="o">=</span> <span class="n">compute_bn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="n">prod</span>      <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -312,8 +174,177 @@
     
     <span class="k">return</span> <span class="n">prefactor</span><span class="o">*</span><span class="n">gamma</span><span class="p">(</span><span class="n">prod</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">gamma1</span> <span class="o">-</span> <span class="n">gamma2</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="SersicMomentum"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.SersicMomentum">[docs]</a><span class="k">class</span> <span class="nc">SersicMomentum</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    Class which computes the angular momentum for a single Sérsic profile in the **unnormalised** case</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        J_z = 2\pi \int_0^\infty dR~R^2 \Sigma (R) V(R),</span>
+
+<span class="sd">    and, in the **normalised** case</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        j = \frac{\int_0^\infty dR~R^2 \Sigma (R) V(R)}{\int_0^\infty dR~R \Sigma (R)},</span>
+
+<span class="sd">    where :math:`\Sigma(R) = Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]}`.</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">n</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">Ie</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">        Init method.</span>
+<span class="sd">        </span>
+<span class="sd">        :param Ie: (**Optional**) Surface brightness at Re</span>
+<span class="sd">        :type Ie: int or float</span>
+<span class="sd">        :param n: (**Optional**) Sérsic index</span>
+<span class="sd">        :type n: int or float</span>
+<span class="sd">        :param Re: (**Optional**) effective radius</span>
+<span class="sd">        :type Re: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :raises ValueError: if n &lt; 0 or Re &lt;= 0 or Ie &lt; 0</span>
+<span class="sd">        '''</span>
+        
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Sérsic index n is </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1"> but it must be positive.'</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">Re</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Effective radius Re is </span><span class="si">{</span><span class="n">Re</span><span class="si">}</span><span class="s1"> but it must be strictly positive.'</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">Ie</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Surface brightness at Re is </span><span class="si">{</span><span class="n">Ie</span><span class="si">}</span><span class="s1"> but it must be positive.'</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span>     <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Re</span>    <span class="o">=</span> <span class="n">Re</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ie</span>    <span class="o">=</span> <span class="n">Ie</span>
+        
+<div class="viewcode-block" id="SersicMomentum.norm"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.SersicMomentum.norm">[docs]</a>    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">        Compute the normalisation factor for the angular momentum up to radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        :param r: (**Optional**) radius where the normalisation is computed. By default the normalisation is computed at infinity.</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: normalisation factor</span>
+<span class="sd">        :rtype: int or float</span>
+<span class="sd">        '''</span>
+        
+        <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="SersicMomentum.linear_ramp"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.SersicMomentum.linear_ramp">[docs]</a>    <span class="k">def</span> <span class="nf">linear_ramp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">rt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">vt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
+                    <span class="n">normalise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">r_norm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">        Compute the angular momentum using a linear ramp model up to radius r whose rotation curve is</span>
+<span class="sd">        </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            V(R) &amp;= V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t</span>
+
+<span class="sd">        :param r: radius where the angular momentum is computed</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        :param rt: kinematical transition radius. Must be of the same unit as Re.</span>
+<span class="sd">        :type rt: int or float</span>
+<span class="sd">        :param vt: kinematical plateau velocity (must be positive)</span>
+<span class="sd">        :type vt: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :param bool normalise: (**Optional**) whether to normalise by the first order moment of the light distribution. Default is True.</span>
+<span class="sd">        :param r_norm: (**Optional**) radius where to compute the normalisation. Only used if **normalise** is True. Default is inifinity.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.</span>
+<span class="sd">        :rtype: int or float</span>
+<span class="sd">        :raises ValueError: if</span>
+<span class="sd">            * r &lt; 0</span>
+<span class="sd">            * rt &lt;= 0 </span>
+<span class="sd">            * vt &lt;= 0</span>
+<span class="sd">        '''</span>
+        
+        <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Radius r is </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1"> but is must be strictly positive.'</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">rt</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Transition radius is </span><span class="si">{</span><span class="n">rt</span><span class="si">}</span><span class="s1"> but it must be positive only.'</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">vt</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Plateau velocity is </span><span class="si">{</span><span class="n">vt</span><span class="si">}</span><span class="s1"> but it must be positive only.'</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r_norm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="mi">1</span>
+            
+        <span class="c1"># The velocity curve is vt * r/rt for r&lt;rt and vt for r&gt;rt</span>
+        <span class="c1"># Therefore, two parts must be computed:</span>
+        <span class="c1">#  1. between 0 and rt as a 3rd order moment divided by rt</span>
+        <span class="c1">#  2. between rt and r as a 2nd order moment</span>
+        
+        <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="n">rt</span><span class="p">:</span>
+            <span class="n">inner</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">r</span><span class="p">,</span>  <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">)</span><span class="o">/</span><span class="n">rt</span>
+            <span class="n">outer</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inner</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">rt</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">)</span><span class="o">/</span><span class="n">rt</span>
+            <span class="n">outer</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">rt</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span>  <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">)</span>
+            
+        <span class="n">J</span>         <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">vt</span><span class="o">*</span><span class="p">(</span><span class="n">inner</span><span class="o">+</span><span class="n">outer</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">J</span><span class="o">/</span><span class="n">norm</span></div>
+    
+<div class="viewcode-block" id="SersicMomentum.custom_rotation_curve"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.SersicMomentum.custom_rotation_curve">[docs]</a>    <span class="k">def</span> <span class="nf">custom_rotation_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rotation_curve</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+                              <span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">normalise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">r_norm</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+                              <span class="n">args</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">        Compute the angular momentum using a custom rotation curve up to radius r.</span>
+<span class="sd">        </span>
+<span class="sd">        :param func rotation_curve: function representing the total rotation curve used to compute the angular momentum. Its first parameter must always be the radial distance r.</span>
+<span class="sd">        :param r: distance up to which to compute the angular momentum</span>
+<span class="sd">        :type r: int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :param bool normalise: (**Optional**) whether to normalise by the first order moment of the light distribution. Default is True.</span>
+<span class="sd">        :param r_norm: (**Optional**) radius where to compute the normalisation. Only used if **normalise** is True. Default is inifinity.</span>
+<span class="sd">        </span>
+<span class="sd">        :param args: (**Optional**) arguments to pass to the rotation curve function. Default is not argument (empty list).</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: central angular momentum along the vertical axis using the custom rotation curve and its error. When normalised the unit is similar to **r** * **rotation_curve**</span>
+<span class="sd">        :rtype: tuple of int or float</span>
+<span class="sd">        </span>
+<span class="sd">        :raises TypeError: if **rotation_curve** is not a callable function</span>
+<span class="sd">        :raises ValueError: if **r** &lt; 0</span>
+<span class="sd">        '''</span>
+        
+        <span class="k">def</span> <span class="nf">the_integral</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">args_sigma</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">args_V</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">            Function to integrate.</span>
+<span class="sd">            </span>
+<span class="sd">            :param r: radius where the function is computed</span>
+<span class="sd">            :type r: int or float</span>
+<span class="sd">            :param list args_sigma: arguments to pass to the surface brightness function</span>
+<span class="sd">            :param list args_V: arguments to pass to the rotation curve function</span>
+<span class="sd">            </span>
+<span class="sd">            :returns: function computed at the given radius and its error from the integration</span>
+<span class="sd">            :rtype: float, float</span>
+<span class="sd">            '''</span>
+            
+            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sersic_profile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args_sigma</span><span class="p">)</span> <span class="o">*</span> <span class="n">rotation_curve</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args_V</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">rotation_curve</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'rotation_curve is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">rotation_curve</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must be a callable function.'</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">r</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Radius r is </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1"> but it must be positive.'</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
+            <span class="n">norm</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r_norm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">norm</span>   <span class="o">=</span> <span class="mi">1</span>
+            
+        <span class="c1"># Arguments to pass to the function sersic_profile defined in models library</span>
+        <span class="n">args_sigma</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Re</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ie</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+
+        <span class="c1"># Integrate the angular momentum up to raadius r</span>
+        <span class="n">J</span><span class="p">,</span> <span class="n">err</span>     <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">the_integral</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">args_sigma</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">J</span><span class="o">/</span><span class="n">norm</span><span class="p">,</span> <span class="n">err</span><span class="o">/</span><span class="n">norm</span></div></div>
+        
+        
+<span class="c1"># Old function, kept for comparison purposes</span>
 <div class="viewcode-block" id="momentum"><a class="viewcode-back" href="../../galaxy/angularMomentum.html#galaxy.angularMomentum.momentum">[docs]</a><span class="k">def</span> <span class="nf">momentum</span><span class="p">(</span><span class="n">rt</span><span class="p">,</span> <span class="n">vt</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    Compute the analytical angular momentum for a single Sérsic profile and a ramp model rotation curve in the **unnormalised** case</span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
@@ -346,17 +377,18 @@
 <span class="sd">    </span>
 <span class="sd">    :returns: central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.</span>
 <span class="sd">    :rtype: int or float</span>
+<span class="sd">    </span>
 <span class="sd">    :raises ValueError: if rt &lt;= 0 or vt &lt;= 0</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    '''</span>
     
     <span class="k">if</span> <span class="n">rt</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Transition radius must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Transition radius must be positive only. Cheers !'</span><span class="p">)</span>
         
     <span class="k">if</span> <span class="n">vt</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Plateau velocity must be positive only. Cheers !&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Plateau velocity must be positive only. Cheers !'</span><span class="p">)</span>
         
     <span class="k">if</span> <span class="n">normalise</span><span class="p">:</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="mi">1</span>
         
@@ -368,39 +400,23 @@
     <span class="n">inner</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="n">rt</span><span class="p">,</span>     <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">)</span><span class="o">/</span><span class="n">rt</span>
     <span class="n">outer</span> <span class="o">=</span> <span class="n">sersic_kthMoment</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">rt</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="n">Re</span><span class="p">,</span> <span class="n">Ie</span><span class="o">=</span><span class="n">Ie</span><span class="p">)</span>
         
-    <span class="k">return</span> <span class="n">vt</span><span class="o">*</span><span class="p">(</span><span class="n">inner</span><span class="o">+</span><span class="n">outer</span><span class="p">)</span><span class="o">/</span><span class="n">norm</span></div>
-</pre></div>
-
-              </div>
-              
-        
-        <div class='prev-next-bottom'>
-            
-
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
-        
-          By Wilfried Mercier<br/>
-        
-            &copy; Copyright 2021, Wilfried Mercier.<br/>
-      </p>
-    </div>
-  </footer>
-</main>
-
-
-      </div>
-    </div>
-
-    
-  <script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
-  </body>
+    <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">vt</span><span class="o">*</span><span class="p">(</span><span class="n">inner</span><span class="o">+</span><span class="n">outer</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span></div>
+</code></pre></div>
+</article>
+<footer>
+<div class="mt-20 mb-4 text-sm text-gray-700">© 2022, Wilfried Mercier Made with <a href="https://www.sphinx-doc.org">Sphinx 4.4.0</a></div>
+</footer></main>
+<button class="fixed bottom-0 right-0 z-20 opacity-0 p-4 m-4 tracking-wide bg-gray-900 text-gray-100 transition transform transform-gpu duration-500 translate-y-full" data-action="search#hideSnackbar" data-search-target="snackbar">
+  Clear highlights
+</button><div class="fixed hidden inset-0 bg-black bg-opacity-50" data-action="click-&gt;sidebar#close" data-sidebar-target="screen">
+</div>
+</div>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+<script src="../../_static/theme.3666d2347a4c66e5d7a8.js"></script>
+</body>
 </html>

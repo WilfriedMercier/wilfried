@@ -2,354 +2,294 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>galaxy.SED.catalogues &#8212; wilfried library 1.0 documentation</title>
-    
-  <link rel="stylesheet" href="../../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
-
-    
-  <link rel="stylesheet"
-    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
-    
-      
-  <link rel="stylesheet"
-    href="../../../_static/vendor/open-sans_all/1.44.1/index.css">
-  <link rel="stylesheet"
-    href="../../../_static/vendor/lato_latin-ext/1.44.1/index.css">
-
-    
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
-    
-  <link rel="preload" as="script" href="../../../_static/js/index.d3f166471bb80abb5163.js">
-
-    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/clipboard.min.js"></script>
-    <script src="../../../_static/copybutton.js"></script>
-    <script src="../../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
-
-
-
-  </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>galaxy.SED.catalogues — wilfried library 1.0 documentation</title>
+<link href="../../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../../_static/pygments.css" rel="stylesheet" type="text/css">
+<link href="../../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css">
+<link href="../../../_static/copybutton.css" rel="stylesheet" type="text/css">
+<link as="script" href="../../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+<script src="../../../_static/jquery.js"></script>
+<script src="../../../_static/underscore.js"></script>
+<script src="../../../_static/doctools.js"></script>
+<script src="../../../_static/clipboard.min.js"></script>
+<script src="../../../_static/copybutton.js"></script>
+<script src="../../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../../genindex.html" rel="index" title="Index">
+<link href="../../../search.html" rel="search" title="Search">
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></link></link></link></link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
 <div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<div class="navbar-brand-box">
 <a class="navbar-brand text-wrap" href="../../../index.html">
-  
-  
-  <h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
-  
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
 </a>
-</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</div><form action="../../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
 </form>
-<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-    <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../../index.html">
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../../index.html">
    Table of content
   </a>
- </li>
+</li>
 </ul>
 <ul class="nav sidenav_l1">
- <li class="toctree-l1">
-  <a class="reference internal" href="../../../dependencies.html">
+<li class="toctree-l1">
+<a class="reference internal" href="../../../dependencies.html">
    Required dependencies
   </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../../makeLifeSimpler.html">
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="../../../makeLifeSimpler.html">
    makeLifeSimpler
   </a>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../../utilities/index.html">
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../../utilities/index.html">
    Useful utilities
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../utilities/coloredMessages.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../../utilities/coloredMessages.html">
      Colored messages
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../utilities/dict.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../utilities/dict.html">
      Dictionaries
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../utilities/io.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../utilities/io.html">
      Input/Output
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../utilities/list.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../utilities/list.html">
      List manipulations
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../utilities/strings.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../utilities/strings.html">
      Strings manipulation
     </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../../utilities/plotUtilities/index.html">
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../../utilities/plotUtilities/index.html">
      Plot utilities
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../utilities/plotUtilities/asManyHists.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../../utilities/plotUtilities/asManyHists.html">
        Histograms
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../utilities/plotUtilities/hst.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../utilities/plotUtilities/hst.html">
        Galfit related plots
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../utilities/plotUtilities/misc.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../utilities/plotUtilities/misc.html">
        Miscellaneous
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../utilities/plotUtilities/singleContour.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../utilities/plotUtilities/singleContour.html">
        Contours
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../../galaxy/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../../galaxy/index.html">
    Galaxy module
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galaxy/angularMomentum.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galaxy/angularMomentum.html">
      Galaxies angular momentum
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galaxy/cosmology.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galaxy/cosmology.html">
      Cosmology computations
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galaxy/kinematics.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galaxy/kinematics.html">
      Galaxy kinematics
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galaxy/misc.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galaxy/misc.html">
      Miscellaneous
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galaxy/massModels.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galaxy/massModels.html">
      Galaxy mass models
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galaxy/models.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galaxy/models.html">
      Galaxy models
     </a>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../../galaxy/morphology/index.html">
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../../galaxy/morphology/index.html">
      Galaxies morphology
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/morphology/SersicFlux.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/morphology/SersicFlux.html">
        Sersic fluxes
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/morphology/Morpho.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/morphology/Morpho.html">
        Morphological parameters
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/morphology/Thickness.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/morphology/Thickness.html">
        Galaxies thickness
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/morphology/MUSE.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/morphology/MUSE.html">
        MUSE related functions
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/morphology/Other.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/morphology/Other.html">
        Other Sersic related functions
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-   <li class="toctree-l2 collapsible-parent">
-    <a class="reference internal" href="../../../galaxy/photometry/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../../galaxy/photometry/index.html">
      Galaxies photometry
     </a>
-    <ul class="collapse-ul">
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/photometry/Fluxes.html">
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/photometry/Fluxes.html">
        Fluxes, colour excess and attenuation
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/photometry/Masses_SFR.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/photometry/Masses_SFR.html">
        Masses and SFR estimates
       </a>
-     </li>
-     <li class="toctree-l3">
-      <a class="reference internal" href="../../../galaxy/photometry/Magnitudes.html">
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../../galaxy/photometry/Magnitudes.html">
        Magnitude conversions
       </a>
-     </li>
-    </ul>
-    <i class="fas fa-chevron-down">
-    </i>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
- <li class="toctree-l1 collapsible-parent">
-  <a class="reference internal" href="../../../galfit/index.html">
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../../galfit/index.html">
    Galfit module
   </a>
-  <ul class="collapse-ul">
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galfit/galfit.html">
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galfit/galfit.html">
      Galfit auto-routines
     </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../galfit/models.html">
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../../galfit/models.html">
      Galfit models
     </a>
-   </li>
-  </ul>
-  <i class="fas fa-chevron-down">
-  </i>
- </li>
+</li>
 </ul>
-
-</nav> <!-- To handle the deprecated key -->
-
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav> 
 <div class="navbar_extra_footer">
   Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
 </div>
-
 </div>
-
-
-          
-
-
-          
 <main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-            <!-- Source interaction buttons -->
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
 
 <div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/WilfriedMercier/wilfried"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        
-    </div>
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+</div>
 </div>
 
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
-            <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                    data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-                    title="Fullscreen mode"><i
-                        class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
-            
-        </div>
-    </div>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
-              <div>
-                
-  <h1>Source code for galaxy.SED.catalogues</h1><div class="highlight"><pre>
+
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<h1>Source code for galaxy.SED.catalogues</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">.. codeauthor:: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 
 <span class="sd">Base classes used to generate catalogues for LePhare or Cigale SED fitting codes.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span>   <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
 <span class="kn">from</span>   <span class="nn">.misc</span>         <span class="kn">import</span> <span class="n">Property</span>
 
 <div class="viewcode-block" id="Catalogue"><a class="viewcode-back" href="../../../galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue">[docs]</a><span class="k">class</span> <span class="nc">Catalogue</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Class implementing a catalogue consisting of as Astropy Table and additional information used by the SED fitting codes.&#39;&#39;&#39;</span>
+    <span class="sa">r</span><span class="sd">'''Class implementing a catalogue consisting of as Astropy Table and additional information used by the SED fitting codes.'''</span>
     
 <div class="viewcode-block" id="Catalogue.__init__"><a class="viewcode-back" href="../../../galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+        <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">        </span>
 <span class="sd">        Init general catalogue. This is supposed to be subclassed to account for specificities of LePhare or Cigale catalogues.</span>
@@ -362,46 +302,46 @@
 <span class="sd">             </span>
 <span class="sd">            * if **table** is not an astropy Table</span>
 <span class="sd">            * if **fname** is not of type str</span>
-<span class="sd">        &#39;&#39;&#39;</span> 
+<span class="sd">        '''</span> 
         
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;table has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must be an Astropy Table.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'table has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must be an Astropy Table.'</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;fname parameter has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must have type str.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'fname parameter has type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="si">}</span><span class="s1"> but it must have type str.'</span><span class="p">)</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">fname</span>  <span class="o">=</span> <span class="n">fname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span>   <span class="o">=</span> <span class="n">table</span></div>
         
         
 <div class="viewcode-block" id="Catalogue.save"><a class="viewcode-back" href="../../../galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+        <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">        </span>
 <span class="sd">        Save the catalogue into the given file.</span>
 <span class="sd">        </span>
 <span class="sd">        :param args: parameters passed to Astropy.table.Table.writeto method</span>
 <span class="sd">        :param kwargs: optional parameters passed to Astropy.table.Table.writeto method</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        '''</span>
             
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span></div>
     
 <div class="viewcode-block" id="Catalogue.text"><a class="viewcode-back" href="../../../galaxy/SED/catalogues.html#galaxy.SED.catalogues.Catalogue.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+        <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">        </span>
 <span class="sd">        Return a text representation of the catalogue used when making the parameter files.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        '''</span>
         
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;this method must be implemented in subclasses.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">'this method must be implemented in subclasses.'</span><span class="p">)</span>
         <span class="k">return</span></div></div>
     
 <div class="viewcode-block" id="LePhareCat"><a class="viewcode-back" href="../../../galaxy/SED/catalogues.html#galaxy.SED.catalogues.LePhareCat">[docs]</a><span class="k">class</span> <span class="nc">LePhareCat</span><span class="p">(</span><span class="n">Catalogue</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Class implementing a catalogue compatible with LePhare SED fitting code.&#39;&#39;&#39;</span>
+    <span class="sa">r</span><span class="sd">'''Class implementing a catalogue compatible with LePhare SED fitting code.'''</span>
     
-<div class="viewcode-block" id="LePhareCat.__init__"><a class="viewcode-back" href="../../../galaxy/SED/catalogues.html#galaxy.SED.catalogues.LePhareCat.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">tunit</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="n">magtype</span><span class="o">=</span><span class="s1">&#39;AB&#39;</span><span class="p">,</span> <span class="n">tformat</span><span class="o">=</span><span class="s1">&#39;MEME&#39;</span><span class="p">,</span> <span class="n">ttype</span><span class="o">=</span><span class="s1">&#39;LONG&#39;</span><span class="p">,</span> <span class="n">nlines</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100000000</span><span class="p">]):</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="LePhareCat.__init__"><a class="viewcode-back" href="../../../galaxy/SED/catalogues.html#galaxy.SED.catalogues.LePhareCat.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">tunit</span><span class="o">=</span><span class="s1">'M'</span><span class="p">,</span> <span class="n">magtype</span><span class="o">=</span><span class="s1">'AB'</span><span class="p">,</span> <span class="n">tformat</span><span class="o">=</span><span class="s1">'MEME'</span><span class="p">,</span> <span class="n">ttype</span><span class="o">=</span><span class="s1">'LONG'</span><span class="p">,</span> <span class="n">nlines</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100000000</span><span class="p">]):</span>
+        <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">        </span>
 <span class="sd">        Init LePhare catalogue.</span>
@@ -410,9 +350,9 @@
 <span class="sd">        :param table: input table</span>
 <span class="sd">        :type table: Astropy Table</span>
 <span class="sd">        </span>
-<span class="sd">        :param str tunit: (**Optional**) unit of the table data. Must either be &#39;M&#39; for magnitude or &#39;F&#39; for flux.</span>
-<span class="sd">        :param str magtype: (**Optional**) magnitude type if data are in magnitude unit. Must either be &#39;AB&#39; or &#39;VEGA&#39;.</span>
-<span class="sd">        :param str tformat: (**Optional**) format of the table. Must either be &#39;MEME&#39; if data and error columns are intertwined or &#39;MMEE&#39; if columns are first data and then errors.</span>
+<span class="sd">        :param str tunit: (**Optional**) unit of the table data. Must either be 'M' for magnitude or 'F' for flux.</span>
+<span class="sd">        :param str magtype: (**Optional**) magnitude type if data are in magnitude unit. Must either be 'AB' or 'VEGA'.</span>
+<span class="sd">        :param str tformat: (**Optional**) format of the table. Must either be 'MEME' if data and error columns are intertwined or 'MMEE' if columns are first data and then errors.</span>
 <span class="sd">        :param str ttype: (**Optional**) data type. Must either be SHORT or LONG.</span>
 <span class="sd">        :param list[int] nlines: (**Optional**) first and last line of the catalogue to be used during the SED fitting</span>
 
@@ -429,10 +369,10 @@
 <span class="sd">            * if **tformat** is neither MEME nor MMEE</span>
 <span class="sd">            * if **ttype** is neither SHORT nor LONG</span>
 <span class="sd">            * if **nlines** values are not int, or if first value is less than 0, or if second value is less than the first one</span>
-<span class="sd">        &#39;&#39;&#39;</span> 
+<span class="sd">        '''</span> 
             
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">tunit</span><span class="p">,</span> <span class="n">magtype</span><span class="p">,</span> <span class="n">tformat</span><span class="p">,</span> <span class="n">ttype</span><span class="p">]]):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;one of the parameters in tunit, magtype, tformat or ttype is not of type str.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'one of the parameters in tunit, magtype, tformat or ttype is not of type str.'</span><span class="p">)</span>
             
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
         
@@ -440,25 +380,25 @@
         <span class="c1">#             Define default properties             #</span>
         <span class="c1">#####################################################</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span>   <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> 
-                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">],</span> 
-                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;tunit has value </span><span class="si">{</span><span class="n">tunit</span><span class="si">}</span><span class="s1"> but it must either be F (for flux) or M (for magnitude).&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span>   <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">'M'</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> 
+                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'F'</span><span class="p">,</span> <span class="s1">'M'</span><span class="p">],</span> 
+                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">'tunit has value </span><span class="si">{</span><span class="n">tunit</span><span class="si">}</span><span class="s1"> but it must either be F (for flux) or M (for magnitude).'</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">mtype</span>  <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;AB&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
-                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;AB&#39;</span><span class="p">,</span> <span class="s1">&#39;VEGA&#39;</span><span class="p">],</span>
-                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;magtype has value </span><span class="si">{</span><span class="n">magtype</span><span class="si">}</span><span class="s1"> but it must either be AB or VEGA.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtype</span>  <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">'AB'</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'AB'</span><span class="p">,</span> <span class="s1">'VEGA'</span><span class="p">],</span>
+                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">'magtype has value </span><span class="si">{</span><span class="n">magtype</span><span class="si">}</span><span class="s1"> but it must either be AB or VEGA.'</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;MEME&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
-                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;MEME&#39;</span><span class="p">,</span> <span class="s1">&#39;MMEE&#39;</span><span class="p">],</span>
-                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;tformat has value </span><span class="si">{</span><span class="n">tformat</span><span class="si">}</span><span class="s1"> but it must either be MEME (if each error column follows its associated magnitude column) or MMEE (if magnitudes are listed first and then errors).&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">'MEME'</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'MEME'</span><span class="p">,</span> <span class="s1">'MMEE'</span><span class="p">],</span>
+                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">'tformat has value </span><span class="si">{</span><span class="n">tformat</span><span class="si">}</span><span class="s1"> but it must either be MEME (if each error column follows its associated magnitude column) or MMEE (if magnitudes are listed first and then errors).'</span><span class="p">)</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">ttype</span>  <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">&#39;LONG&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
-                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHORT&#39;</span><span class="p">,</span> <span class="s1">&#39;LONG&#39;</span><span class="p">],</span>
-                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;ttype has value </span><span class="si">{</span><span class="n">ttype</span><span class="si">}</span><span class="s1"> but it must either be SHORT or LONG.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttype</span>  <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="s1">'LONG'</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
+                               <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'SHORT'</span><span class="p">,</span> <span class="s1">'LONG'</span><span class="p">],</span>
+                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">'ttype has value </span><span class="si">{</span><span class="n">ttype</span><span class="si">}</span><span class="s1"> but it must either be SHORT or LONG.'</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">nlines</span> <span class="o">=</span> <span class="n">Property</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100000000</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="n">subtypes</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">minBound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                <span class="n">testFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;maximum number of lines (</span><span class="si">{</span><span class="n">nlines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">) is less than minimum one (</span><span class="si">{</span><span class="n">nlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+                               <span class="n">testMsg</span>  <span class="o">=</span> <span class="sa">f</span><span class="s1">'maximum number of lines (</span><span class="si">{</span><span class="n">nlines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">) is less than minimum one (</span><span class="si">{</span><span class="n">nlines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">).'</span><span class="p">)</span>
         
         <span class="c1">#################################################</span>
         <span class="c1">#              Set to given values              #</span>
@@ -472,16 +412,16 @@
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
+        <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">        </span>
 <span class="sd">        Return a text representation of the catalogue used when making the parameter files.</span>
 <span class="sd">        </span>
 <span class="sd">        :returns: output representation</span>
 <span class="sd">        :rtype: str</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        '''</span>
         
-        <span class="n">text</span> <span class="o">=</span>  <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+        <span class="n">text</span> <span class="o">=</span>  <span class="sa">f</span><span class="s1">'''</span>
 <span class="s1">        #-------    Input Catalog Informations   </span>
 <span class="s1">        CAT_IN </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s1"></span>
 
@@ -490,41 +430,28 @@
 <span class="s1">        CAT_FMT </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># MEME: (Mag,Err)i or MMEE: (Mag)i,(Err)i  </span>
 <span class="s1">        CAT_LINES </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nlines</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"># MIN and MAX RANGE of ROWS used in input cat [def:-99,-99]</span>
 <span class="s1">        CAT_TYPE </span><span class="se">\t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ttype</span><span class="si">}</span><span class="s1"> # Input Format (LONG,SHORT-def)</span>
-<span class="s1">        &#39;&#39;&#39;</span>
+<span class="s1">        '''</span>
         
         <span class="k">return</span> <span class="n">text</span></div>
 </pre></div>
-
-              </div>
-              
-        
-        <div class='prev-next-bottom'>
-            
-
-        </div>
-        
-        </div>
-    </div>
-    <footer class="footer mt-5 mt-md-0">
-    <div class="container">
-      <p>
+</div>
+<div class="prev-next-bottom">
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
         
           By Wilfried Mercier<br/>
         
-            &copy; Copyright 2021, Wilfried Mercier.<br/>
-      </p>
-    </div>
-  </footer>
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
 </main>
-
-
-      </div>
-    </div>
-
-    
-  <script src="../../../_static/js/index.d3f166471bb80abb5163.js"></script>
-
-
-    
-  </body>
+</div>
+</div>
+<script src="../../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
 </html>
