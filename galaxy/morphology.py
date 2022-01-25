@@ -6,13 +6,19 @@
 Computations relative to galaxies morphology.
 """
 
+import enum
 import numpy                              as     np
+import astropy.units                      as     u
+from   numpy                              import ndarray
 from   copy                               import deepcopy
+from   astropy.coordinates                import Angle
 from   astropy.units.quantity             import Quantity
 from   scipy.special                      import gammainc
 from   scipy.optimize                     import root
 from   scipy.integrate                    import quad
 from   math                               import factorial, ceil
+from   typing                             import Union, Dict, List
+
 from   .models                            import sersic_profile, bulgeDiskOnSky
 from   .misc                              import check_bns, compute_bn, realGammainc, checkAndComputeIe, intensity_at_re, fromStructuredArrayOrNot
 from   .symlinks.coloredMessages          import errorMessage, brightMessage
@@ -22,7 +28,8 @@ from   .symlinks.coloredMessages          import errorMessage, brightMessage
 #                                           Sersic luminosities                                                 #
 #################################################################################################################
 
-def analyticFluxFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
+def analyticFluxFrom0(r: Union[float, ndarray], n: Union[int, float], re: Union[float, ndarray], 
+                      bn: float = None, Ie: float = None, mag: float = None, offset: float = None) -> Dict[str, Union[int, float]]:
     r"""
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -32,10 +39,10 @@ def analyticFluxFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0
     
         If no Ie is given, values for mag and offset must be given instead. 
 
-    :param n: Sersic index of the profile
-    :type n: int or float
     :param r: radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.
     :type r: float or list[float]
+    :param n: Sersic index of the profile
+    :type n: int or float    
     :param float re: half-light radius
         
     :param float bn: (**Optional**) bn factor appearing in the Sersic profile defined as 
@@ -73,8 +80,10 @@ def analyticFluxFrom0(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0
         return {'value':value, 'error':error}
     
 
-def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
-    r"""
+def BoverD(r: Union[float, ndarray], rd: float, rb: float, 
+           b1: float = None, b4: float = None, Ied: float = None, Ieb: float = None, magD: float = None, magB: float = None,
+           offsetD: float = None, offsetB: float = None, noError: bool = False) -> Union[float, ndarray]:
+    r""" 
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     Compute the ratio of the bulge flux (B) over the disk one (D) for a bulge-disk galaxy up to radius r.
@@ -129,8 +138,10 @@ def BoverD(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
         return bulge/disk
         
 
-def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None, noError=False):
-    r"""
+def BoverT(r: Union[float, ndarray], rd: float, rb: float,
+           b1: float = None, b4: float = None, Ied: float = None, Ieb: float = None, magD: float = None, magB: float = None,
+           offsetD: float = None, offsetB: float = None, noError: bool = False) -> Union[float, ndarray]:
+    r"""  
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     Computes the ratio of the bulge flux (B) over the total one (T=D+B) for a bulge-disk galaxy up to radius r.
@@ -185,7 +196,9 @@ def BoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
         return bulge/total
 
 
-def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None, offsetD=None, offsetB=None):
+def DoverT(r: Union[float, ndarray], rd: float, rb: float,
+           b1: float = None, b4: float = None, Ied: float = None, Ieb: float = None, magD: float = None, magB: float = None,
+           offsetD: float = None, offsetB: float = None) -> Union[float, ndarray]:
     r"""
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -241,7 +254,8 @@ def DoverT(r, rd, rb, b1=None, b4=None, Ied=None, Ieb=None, magD=None, magB=None
         return disk/total
 
     
-def fluxSersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
+def fluxSersic(r: Union[float, ndarray], n: Union[int, float], re: float, 
+               bn: float = None, Ie: float = None, mag: float = None, offset: float = None, start: float = 0.0) -> Dict[str, float]:
     """
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -251,11 +265,10 @@ def fluxSersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
     
         If no Ie is given, values for mag and offset must be given instead. 
     
-
-    :param n: Sersic index of the profile
-    :type n: int or float
     :param r: radius up to which the integral is computed. If a list is given, the position will be computed at each radius in the list.
     :type r: float or list[float]
+    :param n: Sersic index of the profile
+    :type n: int or float    
     :param float re: half-light radius
         
     :param float bn: (**Optional**) bn factor appearing in the Sersic profile defined as 
@@ -296,16 +309,18 @@ def fluxSersic(r, n, re, bn=None, Ie=None, mag=None, offset=None, start=0.0):
     return {'value':integral, 'error':error}
 
 
-def fluxSersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=False):
+def fluxSersics(r: Union[float, ndarray], listn: List[Union[int, float]], listRe: List[float],
+                listbn: List[float] = None, listIe: List[float] = None, listMag: List[float] = None, 
+                listOffset: List[float] = None, analytical: bool = False) -> Dict[str, float]:
     """
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     Compute the flux of a sum of Sersic profiles up to radius r (starting from 0).
-
-    :param listn: list of Sersic index for each profile
-    :type listn: list[int] or list[float]
+    
     :param r: position at which the profiles are integrated. If a list if given, the position will be computed at each radius in the list.
     :type r: float or list[float]
+    :param listn: list of Sersic index for each profile
+    :type listn: list[int] or list[float]
     :param list[float] listRe: list of half-light radii for each profile
     
     :param bool analytical: (**Optional**) whether to use the analytical solution or integrate the profile
@@ -344,8 +359,10 @@ def fluxSersics(r, listn, listRe, listbn=None, listIe=None, listMag=None, listOf
     return {'value':np.asarray(res), 'error':np.asarray(err)}
 
 
-def ratioFlux1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, listOffset=None, analytical=True):
-    """
+def ratioFlux1D(r1: float, r2: float, listn: List[Union[int, float]], listRe: List[float],
+                listbn: List[float] = None, listIe: List[float] = None, listMag: List[float] = None,
+                listOffset: List[float] = None, analytical: bool = True) -> float:
+    """ 
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     Compute the ratio of the flux of the sum of different Sersic profiles for a single galaxy at two different positions in the galaxy plane only.
@@ -364,11 +381,10 @@ def ratioFlux1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, l
             
         Radii should be given with the same unit as the effective radii.
 
-    :param listn: list of Sersic index for each profile
-    :type listn: list[int] or list[float]
-
     :param float r1: first radius where the flux is computed
     :param float r2: second radius where the flux is computed
+    :param listn: list of Sersic index for each profile
+    :type listn: list[int] or list[float]
     :param list[float] listRe: list of half-light radii for each profile
 
     :param bool analytical: (**Optional**) whether to use the analytical solution or integrate the profile
@@ -407,11 +423,12 @@ def ratioFlux1D(r1, r2, listn, listRe, listbn=None, listIe=None, listMag=None, l
     return lum1/lum2
 
 
-def ratioFlux2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False, False], 
-                        Id=None, Ib=None, magD=None, magB=None, offsetD=None, offsetB=None, inclination=0.0, PA=0.0,
-                        arcsecToGrid=0.03, fineSampling=81,
-                        PSF={'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'},
-                        verbose=True):
+def ratioFlux2D(r1: float, r2: float, Rd: float, Rb: float, where: List[str] = ['galaxy', 'galaxy'], 
+                noPSF: List[bool] = [False, False], Id: float = None, Ib: float = None, 
+                magD: float = None, magB: float = None, offsetD: float = None, offsetB: float = None, 
+                inclination: Union[int, float] = 0.0, PA: Union[int, float] = 0.0, arcsecToGrid: float = 0.03, fineSampling: int = 81,
+                PSF: Dict = {'name':'Gaussian2D', 'FWHMX':0.8, 'FWHMY':0.8, 'sigmaX':None, 'sigmaY':None, 'unit':'arcsec'},
+                verbose: bool = True) -> float:
     """
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -577,7 +594,7 @@ def ratioFlux2D(r1, r2, Rd, Rb, where=['galaxy', 'galaxy'], noPSF=[False, False]
     return lum1/lum2
     
 
-def total_flux(mag, offset):
+def total_flux(mag: Union[float, List[float], ndarray], offset: Union[float, List[float], ndarray]) -> Union[float, ndarray]:
     r"""
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -591,6 +608,7 @@ def total_flux(mag, offset):
     :type offset: float or list[float] or ndarray[float]
     :param mag: total magnitude
     :type mag: float or list[float] or ndarray[float]
+    
     :returns: total flux
     :rtype: float or ndarray[float]
     """
@@ -602,7 +620,49 @@ def total_flux(mag, offset):
 #                                 Morphological parameters                                 #
 ############################################################################################
 
-def computePAs(image, method='minmax', num=100, returnThresholds=False):
+class PAWrapTypes(enum.Enum):
+    '''Types of PA wraps.'''
+    
+    #: Kinematic wrapping between -180 deg and +180 deg
+    KIN    = enum.auto()
+    
+    #: Morphological wrapping between -90 deg and +90 deg
+    MORPHO = enum.auto()
+
+def wrapPA(PA: Union[int, float, ndarray], wrap_type: PAWrapTypes = PAWrapTypes.KIN) -> Union[float, ndarray]:
+    '''
+    Wrap a given PA value given the wrapping type.
+    
+    :param PA: position angle to wrap in degrees
+    :type PA: int, float, ndarray[int] or ndarray[float]
+    
+    :param PAWrapTypes wrap_type: (**Optional**) type of wrapping
+    
+    :returns: wrapped PA in degrees
+    :rtype: float or ndarray[float]
+    '''
+    
+    if wrap_type not in [PAWrapTypes.KIN, PAWrapTypes.MORPHO]:
+        raise ValueError('wrap_type must either be PAWrapTypes.KIN or PAWrapTypes.MORPHO. Cheers !')
+    
+    PA_out                = Angle(PA, unit=u.deg).wrap_at(180*u.deg)
+    
+    if isinstance(PA, ndarray):
+        
+        if wrap_type == PAWrapTypes.MORPHO:    
+            mask          = np.asarray(PA_out < Angle(-90, unit=u.deg)) | np.asarray(PA_out > Angle(90, unit=u.deg))
+            PA_out[mask] -= np.sign(PA_out[mask].value) * Angle(180, unit=u.deg)
+                
+    else:
+        
+        if wrap_type == PAWrapTypes.MORPHO and (PA_out < Angle(-90, unit=u.deg) or PA_out > Angle(90, unit=u.deg)):
+            PA_out       -= np.sign(PA_out.value) * Angle(180, unit=u.deg)
+            
+    return PA_out.to(u.deg).value
+        
+    
+
+def computePAs(image: ndarray, method: str = 'minmax', num: int = 100, returnThresholds: bool = False):
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -707,7 +767,7 @@ def computePAs(image, method='minmax', num=100, returnThresholds=False):
 #                                 Thickness prescription                                                 #
 ##########################################################################################################
 
-def disk_thickness(z):
+def disk_thickness(z: Union[float, ndarray]) -> Union[float, ndarray]:
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -733,7 +793,7 @@ def disk_thickness(z):
     return 10**(-lq0)
 
 
-def correct_inclination(inc, q0):
+def correct_inclination(inc: Union[int, float, Quantity, ndarray], q0: Union[int, float, ndarray]) -> Union[float, ndarray]:
     '''
     Correct the inclination using the given disk thickness assuming the mass distribution is an oblate system. Correction is from Bottinelli et al., 1983 and is given by
     
@@ -744,7 +804,7 @@ def correct_inclination(inc, q0):
     where :math:`i_0` is the intrinsic inclination of the galaxy, :math:`q = b/a` is the observed axis ratio on the sky and :math:`q_0` is the intrinsic axis ratio of the galaxy.
 
     :param inc: observed inclination of the galaxy in degrees (assumed to be :math:`\arccos b/a`)
-    :type inc: int/float/astropy Quantity object with unit of an angle of ndarray of one of these types
+    :type inc: int/float/astropy Quantity object with unit of an angle or ndarray of one of these types
     :param q0: intrinsic axis ratio
     :type q0: int/float or ndarray[int]/ndarray[float]
     
@@ -776,7 +836,8 @@ def correct_inclination(inc, q0):
     return newinc
     
 
-def correct_I0(I0, q0, inc=None, inc0=None):
+def correct_I0(I0: Union[float, ndarray], q0: Union[float, ndarray], 
+               inc: Union[float, ndarray] = None, inc0: Union[float, ndarray] = None) -> Union[float, ndarray]:
     '''
     Correct the observed central surface brightness of a double exponential disk when fitted with a single exponential disk due to the effect of finite thickness. 
     
@@ -796,8 +857,8 @@ def correct_I0(I0, q0, inc=None, inc0=None):
         
         Provide inclinations in degree.
     
-    :param I: observed central surface brightness from the single exponential profile
-    :type I: float or ndarray[float]
+    :param I0: observed central surface brightness from the single exponential profile
+    :type I0: float or ndarray[float]
     :param q0: intrinsic axis ratio of the galaxy
     :type q0: float or ndarray[float]
     
@@ -834,8 +895,10 @@ def correct_I0(I0, q0, inc=None, inc0=None):
 #                                 Half-light radius computation                                                 #
 #################################################################################################################
 
-def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructuredArray=False, magD=None, magB=None, Rd=None, Rb=None, offsetMagD=None, offsetMagB=None, 
-                                          norm=1.0, stretch=1.0):
+def the_re_equation_for_2_Sersic_profiles(re: Union[float, ndarray], gal, b1: float = None, b4: float = None, 
+                                          noStructuredArray: bool = False, magD: float = None, magB: float = None, 
+                                          Rd: float = None, Rb: float = None, offsetMagD: float = None, offsetMagB: float = None, 
+                                          norm: float = 1.0, stretch: float = 1.0) -> float:
     r"""
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -858,10 +921,10 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
         * 'Mag_d_GF' for the total integrated magnitude of the disk
         * 'Mag_b_GF' the total integrated magnitude of the bulge
         
-    :type gal: structured ndarray
     :param re: value of the half-light radius of the sum of the two components. This is the value which shall be returned by a zero search algorithm.
     :type re: float or list[float]
-            
+    :type gal: structured ndarray
+    
     :param float b1: b1 factor appearing in the Sersic profile of an exponential disk
     :param float b4: b4 factor appearing in the Sersic profile of a bulge
     :param magB: total magnitude of the bulge
@@ -913,9 +976,11 @@ def the_re_equation_for_2_Sersic_profiles(re, gal, b1=None, b4=None, noStructure
     return ( 10**((offsetMagD-magD)/2.5)*(gammainc(2, b1*(re/Rd)) - 0.5) + 10**((offsetMagB-magB)/2.5)*(gammainc(8, b4*(re/Rb)**(1.0/4.0)) - 0.5) ) / norm
 
 
-def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=None, magB=None, Rd=None, Rb=None, normalise=True, stretch=5e-2,
-             integration=False, Ltot=None, Ie=None, offsetMagD=None, offsetMagB=None, xtol=1e-3, useZeroOrder=True, method='hybr',
-             verbose=True):
+def solve_re(gal, guess: Union[float, ndarray] = None, b1: float = None, b4: float = None, 
+             noStructuredArray: bool = False, magD: float = None, magB: float = None, Rd: float = None, Rb: float = None, 
+             normalise: bool = True, stretch: float = 5e-2, integration: bool = False, Ltot: float = None, 
+             Ie: float = None, offsetMagD: float = None, offsetMagB: float = None, xtol: float = 1e-3, 
+             useZeroOrder: bool = True, method: str = 'hybr', verbose: bool = True) -> Union[Union[float, List[float]], Union[float, List[float]], Union[Dict, List[Dict]]]:
     r"""
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -1126,8 +1191,8 @@ def solve_re(gal, guess=None, b1=None, b4=None, noStructuredArray=False, magD=No
 #                                Other related Sersic functions                                                 #
 #################################################################################################################
     
-def centralIntensity(n, re, Ie=None, mag=None, offset=None):
-    '''
+def centralIntensity(n: Union[int, float], re: float, Ie: float = None, mag: float = None, offset: float = None) -> float:
+    ''' 
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     Compute the central intensity of a given Sersic profile.
@@ -1157,7 +1222,7 @@ def centralIntensity(n, re, Ie=None, mag=None, offset=None):
     return Ie*np.exp(bn)
 
 
-def compute_R22(Red, dRed=None, b1=None):
+def compute_R22(Red: Union[float, ndarray], dRed: Union[float, ndarray] = None, b1: float = None) -> Union[float, ndarray]:
     r'''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
