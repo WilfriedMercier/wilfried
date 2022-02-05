@@ -7,10 +7,14 @@ Functions and classes related to angular momenta of galaxies.
 """
 
 import numpy           as     np
+from   numpy           import ndarray
+from   astropy.units   import Quantity
 from   scipy.special   import gammainc, gamma
 from   scipy.integrate import quad
 from   .models         import compute_bn, sersic_profile
-from   typing          import Union, List, Tuple, Callable
+from   .geometry       import DiskGeometry
+from   .cosmology      import angular_diameter_size
+from   typing          import Union, List, Tuple, Callable, Optional
 
 def sersic_kthMoment(k: Union[int, float], vmin: Union[int, float], vmax: Union[int, float], 
                      n: Union[int, float] = 1, Re: Union[int, float] = 10, Ie: Union[int, float] = 10) -> Union[int, float]:
@@ -50,25 +54,172 @@ def sersic_kthMoment(k: Union[int, float], vmin: Union[int, float], vmax: Union[
     
     return prefactor*gamma(prod)*(gamma1 - gamma2)
 
-class SersicMomentum:
+class PhotoMomentum:
+    r'''
+    Class which computes the angular momentum from photometry given a rotation curve. In the **unnormalised** case
+    
+    .. math::
+        J_z = \sum_i R-i \Sigma (\vec x_i) V(R_i) \Delta S,
+
+    where :math:`\Sigma(\vec x_i)` is the surface brightness profile measured in the photometry at position :math:`\vec x_i`, :math:`R_i` is the radial distance of a pixel i and :math:`\Delta S` is the surface of a pixel.
+
+    In the **normalised** case we have instead
+    
+    .. math::
+        j = \sum_i R-i \Sigma (\vec x_i) V(R_i) / \sum_i \Sigma (\vec x_i),
     '''
+    
+    def __init__(self, z: Union[int, float], image: ndarray, xc: Union[int, float], yc: Union[int, float],
+                 inc: Union[int, float, Quantity], PA: Union[int, float, Quantity],
+                 pscale: Union[int, float] = 0.03) -> None:
+        r'''
+        Init method.
+        
+        :param z: redshift
+        :type z: int or float
+        :param ndarary image: image to compute the angular momentum from
+        :param xc: centre x position in pixel units
+        :type xc: int or float
+        :param yc: centre y position in pixel units
+        :type yc: int or float
+        :param inc: inclination in degrees if not an Astropy Quantity between 0° (face on) and 90° (edge-on)
+        :type inc: int, float or an Astropy Quantity
+        :param PA: position angle with respect to the North (angles are counted similarly as Galfit) in degrees if not an Astropy Quantity
+        :type PA: int, float or an Astropy Quantity
+        
+        :param pscale: (**Optional**) pixel scale in arcsec/pixel. Default is 0.03 arcsec/pixel.
+        :type pscale: int or float
+        
+        :raises ValueError: if
+            * **xc** < 0 or **yc** < 0
+            * **inc** < 0° or **inc** > 90°
+            * **PA** < -180° or **PA** > 180°
+        '''
+        
+        if xc < 0 or yc < 0:
+            raise ValueError(f'Centre position is ({xc}, {yc}) but it must be strictly positive for both coordinates.')
+        
+        if isinstance(inc, Quantity):
+            self.inc = inc.to('deg').value
+        else:
+            self.inc = inc
+            
+        if isinstance(PA, Quantity):
+            self.PA  = PA.to('deg').value
+        else:
+            self.PA  = PA
+            
+        if self.inc < 0 or self.inc > 90:
+            raise ValueError(f'Inclination is {inc}° but it must be between 0° and 90°')
+            
+        if self.PA < -180 or self.PA > 180:
+            raise ValueError(f'PA is {PA}° but it must be between -180° and 180°')
+            
+        #: Galaxy redshift
+        self.z            = z
+            
+        #: Photometry
+        self.im           = image
+        
+        #: Pixel scale in arcsec
+        self.pscale       = pscale
+        
+        #: Pixel scale in kpc
+        self.pscale_kpc   = angular_diameter_size(self.z, self.pscale, scaleFactor=1.0/3600*np.pi/180)
+        
+        #: Pixel surface in kpc^2
+        self.psurface     = self.pscale_kpc*self.pscale_kpc
+        
+        # Compute pixel grids
+        ly, lx            = self.im.shape
+        x                 = np.linspace(0, lx-1, lx) - xc
+        y                 = np.linspace(0, ly-1, ly) - yc
+        X, Y              = np.meshgrid(x, y)
+    
+        #: Radial grid in pixel unit
+        self.R            = DiskGeometry(inc=inc, PA=PA).distance(X, Y)
+        
+        #: Radial grid in kpc
+        self.R_kpc        = angular_diameter_size(self.z, self.R, scaleFactor=pscale/3600*np.pi/180)
+        return
+    
+    def custom_rotation_curve(self, rotation_curve: Callable[..., Union[int, float]], r: Union[int, float],
+                              normalise: bool = True, r_norm: Union[int, float] = np.inf, norm: Optional[ndarray] = None,
+                              args: List = []) -> Union[float, float]:
+        r'''
+        Compute the angular momentum using a custom rotation curve up to radius r.
+        
+        :param func rotation_curve: function representing the total rotation curve used to compute the angular momentum. Its first parameter must always be the radial distance r.
+        :param r: distance up to which to compute the angular momentum (must be in kpc)
+        :type r: int or float
+        
+        :param bool normalise: (**Optional**) whether to normalise. If **norm** is None, the norm is calculated from the photometry within **r_norm**. Default is True.
+        :param r_norm: (**Optional**) radius where to compute the normalisation. Only used if **normalise** is True and **norm** is None. Default is inifinity.
+        :type r_norm: int or float
+        :param ndarray norm: (**Optional**) custom normalisation to apply
+        
+        :param args: (**Optional**) arguments to pass to the rotation curve function. Default is no argument (empty list).
+        
+        :returns: central angular momentum along the vertical axis using the custom rotation curve. When normalised the unit is similar to **r** * **rotation_curve**
+        :rtype: int or float
+        
+        :raises TypeError: if **rotation_curve** is not a callable function
+        :raises ValueError: if **r** < 0
+        '''
+        
+        if not callable(rotation_curve):
+            raise TypeError(f'rotation_curve is of type {type(rotation_curve)} but it must be a callable function.')
+            
+        if r<0:
+            raise ValueError(f'Radius r is {r} but it must be positive.')
+            
+        if normalise and norm is None:
+            norm   = self.norm(r=r_norm)
+        elif not normalise:
+            norm   = 1/self.psurface
+            
+        # Mask to apply to the data
+        mask       = self.R_kpc <= r
+            
+        # Velocity computed at each point within the given radius
+        V          = rotation_curve(self.R_kpc[mask], *args)
+            
+        # Unnnormalised angular momentum
+        J          = np.nansum(V*self.R_kpc[mask]*self.im[mask])
+        
+        return J/norm
+    
+    def norm(self, r: Union[int, float] = np.inf) -> Union[int, float]:
+        r'''
+        Compute the normalisation factor from the photometry.
+        
+        :param r: (**Optional**) radius where the normalisation is computedin kpc. By default the normalisation is computed at infinity.
+        :type r: int or float
+        
+        :returns: normalisation factor
+        :rtype: int or float
+        '''
+        
+        mask = self.R_kpc <= r      
+        return np.nansum(self.im[mask])
+
+class SersicMomentum:
+    r'''
     Class which computes the angular momentum for a single Sérsic profile in the **unnormalised** case
     
     .. math::
         J_z = 2\pi \int_0^\infty dR~R^2 \Sigma (R) V(R),
-        
+
     and, in the **normalised** case
     
     .. math::
         j = \frac{\int_0^\infty dR~R^2 \Sigma (R) V(R)}{\int_0^\infty dR~R \Sigma (R)},
-        
-    where 
-    
-    :math:`\Sigma(R) &= Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]}`.
+
+    where :math:`\Sigma(R) = Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]}`.
     '''
     
     def __init__(self,  n: Union[int, float] = 1, Re: Union[int, float] = 10, Ie: Union[int, float] = 10) -> None:
-        '''
+        r'''
         Init method.
         
         :param Ie: (**Optional**) Surface brightness at Re
@@ -78,10 +229,7 @@ class SersicMomentum:
         :param Re: (**Optional**) effective radius
         :type Re: int or float
         
-        :raises ValueError if :
-            * n < 0
-            * Re <= 0
-            * Ie < 0
+        :raises ValueError: if n < 0 or Re <= 0 or Ie < 0
         '''
         
         if n < 0:
@@ -97,17 +245,27 @@ class SersicMomentum:
         self.Re    = Re
         self.Ie    = Ie
         
-        #: Normalisation factor, equal to the total flux
-        self.norm  = 2*np.pi*sersic_kthMoment(1, 0, np.inf, n=self.n, Re=self.Re, Ie=self.Ie)
+    def norm(self, r: Union[int, float] = np.inf) -> Union[int, float]:
+        r'''
+        Compute the normalisation factor for the angular momentum up to radius r.
+        
+        :param r: (**Optional**) radius where the normalisation is computed. By default the normalisation is computed at infinity.
+        :type r: int or float
+        
+        :returns: normalisation factor
+        :rtype: int or float
+        '''
+        
+        return 2*np.pi*sersic_kthMoment(1, 0, r, n=self.n, Re=self.Re, Ie=self.Ie)
         
     def linear_ramp(self, r: Union[int, float], rt: Union[int, float], vt: Union[int, float], 
-                    normalise = True) -> Union[int, float]:
-        '''
+                    normalise: bool = True, r_norm: Union[int, float] = np.inf) -> Union[int, float]:
+        r'''
         Compute the angular momentum using a linear ramp model up to radius r whose rotation curve is
         
         .. math::
             V(R) &= V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t
-            
+
         :param r: radius where the angular momentum is computed
         :type r: int or float
         :param rt: kinematical transition radius. Must be of the same unit as Re.
@@ -116,6 +274,7 @@ class SersicMomentum:
         :type vt: int or float
         
         :param bool normalise: (**Optional**) whether to normalise by the first order moment of the light distribution. Default is True.
+        :param r_norm: (**Optional**) radius where to compute the normalisation. Only used if **normalise** is True. Default is inifinity.
         
         :returns: central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.
         :rtype: int or float
@@ -135,7 +294,7 @@ class SersicMomentum:
             raise ValueError(f'Plateau velocity is {vt} but it must be positive only.')
             
         if normalise:
-            norm = self.norm
+            norm = self.norm(r_norm)
         else:
             norm = 1
             
@@ -156,9 +315,9 @@ class SersicMomentum:
         return J/norm
     
     def custom_rotation_curve(self, rotation_curve: Callable[..., Union[int, float]],
-                              r: Union[int, float], normalise: bool = True, 
+                              r: Union[int, float], normalise: bool = True, r_norm: Union[int, float] = np.inf,
                               args: List = []) -> Tuple[float, float]:
-        '''
+        r'''
         Compute the angular momentum using a custom rotation curve up to radius r.
         
         :param func rotation_curve: function representing the total rotation curve used to compute the angular momentum. Its first parameter must always be the radial distance r.
@@ -166,6 +325,7 @@ class SersicMomentum:
         :type r: int or float
         
         :param bool normalise: (**Optional**) whether to normalise by the first order moment of the light distribution. Default is True.
+        :param r_norm: (**Optional**) radius where to compute the normalisation. Only used if **normalise** is True. Default is inifinity.
         
         :param args: (**Optional**) arguments to pass to the rotation curve function. Default is not argument (empty list).
         
@@ -177,7 +337,7 @@ class SersicMomentum:
         '''
         
         def the_integral(r: Union[int, float], args_sigma: List[Union[int, float]], args_V: List[Union[int, float]]) -> float:
-            '''
+            r'''
             Function to integrate.
             
             :param r: radius where the function is computed
@@ -198,7 +358,7 @@ class SersicMomentum:
             raise ValueError(f'Radius r is {r} but it must be positive.')
             
         if normalise:
-            norm   = self.norm
+            norm   = self.norm(r_norm)
         else:
             norm   = 1
             
@@ -211,7 +371,7 @@ class SersicMomentum:
         return J/norm, err/norm
         
         
-
+# Old function, kept for comparison purposes
 def momentum(rt, vt, n=1, Re=10, Ie=10, normalise=True):
     r'''
     Compute the analytical angular momentum for a single Sérsic profile and a ramp model rotation curve in the **unnormalised** case
