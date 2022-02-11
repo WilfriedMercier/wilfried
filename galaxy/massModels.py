@@ -14,19 +14,24 @@ from   .models                    import checkAndComputeIe, sersic_profile
 from   .misc                      import compute_bn, realGammainc
 from   astropy.constants          import G
 from   scipy.special              import gamma, i0, i1, k0, k1
+from   numpy                      import ndarray
+
+from   typing                     import Type, Union, List, Dict
 
 try:
     from   astropy.cosmology      import Planck18 as cosmo
 except ImportError:
     from   astropy.cosmology      import Planck15 as cosmo
-    
+
+# Custom types
+QuantityType = Type[u.Quantity]
 
 #######################################################################################
 #                           3D profiles and their functions                           #
 #######################################################################################
 
 class MassModelBase:
-    '''
+    r'''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     Base class for mass models.
@@ -34,19 +39,23 @@ class MassModelBase:
     .. warning::
     
         When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.
+        
+    .. note::
+            
+        Units must be given such that they are recognised by astropy.units module.
+
+    :param int dim: number of dimensions of the model
+    :param float M_L: mass to light ratio
+    :param str unit_M_L: unit of the mass to light ratio. Refer to the specific mass model to know which unit to provide.
+    :raises ValueError: if 
+    
+    * **dim** is not an integer
+    * **dim** < 1
+    * **M_L** <= 0
+    * **M_L** is neither an int or float or np.float16 or np.float32 or np.float64
     '''
     
-    def __init__(self, dim, M_L, unit_M_L='solMass.s.cm^2.A/erg)', **kwargs):
-        '''
-        .. note::
-            
-            Units must be given such that they are recognised by astropy.units module.
-
-        :param int dim: number of dimensions of the model
-        :param float M_L: mass to light ratio
-        :param str unit_M_L: unit of the mass to light ratio. Refer to the specific mass model to know which unit to provide.
-        :raises ValueError: if **dim** is neither an int or **dim** < 1, if **M_L** <= 0, if **M_L** is neither an int or float or np.float16 or np.float32 or np.float64
-        '''
+    def __init__(self, dim: int, M_L: float, unit_M_L: str = 'solMass.s.cm^2.A/erg)', **kwargs) -> None:
         
         if not isinstance(dim, int) or dim < 1:
             raise ValueError('Given dimension is not correct.')
@@ -75,7 +84,7 @@ class MassModelBase:
         return Multiple3DModels(self, other)
     
     
-    def _checkR(self, r, against):
+    def _checkR(self, r: Union[int, float], against: QuantityType) -> QuantityType:
         '''
         Check whether radial distance is positive and has a unit.
         
@@ -103,12 +112,12 @@ class MassModelBase:
     #       Default methods (some need to be overriden)       #
     ###########################################################
     
-    def flux(self, r, *args, **kwargs):
+    def flux(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         r'''
         Compute the enclosed flux at radius r
         
         .. math::
-            
+                    
             F(<r) = 4\pi \int_0^r dx~x^2 \rho (<x),
             
         with :math:`\rho(r)` the light density profile.
@@ -125,7 +134,7 @@ class MassModelBase:
         return
     
     
-    def gfield(self, r, *args, **kwargs):
+    def gfield(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the gravitational field at radius r.
 
@@ -142,11 +151,13 @@ class MassModelBase:
         return
     
     
-    def mass(self, r, *args, **kwargs):
+    def mass(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the enclosed (integrated) mass at radius r.
 
         :param r: radius where to compute the mass
+        :type r: int or float
+        
         :returns: mass enclosed in a sphere of radius r
         :rtype: astropy.units Quantity
         
@@ -156,7 +167,7 @@ class MassModelBase:
         return self.M_L*self.flux(r, *args, **kwargs)
     
     
-    def mass_profile(self, r, *args, **kwargs):
+    def mass_profile(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the **mass density** profile at radius r.
 
@@ -170,7 +181,7 @@ class MassModelBase:
         return self.M_L*self.profile(r, *args, **kwargs)
     
     
-    def profile(self, r, *args, **kwargs):
+    def profile(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the light density profile at radius r.
 
@@ -187,7 +198,7 @@ class MassModelBase:
         return
     
     
-    def velocity(self, r, *args, **kwargs):
+    def velocity(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         r'''
         Velocity profile for a self-sustaining 3D profile against its own gravity through centripedal acceleration
         
@@ -199,6 +210,7 @@ class MassModelBase:
 
         :param r: radius where the velocity profile is computed
         :type r: int or float
+        
         :returns: V(r)
         :rtype: astropy.units Quantity
         '''
@@ -211,7 +223,7 @@ class MassModelBase:
     ################################
     
     @property
-    def Ftot(self):
+    def Ftot(self) -> None:
         '''
         Total flux of the profile.
         
@@ -222,7 +234,7 @@ class MassModelBase:
         return
     
     @property
-    def Mtot(self):
+    def Mtot(self) -> None:
         '''
         Total mass of the profile.
         
@@ -230,7 +242,6 @@ class MassModelBase:
         '''
         
         return self.M_L*self.Ftot
-
 
 class Multiple3DModels(MassModelBase):
     '''
@@ -288,7 +299,7 @@ class Multiple3DModels(MassModelBase):
         return args, kwargs
             
     
-    def gfield(self, args=[[]], kwargs=[{}]):
+    def gfield(self, args: List[List] = [[]], kwargs: List[Dict] = [{}]) -> QuantityType:
         '''
         Compute the full gravitational field at radius r.
         
@@ -308,7 +319,7 @@ class Multiple3DModels(MassModelBase):
         
         
         
-    def flux(self, args=[], kwargs=[{}]):
+    def flux(self, args: List[List] = [[]], kwargs: List[Dict] = [{}]) -> QuantityType:
         '''
         Compute the enclosed flux at radius r.
         
@@ -327,7 +338,7 @@ class Multiple3DModels(MassModelBase):
         return np.sum([i.mass(*args[pos], **kwargs[pos]) for pos, i in enumerate(self.models)], axis=0)
         
     
-    def mass(self, args=[], kwargs=[{}]):
+    def mass(self, args: List[List] = [[]], kwargs: List[Dict] = [{}]) -> QuantityType:
         '''
         Compute the enclosed mass at radius r.
         
@@ -346,7 +357,7 @@ class Multiple3DModels(MassModelBase):
         return np.sum([i.mass(*args[pos], **kwargs[pos]) for pos, i in enumerate(self.models)], axis=0)
     
     
-    def mass_profile(self, args=[], kwargs=[{}]):
+    def mass_profile(self, args: List[List] = [[]], kwargs: List[Dict] = [{}]) -> QuantityType:
         '''
         Compute the mass profile at radius r.
 
@@ -365,7 +376,7 @@ class Multiple3DModels(MassModelBase):
         return np.sum([i.mass_profile(*args[pos], **kwargs[pos]) for pos, i in enumerate(self.models)], axis=0)
     
             
-    def profile(self, args=[], kwargs=[{}]):
+    def profile(self, args: List[List] = [[]], kwargs: List[Dict] = [{}]) -> QuantityType:
         '''
         Compute the light profile at radius r.
 
@@ -388,7 +399,7 @@ class Multiple3DModels(MassModelBase):
     #                          Velocities                          #
     ################################################################            
     
-    def velocity(self, args=[], kwargs=[{}]):
+    def velocity(self, args: List[List] = [[]], kwargs: List[Dict] = [{}]) -> QuantityType:
         '''
         Velocity profile for the 3D models against their own gravity through centripedal acceleration.
 
@@ -412,13 +423,13 @@ class Multiple3DModels(MassModelBase):
     ##############################
     
     @property
-    def Ftot(self):
+    def Ftot(self) -> QuantityType:
         '''Total flux of the profiles.'''
         
         return np.sum([i.Ftot for i in self.models], axis=0)
     
     @property
-    def Mtot(self):
+    def Mtot(self) -> QuantityType:
         '''Total mass of the profiles.'''
         
         return np.sum([i.Mtot for i in self.models], axis=0)
@@ -431,7 +442,9 @@ class Hernquist(MassModelBase):
     3D Hernquist model class.
     '''
     
-    def __init__(self, a, F, M_L, unit_a='kpc', unit_F='erg/(s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):
+    def __init__(self, a: Union[int, float], F: Union[int, float], M_L: Union[int, float], 
+                 unit_a: str='kpc', unit_F: str='erg/(s.A)', unit_M_L: str='solMass.s.A.cm^2/(erg.kpc^2)', 
+                 **kwargs) -> None:
         '''
         :param a: scale factor
         :type a: int or float
@@ -485,7 +498,7 @@ class Hernquist(MassModelBase):
     #            Methods (alphabetical order)            #
     ######################################################    
     
-    def flux(self, r, *args, **kwargs):
+    def flux(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the enclosed flux at radius r.
 
@@ -500,7 +513,7 @@ class Hernquist(MassModelBase):
         return self.F*(r/(r+self.a))**2
     
     
-    def gfield(self, r, *args, **kwargs):
+    def gfield(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the gravitational field of a single Hernquist profile at radius r.
 
@@ -519,7 +532,7 @@ class Hernquist(MassModelBase):
             return -G*self.flux(r)*self.M_L/r**2
         
         
-    def profile(self, r, *args, **kwargs):
+    def profile(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the light density profile at radius r.
 
@@ -534,7 +547,7 @@ class Hernquist(MassModelBase):
         return self.F*self.a/(2*np.pi) / (r * (r + self.a)**3)
     
         
-    def velocity(self, r, *args, **kwargs):
+    def velocity(self, r: Union[int, float, QuantityType], *args, **kwargs) -> QuantityType:
         r'''
         Velocity profile for a self-sustaining Hernquist 3D profile against its own gravity through centripedal acceleration.
         
@@ -569,7 +582,7 @@ class Hernquist(MassModelBase):
             vr[mask] = np.sqrt(G*self.M_L*self.F*rmask)/(self.a+rmask)
         
         else:
-            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(R))
+            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(r))
         
         return vr.to('km/s')
     
@@ -579,13 +592,13 @@ class Hernquist(MassModelBase):
     ################################
     
     @property
-    def Ftot(self):
+    def Ftot(self) -> QuantityType:
         '''Total flux of the profile.'''
         
         return self.F
     
     @property
-    def todeVaucouleur(self):
+    def todeVaucouleur(self) -> QuantityType:
         '''Alias of :py:attr:`toSersic`.'''
         
         return self.toSersic
@@ -612,7 +625,9 @@ class NFW(MassModelBase):
     Navarro Frenk and White profile.
     '''
     
-    def __init__(self, Rs, c=None, Vmax=None, unit_Rs='kpc', unit_Vmax='km/s'):
+    def __init__(self, Rs: Union[int, float, QuantityType], 
+                 c: Union[int, float] = None, Vmax: Union[int, float, QuantityType] = None, 
+                 unit_Rs: str = 'kpc', unit_Vmax: str = 'km/s') -> None:
         '''
         .. note::
             
@@ -636,7 +651,8 @@ class NFW(MassModelBase):
         :raises astropy.units.core.UnitConversionError: if **Vmax** could not be broadcast to km/s unit
         '''
         
-        self._factor      = np.log(3.15)/2.15 - 1/3.15
+        Rmax              = 2.163
+        self._factor      = np.log(1+Rmax)/Rmax - 1/(1+Rmax)
         
         if (Vmax is None and c is None) or (Vmax is not None and c is not None):
             raise ValueError('Either Vmax or c must be None.')
@@ -680,7 +696,7 @@ class NFW(MassModelBase):
     #            Methods (alphabetical order)            #
     ######################################################
     
-    def flux(self, r, *args, **kwargs):
+    def flux(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the enclosed flux at radius r.
         
@@ -698,7 +714,7 @@ class NFW(MassModelBase):
         return u.Quantity(0*r, unit='erg/(s.A)')
     
     
-    def gfield(self, r, *args, **kwargs):
+    def gfield(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the gravitational field of a single NFW profile at radius r.
 
@@ -715,7 +731,7 @@ class NFW(MassModelBase):
         return
     
     
-    def mass(self, r, *args, **kwargs):
+    def mass(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
          '''
         Compute the enclosed (integrated) mass at radius r.
         
@@ -728,7 +744,7 @@ class NFW(MassModelBase):
          return r*self.velocity(r, *args, **kwargs)**2 / G
 
     
-    def mass_profile(self, r, *args, **kwargs):
+    def mass_profile(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the **mass density** profile at radius r.
 
@@ -743,7 +759,7 @@ class NFW(MassModelBase):
         return self.Vmax**2 / (4*np.pi*G*self.Rs*self._factor * r*(1+r/self.Rs)**2)
     
     
-    def profile(self, r, *args, **kwargs):
+    def profile(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Compute the light density profile at radius r.
         
@@ -762,7 +778,7 @@ class NFW(MassModelBase):
         return u.Quantity(0*r, unit='erg/(s.A.cm^2)')
         
         
-    def velocity(self, r, *args, **kwargs):
+    def velocity(self, r: Union[int, float, QuantityType], *args, **kwargs) -> QuantityType:
         r'''
         Velocity profile for a self-sustaining 3D profile against its own gravity through centripedal acceleration
         
@@ -797,7 +813,7 @@ class NFW(MassModelBase):
             vr[mask] = self.Vmax * np.sqrt(self.Rs * (np.log(1+rmask/self.Rs)/rmask - 1/(rmask+self.Rs)) / self._factor)
         
         else:
-            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(R))
+            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(r))
         
         return vr.to('km/s')
         
@@ -807,19 +823,19 @@ class NFW(MassModelBase):
     ################################
     
     @property
-    def Ftot(self):
+    def Ftot(self) -> float:
         '''Total flux (infinite).'''
         
         return np.inf
     
     @property
-    def Mvir(self):
+    def Mvir(self) -> QuantityType:
         '''Virial mass.'''
         
         return (800*np.pi*cosmo.critical_density(0)*self.Rvir**3)/3
 
     @property    
-    def Rvir(self):
+    def Rvir(self) -> QuantityType:
         '''
         Virial radius.
         
@@ -847,7 +863,9 @@ class Sersic:
         When using a method, make sure the unit of the radial distance is identical to that of the scale parameter of the model.
     '''
     
-    def __init__(self, n, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', **kwargs):
+    def __init__(self, n: Union[int, float], Re: Union[int, float], 
+                 Ie: float = None, mag: float = None, offset: float = None, 
+                 unit_Re: str = 'kpc', unit_Ie: str = 'erg/(cm^2.s.A)', **kwargs) -> None:
         """
         .. note::
             
@@ -918,7 +936,7 @@ class Sersic:
     #            Methods (alphabetical order)            #
     ######################################################
     
-    def _checkR(self, r, against):
+    def _checkR(self, r: Union[int, float, QuantityType], against: QuantityType) -> QuantityType:
         '''
         Check whether radial distance is positive and has a unit.
         
@@ -941,7 +959,7 @@ class Sersic:
 
         return r
         
-    def profile(self, r, *args, **kwargs):
+    def profile(self, r: Union[int, float], *args, **kwargs) -> float:
         '''
         Sersic surface brightness profile at radius r.
 
@@ -955,7 +973,7 @@ class Sersic:
         return sersic_profile(r, self.n, self.Re, Ie=self.Ie, bn=self.bn)
     
     
-    def flux(self, r, *args, **kwargs):
+    def flux(self, r: Union[int, float], *args, **kwargs) -> QuantityType:
         '''
         Flux at radius r (encompassed within a disk since this is a 2D profile).
 
@@ -970,7 +988,7 @@ class Sersic:
         return n2*np.pi*self.Ie*np.exp(self.bn)*realGammainc(n2, (self.bn*(r/self.Re)**(1.0/self.n)).value)*self.Re**2 / self.bn**n2
     
     @property
-    def Ftot(self):
+    def Ftot(self) -> QuantityType:
         '''Total flux of the profile.'''
         
         n2 = 2*self.n
@@ -984,7 +1002,8 @@ class deVaucouleur(Sersic):
     2D de Vaucouleur profile.
     '''
     
-    def __init__(self, Re, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', **kwargs):
+    def __init__(self, Re: Union[int, float], Ie: float = None, mag: float  = None, offset: float = None, 
+                 unit_Re: str ='kpc', unit_Ie: str = 'erg/(cm^2.s.A)', **kwargs) -> None:
         """
         .. note::
             
@@ -1018,7 +1037,7 @@ class deVaucouleur(Sersic):
         self._beta_F  = 1.75
         
         
-    def toHernquist(self, M_L, unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):
+    def toHernquist(self, M_L: Union[int, float], unit_M_L: str = 'solMass.s.A.cm^2/(erg.kpc^2)', **kwargs) -> Type[Hernquist]:
         '''
         Create the best-fit Hernquist instance from this de Vaucouleur instance (see Mercier et al., 2021).
     
@@ -1048,7 +1067,7 @@ class deVaucouleur(Sersic):
     
 
 class ExponentialDisk(Sersic, MassModelBase):
-    '''
+    r'''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     2D/3D exponential disk profile class (razor-thin).
@@ -1056,30 +1075,31 @@ class ExponentialDisk(Sersic, MassModelBase):
     .. note::
         
         Some functions such as the light profile correspond to the 2D Sersic profiles, while others such as the velocity assume a 3D **razor-thin disk**.
+        
+    .. note::
+        
+        You can either provide:
+        
+        * **M_L**, **Re** and **Ie**
+        * **M_L**, **Re**, **mag** and **offset**
+    
+    :param M_L: mass to light ratio
+    :type M_L: int or float
+    :param Re: half-light radius
+    :type Re: int or float
+    
+    :param float Ie: (**Optional**) intensity at half-light radius
+    :param float mag: (**Optional**) galaxy total integrated magnitude used to compute Ie if not given
+    :param float offset: (**Optional**) magnitude offset in the magnitude system used
+    :param str unit_Ie: (**Optional**) unit for the surface brightness. If **Ie** already has a unit, it is converted to this unit.
+    :param str unit_M_L: (**Optional**) unit of the mass to light ratio
+    :param str unit_Re: (**Optional**) unit for the scale radius **Re**. If **Re** already has a unit, it is converted to this unit.
+    
+    :raises astropy.units.core.UnitConversionError: if **Vmax** could not be broadcast to km/s unit
     '''
     
-    def __init__(self, Re, M_L, Ie=None, mag=None, offset=None, unit_Re='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
-        """
-        .. note::
-            
-            You can either provide:
-                - **M_L**, **Re** and **Ie**
-                - **M_L**, **Re**, **mag** and **offset**
-        
-        :param M_L: mass to light ratio
-        :type M_L: int or float
-        :param Re: half-light radius
-        :type Re: int or float
-        
-        :param float Ie: (**Optional**) intensity at half-light radius
-        :param float mag: (**Optional**) galaxy total integrated magnitude used to compute Ie if not given
-        :param float offset: (**Optional**) magnitude offset in the magnitude system used
-        :param str unit_Ie: (**Optional**) unit for the surface brightness. If **Ie** already has a unit, it is converted to this unit.
-        :param str unit_M_L: (**Optional**) unit of the mass to light ratio
-        :param str unit_Re: (**Optional**) unit for the scale radius **Re**. If **Re** already has a unit, it is converted to this unit.
-        
-        :raises astropy.units.core.UnitConversionError: if **Vmax** could not be broadcast to km/s unit
-        """
+    def __init__(self, Re: Union[int, float], M_L: Union[int, float], Ie: float = None, mag: float = None, offset: float = None, 
+                 unit_Re: str = 'kpc', unit_Ie: str = 'erg/(cm^2.s.A)', unit_M_L: str = 'solMass.s.A.cm^2/(erg.kpc^2)', **kwargs) -> None:        
         
         MassModelBase.__init__(self, 3, M_L, unit_M_L)
         Sersic.__init__(       self, 1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
@@ -1101,7 +1121,7 @@ class ExponentialDisk(Sersic, MassModelBase):
     #            Methods (alphabetical order)            #
     ######################################################
     
-    def velocity(self, r, *args, **kwargs):
+    def velocity(self, r: Union[int, float, QuantityType], *args, **kwargs) -> QuantityType:
         r'''
         Velocity profile for a self-sustaining 3D inifinitely thin disk against its own gravity through centripedal acceleration
         
@@ -1138,7 +1158,7 @@ class ExponentialDisk(Sersic, MassModelBase):
             vr[mask] = (self.Vmax*rmask/(0.8798243*self.Rd)) * np.sqrt(i0(y)*k0(y) - i1(y)*k1(y))
         
         else:
-            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(R))
+            raise TypeError('r array has type %s but only float and numpy array are expected.' %type(r))
         
         return vr.to('km/s')
             
@@ -1146,45 +1166,44 @@ class ExponentialDisk(Sersic, MassModelBase):
         
 
 class DoubleExponentialDisk(Sersic, MassModelBase):
-    '''
+    r'''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
     Double exponential disk profile class implementing Bovy rotation curve.
+    
+    .. note::
+        
+        You can either provide:
+        
+        * **M_L**, **hz**, **Re** and **Ie**
+        * **M_L**, **hz**, **Re**, **mag** and **offset**
+            
+        You can also provide **q0** instead of **hz** (which must be None in this case).
+        
+        The observed or intrinsic inclination must be given with **inc** or **inc0**, respectively, if one wants to correct the central surface brightness for the effect of finite thickness.
+        
+    :param hz: vertical scale height
+    :type hz: int or float
+    :param M_L: mass to light ratio
+    :type M_L: int or float
+    :param Re: half-light radius in the plane of symmetry
+    :type Re: int or float
+    
+    :param float inc: (**Optional**) observed inclination (not corrected of the galaxy thickness)
+    :param float inc0: (**Optional**) intrinsic inclination (corrected of the galaxy thickness)
+            
+    :param float Ie: (**Optional**) intensity at half-light radius if the galaxy was seen face-on (must correct for inclination effects)
+    :param float mag: (**Optional**) galaxy total integrated magnitude used to compute **Ie** if not given
+    :param float offset: (**Optional**) magnitude offset in the magnitude system used
+    :param float q0: (**Optional**) axis ratio equal to hz/Rd with Rd the disk scale length. If this value is different from None, it overrides **hz**.
+    :param str unit_Ie: (**Optional**) unit for the surface brightness
+    :param str unit_M_L: (**Optional**) unit of the mass to light ratio
+    :param str unit_Re: (**Optional**) unit for the scale radius **Re**
     '''
     
-    def __init__(self, Re, hz, M_L, q0=None, Ie=None, mag=None, offset=None,
-                 inc=None, inc0=None,
-                 unit_Re='kpc', unit_hz='kpc', unit_Ie='erg/(cm^2.s.A)', unit_M_L='solMass.s.A.cm^2/(erg.kpc^2)', **kwargs):        
-        """
-        .. note::
-            
-            You can either provide:
-                
-                * **M_L**, **hz**, **Re** and **Ie**
-                * **M_L**, **hz**, **Re**, **mag** and **offset**
-                
-            You can also provide **q0** instead of **hz** (which must be None in this case).
-            
-            The observed or intrinsic inclination must be given with **inc** or **inc0**, respectively, if one wants to correct the central surface brightness for the effect of finite thickness.
-            
-        :param hz: vertical scale height
-        :type hz: int or float
-        :param M_L: mass to light ratio
-        :type M_L: int or float
-        :param Re: half-light radius in the plane of symmetry
-        :type Re: int or float
-    
-        :param float inc: (**Optional**) observed inclination (not corrected of the galaxy thickness)
-        :param float inc0: (**Optional**) intrinsic inclination (corrected of the galaxy thickness)
-                
-        :param float Ie: (**Optional**) intensity at half-light radius if the galaxy was seen face-on (must correct for inclination effects)
-        :param float mag: (**Optional**) galaxy total integrated magnitude used to compute **Ie** if not given
-        :param float offset: (**Optional**) magnitude offset in the magnitude system used
-        :param float q0: (**Optional**) axis ratio equal to hz/Rd with Rd the disk scale length. If this value is different from None, it overrides **hz**.
-        :param str unit_Ie: (**Optional**) unit for the surface brightness
-        :param str unit_M_L: (**Optional**) unit of the mass to light ratio
-        :param str unit_Re: (**Optional**) unit for the scale radius **Re**
-        """
+    def __init__(self, Re: Union[int, float], hz: Union[int, float], M_L: Union[int, float], 
+                 q0: float = None, Ie: float = None, mag: float = None, offset: float = None, inc: float = None, inc0: float = None, 
+                 unit_Re: str = 'kpc', unit_hz: str = 'kpc', unit_Ie: str = 'erg/(cm^2.s.A)', unit_M_L: str = 'solMass.s.A.cm^2/(erg.kpc^2)', **kwargs) -> None:
         
         MassModelBase.__init__(self, 3, M_L, unit_M_L)
         Sersic.__init__(       self, 1, Re, Ie=Ie, mag=mag, offset=offset, unit_Re=unit_Re, unit_Ie=unit_Ie)
@@ -1216,12 +1235,12 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
     ######################################################
     
     @property
-    def _Rmax_razor_thin(self):
+    def _Rmax_razor_thin(self) -> QuantityType:
         '''Position of the maximum of the razor-thin disk curve'''
         
         return 2.2*self.Rd
     
-    def _velocity_correction(self, R, *args, **kwargs):
+    def _velocity_correction(self, R: Union[float, ndarray], *args, **kwargs) -> Union[float, QuantityType]:
         r'''
         Velocity correction necessary for the rotation curve
         
@@ -1233,6 +1252,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
 
         :param R: radius where the velocity correction is computed
         :type R: float or ndarray[float]
+        
         :returns: velocity correction
         :rtype: float or ndarray[float]
         '''
@@ -1241,12 +1261,13 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         return self._Vmax_correction * np.sqrt(R * np.exp(1-R/self.Rd) / self.Rd)
     
     
-    def _velocity_razor_thin(self, R, *args, **kwargs):
+    def _velocity_razor_thin(self, R: Union[float, ndarray], *args, **kwargs) -> Union[float, ndarray]:
         '''
         Velocity if the disk was razor thin.
                 
         :param R: radius where the velocity is computed
         :type R: float or ndarray[float]
+        
         :returns: velocity if the disk was razor thin
         :rtype: float or ndarray[float]
         
@@ -1259,7 +1280,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         
     
     @property
-    def _Vmax_correction(self):
+    def _Vmax_correction(self) -> QuantityType:
         r'''
         Maximum of the velocity correction
         
@@ -1274,7 +1295,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
     
     
     @property
-    def _Vmax_razor_thin(self):
+    def _Vmax_razor_thin(self) -> QuantityType:
         '''
         Maximum velocity if the disk was razor thin.
         
@@ -1285,7 +1306,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         return disk_RT.Vmax
         
         
-    def profile(self, R, z, *args, **kwargs):
+    def profile(self, R: Union[int, float], z: Union[int, float], *args, **kwargs) -> float:
         r'''
         Light density profile at radius **R** and height **z**
         
@@ -1299,6 +1320,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         :type R: int or float
         :param z: vertical position
         :type z: int or float
+        
         :returns: double exponential profile computed at position (**R**, **z**)
         :rtype: float
         '''
@@ -1308,7 +1330,7 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
         return sersic_profile(R, self.n, self.Re, Ie=self.Ie, bn=self.bn) * np.exp(-np.abs(z)/self.hz) / (2*self.hz)
     
     
-    def velocity(self, R, *args, inner_correction=False, **kwargs):
+    def velocity(self, R: Union[float, ndarray], *args, inner_correction: bool = False, **kwargs) -> QuantityType:
         r'''
         Velocity profile for a self-sustaining 3D double exponential disk against its own gravity through centripedal acceleration
         
@@ -1393,20 +1415,20 @@ class DoubleExponentialDisk(Sersic, MassModelBase):
     #####################################################
     
     @property
-    def _ramp_radius(self, *args, **kwargs):
+    def _ramp_radius(self, *args, **kwargs) -> float:
         '''Compute the radius where the ramp approximation ends (same unit as Rd).'''
      
         lq0 = np.log(self.q0)
         return self.Rd * np.exp(0.767 + 0.86*lq0 - 0.14*lq0**2 - 0.023*lq0**3 + 0.005*lq0**4 + 0.001*lq0**5)
    
     @property
-    def _ramp_slope(self, *args, **kwargs):
+    def _ramp_slope(self, *args, **kwargs) -> float:
         '''Compute the slope for the ramp approximation.'''
        
         radius = self._ramp_radius
         return self.velocity(radius, inner_correction=False) / radius
     
-    def inner_ramp_approximation(self, R, *args, **kwargs):
+    def inner_ramp_approximation(self, R: Union[float, ndarray], *args, **kwargs) -> Union[float, ndarray]:
         '''
         Inner ramp approximation. This gives the linear model which is tagent to the bovy rotation curve. It is used to correct the rotation curves in the inner parts where the bovy correction becomes larger than the razor thin disk velocity.
 

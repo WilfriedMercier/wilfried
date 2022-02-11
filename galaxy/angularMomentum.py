@@ -59,42 +59,40 @@ class PhotoMomentum:
     Class which computes the angular momentum from photometry given a rotation curve. In the **unnormalised** case
     
     .. math::
-        J_z = \sum_i R-i \Sigma (\vec x_i) V(R_i) \Delta S,
+        J_z = \sum_i R_i \Sigma (\vec x_i) V(R_i) \Delta S,
 
     where :math:`\Sigma(\vec x_i)` is the surface brightness profile measured in the photometry at position :math:`\vec x_i`, :math:`R_i` is the radial distance of a pixel i and :math:`\Delta S` is the surface of a pixel.
 
     In the **normalised** case we have instead
     
     .. math::
-        j = \sum_i R-i \Sigma (\vec x_i) V(R_i) / \sum_i \Sigma (\vec x_i),
+        j = \sum_i R-i \Sigma (\vec x_i) V(R_i) / \sum_i \Sigma (\vec x_i).
+        
+    :param z: redshift
+    :type z: int or float
+    :param ndarary image: image to compute the angular momentum from
+    :param xc: centre x position in pixel units
+    :type xc: int or float
+    :param yc: centre y position in pixel units
+    :type yc: int or float
+    :param inc: inclination in degrees if not an Astropy Quantity between 0° (face on) and 90° (edge-on)
+    :type inc: int, float or an Astropy Quantity
+    :param PA: position angle with respect to the North (angles are counted similarly as Galfit) in degrees if not an Astropy Quantity
+    :type PA: int, float or an Astropy Quantity
+    
+    :param pscale: (**Optional**) pixel scale in arcsec/pixel. Default is 0.03 arcsec/pixel.
+    :type pscale: int or float
+    
+    :raises ValueError: if
+    
+    * **xc** < 0 or **yc** < 0
+    * **inc** < 0° or **inc** > 90°
+    * **PA** < -180° or **PA** > 180°
     '''
     
     def __init__(self, z: Union[int, float], image: ndarray, xc: Union[int, float], yc: Union[int, float],
                  inc: Union[int, float, Quantity], PA: Union[int, float, Quantity],
                  pscale: Union[int, float] = 0.03) -> None:
-        r'''
-        Init method.
-        
-        :param z: redshift
-        :type z: int or float
-        :param ndarary image: image to compute the angular momentum from
-        :param xc: centre x position in pixel units
-        :type xc: int or float
-        :param yc: centre y position in pixel units
-        :type yc: int or float
-        :param inc: inclination in degrees if not an Astropy Quantity between 0° (face on) and 90° (edge-on)
-        :type inc: int, float or an Astropy Quantity
-        :param PA: position angle with respect to the North (angles are counted similarly as Galfit) in degrees if not an Astropy Quantity
-        :type PA: int, float or an Astropy Quantity
-        
-        :param pscale: (**Optional**) pixel scale in arcsec/pixel. Default is 0.03 arcsec/pixel.
-        :type pscale: int or float
-        
-        :raises ValueError: if
-            * **xc** < 0 or **yc** < 0
-            * **inc** < 0° or **inc** > 90°
-            * **PA** < -180° or **PA** > 180°
-        '''
         
         if xc < 0 or yc < 0:
             raise ValueError(f'Centre position is ({xc}, {yc}) but it must be strictly positive for both coordinates.')
@@ -216,21 +214,22 @@ class SersicMomentum:
         j = \frac{\int_0^\infty dR~R^2 \Sigma (R) V(R)}{\int_0^\infty dR~R \Sigma (R)},
 
     where :math:`\Sigma(R) = Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]}`.
+    
+    :param n: (**Optional**) Sérsic index
+    :type n: int or float
+    :param Re: (**Optional**) effective radius
+    :type Re: int or float
+    :param Ie: (**Optional**) Surface brightness at Re
+    :type Ie: int or float
+    
+    :raises ValueError: if 
+    
+    * **n** < 0
+    * **Re** <= 0
+    * **Ie** < 0
     '''
     
     def __init__(self,  n: Union[int, float] = 1, Re: Union[int, float] = 10, Ie: Union[int, float] = 10) -> None:
-        r'''
-        Init method.
-        
-        :param Ie: (**Optional**) Surface brightness at Re
-        :type Ie: int or float
-        :param n: (**Optional**) Sérsic index
-        :type n: int or float
-        :param Re: (**Optional**) effective radius
-        :type Re: int or float
-        
-        :raises ValueError: if n < 0 or Re <= 0 or Ie < 0
-        '''
         
         if n < 0:
             raise ValueError(f'Sérsic index n is {n} but it must be positive.')
@@ -264,7 +263,7 @@ class SersicMomentum:
         Compute the angular momentum using a linear ramp model up to radius r whose rotation curve is
         
         .. math::
-            V(R) &= V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t
+            V(R) = V_t \times R/r_t \ \ {\rm{if}}\ \ R \leq r_t\ \ {\rm{else}}\ \ V_t
 
         :param r: radius where the angular momentum is computed
         :type r: int or float
@@ -278,10 +277,12 @@ class SersicMomentum:
         
         :returns: central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.
         :rtype: int or float
+        
         :raises ValueError: if
-            * r < 0
-            * rt <= 0 
-            * vt <= 0
+        
+        * r < 0
+        * rt <= 0 
+        * vt <= 0
         '''
         
         if r < 0:
@@ -387,9 +388,8 @@ def momentum(rt, vt, n=1, Re=10, Ie=10, normalise=True):
     where 
     
     .. math::
-        \Sigma(R) &= Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]}
-        
-        V(R) &= V_t \times R/r_t \ \ \rm{if}\ \ R \leq r_t \ \ \rm{else} \ \ V_t
+        \Sigma(R) &= Ie \times e^{-b_n \left [ (R/R_e)^{1/n} - 1 \right ]} \\
+        V(R) &= V_t \times R/r_t \ \ {\rm{if}}\ \ R \leq r_t \ \ {\rm{else}} \ \ V_t
         
     :param rt: kinematical transition radius
     :type rt: int or float
@@ -407,7 +407,10 @@ def momentum(rt, vt, n=1, Re=10, Ie=10, normalise=True):
     :returns: central angular momentum along the vertical axis. When normalised, the unit is that of rt*vt.
     :rtype: int or float
     
-    :raises ValueError: if rt <= 0 or vt <= 0
+    :raises ValueError: if 
+    
+    * **rt** <= 0 
+    * **vt** <= 0
     '''
     
     if rt<=0:

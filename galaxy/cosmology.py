@@ -9,6 +9,7 @@ A set of functions to easily compute standard calculations in extragalactic phys
     This relies heavily on a custom, Python 3 adapted version of `cosmolopy <https://roban.github.io/CosmoloPy/>`_.
 """
 
+from   typing              import Union, Dict, Optional, Tuple, List
 from   scipy.optimize      import root
 from   astropy.coordinates import SkyCoord
 import cosmolopy.distance  as     cd
@@ -17,11 +18,12 @@ import cosmolopy.constants as     cc
 #: Default cosmology
 COSMOLOGY = cd.set_omega_k_0({'omega_M_0' : 0.3, 'omega_lambda_0' : 0.7, 'h' : 0.72})
 
-def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
+def angular_diameter_size(z: Union[int, float], theta: Union[int, float], 
+                          scaleFactor: Union[int, float]=1.0, cosmology: Optional[Dict]=None) -> float:
     r'''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Compute the size of an object with extent theta at redshift z from the angular diameter distance as size=theta*angular diameter distance.
+    Compute the size of an object with extent **theta** at redshift **z** from the angular diameter distance.
 
     :param z: redshift of the object
     :type z: int or float
@@ -32,12 +34,12 @@ def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
     :param scaleFactor: (**Optional**)  if theta is not in radian, please provide a correct scale factor following the formula
     
         .. math::
-            \theta [\rm{rad}] = \theta [\rm{your~unit}] \times scaleFactor [\rm{rad/your~unit}].
+            \theta [{\rm{rad}}] = \theta [{\rm{your~unit}}] \times scaleFactor [{\rm{rad/your~unit}}].
             
     :type scaleFactor: int or float
     
     :returns: physical size in **kpc**
-    :rtype: int or float
+    :rtype: float
     '''
     
     if cosmology is None:
@@ -46,11 +48,12 @@ def angular_diameter_size(z, theta, scaleFactor=1.0, cosmology=None):
     return cd.angular_diameter_distance(z, **cosmology)*theta*scaleFactor*1000
     
 
-def comoving_separation(z, theta, cosmology=None):
+def comoving_separation(z: Union[int, float], theta: Union[int, float], 
+                        cosmology: Optional[Dict]=None) -> float:
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Compute the tranverse distance (at fixed redshift) between objects separated by an angle theta on the sky in comoving units.
+    Compute the tranverse distance (at fixed redshift) between objects separated by an angle **theta** on the sky in comoving units.
 
     :param z: redshift of the object
     :type z: int or float
@@ -60,7 +63,7 @@ def comoving_separation(z, theta, cosmology=None):
     :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy <https://roban.github.io/CosmoloPy/>`_ for more information.
     
     :returns: comoving separation in **Mpc**
-    :rtype: int or float
+    :rtype: float
     '''
     
     if cosmology is None:
@@ -69,7 +72,8 @@ def comoving_separation(z, theta, cosmology=None):
     cosmology     = cd.set_omega_k_0(cosmology)
     return cd.comoving_distance_transverse(z, **cosmology)*theta
 
-def comoving_los(z1, z2, cosmology=None):
+def comoving_los(z1: Union[int, float], z2: Union[int, float], 
+                 cosmology: Optional[Dict]=None) -> float:
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -83,7 +87,7 @@ def comoving_los(z1, z2, cosmology=None):
     :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy <https://roban.github.io/CosmoloPy/>`_ for more information.
     
     :returns: comoving distance in **Mpc**
-    :rtype: int or float
+    :rtype: float
     '''
     
     if cosmology is None:
@@ -92,7 +96,8 @@ def comoving_los(z1, z2, cosmology=None):
     cosmology     = cd.set_omega_k_0(cosmology)
     return cd.comoving_distance(z1, z0=z2, **cosmology)
  
-def dz_from_dage(z, dage, cosmology=None):
+def dz_from_dage(z: Union[int, float], dage: Union[int, float],
+                 cosmology: Optional[Dict]=None) -> Tuple[float, float]:
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -153,7 +158,8 @@ def dz_from_dage(z, dage, cosmology=None):
     return sol_hig['x'][0], sol_low['x'][0]
     
 
-def separation(z, ra1, dec1, ra2, dec2, units=['deg', 'deg', 'deg', 'deg']):
+def separation(z: Union[int, float], ra1: float, dec1: float, ra2: float, dec2: float,
+               units: Union[str, List[str]] = ['deg', 'deg', 'deg', 'deg']) -> float:
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -172,7 +178,8 @@ def separation(z, ra1, dec1, ra2, dec2, units=['deg', 'deg', 'deg', 'deg']):
 
     :returns: comoving separation in **Mpc**
     :rtype: float
-    :raises ValueError: if units is neither an iterable of length 4 or a str
+    
+    :raises ValueError: if **units** is neither an iterable of length 4 or a str
     '''
     
     if isinstance(units, list):
