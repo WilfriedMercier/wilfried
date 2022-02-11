@@ -1,4 +1,6 @@
 Galaxies thickness
 ==================
 
+.. autofunction:: galaxy.morphology.correct_inclination
+.. autofunction:: galaxy.morphology.correct_I0
 .. autofunction:: galaxy.morphology.disk_thickness

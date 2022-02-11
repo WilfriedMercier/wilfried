@@ -380,7 +380,7 @@
     
 <div class="viewcode-block" id="fluxSersic"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.fluxSersic">[docs]</a><span class="k">def</span> <span class="nf">fluxSersic</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">re</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> 
                <span class="n">bn</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Ie</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mag</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-    <span class="sd">"""</span>
+    <span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Compute the flux of a single Sersic profile of index n up to radius r using raw integration.</span>
@@ -436,7 +436,7 @@
 <div class="viewcode-block" id="fluxSersics"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.fluxSersics">[docs]</a><span class="k">def</span> <span class="nf">fluxSersics</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">listn</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">listRe</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                 <span class="n">listbn</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">listIe</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">listMag</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
                 <span class="n">listOffset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">analytical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-    <span class="sd">"""</span>
+    <span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Compute the flux of a sum of Sersic profiles up to radius r (starting from 0).</span>
@@ -486,7 +486,7 @@
 <div class="viewcode-block" id="ratioFlux1D"><a class="viewcode-back" href="../../galaxy/morphology/SersicFlux.html#galaxy.morphology.ratioFlux1D">[docs]</a><span class="k">def</span> <span class="nf">ratioFlux1D</span><span class="p">(</span><span class="n">r1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">listn</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">listRe</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
                 <span class="n">listbn</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">listIe</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">listMag</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">listOffset</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">analytical</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">""" </span>
+    <span class="sa">r</span><span class="sd">""" </span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Compute the ratio of the flux of the sum of different Sersic profiles for a single galaxy at two different positions in the galaxy plane only.</span>
@@ -553,7 +553,7 @@
                 <span class="n">inclination</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">PA</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">arcsecToGrid</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">fineSampling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">81</span><span class="p">,</span>
                 <span class="n">PSF</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'name'</span><span class="p">:</span><span class="s1">'Gaussian2D'</span><span class="p">,</span> <span class="s1">'FWHMX'</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">'FWHMY'</span><span class="p">:</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">'sigmaX'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'sigmaY'</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">:</span><span class="s1">'arcsec'</span><span class="p">},</span>
                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">"""</span>
+    <span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Compute the ratio of the flux of a bulge+disk model between two radii either in the galaxy plane or in the sky plane.</span>
@@ -745,7 +745,7 @@
 <span class="c1">############################################################################################</span>
 
 <div class="viewcode-block" id="PAWrapTypes"><a class="viewcode-back" href="../../galaxy/morphology/Morpho.html#galaxy.morphology.PAWrapTypes">[docs]</a><span class="k">class</span> <span class="nc">PAWrapTypes</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">'''Types of PA wraps.'''</span>
+    <span class="sa">r</span><span class="sd">'''Types of PA wraps.'''</span>
     
     <span class="c1">#: Kinematic wrapping between -180 deg and +180 deg</span>
     <span class="n">KIN</span>    <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span>
@@ -754,7 +754,7 @@
     <span class="n">MORPHO</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">auto</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="wrapPA"><a class="viewcode-back" href="../../galaxy/morphology/Morpho.html#galaxy.morphology.wrapPA">[docs]</a><span class="k">def</span> <span class="nf">wrapPA</span><span class="p">(</span><span class="n">PA</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">wrap_type</span><span class="p">:</span> <span class="n">PAWrapTypes</span> <span class="o">=</span> <span class="n">PAWrapTypes</span><span class="o">.</span><span class="n">KIN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">'''</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    Wrap a given PA value given the wrapping type.</span>
 <span class="sd">    </span>
 <span class="sd">    :param PA: position angle to wrap in degrees</span>
@@ -787,7 +787,7 @@
     
 
 <div class="viewcode-block" id="computePAs"><a class="viewcode-back" href="../../galaxy/morphology/Morpho.html#galaxy.morphology.computePAs">[docs]</a><span class="k">def</span> <span class="nf">computePAs</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'minmax'</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">returnThresholds</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-    <span class="sd">'''</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Compute a set of PA values for a galaxy using different minimum threshold values.</span>
@@ -892,7 +892,7 @@
 <span class="c1">##########################################################################################################</span>
 
 <div class="viewcode-block" id="disk_thickness"><a class="viewcode-back" href="../../galaxy/morphology/Thickness.html#galaxy.morphology.disk_thickness">[docs]</a><span class="k">def</span> <span class="nf">disk_thickness</span><span class="p">(</span><span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">'''</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
 <span class="sd">    </span>
 <span class="sd">    Return the thickness of MS disk-like galaxies (see Mercier et al., 2021) prescription as a function of redshift.</span>
@@ -917,8 +917,8 @@
     <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">lq0</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">correct_inclination</span><span class="p">(</span><span class="n">inc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">q0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">'''</span>
+<div class="viewcode-block" id="correct_inclination"><a class="viewcode-back" href="../../galaxy/morphology/Thickness.html#galaxy.morphology.correct_inclination">[docs]</a><span class="k">def</span> <span class="nf">correct_inclination</span><span class="p">(</span><span class="n">inc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">q0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    Correct the inclination using the given disk thickness assuming the mass distribution is an oblate system. Correction is from Bottinelli et al., 1983 and is given by</span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
@@ -957,12 +957,12 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">newinc</span>      <span class="o">*=</span> <span class="mi">180</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
         
-    <span class="k">return</span> <span class="n">newinc</span>
+    <span class="k">return</span> <span class="n">newinc</span></div>
     
 
-<span class="k">def</span> <span class="nf">correct_I0</span><span class="p">(</span><span class="n">I0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">q0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> 
+<div class="viewcode-block" id="correct_I0"><a class="viewcode-back" href="../../galaxy/morphology/Thickness.html#galaxy.morphology.correct_I0">[docs]</a><span class="k">def</span> <span class="nf">correct_I0</span><span class="p">(</span><span class="n">I0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">q0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> 
                <span class="n">inc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inc0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">'''</span>
+    <span class="sa">r</span><span class="sd">'''</span>
 <span class="sd">    Correct the observed central surface brightness of a double exponential disk when fitted with a single exponential disk due to the effect of finite thickness. </span>
 <span class="sd">    </span>
 <span class="sd">    .. note::</span>
@@ -1012,7 +1012,7 @@
     
     <span class="n">r0</span>        <span class="o">=</span> <span class="p">(</span><span class="n">q0</span> <span class="o">*</span> <span class="n">sini0</span> <span class="o">+</span> <span class="n">cosi0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q0</span> <span class="o">*</span> <span class="n">q0</span> <span class="o">*</span> <span class="n">sini0</span> <span class="o">*</span> <span class="n">sini0</span> <span class="o">+</span> <span class="n">cosi0</span> <span class="o">*</span> <span class="n">cosi0</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">r0</span> <span class="o">*</span> <span class="n">I0</span>
+    <span class="k">return</span> <span class="n">r0</span> <span class="o">*</span> <span class="n">I0</span></div>
     
 
 <span class="c1">#################################################################################################################</span>
