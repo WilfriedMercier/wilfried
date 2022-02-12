@@ -1,0 +1,20 @@
+.. wilfried library documentation master file, created by
+   sphinx-quickstart on Tue Mar 23 14:29:46 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Useful utilities
+================
+
+Fonctions and classes in this module are not galaxy-related. They can be used for other purposes.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   ./coloredMessages.rst
+   ./dict.rst
+   ./io.rst
+   ./list.rst
+   ./strings.rst
+   ./plotUtilities/index.rst

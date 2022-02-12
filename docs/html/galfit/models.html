@@ -1,0 +1,1064 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Galfit auto-routines" href="galfit.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.09.22"/>
+        <title>Galfit models - wilfried library 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-admonition-background: orange;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">wilfried library 1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">wilfried library 1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Required dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../utilities/index.html">Useful utilities</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/coloredMessages.html">Colored messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/dict.html">Dictionaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/io.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/list.html">List manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/strings.html">Strings manipulation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/plotUtilities/index.html">Plot utilities</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/plotUtilities/asManyHists.html">Histograms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/plotUtilities/hst.html">Galfit related plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/plotUtilities/misc.html">Miscellaneous</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities/plotUtilities/singleContour.html">Contours</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../galaxy/index.html">Galaxy module</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/angularMomentum.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/cosmology.html">Cosmology computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/geometry.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/kinematics.html">Galaxy kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/misc.html">Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/massModels.html">Galaxy mass models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/models.html">Galaxy models</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../galaxy/morphology/index.html">Galaxies morphology</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/SersicFlux.html">Sersic fluxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/Morpho.html">Morphological parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/Thickness.html">Galaxies thickness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/MUSE.html">MUSE related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/Other.html">Other Sersic related functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../galaxy/photometry/index.html">Galaxies photometry</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/photometry/Fluxes.html">Fluxes, colour excess and attenuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/photometry/Masses_SFR.html">Masses and SFR estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/photometry/Magnitudes.html">Magnitude conversions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Galfit module</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="galfit.html">Galfit auto-routines</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Galfit models</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-galfit.models">
+<span id="galfit-models"></span><h1>Galfit models<a class="headerlink" href="#module-galfit.models" title="Permalink to this headline">¶</a></h1>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Galfit model functions.</p>
+<div class="contents local topic" id="table-of-contents">
+<p class="topic-title">Table of contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#miscellaneous" id="id1">Miscellaneous</a></p>
+<ul>
+<li><p><a class="reference internal" href="#test" id="id2">Test</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#galfit-profiles" id="id3">Galfit profiles</a></p></li>
+<li><p><a class="reference internal" href="#galfit-additional-tags" id="id4">Galfit additional tags</a></p></li>
+</ul>
+</div>
+<section id="miscellaneous">
+<span id="index-0"></span><h2><a class="toc-backref" href="#id1">Miscellaneous</a><a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h2>
+<section id="test">
+<h3><a class="toc-backref" href="#id2">Test</a><a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.createIsFixedDict">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">createIsFixedDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullListOfNames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#createIsFixedDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.createIsFixedDict" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Make a dictionnary which stores which parameters should be fixed (value of 0) and which should not (value of 1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixedParams</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – <p>list of parameters names which must be fixed during galfit fitting routine.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>BY DEFAULT, ALL PARAMETERS ARE SET FREE.</p>
+</div>
+<p class="rubric"><strong>Example</strong></p>
+<p>For instance, if one wants to fix <code class="samp docutils literal notranslate"><span class="pre">re</span></code> and <code class="samp docutils literal notranslate"><span class="pre">n</span></code>, one may provide</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fixedParams</span><span class="o">=</span><span class="p">[</span><span class="s2">"re"</span><span class="p">,</span> <span class="s2">"n"</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">createIsFixedDict</span><span class="p">(</span><span class="n">fullListOfNames</span><span class="p">,</span> <span class="n">fixedParams</span><span class="p">)</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>fullListOfNames</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – complete list of parameter names which can either be fixed or let free</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionnary with key names equal to parameter names of the model and key values equal to 0 or 1</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.createCommentsDict">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">createCommentsDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullListOfNames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#createCommentsDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.createCommentsDict" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Make a dictionnary which stores the comments associated to each line in the galfit configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>dictionnary which contains a comment for each line. If <strong>comments</strong> is None, default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>fullListOfNames</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – complete list of parameter names which can either be fixed or let free</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionnary with key names equal to parameter names of the model and key values equal to their comment</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genModel">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listLineIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedOrNot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paramsFormat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mainComment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">removeLine0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genModel" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Very general function which can output any GALFIT model configuration.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function is not supposed to be used directly by the user, but should be called by a function whose goal is to output the galfilt configuration of a specific profile.</p>
+<p>This should only be seen as a bare skeleton which is used in function calls in order to build specific galfit model configuration for feedme files.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixedOrNot</strong> (<em>list</em><em>[</em><em>bool</em><em>]</em>) – whether each parameter given in <strong>params</strong> must be fixed during GALFIT fitting routine or not. This takes the same shape as <strong>params</strong>.</p></li>
+<li><p><strong>listLineIndex</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of GALFIT indices for each line (generally from 1 to 10, including Z at the end)</p></li>
+<li><p><strong>modelName</strong> (<em>str</em>) – name of the model used</p></li>
+<li><p><strong>params</strong> (<em>list</em>) – <p>parameters value for each line given in the same order as the indices. If, for a certain index, there are more than one parameter (ex: model center), then provide these as a list.</p>
+<p class="rubric"><strong>*Example</strong></p>
+<p>Say two indices are given such that</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listLineIndex</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> 
+</pre></div>
+</div>
+<p>where the first one is for the Sersic index n=1 and the other for the effective radius re=10, then we would have</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Say three indices are given such that</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listLineIndex</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> 
+</pre></div>
+</div>
+<p>with the first two as before and the last one as the model center position (let us assume it lies at position (3, 5)), then we would have</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>This generalises for any number of parameters.</p>
+</p></li>
+<li><p><strong>paramsFormat</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – <p>format of the parameters used for the output. The shape of this parameter should be identical as that of params.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This uses old Python format. If you do not care about the output format, just provide a simple format for each argument (“%d” for int, “%f” for float, “%e” for scientific notation, etc.).</p>
+<p>Otherwise, you can use more complex notation to truncate values, align strings to the left or the right and so on.</p>
+</div>
+</p></li>
+<li><p><strong>comments</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) comments to add at the end of the lines. If you do not want to provide a comment for a specific index, just give None.</p></li>
+<li><p><strong>mainComment</strong> (<em>str</em>) – (<strong>Optional</strong>) main comment which appears before the configuration line (generally the full model name)</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – (<strong>Optional</strong>) prefix to add before the line index. For instance the index 1) would become B1) with the prefix “B”.</p></li>
+<li><p><strong>removeLine0</strong> (<em>bool</em>) – whether to remove line number 0 (model name). This is useful when one wants to make an output for additional terms such as bending modes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>galfit model configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+</section>
+<section id="galfit-profiles">
+<h2><a class="toc-backref" href="#id3">Galfit profiles</a><a class="headerlink" href="#galfit-profiles" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.gendeVaucouleur">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">gendeVaucouleur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#gendeVaucouleur"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.gendeVaucouleur" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a de Vaucouleur function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude of the profile</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>re</strong> (<em>float</em>) – (<strong>Optional</strong>) half-light (effective) radius of the profile (in pixel)</p></li>
+<li><p><strong>bOvera</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio b/a of the minor over major axes. Must be between 0 and 1.</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>de Vaucouleur GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genEdgeOnDisk">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genEdgeOnDisk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diskScaleLength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diskScaleHeight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genEdgeOnDisk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genEdgeOnDisk" title="Permalink to this definition">¶</a></dt>
+<dd><p>. codeauthor:: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</p>
+<p>Construct an Edge-on disk function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diskScaleHeight</strong> (<em>float</em>) – (<strong>Optional</strong>) disk scale-height perpendicular to the disk (in pixel)</p></li>
+<li><p><strong>mu</strong> (<em>float</em>) – (<strong>Optional</strong>) central surface brightness (<span class="math notranslate nohighlight">\(\rm{mag/arcsec^2}\)</span>) of the profile</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>diskScaleLength</strong> (<em>float</em>) – major axis disk scale-length (in pixel)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Edge-on disk GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genExpDisk">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genExpDisk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genExpDisk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genExpDisk" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct an exponential disk function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude of the profile</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>rs</strong> (<em>float</em>) – (<strong>Optional</strong>) disk scale-length (in pixel) such that <span class="math notranslate nohighlight">\(R_{\rm{s}} = R_{\rm{e}}/1.678\)</span>, with <span class="math notranslate nohighlight">\(R_{\rm{e}}\)</span> the effective radius of an equivalent n=1 Sersic profile.</p></li>
+<li><p><strong>bOvera</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio b/a of the minor over major axes (must be between 0 and 1)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Exponential disk GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genFerrer">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genFerrer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alphaFerrer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betaFerrer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genFerrer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genFerrer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a Ferrer function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu</strong> (<em>float</em>) – (<strong>Optional</strong>) surface brightness (<span class="math notranslate nohighlight">\(\rm{mag/arcsec^2}\)</span>) at radius rb</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>rt</strong> (<em>float</em>) – (<strong>Optional</strong>) outer truncation radius (in pixel)</p></li>
+<li><p><strong>alphaFerrer</strong> (<em>float</em>) – (<strong>Optional</strong>) sharpness of the truncation</p></li>
+<li><p><strong>betaFerrer</strong> (<em>float</em>) – (<strong>Optional</strong>) central slope</p></li>
+<li><p><strong>bOvera</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio b/a of the minor over major axes (must be between 0 and 1)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Ferrer GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genGaussian">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genGaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FWHM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genGaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a Gaussian function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FWHM</strong> (<em>float</em>) – (<strong>Optional</strong>) full width at half maximum of the PSF (in pixel)</p></li>
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude of the profile</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>bOvera</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio b/a of the minor over major axes (must be between 0 and 1)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Gaussian GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genKing">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genKing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">powerlaw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genKing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genKing" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct an empirical King profile configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mu0</strong> (<em>float</em>) – (<strong>Optional</strong>) central surface brightness (<span class="math notranslate nohighlight">\(\rm{mag/arcsec^2}\)</span>)</p></li>
+<li><p><strong>powerlaw</strong> (<em>float</em>) – (<strong>Optional</strong>) powerlaw (powerlaw=2.0 for a standard King profile)</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>rc</strong> (<em>float</em>) – (<strong>Optional</strong>) core radius (in pixel)</p></li>
+<li><p><strong>rt</strong> (<em>float</em>) – (<strong>Optional</strong>) truncation radius (in pixel)</p></li>
+<li><p><strong>bOvera</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio b/a of the minor over major axes (must be between 0 and 1)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>King profile GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genMoffat">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genMoffat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FWHM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">powerlaw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genMoffat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genMoffat" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a de Vaucouleur function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FWHM</strong> (<em>float</em>) – (<strong>Optional</strong>) full width at half maximum of the PSF (in pixel)</p></li>
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude of the profile</p></li>
+<li><p><strong>powerlaw</strong> (<em>float</em>) – (<strong>Optional</strong>) powerlaw</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>bOvera</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio b/a of the minor over major axes (must be between 0 and 1)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns a complete de Vaucouleur function galfit configuration as formatted text.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genNuker">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genNuker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genNuker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genNuker" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a Nuker function configuration.</p>
+<dl class="field-list">
+<dt class="field-odd">param float mu</dt>
+<dd class="field-odd"><p>(<strong>Optional</strong>) surface brightness (<span class="math notranslate nohighlight">\(\rm{mag/arcsec^2}\)</span>) at radius rb</p>
+</dd>
+<dt class="field-even">param x</dt>
+<dd class="field-even"><p>(<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p>
+</dd>
+<dt class="field-odd">type x</dt>
+<dd class="field-odd"><p>int or float</p>
+</dd>
+<dt class="field-even">param y</dt>
+<dd class="field-even"><p>(<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p>
+</dd>
+<dt class="field-odd">type y</dt>
+<dd class="field-odd"><p>int or float</p>
+</dd>
+<dt class="field-even">param float rb</dt>
+<dd class="field-even"><p>(<strong>Optional</strong>) break radius (in pixel) where the slope is the average between <span class="math notranslate nohighlight">\(\beta\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span>, and where the maximum curvature (in log space) is reached. It roughly corresponds to the radius of transition between the inner and outer powerlaws.</p>
+</dd>
+<dt class="field-odd">param float alpha</dt>
+<dd class="field-odd"><p>(<strong>Optional</strong>) sharpness of transition between the inner part and the outer part</p>
+</dd>
+<dt class="field-even">param float beta</dt>
+<dd class="field-even"><p>(<strong>Optional</strong>) outer powerlaw slope</p>
+</dd>
+<dt class="field-odd">param float bOvera</dt>
+<dd class="field-odd"><p>(<strong>Optional</strong>) axis ratio b/a of the minor over major axes (must be between 0 and 1)</p>
+</dd>
+<dt class="field-even">param dict comments</dt>
+<dd class="field-even"><p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</dd>
+<dt class="field-odd">param float gamma</dt>
+<dd class="field-odd"><p>(<strong>Optional</strong>) inner powerlaw slope</p>
+</dd>
+<dt class="field-even">param bool noComments</dt>
+<dd class="field-even"><p>(<strong>Optional</strong>) whether to not provide any comments or not</p>
+</dd>
+<dt class="field-odd">param PA</dt>
+<dd class="field-odd"><p>(<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p>
+</dd>
+<dt class="field-even">type PA</dt>
+<dd class="field-even"><p>int or float</p>
+</dd>
+<dt class="field-odd">param list fixedParams</dt>
+<dd class="field-odd"><p>(<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p>
+</dd>
+<dt class="field-even">param bool skipComponentInResidual</dt>
+<dd class="field-even"><p>(<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Nuker GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genPSF">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genPSF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genPSF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genPSF" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct PSF function configuration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This PSF is technically not a function, but uses the psf image provided in the header to fit a given point source.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude of the profile</p></li>
+<li><p><strong>powerlaw</strong> (<em>float</em>) – (<strong>Optional</strong>) powerlaw</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns a complete PSF function galfit configuration as formatted text.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genSersic">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genSersic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bOvera</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genSersic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genSersic" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a Sersic function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mag</strong> (<em>float</em>) – (<strong>Optional</strong>) total integrated magnitude of the profile</p></li>
+<li><p><strong>powerlaw</strong> (<em>float</em>) – (<strong>Optional</strong>) powerlaw</p></li>
+<li><p><strong>x</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) X position of the de Vaucouleur profile center (in pixel)</p></li>
+<li><p><strong>y</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) Y position of the de Vaucouleur profile center  (in pixel)</p></li>
+<li><p><strong>re</strong> (<em>float</em>) – half-light (effective) radius of the profile (in pixel)</p></li>
+<li><p><strong>bOvera</strong> (<em>float</em>) – (<strong>Optional</strong>) axis ratio b/a of the minor over major axes (must be between 0 and 1)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>n</strong> (<em>int</em><em> or </em><em>float</em>) – Sersic index</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>PA</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) position angle of the morphological major axis on the sky (in degrees). Up is 0° and Left is 90°.</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sersic GALFT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.genSky">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">genSky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xGradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yGradient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipComponentInResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#genSky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.genSky" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a sky function configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>background</strong> (<em>float</em>) – (<strong>Optional</strong>) sky background  (in ADU counts)</p></li>
+<li><p><strong>xGradient</strong> (<em>float</em>) – (<strong>Optional</strong>) sky gradient along x, <span class="math notranslate nohighlight">\(d{\rm{sky}}/dx\)</span> (in ADU/pixel)</p></li>
+<li><p><strong>yGradient</strong> (<em>float</em>) – (<strong>Optional</strong>) sky gradient along y, <span class="math notranslate nohighlight">\(d{\rm{sky}}/dy\)</span> (in ADU/pixel)</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionnary which contains a comment for each line. By default, it is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+<li><p>to add a comment to the line with index Z, use the key name ‘Zline’</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+<li><p><strong>skipComponentInResidual</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not take into account this component when computing the residual or not. If False, the residual will skip this component in the best-fit model.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Return a complete sky function galfit configuration as formatted text.</p>
+</dd></dl>
+</section>
+<section id="galfit-additional-tags">
+<h2><a class="toc-backref" href="#id4">Galfit additional tags</a><a class="headerlink" href="#galfit-additional-tags" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.bendingModes">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">bendingModes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listModes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listModesValues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.5]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#bendingModes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.bendingModes" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct bending modes GALFIT configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listModes</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – (<strong>Optional</strong>) mode number</p></li>
+<li><p><strong>listModesValues</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) value of the corresponding mode</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>(<strong>Optional</strong>) dictionary which contains a comment for each line.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, <strong>comments</strong> is set to None, and default comments will be used instead.</p>
+<p>The dictionnary key names are the mode number. For instance</p>
+<ul>
+<li><p>1 for bending mode 1</p></li>
+<li><p>2 for bending mode 2, and so on…</p></li>
+</ul>
+<p>The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em>) – (<strong>Optional</strong>) list of parameter names which must be fixed during galfit fitting routine. See <a class="reference internal" href="#galfit.models.genModel" title="galfit.models.genModel"><code class="xref py py-func docutils literal notranslate"><span class="pre">genModel()</span></code></a> for more information.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bending modes GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.boxy_diskyness">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">boxy_diskyness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isFixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#boxy_diskyness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.boxy_diskyness" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a boxy/diskyness (genralised ellipses) GALFIT configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parma bool isFixed</dt>
+<dd class="field-odd"><p>(<strong>Optional</strong>) whether to fix the parameter during galfit fitting routine</p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>value</strong> (<em>float</em>) – value of the diskyness/boxyness parameter (negative = more disky, positive = more boxy)</p></li>
+<li><p><strong>comment</strong> (<em>str</em>) – comment to append at the end of the line</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>boxyness/diskyness GALFIT configuration</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galfit.models.fourierModes">
+<span class="sig-prename descclassname"><span class="pre">galfit.models.</span></span><span class="sig-name descname"><span class="pre">fourierModes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listModes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listModesAmplitudes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1.0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listModesPhases</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixedParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noComments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galfit/models.html#fourierModes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galfit.models.fourierModes" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct Azimuthal fourier modes GALFIT configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listModes</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – mode number</p></li>
+<li><p><strong>listModesAmplitudes</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – amplitudes of the corresponding mode</p></li>
+<li><p><strong>listModesPhases</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – phases of the corresponding mode</p></li>
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>dictionary which contains a comment for each line. By default, comments is set to None, and default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The dictionnary key names are the modes number followed by A for amplitude and P for phase. For instance</p>
+<ul>
+<li><p>’1A’ for the amplitude of the fourier mode 1</p></li>
+<li><p>’2P’ for the phase of Fourier mode 2, and so on…</p></li>
+</ul>
+<p>The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+</p></li>
+<li><p><strong>fixedParams</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – <p>list of Fourier modes amplitudes and/or phases which must be fixed in GALFIT.</p>
+<p class="rubric"><strong>Example</strong></p>
+<p>Say one wants to fix the amplitude of the Fourier mode 1 and the phase of Fourier mode 2, then one may write</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fixedParams</span><span class="o">=</span><span class="p">[</span><span class="s1">'1A'</span><span class="p">,</span> <span class="s1">'2P'</span><span class="p">]</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – whether to provide no comments or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Azimuthal fourier modes GALFIT configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="galfit.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Galfit auto-routines</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2022, Wilfried Mercier |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>. |
+            <a class="muted-link" href="../_sources/galfit/models.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Galfit models</a><ul>
+<li><a class="reference internal" href="#miscellaneous">Miscellaneous</a><ul>
+<li><a class="reference internal" href="#test">Test</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#galfit-profiles">Galfit profiles</a></li>
+<li><a class="reference internal" href="#galfit-additional-tags">Galfit additional tags</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/main.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

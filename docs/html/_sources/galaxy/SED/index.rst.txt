@@ -1,0 +1,33 @@
+Resolved mass and SFR maps
+==========================
+
+This module contains utility functions to produce resolved stellar mass and SFR maps using pixel per pixel SED fitting techniques.
+
+Two SED fitting codes can be used: LePhare and Cigale.
+
+In order for this module to work, you must follow the installation instructions for the code you want to use.
+
+This module defines three types of classes:
+
+   * SED objects
+   * Filter lists
+   * Catalogues
+
+In order to run one of the SED fitting codes on a galaxy, one must:
+
+   1. Generate Filter objects for each observed band
+   2. Combine the filters into a FilterList. This ensures that data have the same format and that there are no dupplicates. On top of that, masks can be provided and data can be automatically rescaled depending on the code used.
+   3. Transform the filter list into a Catalogue object comptaible with the code to be used
+   4. Generate a SED object with the user-defined SED fitting parameters
+   5. Run the SED fitting by providing the Cataogue to the SED object
+
+Examples will be given once the code has been tested.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   ./sed.rst
+   ./catalogues.rst
+   ./filters.rst
+   ./misc.rst

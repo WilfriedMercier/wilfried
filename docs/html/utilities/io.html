@@ -1,0 +1,520 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="List manipulations" href="list.html" /><link rel="prev" title="Dictionaries" href="dict.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.09.22"/>
+        <title>Input/Output - wilfried library 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-admonition-background: orange;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">wilfried library 1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">wilfried library 1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Required dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Useful utilities</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="coloredMessages.html">Colored messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dict.html">Dictionaries</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">Strings manipulation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="plotUtilities/index.html">Plot utilities</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="plotUtilities/asManyHists.html">Histograms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plotUtilities/hst.html">Galfit related plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plotUtilities/misc.html">Miscellaneous</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plotUtilities/singleContour.html">Contours</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../galaxy/index.html">Galaxy module</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/angularMomentum.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/cosmology.html">Cosmology computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/geometry.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/kinematics.html">Galaxy kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/misc.html">Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/massModels.html">Galaxy mass models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galaxy/models.html">Galaxy models</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../galaxy/morphology/index.html">Galaxies morphology</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/SersicFlux.html">Sersic fluxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/Morpho.html">Morphological parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/Thickness.html">Galaxies thickness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/MUSE.html">MUSE related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/morphology/Other.html">Other Sersic related functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../galaxy/photometry/index.html">Galaxies photometry</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/photometry/Fluxes.html">Fluxes, colour excess and attenuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/photometry/Masses_SFR.html">Masses and SFR estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galaxy/photometry/Magnitudes.html">Magnitude conversions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../galfit/index.html">Galfit module</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../galfit/galfit.html">Galfit auto-routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../galfit/models.html">Galfit models</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="input-output">
+<h1>Input/Output<a class="headerlink" href="#input-output" title="Permalink to this headline">¶</a></h1>
+<section id="list-of-available-functions">
+<h2>List of available functions<a class="headerlink" href="#list-of-available-functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#is-votable">is_VOtable</a></p></li>
+<li><p><a class="reference internal" href="#loadvotable">loadVOtable</a></p></li>
+<li><p><a class="reference internal" href="#votablecolumns">VOtableColumns</a></p></li>
+<li><p><a class="reference internal" href="#write-array-to-vot">write_array_to_vot</a></p></li>
+<li><p><a class="reference internal" href="#add-new-array-to-previous">add_new_array_to_previous</a></p></li>
+<li><p><a class="reference internal" href="#move-bad-fields-to-bottom">move_bad_fields_to_bottom</a></p></li>
+</ul>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Below are a few examples on how to use some functions. First, let us generate fake data and write them into a VOtable file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
+
+<span class="n">tab</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">'ID'</span><span class="p">,</span> <span class="s1">'value1'</span><span class="p">,</span> <span class="s1">'value2'</span><span class="p">))</span>
+<span class="n">tab</span><span class="o">.</span><span class="n">add_row</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>
+<span class="n">tab</span><span class="o">.</span><span class="n">add_row</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">tab</span><span class="o">.</span><span class="n">add_row</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">tab</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'data.vot'</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'votable'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can play with the VOtable file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wilfried.utilities.io</span> <span class="kn">import</span> <span class="n">is_VOtable</span><span class="p">,</span> <span class="n">loadVOtable</span><span class="p">,</span> <span class="n">VOtableColumns</span><span class="p">,</span> <span class="n">write_array_to_vot</span>
+
+<span class="n">file</span>          <span class="o">=</span> <span class="s1">'data.vot'</span>
+
+<span class="c1"># First let us print column names</span>
+<span class="n">columns</span>       <span class="o">=</span> <span class="n">VOtableColumns</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+
+<span class="c1"># Then we check file type and then load data</span>
+<span class="k">if</span> <span class="n">is_VOtable</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>              <span class="c1"># IOError is automatically raised if file is not a VOtable</span>
+   <span class="n">catalogue1</span> <span class="o">=</span> <span class="n">load_VOtable</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="c1"># default output is astropy Table</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">catalogue1</span><span class="p">)</span>
+
+<span class="c1"># Now we load it as an astropy structured array</span>
+<span class="k">if</span> <span class="n">is_VOtable</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+   <span class="n">catalogue2</span> <span class="o">=</span> <span class="n">loadVOtable</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">outputType</span><span class="o">=</span><span class="s1">'array'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">catalogue2</span><span class="p">)</span>
+
+<span class="c1"># We can directly save the array into a new VOtable file without converting to a Table</span>
+<span class="n">new_file</span>      <span class="o">=</span> <span class="s1">'new_data.vot'</span>
+<span class="n">write_array_to_vot</span><span class="p">(</span><span class="n">catalogue2</span><span class="p">,</span> <span class="s1">'new_data.vot'</span><span class="p">)</span>
+
+<span class="c1"># Let us check whether it saved data correctly</span>
+<span class="n">catalogue3</span>    <span class="o">=</span> <span class="n">loadVOtable</span><span class="p">(</span><span class="n">new_file</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">catalogue3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="module-utilities.io">
+<span id="documentation"></span><h2>Documentation<a class="headerlink" href="#module-utilities.io" title="Permalink to this headline">¶</a></h2>
+<p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Functions related to input-output interaction.</p>
+<span class="target" id="is-votable"></span><dl class="py function">
+<dt class="sig sig-object py" id="utilities.io.is_VOtable">
+<span class="sig-prename descclassname"><span class="pre">utilities.io.</span></span><span class="sig-name descname"><span class="pre">is_VOtable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/io.html#is_VOtable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.io.is_VOtable" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Check whether a file is a VOtable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fullname</strong> (<em>str</em>) – name of the file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if it is a VOtable</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>IOError</strong> – if <strong>fullname</strong> is no a VOtable</p>
+</dd>
+</dl>
+</dd></dl>
+<span class="target" id="loadvotable"></span><dl class="py function">
+<dt class="sig sig-object py" id="utilities.io.loadVOtable">
+<span class="sig-prename descclassname"><span class="pre">utilities.io.</span></span><span class="sig-name descname"><span class="pre">loadVOtable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Table'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pedantic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_names_over_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/io.html#loadVOtable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.io.loadVOtable" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Load a VOtable using astropy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – VOtable catalogue file name</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – (<strong>Optional</strong>) positon of the table to load within the VOtable file</p></li>
+<li><p><strong>outputType</strong> (<em>str</em>) – <p>(<strong>Optional</strong>) type of output data. Must be one of the following:</p>
+<ul>
+<li><p>’default’ to load it as an Astropy VOtable data type</p></li>
+<li><p>’array’ to load it as a numpy structured array</p></li>
+<li><p>’Table’ to load it as an Astropy Table</p></li>
+</ul>
+</p></li>
+<li><p><strong>pedantic</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to disable Exceptions when reading VOtable files with unusual keywords</p></li>
+<li><p><strong>use_names_over_id</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether (when creating as astropy Table out of the VOtable table element) to use columns names rather than the unique IDs in the VOtable columns to name the astropy Table columns</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>loaded table</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – <ul class="simple">
+<li><p>if <strong>outputType</strong> is not of type str</p></li>
+<li><p>if <strong>num</strong> is not of type int</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<span class="target" id="votablecolumns"></span></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="utilities.io.VOtableColumns">
+<span class="sig-prename descclassname"><span class="pre">utilities.io.</span></span><span class="sig-name descname"><span class="pre">VOtableColumns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullInfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/io.html#VOtableColumns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.io.VOtableColumns" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Show the column names in the VOtable object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – VOtable file name</p></li>
+<li><p><strong>fullInfo</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to show full information or just the names</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<span class="target" id="write-array-to-vot"></span><dl class="py function">
+<dt class="sig sig-object py" id="utilities.io.write_array_to_vot">
+<span class="sig-prename descclassname"><span class="pre">utilities.io.</span></span><span class="sig-name descname"><span class="pre">write_array_to_vot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputFile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/io.html#write_array_to_vot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.io.write_array_to_vot" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Write a numpy array or an astropy Table into a VOtable file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <strong>array</strong> is not an astropy Table, it is converted to it.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>numpy structured array of astropy Table</em>) – array to write into the file</p></li>
+<li><p><strong>outputFile</strong> (<em>str</em>) – file to write the array into</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<span class="target" id="add-new-array-to-previous"></span><dl class="py function">
+<dt class="sig sig-object py" id="utilities.io.add_new_array_to_previous">
+<span class="sig-prename descclassname"><span class="pre">utilities.io.</span></span><span class="sig-name descname"><span class="pre">add_new_array_to_previous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullFileName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oldArray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isFirstArray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fieldsToDrop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typesToDrop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/io.html#add_new_array_to_previous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.io.add_new_array_to_previous" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Append a new structured array to another one, only keeping some fields after applying their corresponding data types onto the new columns.
+This function is used to combine data from different MUSE catalogues where field names and data types may vary between different versions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fields</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – field names</p></li>
+<li><p><strong>fullfilename</strong> (<em>str</em>) – name of the new array to append to the previous one</p></li>
+<li><p><strong>newArray</strong> – new array to append to the previous one</p></li>
+<li><p><strong>fieldsToDrop</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>)  names of the fields to move to the bottom and change their type. If not None, <strong>typesToDrop</strong> must be a list of the same size.</p></li>
+<li><p><strong>isFirstArray</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether this is the first array generated with this function or not. If True a check will be made at the end.</p></li>
+<li><p><strong>oldArray</strong> ((<strong>Optional</strong>) structured ndarray) – previous array whereto append new data</p></li>
+<li><p><strong>typesToDrop</strong> (<em>list</em>) – (<strong>Optional</strong>) data types corresponding to the specified fields which must be dropped to the bottom</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>new structured array where all the content of the previous ones has been correctly appended</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>structured ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+<span class="target" id="move-bad-fields-to-bottom"></span><dl class="py function">
+<dt class="sig sig-object py" id="utilities.io.move_bad_fields_to_bottom">
+<span class="sig-prename descclassname"><span class="pre">utilities.io.</span></span><span class="sig-name descname"><span class="pre">move_bad_fields_to_bottom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderedFieldList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderedTypeList</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/io.html#move_bad_fields_to_bottom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.io.move_bad_fields_to_bottom" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Move a list of fields from a structured array to the bottom and change their type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>structured ndarray</em>) – array to modify</p></li>
+<li><p><strong>orderedFieldList</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of field names to move and to change type</p></li>
+<li><p><strong>orderedTypeList</strong> (<em>list</em>) – list of new types for the fields (same order as <strong>orderedFieldList</strong>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array with some fields moved to the bottom and with different types</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>structured ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="list.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">List manipulations</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dict.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Dictionaries</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2022, Wilfried Mercier |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>. |
+            <a class="muted-link" href="../_sources/utilities/io.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Input/Output</a><ul>
+<li><a class="reference internal" href="#list-of-available-functions">List of available functions</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#module-utilities.io">Documentation</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/main.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    </body>
+</html>

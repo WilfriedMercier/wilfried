@@ -1,0 +1,530 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Galaxies thickness" href="Thickness.html" /><link rel="prev" title="Sersic fluxes" href="SersicFlux.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.09.22"/>
+        <title>Morphological parameters - wilfried library 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-admonition-background: orange;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">wilfried library 1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">wilfried library 1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Required dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../utilities/index.html">Useful utilities</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/coloredMessages.html">Colored messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/dict.html">Dictionaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/io.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/list.html">List manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/strings.html">Strings manipulation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../utilities/plotUtilities/index.html">Plot utilities</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">Histograms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/hst.html">Galfit related plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/misc.html">Miscellaneous</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">Contours</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Galaxy module</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../angularMomentum.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cosmology.html">Cosmology computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../geometry.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kinematics.html">Galaxy kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../massModels.html">Galaxy mass models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models.html">Galaxy models</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Galaxies morphology</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="SersicFlux.html">Sersic fluxes</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Morphological parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Thickness.html">Galaxies thickness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MUSE.html">MUSE related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Other.html">Other Sersic related functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../photometry/index.html">Galaxies photometry</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../photometry/Fluxes.html">Fluxes, colour excess and attenuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../photometry/Masses_SFR.html">Masses and SFR estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../photometry/Magnitudes.html">Magnitude conversions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../galfit/index.html">Galfit module</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../galfit/galfit.html">Galfit auto-routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galfit/models.html">Galfit models</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="morphological-parameters">
+<h1>Morphological parameters<a class="headerlink" href="#morphological-parameters" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="galaxy.morphology.PAWrapTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></span><span class="sig-name descname"><span class="pre">PAWrapTypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#PAWrapTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.PAWrapTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Types of PA wraps.</p>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galaxy.morphology.wrapPA">
+<span class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></span><span class="sig-name descname"><span class="pre">wrapPA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#galaxy.morphology.PAWrapTypes" title="galaxy.morphology.PAWrapTypes"><span class="pre">galaxy.morphology.PAWrapTypes</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PAWrapTypes.KIN</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/galaxy/morphology.html#wrapPA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.wrapPA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a given PA value given the wrapping type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>PA</strong> (<em>int</em><em>, </em><em>float</em><em>, </em><em>ndarray</em><em>[</em><em>int</em><em>] or </em><em>ndarray</em><em>[</em><em>float</em><em>]</em>) – position angle to wrap in degrees</p></li>
+<li><p><strong>wrap_type</strong> (<a class="reference internal" href="#galaxy.morphology.PAWrapTypes" title="galaxy.morphology.PAWrapTypes"><em>PAWrapTypes</em></a>) – (<strong>Optional</strong>) type of wrapping</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>wrapped PA in degrees</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray[float]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galaxy.morphology.computePAs">
+<span class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></span><span class="sig-name descname"><span class="pre">computePAs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'minmax'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returnThresholds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/morphology.html#computePAs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.computePAs" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Compute a set of PA values for a galaxy using different minimum threshold values.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How it works</strong></p>
+<p>A set of threshold values are generated between the minimum and the maximum of the image, e.g.</p>
+<ul class="simple">
+<li><p>[0, 1, 2] for a galaxy with a minimum of 0 and a maximum of 2 (using num=3)</p></li>
+</ul>
+<p>These values are applied one after another onto the image as a minmum threshold, that is data points with value&lt;threshold are masked. We get what we call a ‘slice’.
+For each slice, we compute its PA (angle starting from the vertical axis, counting anti clockwise).</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul class="simple">
+<li><p>PA angles are given between -90° and +90° so that there is a degeneracy between these two bounds.</p></li>
+<li><p>If the ‘minmax’ method is used, a galaxy with a PA close to 90° will not have a good PA estimation as different slices will have values oscillating around +90° and -90°, yielding a median value of approximately 0°…</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>im</strong> (<em>2D ndarray</em>) – image of a galaxy</p></li>
+<li><p><strong>method</strong> (<em>'minmax'</em><em> or </em><em>'furthest'</em>) – <p>(<strong>Optional</strong>) method to use</p>
+<ul>
+<li><p>if ‘minmax’ the PA of each slice is computed as the angle between the min and the max within the slice (not very efficient)</p></li>
+<li><p>if ‘furthest’ the PA of each slice is computed as the angle between the max and the furthest point relative to it (much more efficient)</p></li>
+</ul>
+</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – (<strong>Optional</strong>) how many slices must be made</p></li>
+<li><p><strong>returnThresholds</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to return the threshold values as well as the PAs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>PA list (and the threshold values if returnThresholds is True)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list (and list f returnThresholds is True)</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – if the method is neither ‘minmax’, nor ‘furthest’</p></li>
+<li><p><strong>TypeError</strong> – if num is not an int, or if returnThresholds is not a bool</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galaxy.morphology.the_re_equation_for_2_Sersic_profiles">
+<span class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></span><span class="sig-name descname"><span class="pre">the_re_equation_for_2_Sersic_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">re</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noStructuredArray</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagD</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/galaxy/morphology.html#the_re_equation_for_2_Sersic_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.the_re_equation_for_2_Sersic_profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>A semi-analytical equation whose zero should give the value of the half-light radius for a bulge-disk decomposition defined as</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\Sigma (r) = I_{\rm{b}} e^{-b_4 \left [ \left (r/R_{\rm{b}} \right ) -1 \right ]} + I_{\rm{d}} e^{-b_1 \left [ \left (r/R_{\rm{d}} \right ) -1 \right ]},\]</div></div>
+<p>where <span class="math notranslate nohighlight">\(R_{\rm{b}}, R_{\rm{d}}\)</span> are the bulge and disk effective radii, and <span class="math notranslate nohighlight">\(I_{\rm{b}}, I_{\rm{d}}\)</span> are the bulge and disk surface brightness at their effective radii, respectively.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is meant to be used with a zero search algorithm (dichotomy or anything else).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gal</strong> (<em>structured ndarray</em>) – <p>structured array with data for all the galaxies. The required column names are:</p>
+<ul>
+<li><p>’R_d_GF’ for the effective radius of the disk</p></li>
+<li><p>’R_b_GF’ for the effective radius of the bulge</p></li>
+<li><p>’Mag_d_GF’ for the total integrated magnitude of the disk</p></li>
+<li><p>’Mag_b_GF’ the total integrated magnitude of the bulge</p></li>
+</ul>
+</p></li>
+<li><p><strong>re</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – value of the half-light radius of the sum of the two components. This is the value which shall be returned by a zero search algorithm.</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – b1 factor appearing in the Sersic profile of an exponential disk</p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – b4 factor appearing in the Sersic profile of a bulge</p></li>
+<li><p><strong>magB</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – total magnitude of the bulge</p></li>
+<li><p><strong>magD</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – total magnitude of the disk</p></li>
+<li><p><strong>norm</strong> (<em>float</em>) – normalisation factor to divide the equation (used to improve convergence)</p></li>
+<li><p><strong>noStructuredArray</strong> (<em>bool</em>) – if False, the structured array gal will be used. If False, values of the magnitudes and half-light radii of the two components must be given.</p></li>
+<li><p><strong>offsetMagD</strong> (<em>int</em><em> or </em><em>float</em>) – magnitude offset used in the magnitude system for the disk</p></li>
+<li><p><strong>offsetMagB</strong> (<em>int</em><em> or </em><em>float</em>) – magnitude offset used in the magnitude system for the bulge</p></li>
+<li><p><strong>Rb</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – half-light radius of the bulge</p></li>
+<li><p><strong>Rd</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – half-light radius of the disk</p></li>
+<li><p><strong>stretch</strong> (<em>float</em>) – dilatation factor used to multiply re in order to smooth out the sharp slope around the 0 of the function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value of the left-hand side of the equation. If re is correct, the returned value should be close to 0.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if offsetMagD and offsetMagB are given but are neither float, nor int</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galaxy.morphology.solve_re">
+<span class="sig-prename descclassname"><span class="pre">galaxy.morphology.</span></span><span class="sig-name descname"><span class="pre">solve_re</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noStructuredArray</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magD</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ltot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagD</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetMagB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useZeroOrder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hybr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/galaxy/morphology.html#solve_re"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.morphology.solve_re" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>This is meant to find the half-light radius of the sum of an exponential disk and a de Vaucouleur bulge, either via a semi-analytical formula, or using numerical integration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>How to use</strong></p>
+<p>There are two ways to use this function:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>using numerical integration of the light profiles</p></li>
+<li><p>by finding the zero of a specific equation.</p></li>
+</ul>
+</div></blockquote>
+<p>In both cases, the parameter <strong>gal</strong> is mandatory. This corresponds to a numpy structured array with the following fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘Mag_d_GF’, ‘Mag_b_GF’, ‘R_d_GF’ and ‘R_b_GF’</p></li>
+</ul>
+</div></blockquote>
+<p><strong>HOWEVER</strong>, if the flag <strong>noStructuredArray</strong> is True, this array will not be used (so just cast anything into this parameter, it will not matter) but instead, the optional parameters <strong>magD</strong>, <strong>magB</strong>, <strong>Rd</strong> and <strong>Rb</strong> must be provided.</p>
+<p>The guess can be ignored, though the result may not converge.</p>
+<p><strong>b1</strong> and <strong>b4</strong> values do not necessarily need to be provided if you only call this function very few times. If not, they will be computed once at the beginning and propagated in subsequent function calls.</p>
+<p>Solving methods:</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p><strong>Numerical integration</strong></p>
+<p>This method will find the zero of the following function</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[f(r) = 2\pi \int_0^r dr~r \Sigma (r) - L_{\rm{tot}}, \]</div></div>
+</li>
+</ol>
+<blockquote>
+<div><p>where <span class="math notranslate nohighlight">\(L_{\rm{tot}}\)</span> is the total integrated luminosity of the sum of the disk and bulge. The <strong>Ltot</strong> parameter is not mandatory, as it will be computed if not provided.</p>
+<p><strong>However, if not provided, this requires to give magnitude values (this is mandatory in any case) AND a magnitude offset value in order to compute it</strong>.</p>
+<p>The <strong>Ie</strong> parameter can be given or can be ignored. In the latter case, it will be computed using the magnitudes and magnitude offset, so this last parameter should be provided as well in this case.</p>
+</div></blockquote>
+<ol class="loweralpha" start="2">
+<li><p><strong>Semi-analytical solution</strong></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is an experimental feature. It follows from analytically computing the equation for re using its definition as well as the sum of an exponential disk and a bulge.</p>
+</div>
+<p>In this case, the <strong>integration</strong> parameter must be set to False.</p>
+<p><strong>THE FOLLOWING PARAMETERS ARE NOT REQUIRED FOR THIS METHOD:</strong></p>
+<ul class="simple">
+<li><p><strong>Ltot</strong>, <strong>Ie</strong> and <strong>offset</strong></p></li>
+</ul>
+</li>
+</ol>
+</div></blockquote>
+<p><strong>Additional information</strong></p>
+<blockquote>
+<div><p>For only one galaxy, only a scalar value may be provided for each parameter you would like to pass. However, for more than one galaxy, a list must be given instead.</p>
+</div></blockquote>
+</div>
+<p>Basically, the simplest way to solve re is to call the function the following way:</p>
+<blockquote>
+<div><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solve_re</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where array is a numpy structured array with the relevant columns.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gal</strong> (<em>structured ndarray</em>) – structured array with data for all the galaxies. The required column names are ‘R_d_GF’ (re for the disk component), ‘R_b_GF’ (re for the bulge component), ‘Mag_d_GF’ (the total integrated magnitude for the disk component), ‘Mag_b_GF’ (the total integrated magnitude for the bulge component).</p></li>
+<li><p><strong>b1</strong> (<em>float</em>) – (<strong>Optional</strong>) b1 factor appearing in the Sersic profile of an exponential disk</p></li>
+<li><p><strong>b4</strong> (<em>float</em>) – (<strong>Optional</strong>) b4 factor appearing in the Sersic profile of a bulge</p></li>
+<li><p><strong>guess</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) guess for the value of re for all the galaxies</p></li>
+<li><p><strong>Ie</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) intensity at half-light radius for all the galaxies (including both profiles)</p></li>
+<li><p><strong>integration</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to find re integrating the light profiles or not (i.e. solving the re equation)</p></li>
+<li><p><strong>Ltot</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) total luminosity of the galaxies. This parameter is used when finding re using numerical integration of the light profiles. If integration is True and no Ltot is provided, it will be computed using the total magnitude of each component and the offset value.</p></li>
+<li><p><strong>magB</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) total magnitude of the bulge</p></li>
+<li><p><strong>magD</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) total magnitude of the disk</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – (<strong>Optional</strong>) method to use to find the zero of the re equation function or the integral to solve</p></li>
+<li><p><strong>normalise</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to normalise the equation or not. It is recommended to do so to improve the convergence.</p></li>
+<li><p><strong>noStructuredArray</strong> (<em>bool</em>) – (<strong>Optional</strong>) if False, the structured array gal will be used. If False, values of the magnitudes and half-light radii of the two components must be given.</p></li>
+<li><p><strong>offsetMagD</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) magnitude offset used in the magnitude system for the disk</p></li>
+<li><p><strong>offsetMagB</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) magnitude offset used in the magnitude system for the bulge</p></li>
+<li><p><strong>Rb</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) half-light radius of the bulge</p></li>
+<li><p><strong>Rd</strong> (<em>float</em><em> or </em><em>list</em><em>[</em><em>float</em><em>]</em>) – (<strong>Optional</strong>) half-light radius of the disk</p></li>
+<li><p><strong>stretch</strong> (<em>float</em>) – (<strong>Optional</strong>) dilatation factor used to multiply re in order to smooth out the sharp slope around the 0 of the function</p></li>
+<li><p><strong>useZeroOder</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to use the zero order analytical solution as a guess. If True, the value of guess will be used by the zero search algorithm.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to print messaged on stdout (True) or not (False)</p></li>
+<li><p><strong>xtol</strong> (<em>float</em>) – (<strong>Optional</strong>) relative error convergence factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value of re, as well as a convergence flag and a debug dict</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or list[float], float or list[float], dict or list[dict]</p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="Thickness.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Galaxies thickness</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="SersicFlux.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Sersic fluxes</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2022, Wilfried Mercier |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>. |
+            <a class="muted-link" href="../../_sources/galaxy/morphology/Morpho.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/main.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

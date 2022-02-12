@@ -1,0 +1,622 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<title>galaxy.photometry | wilfried library 1.0 documentation</title>
+<link href="../../_static/pygments.css" rel="stylesheet"/>
+<link href="../../_static/theme.313ea551d1799b2102b1.css" rel="stylesheet"/>
+<link href="../../_static/plot_directive.css" rel="stylesheet"/>
+<link href="../../_static/copybutton.css" rel="stylesheet"/>
+<link href="../../search.html" rel="search" title="Search"/>
+<link href="../../genindex.html" rel="index" title="Index"/>
+</head>
+<body class="antialiased text-gray">
+<div class="h-screen xl:grid xl:grid-layout" data-action="keydown@window-&gt;search#focus" data-controller="sidebar search" id="page">
+<a class="block text-xl bg-white py-4 z-20 absolute top-0 h-18 inset-x-0 text-center transform -translate-y-full focus:translate-y-0 focus:outline-none transition-transform duration-75" href="#galaxy-photometry" title="Skip navigation links">Skip to content</a>
+<header class="grid-area-header z-10 h-14 sm:h-18">
+<div class="bg-gray-dark shadow-md flex items-center h-full xl:px-2 relative"><div class="flex items-center">
+<button class="xl:hidden h-14 w-14 sm:h-18 sm:w-18 leading-14 sm:leading-18 text-gray-100 hover:bg-gray-700 hover:text-brand focus:outline-none focus:bg-gray-700 focus:text-brand" data-action="sidebar#open" data-sidebar-target="hamburger">
+<span class="sr-only">Open navigation menu</span>
+<svg aria-hidden="true" class="fill-current h-8 w-8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+</button><a aria-label="Back to homepage" class="hover:bg-gray-700 focus:bg-gray-700 focus:outline-none tooltipped tooltipped-sw" href="../../index.html"><span class="hidden lg:inline-block shrink-0 font-medium text-gray-100 mx-5 leading-14 sm:leading-18 tracking-wider">wilfried library 1.0 documentation</span>
+</a></div><div class="flex justify-end items-center flex-1"><form action="../../search.html" class="flex print:hidden justify-between items-center leading-14 sm:leading-18 md:ml-4 bg-gray-dark text-gray-300 focus-within:bg-gray-50 focus-within:text-gray-800 focus-within:absolute focus-within:inset-x-0 focus-within:top-0 md:focus-within:w-full md:focus-within:static" data-action="click-&gt;search#focusSearchInput" id="searchbox" method="get">
+<button aria-label="Get search results" class="text-inherit h-14 w-14 sm:h-18 sm:w-18" tabindex="-1">
+<svg aria-hidden="true" class="fill-current stroke-current h-8 w-8" stroke-width="0.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+</button>
+<input aria-label="Search the docs" class="pr-2 bg-transparent text-inherit focus:outline-none w-0 md:w-auto focus:w-full transition-all duration-100" data-search-target="searchInput" id="search-input" name="q" placeholder="Search the docs" type="search"/>
+</form></div>
+</div>
+</header>
+<aside class="grid-area-sidebar h-full fixed xl:relative inset-y-0 left-0 z-20 xl:z-0 print:hidden overflow-y-auto transition-all transform transform-gpu -translate-x-full opacity-0 duration-300 xl:translate-x-0 xl:opacity-100" data-sidebar-target="sidebar">
+<nav class="h-full overflow-y-auto bg-white text-gray-600 pt-8 flex flex-col" role="navigation">
+<div class="nav-toc flex-1 pl-6"><ul>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../dependencies.html">Required dependencies</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../makeLifeSimpler.html">makeLifeSimpler</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/index.html">Useful utilities</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html">Colored messages</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html#example">Example</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/coloredMessages.html#module-utilities.coloredMessages">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html">Dictionaries</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/dict.html#module-utilities.dictionaries">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html">Input/Output</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/io.html#module-utilities.io">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html">List manipulations</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/list.html#module-utilities.lists">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html">Strings manipulation</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/strings.html#module-utilities.strings">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/index.html">Plot utilities</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/asManyHists.html">Histograms</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/hst.html">Galfit related plots</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../utilities/plotUtilities/singleContour.html">Contours</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/index.html">Galaxy module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/angularMomentum.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/cosmology.html">Cosmology computations</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/geometry.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/kinematics.html">Galaxy kinematics</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/massModels.html">Galaxy mass models</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/models.html">Galaxy models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/models.html#d-profiles">1D profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/models.html#id1">2D profiles</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/morphology/index.html">Galaxies morphology</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/morphology/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/photometry/index.html">Galaxies photometry</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galaxy/photometry/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/index.html">Galfit module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/galfit.html">Galfit auto-routines</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html">Galfit models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html#miscellaneous">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html#galfit-profiles">Galfit profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../../galfit/models.html#galfit-additional-tags">Galfit additional tags</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<button class="text-4xl text-gray-800 p-4 bottom-0 hover:text-brand xl:hidden focus:text-brand self-center" data-action="" title="Close navigation menu">
+<span class="sr-only">Close navigation menu</span>
+<svg aria-hidden="true" class="fill-current stroke-current h-6 w-6" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</aside>
+<main class="px-10 xl:ml-fluid grid-area-main overflow-y-auto flex flex-col h-full mx-0 md:mx-auto xl:mr-0" data-action="scroll-&gt;scroll#showButton" data-controller="scroll"><nav aria-label="breadcrumbs" class="print:hidden mt-12 text-sm text-gray-light" role="navigation">
+<a class="text-gray-light text-sm hover:text-gray-dark font-medium focus:text-gray-dark" href="../../index.html">wilfried library 1.0 documentation</a>
+<span class="mr-1">/</span><a class="text-gray-light text-sm hover:text-gray-dark" href="../index.html">Module code</a>
+<span class="mr-1">/</span><span aria-current="page">galaxy.photometry</span>
+</nav>
+<article class="flex-1" role="main">
+<h1>Source code for galaxy.photometry</h1><div class="highlight"><pre>
+<code><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">.. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt; &amp; Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt; &amp; Hugo Plombat - LUPM &lt;hugo.plombat@umontpellier.fr&gt;</span>
+
+<span class="sd">Photometry functions related to galaxies.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>             <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span>     <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span>   <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">FlatLambdaCDM</span>
+<span class="kn">from</span>   <span class="nn">numpy</span>             <span class="kn">import</span> <span class="n">ndarray</span>
+<span class="kn">from</span>   <span class="nn">typing</span>            <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1">#: Astropy cosmology used in the functions</span>
+<span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+
+<span class="c1">###############################################</span>
+<span class="c1">#       Flux and magnitudes conversions       #</span>
+<span class="c1">###############################################</span>
+
+<div class="viewcode-block" id="countToMag"><a class="viewcode-back" href="../../galaxy/photometry/Magnitudes.html#galaxy.photometry.countToMag">[docs]</a><span class="k">def</span> <span class="nf">countToMag</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">err</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">zeropoint</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Hugo Plombat - LUPM &lt;hugo.plombat@umontpellier.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert data counts and their associated error into AB magnitudes using the formula</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        d [{\rm{mag}}] = -2.5 \log_{10} d [{\rm{e^{-}/s}}] + {\rm{zpt}}</span>
+<span class="sd">        </span>
+<span class="sd">    where :math:`d` is the data and :math:`\rm{zpt}` is the magnitude zeropoint. The error is given by</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        </span>
+<span class="sd">        \Delta d [{\rm{mag}}] = 1.08 \Delta d [{\rm{e^{-}/s}}] / d [{\rm{e^{-}/s}}]</span>
+<span class="sd">    </span>
+<span class="sd">    :param data: data in electron/s</span>
+<span class="sd">    :type data: float or ndarray[float]</span>
+<span class="sd">    :param err: std errors in electron/s</span>
+<span class="sd">    :type err: float or ndarray[foat]</span>
+<span class="sd">    :param float zeropoint: zeropoint associated to the data</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: AB magnitude and associated error</span>
+<span class="sd">    :rtype: float or ndarray[float], float or ndarray[float]</span>
+<span class="sd">    '''</span>
+
+    <span class="n">mag</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="n">zeropoint</span>
+    <span class="n">emag</span> <span class="o">=</span> <span class="mf">1.08</span> <span class="o">*</span> <span class="n">err</span><span class="o">/</span><span class="n">data</span>
+    
+    <span class="k">return</span> <span class="n">mag</span><span class="p">,</span> <span class="n">emag</span></div>
+
+<div class="viewcode-block" id="countToFlux"><a class="viewcode-back" href="../../galaxy/photometry/Magnitudes.html#galaxy.photometry.countToFlux">[docs]</a><span class="k">def</span> <span class="nf">countToFlux</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">err</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">zeropoint</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Hugo Plombat - LUPM &lt;hugo.plombat@umontpellier.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert data counts and their associated error into flux in :math:`\rm{erg/cm^2/s/Hz}`.</span>
+<span class="sd">    </span>
+<span class="sd">    :param data: data in :math:`electron/s`</span>
+<span class="sd">    :type data: float or ndarray[float]</span>
+<span class="sd">    :param err: std errors in :math:`electron/s`</span>
+<span class="sd">    :type err: float or ndarray[float]</span>
+<span class="sd">    :param float zeropoint: zeropoint associated to the data</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: AB magnitude and associated error</span>
+<span class="sd">    :rtype: Astropy Quantity, Astropy Quantity</span>
+<span class="sd">    '''</span>
+
+    <span class="n">flux</span>  <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">data</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">'erg/(s*Hz*cm^2)'</span><span class="p">)</span>
+    <span class="n">eflux</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">err</span>  <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">zeropoint</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)</span><span class="o">/</span><span class="mf">2.5</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s1">'erg/(s*Hz*cm^2)'</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">flux</span><span class="p">,</span> <span class="n">eflux</span></div>
+
+
+<span class="c1">###############################################</span>
+<span class="c1">#       Dust extinction and attenuation       #</span>
+<span class="c1">###############################################</span>
+
+<span class="k">def</span> <span class="nf">av_Gilbank</span><span class="p">(</span><span class="n">lmstar</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">51.201</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">float</span><span class="o">=-</span><span class="mf">11.199</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.615</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt; </span>
+<span class="sd">    </span>
+<span class="sd">    Compute and return the intrinsic extinction in the V band from Gilbank et al., 2010 prescription.</span>
+<span class="sd">    </span>
+<span class="sd">    :param lmstar: log10 of the stellar mass in solar masses</span>
+<span class="sd">    :type lmstar: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param float a: (**Optional**) first coefficient from Gilbank et al., 2010</span>
+<span class="sd">    :param float b: (**Optional**) second coefficient from Gilbank et al., 2010</span>
+<span class="sd">    :param float c: (**Optional**) third coefficient from Gilbank et al., 2010</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: intrinsic extinction in the V band (Av) from Gilbank et al., 2010 prescription.</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">def</span> <span class="nf">prescription</span><span class="p">(</span><span class="n">lmstar</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">51.201</span> <span class="o">-</span> <span class="mf">11.199</span><span class="o">*</span><span class="n">lmstar</span> <span class="o">+</span> <span class="mf">0.615</span><span class="o">*</span><span class="n">lmstar</span><span class="o">**</span><span class="mi">2</span>
+    
+    <span class="c1"># If an array</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lmstar</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        
+        <span class="c1"># Gilbank et al., 2010 say to fit to a constant value below 10^9 solar masses</span>
+        <span class="n">aHalpha</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">lmstar</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">prescription</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span>
+        <span class="n">mask</span>          <span class="o">=</span> <span class="n">lmstar</span> <span class="o">&gt;</span> <span class="mi">9</span>
+        <span class="n">aHalpha</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">prescription</span><span class="p">(</span><span class="n">lmstar</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+    
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lmstar</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+        
+        <span class="k">if</span> <span class="n">lmstar</span> <span class="o">&lt;=</span> <span class="mi">9</span><span class="p">:</span>
+            <span class="n">aHalpha</span>   <span class="o">=</span> <span class="n">prescription</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">aHalpha</span>   <span class="o">=</span> <span class="n">prescription</span><span class="p">(</span><span class="n">lmstar</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">aHalpha</span> <span class="o">*</span> <span class="n">calzetti_law</span><span class="p">(</span><span class="mf">0.550</span><span class="p">)</span> <span class="o">/</span> <span class="n">calzetti_law</span><span class="p">(</span><span class="mf">0.656</span><span class="p">)</span>
+
+<div class="viewcode-block" id="calzetti_law"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.calzetti_law">[docs]</a><span class="k">def</span> <span class="nf">calzetti_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">rv</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">4.05</span><span class="p">,</span> 
+                 <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">2.659</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="nb">float</span><span class="o">=-</span><span class="mf">1.857</span><span class="p">,</span> <span class="n">c1</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">1.040</span><span class="p">,</span> <span class="n">d1</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e1</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="nb">float</span><span class="o">=-</span><span class="mf">2.156</span><span class="p">,</span> <span class="n">c2</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">1.509</span><span class="p">,</span> <span class="n">d2</span><span class="p">:</span> <span class="nb">float</span><span class="o">=-</span><span class="mf">0.198</span><span class="p">,</span> <span class="n">e2</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.011</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Attenuation curve from Calzetti et al. (2000). The coefficients can be modified in input. </span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        In principle, this law is valid from 0.12 to 2.2 microns.</span>
+<span class="sd">    </span>
+<span class="sd">    The relation is </span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+
+<span class="sd">        k = a \times (b + c/\lambda + d/\lambda^2 + e/\lambda^3),</span>
+<span class="sd">        </span>
+<span class="sd">    with :math:`\lambda` the wavelength.</span>
+
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+<span class="sd">    :param float a: (**Optional**) multiplicative coefficient</span>
+<span class="sd">    :param float bi: (**Optional**) coefficients for the relation above 0.63 microns</span>
+<span class="sd">    :param float bi: (**Optional**) coefficients for the relation below 0.63 microns</span>
+<span class="sd">        </span>
+<span class="sd">    :returns: Calzetti attenuation</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="n">lbda</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lbda</span><span class="p">)</span>
+    
+    <span class="c1"># Law is different below and beyond this threshold</span>
+    <span class="n">cond1</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span> <span class="mf">0.63</span><span class="p">)</span>
+    <span class="n">cond2</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mf">0.63</span><span class="p">)</span>
+    
+    <span class="n">k</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    <span class="n">k</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">b1</span> <span class="o">+</span> <span class="n">c1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">+</span> <span class="n">d1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">e1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">rv</span>
+    <span class="n">k</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">b2</span> <span class="o">+</span> <span class="n">c2</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">+</span> <span class="n">d2</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">e2</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">cond2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">rv</span>
+    <span class="k">return</span> <span class="n">k</span></div>
+
+<div class="viewcode-block" id="dust_attenuation_calzetti"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.dust_attenuation_calzetti">[docs]</a><span class="k">def</span> <span class="nf">dust_attenuation_calzetti</span><span class="p">(</span><span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">ebv</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rv</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">4.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the dust attenuation using the Calzetti attenuation curve (could be more general adding a function name) from the colour excess.</span>
+
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    :param float ebv: colour excess</span>
+
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+
+<span class="sd">    :returns: dust attenuation in mag</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">return</span> <span class="n">ebv</span> <span class="o">*</span> <span class="n">calzetti_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="n">rv</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="cardelli_law"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.cardelli_law">[docs]</a><span class="k">def</span> <span class="nf">cardelli_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">rv</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">3.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Attenuation curve from Cardelli et al. (1989). The coefficients can be modified in input. </span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        In principle, this law is valid from 0.1 to 3.3 microns. For MW, Rv~3.1.</span>
+<span class="sd">    </span>
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: cardelli attenuation</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="c1"># Need to be sure we work with numpy arrays to have the right behaviour for the bineary operators</span>
+    <span class="n">lbda</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lbda</span><span class="p">)</span>
+    
+    <span class="n">condfuv</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">8.</span><span class="p">)</span>  <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span>
+    <span class="n">condnuv</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">3.3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">8.</span><span class="p">)</span>
+    <span class="n">condnuv1</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">5.9</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">8.</span><span class="p">)</span>
+    <span class="n">condnuv2</span>    <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">3.3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">5.9</span><span class="p">)</span>
+    <span class="n">condopt</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">1.1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">3.3</span><span class="p">)</span>
+    <span class="n">condnir</span>     <span class="o">=</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">0.3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lbda</span> <span class="o">&gt;</span>  <span class="mi">1</span><span class="o">/</span><span class="mf">1.1</span><span class="p">)</span>
+    
+    <span class="n">a</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    <span class="n">b</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    <span class="n">y</span>           <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">lbda</span><span class="p">))</span>
+    
+    <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">-</span> <span class="mi">8</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condnuv1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">5.9</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condnuv2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">-</span> <span class="mf">1.82</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>
+    
+    <span class="n">a</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">1.073</span> <span class="o">-</span> <span class="mf">0.628</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.137</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.070</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.752</span> <span class="o">-</span> <span class="mf">0.316</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.104</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">4.67</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.341</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.04473</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.009779</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">0.17699</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.50447</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.02427</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">+</span> <span class="mf">0.72085</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">+</span> <span class="mf">0.01979</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">5</span> <span class="o">-</span> <span class="mf">0.77530</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">6</span> <span class="o">+</span> <span class="mf">0.32999</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">7</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">0.574</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span> <span class="o">**</span> <span class="mf">1.61</span>
+    
+    <span class="n">b</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">13.670</span> <span class="o">+</span> <span class="mf">4.257</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.420</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.374</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condfuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">3.090</span> <span class="o">+</span> <span class="mf">1.825</span> <span class="o">*</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1.206</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lbda</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">-</span> <span class="mf">4.62</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.263</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.2130</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.1207</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnuv</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1.41338</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.28305</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.07233</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="mf">5.38434</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">-</span> <span class="mf">0.62251</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">5</span> <span class="o">+</span> <span class="mf">5.30260</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">6</span> <span class="o">-</span> <span class="mf">2.09002</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condopt</span><span class="p">]</span> <span class="o">**</span> <span class="mi">7</span>
+    <span class="n">b</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span>  <span class="o">=</span> <span class="o">-</span><span class="mf">0.527</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">condnir</span><span class="p">]</span> <span class="o">**</span> <span class="mf">1.61</span>
+    
+    <span class="n">al_av</span>       <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">/</span> <span class="n">rv</span>
+    <span class="n">k</span>           <span class="o">=</span> <span class="n">al_av</span> <span class="o">*</span> <span class="n">rv</span>
+    
+    <span class="k">return</span> <span class="n">k</span></div>
+
+<div class="viewcode-block" id="dust_attenuation_cardelli"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.dust_attenuation_cardelli">[docs]</a><span class="k">def</span> <span class="nf">dust_attenuation_cardelli</span><span class="p">(</span><span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">ebv</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rv</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">3.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the dust attenuation using the Cardelli attenuation curve from the colour excess.</span>
+
+<span class="sd">    :param lbda: wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    :param float ebv: colour excess</span>
+
+<span class="sd">    :param float rv: (**Optional**) ratio of the total to selective attenuation</span>
+<span class="sd">            </span>
+<span class="sd">    :returns: dust attenuation in mag</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">return</span> <span class="n">ebv</span> <span class="o">*</span> <span class="n">cardelli_law</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="n">rv</span><span class="p">)</span> </div>
+
+
+<span class="c1">#############################################</span>
+<span class="c1">#      Flux and luminosity corrections      #</span>
+<span class="c1">#############################################</span>
+
+<div class="viewcode-block" id="correct_extinction"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.correct_extinction">[docs]</a><span class="k">def</span> <span class="nf">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">av</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">ebv</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> 
+                       <span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Correct for both galactic extinction and internal extinction. We use the following attenuation curves:</span>
+<span class="sd">        </span>
+<span class="sd">        * Cardelli for the Galactic extinction</span>
+<span class="sd">        * Calzetti for the intrinsic extinction</span>
+
+<span class="sd">    :param av: attenuation in V band</span>
+<span class="sd">    :type av: float or ndarray[float]</span>
+<span class="sd">    :param ebv: colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param floii: ionised gas flux</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: flux corrected of extinction</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">):</span>
+        <span class="n">lbda</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'micron'</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="n">lbda_obs</span>       <span class="o">=</span> <span class="n">lbda</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+    
+    <span class="c1"># Galactic extinction at the observed wavelength</span>
+    <span class="n">abs_gal</span>        <span class="o">=</span> <span class="n">dust_attenuation_cardelli</span><span class="p">(</span><span class="n">lbda_obs</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">3.1</span><span class="p">)</span>
+    
+    <span class="c1"># Convert the extinction from FAST to the observed wavelength</span>
+    <span class="n">EBV_fast</span>       <span class="o">=</span> <span class="n">av</span> <span class="o">/</span> <span class="n">calzetti_law</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">.550</span><span class="p">))</span>  
+    <span class="n">abs_fast</span>       <span class="o">=</span> <span class="n">dust_attenuation_calzetti</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">EBV_fast</span><span class="p">,</span> <span class="n">rv</span><span class="o">=</span><span class="mf">4.05</span><span class="p">)</span>
+    
+    <span class="c1"># Apply the flux correction from the Milky Way and the intrinsic extinction</span>
+    <span class="n">flux_corr_gal</span>  <span class="o">=</span> <span class="n">floii</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">abs_gal</span><span class="p">)</span>
+    <span class="n">flux_corr_fast</span> <span class="o">=</span> <span class="n">flux_corr_gal</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">abs_fast</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">flux_corr_fast</span></div>
+
+<div class="viewcode-block" id="flux_to_lum"><a class="viewcode-back" href="../../galaxy/photometry/Fluxes.html#galaxy.photometry.flux_to_lum">[docs]</a><span class="k">def</span> <span class="nf">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> 
+                <span class="n">av</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ebv</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert a flux into a luminosity. If an attenuation and a colour excess are given, the flux is corrected beforehand.</span>
+
+<span class="sd">    :param floii: flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param av: (**Optional**) attenuation in V band</span>
+<span class="sd">    :type av: float or ndarray[float]</span>
+<span class="sd">    :param ebv: (**Optional**) colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: luminosity in :math:`\rm{erg/s}`</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="c1"># Make astropy Quantity</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">):</span>
+        <span class="n">floii</span>              <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">'erg/(s.cm^2)'</span><span class="p">)</span>
+        
+    <span class="c1"># Correct flux of attenuation</span>
+    <span class="k">if</span> <span class="n">av</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ebv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lbda</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        
+       <span class="c1"># If an array</span>
+       <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">floii</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               
+           <span class="c1"># Where there is nan, we do not apply the correction</span>
+           <span class="n">mask</span>            <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">av</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ebv</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lbda</span><span class="p">)</span>
+           
+           <span class="c1"># Redshift mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">zmask</span>       <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">zmask</span>       <span class="o">=</span> <span class="n">z</span>
+             
+           <span class="c1"># Av mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">av</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">av_mask</span>     <span class="o">=</span> <span class="n">av</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">av_mask</span>     <span class="o">=</span> <span class="n">av</span>
+    
+           <span class="c1"># Colour excess mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ebv</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">ebvmask</span>     <span class="o">=</span> <span class="n">ebv</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">ebvmask</span>     <span class="o">=</span> <span class="n">ebv</span>
+               
+           <span class="c1"># Rest-frame wavelength mask</span>
+           <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lbda</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+               <span class="n">lbdamask</span>    <span class="o">=</span> <span class="n">lbda</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+           <span class="k">else</span><span class="p">:</span>
+               <span class="n">lbdamask</span>    <span class="o">=</span> <span class="n">lbda</span>
+               
+           <span class="c1"># Extract unit and value to apply the correction</span>
+           <span class="n">unit</span>            <span class="o">=</span> <span class="n">floii</span><span class="o">.</span><span class="n">unit</span>
+           <span class="n">floii</span>           <span class="o">=</span> <span class="n">floii</span><span class="o">.</span><span class="n">value</span>
+           <span class="n">floii</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>    <span class="o">=</span> <span class="n">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">],</span> <span class="n">zmask</span><span class="p">,</span> <span class="n">av_mask</span><span class="p">,</span> <span class="n">ebvmask</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbdamask</span><span class="p">)</span>
+           
+           <span class="c1"># Reconstruct the Quantity object</span>
+           <span class="n">floii</span>           <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+           
+       <span class="c1"># If a float and we can apply a correction</span>
+       <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">av</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ebv</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">lbda</span><span class="p">):</span>
+           <span class="n">floii</span>           <span class="o">=</span> <span class="n">correct_extinction</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av</span><span class="p">,</span> <span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+    
+    <span class="n">dl</span>                     <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">luminosity_distance</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">loii</span>                   <span class="o">=</span> <span class="p">(</span><span class="n">floii</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">dl</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'erg/s'</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">return</span> <span class="n">loii</span></div>
+
+
+<span class="c1">####################################################</span>
+<span class="c1">#             Infer gas masses and SFR             #</span>
+<span class="c1">#################################################### </span>
+
+<div class="viewcode-block" id="mass_gas_sfr"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.mass_gas_sfr">[docs]</a><span class="k">def</span> <span class="nf">mass_gas_sfr</span><span class="p">(</span><span class="n">sfr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">rd</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert the SFR into a gas mass assuming it is uniformly distributed in :math:`2.2 \times R_{\rm{d}}`, with :math:`R_{\rm{d}}` the disk scale length.</span>
+
+<span class="sd">    :param sfr: SFR in :math:`M_{\odot}/{\rm{yr}}`. Optionally, if given as an astropy Quantity, it will be converted to :math:`M_{\odot}/{\rm{yr}}`.</span>
+<span class="sd">    :type sfr: float or ndarray[float]</span>
+<span class="sd">    :param rd: disk scale length in :math:`\rm{pc}`. Optionally, if given as an astropy Quantity, it will be converted to :math:`\rm{pc}`.</span>
+<span class="sd">    :type rd: float or ndarray[float]</span>
+
+<span class="sd">    :returns: gas mass in :math:`M_{\odot}`</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="c1"># Astropy Quantities</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">rd</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">):</span>
+        <span class="n">rd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'pc'</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sfr</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">):</span>
+        <span class="n">sfr</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'solMass/yr'</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">sfr</span> <span class="o">/</span> <span class="mf">2.5e-10</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mass_gas_kennicutt"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.mass_gas_kennicutt">[docs]</a><span class="k">def</span> <span class="nf">mass_gas_kennicutt</span><span class="p">(</span><span class="n">floii</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">rd</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> 
+                       <span class="n">av</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ebv</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert the ionised gas flux into a gas mass assuming it is uniformly distributed in 2.2*rd. If an attenuation and a colour excess are given, the flux is corrected beforehand.</span>
+<span class="sd">    </span>
+<span class="sd">    :param floii: ionised gas flux in :math:`\rm{erg/s/cm2}`</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param rd: disk scale length in :math:`\rm{pc}`. Optionally, if given as an astropy Quantity, it will be converted to :math:`\rm{pc}`.</span>
+<span class="sd">    :type rd: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param av: (**Optional**) attenuation in V band</span>
+<span class="sd">    :type av: float or ndarray[float]</span>
+<span class="sd">    :param ebv: (**Optional**) colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: gas mass using the Kennicutt law and its error in :math:`M_{\odot}`</span>
+<span class="sd">    :rtype: float or ndarray[float], float or ndarray[float]</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">rd</span><span class="p">,</span> <span class="s1">'unit'</span><span class="p">):</span>
+        <span class="n">rd</span> <span class="o">=</span> <span class="n">rd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'pc'</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    
+    <span class="n">loii</span>  <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av</span><span class="o">=</span><span class="n">av</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+    <span class="n">mgas</span>  <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">4.7564e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">dmgas</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.2</span><span class="o">*</span><span class="n">rd</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.9438e-23</span> <span class="o">*</span> <span class="n">loii</span> <span class="o">**</span> <span class="p">(</span><span class="mi">5</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">mgas</span><span class="p">,</span> <span class="n">dmgas</span></div>
+
+
+<div class="viewcode-block" id="sfr_kennicutt_oii"><a class="viewcode-back" href="../../galaxy/photometry/Masses_SFR.html#galaxy.photometry.sfr_kennicutt_oii">[docs]</a><span class="k">def</span> <span class="nf">sfr_kennicutt_oii</span><span class="p">(</span><span class="n">floii</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> <span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">],</span> 
+                      <span class="n">av</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ebv</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbda</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]</span><span class="o">=</span><span class="mf">0.3728</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Epinat Benoit - LAM &lt;benoit.epinat@lam.fr&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the SFR from the ionised gas flux. If an attenuation and a colour excess are given, the flux is corrected beforehand.</span>
+<span class="sd">    </span>
+<span class="sd">    :param floii: ionised gas flux in :math:`\rm{erg/s/cm^2}`. Optionally, can directly be given as an Astropy Quantity with a unit of the kind :math:`\rm{erg/s/cm^2}`.</span>
+<span class="sd">    :type floii: float or ndarray[float]</span>
+<span class="sd">    :param z: redshift</span>
+<span class="sd">    :type z: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :param av: (**Optional**) attenuation in V band</span>
+<span class="sd">    :type av: float or ndarray[float]</span>
+<span class="sd">    :param ebv: (**Optional**) colour excess</span>
+<span class="sd">    :type ebv: float or ndarray[float]</span>
+<span class="sd">    :param lbda: (**Optional**) rest-frame wavelength in microns</span>
+<span class="sd">    :type lbda: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: SFR in :math:`M_{\odot}/{\rm{yr}}` and its error.</span>
+<span class="sd">    '''</span>
+    
+    <span class="n">loii</span> <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av</span><span class="o">=</span><span class="n">av</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="n">ebv</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="n">lbda</span><span class="p">)</span>
+    <span class="n">sfr</span>  <span class="o">=</span> <span class="mf">1.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
+    <span class="n">dsfr</span> <span class="o">=</span> <span class="mf">0.4e-41</span> <span class="o">*</span> <span class="n">loii</span>
+    
+    <span class="k">return</span> <span class="n">sfr</span><span class="p">,</span> <span class="n">dsfr</span></div>
+
+
+<span class="k">def</span> <span class="nf">sfr_Gilbank_oii</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">lmstar</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt; </span>
+<span class="sd">    '''</span>
+    
+    <span class="n">tanh</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.424</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">((</span><span class="n">lmstar</span> <span class="o">-</span> <span class="mf">9.827</span><span class="p">)</span><span class="o">/</span><span class="mf">0.572</span><span class="p">)</span>
+    
+    <span class="c1"># Do not correct [OII] luminosity for extinction with Gilbank</span>
+    <span class="n">loii</span> <span class="o">=</span> <span class="n">flux_to_lum</span><span class="p">(</span><span class="n">floii</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">av</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ebv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbda</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">loii</span> <span class="o">/</span> <span class="mf">3.8e40</span> <span class="o">/</span> <span class="p">(</span><span class="n">tanh</span> <span class="o">+</span> <span class="mf">1.7</span><span class="p">)</span>
+</code></pre></div>
+</article>
+<footer>
+<div class="mt-20 mb-4 text-sm text-gray-700">© 2022, Wilfried Mercier Made with <a href="https://www.sphinx-doc.org">Sphinx 4.4.0</a></div>
+</footer></main>
+<button class="fixed bottom-0 right-0 z-20 opacity-0 p-4 m-4 tracking-wide bg-gray-900 text-gray-100 transition transform transform-gpu duration-500 translate-y-full" data-action="search#hideSnackbar" data-search-target="snackbar">
+  Clear highlights
+</button><div class="fixed hidden inset-0 bg-black bg-opacity-50" data-action="click-&gt;sidebar#close" data-sidebar-target="screen">
+</div>
+</div>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+<script src="../../_static/theme.3666d2347a4c66e5d7a8.js"></script>
+</body>
+</html>

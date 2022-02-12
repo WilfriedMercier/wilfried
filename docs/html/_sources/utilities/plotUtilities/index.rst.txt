@@ -1,0 +1,16 @@
+.. wilfried library documentation master file, created by
+   sphinx-quickstart on Tue Mar 23 14:29:46 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Plot utilities
+==============
+
+Fonctions and classes in this section are all meant to automatise plotting. For the sake of clarity their documentation have been split up in different sections.
+
+.. toctree::
+
+   ./asManyHists.rst
+   ./hst.rst
+   ./misc.rst
+   ./singleContour.rst

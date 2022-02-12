@@ -1,0 +1,11 @@
+Catalogue objects
+=================
+
+.. automodule:: galaxy.SED.catalogues
+   :special-members: __init__
+   :members:
+   :private-members:
+   :undoc-members:
+   :show-inheritance:
+
+

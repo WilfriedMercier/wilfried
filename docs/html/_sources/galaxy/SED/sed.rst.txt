@@ -1,0 +1,11 @@
+SED objects
+===========
+
+.. automodule:: galaxy.SED.sed
+   :special-members: __init__
+   :members:
+   :private-members:
+   :undoc-members:
+   :show-inheritance:
+
+

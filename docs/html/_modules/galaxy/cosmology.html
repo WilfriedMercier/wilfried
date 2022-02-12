@@ -1,0 +1,484 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.09.22"/>
+        <title>galaxy.cosmology - wilfried library 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-admonition-background: orange;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">wilfried library 1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">wilfried library 1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Required dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../makeLifeSimpler.html">makeLifeSimpler</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../utilities/index.html">Useful utilities</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/coloredMessages.html">Colored messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/dict.html">Dictionaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/io.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/list.html">List manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/strings.html">Strings manipulation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../utilities/plotUtilities/index.html">Plot utilities</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">Histograms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/hst.html">Galfit related plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/misc.html">Miscellaneous</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">Contours</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../galaxy/index.html">Galaxy module</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../galaxy/angularMomentum.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galaxy/cosmology.html">Cosmology computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galaxy/geometry.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galaxy/kinematics.html">Galaxy kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galaxy/misc.html">Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galaxy/massModels.html">Galaxy mass models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galaxy/models.html">Galaxy models</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../galaxy/morphology/index.html">Galaxies morphology</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">Sersic fluxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/morphology/Morpho.html">Morphological parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/morphology/Thickness.html">Galaxies thickness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/morphology/MUSE.html">MUSE related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/morphology/Other.html">Other Sersic related functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../galaxy/photometry/index.html">Galaxies photometry</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/photometry/Fluxes.html">Fluxes, colour excess and attenuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">Masses and SFR estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../galaxy/photometry/Magnitudes.html">Magnitude conversions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../galfit/index.html">Galfit module</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../galfit/galfit.html">Galfit auto-routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../galfit/models.html">Galfit models</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for galaxy.cosmology</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""</span>
+<span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">A set of functions to easily compute standard calculations in extragalactic physics using cosmology. </span>
+
+<span class="sd">.. note::</span>
+<span class="sd">    This relies heavily on a custom, Python 3 adapted version of `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span>   <span class="nn">typing</span>              <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span>   <span class="nn">scipy.optimize</span>      <span class="kn">import</span> <span class="n">root</span>
+<span class="kn">from</span>   <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span> <span class="nn">cosmolopy.distance</span>  <span class="k">as</span>     <span class="nn">cd</span>
+<span class="kn">import</span> <span class="nn">cosmolopy.constants</span> <span class="k">as</span>     <span class="nn">cc</span>
+
+<span class="c1">#: Default cosmology</span>
+<span class="n">COSMOLOGY</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">({</span><span class="s1">'omega_M_0'</span> <span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s1">'omega_lambda_0'</span> <span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="s1">'h'</span> <span class="p">:</span> <span class="mf">0.72</span><span class="p">})</span>
+
+<div class="viewcode-block" id="angular_diameter_size"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.angular_diameter_size">[docs]</a><span class="k">def</span> <span class="nf">angular_diameter_size</span><span class="p">(</span><span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
+                          <span class="n">scaleFactor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">cosmology</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the size of an object with extent **theta** at redshift **z** from the angular diameter distance.</span>
+
+<span class="sd">    :param z: redshift of the object</span>
+<span class="sd">    :type z: int or float</span>
+<span class="sd">    :param theta: angle subtended by the object. Unit should be in radians. If not, provide a scaling factor with **scaleFactor**.</span>
+<span class="sd">    :type theta: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    :param scaleFactor: (**Optional**)  if theta is not in radian, please provide a correct scale factor following the formula</span>
+<span class="sd">    </span>
+<span class="sd">        .. math::</span>
+<span class="sd">            \theta [{\rm{rad}}] = \theta [{\rm{your~unit}}] \times scaleFactor [{\rm{rad/your~unit}}].</span>
+<span class="sd">            </span>
+<span class="sd">    :type scaleFactor: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: physical size in **kpc**</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+        
+    <span class="k">return</span> <span class="n">cd</span><span class="o">.</span><span class="n">angular_diameter_distance</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span><span class="o">*</span><span class="n">theta</span><span class="o">*</span><span class="n">scaleFactor</span><span class="o">*</span><span class="mi">1000</span></div>
+    
+
+<div class="viewcode-block" id="comoving_separation"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.comoving_separation">[docs]</a><span class="k">def</span> <span class="nf">comoving_separation</span><span class="p">(</span><span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">theta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
+                        <span class="n">cosmology</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the tranverse distance (at fixed redshift) between objects separated by an angle **theta** on the sky in comoving units.</span>
+
+<span class="sd">    :param z: redshift of the object</span>
+<span class="sd">    :type z: int or float</span>
+<span class="sd">    :param theta: angle subtended by the object. Unit should be in radians. If not, provide a scaling factor with **scaleFactor**.</span>
+<span class="sd">    :type theta: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: comoving separation in **Mpc**</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+    
+    <span class="n">cosmology</span>     <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">(</span><span class="n">cosmology</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cd</span><span class="o">.</span><span class="n">comoving_distance_transverse</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span><span class="o">*</span><span class="n">theta</span></div>
+
+<div class="viewcode-block" id="comoving_los"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.comoving_los">[docs]</a><span class="k">def</span> <span class="nf">comoving_los</span><span class="p">(</span><span class="n">z1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">z2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
+                 <span class="n">cosmology</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the line of sight comoving distance between objects.</span>
+
+<span class="sd">    :param z1: redshift of the 1st object</span>
+<span class="sd">    :type z1: int or float</span>
+<span class="sd">    :param z2: redshift of the 2nd object</span>
+<span class="sd">    :type z2: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: comoving distance in **Mpc**</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+    
+    <span class="n">cosmology</span>     <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">(</span><span class="n">cosmology</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cd</span><span class="o">.</span><span class="n">comoving_distance</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z0</span><span class="o">=</span><span class="n">z2</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="dz_from_dage"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.dz_from_dage">[docs]</a><span class="k">def</span> <span class="nf">dz_from_dage</span><span class="p">(</span><span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">dage</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                 <span class="n">cosmology</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the redshift upper and lower bounds around a given redshift such that they are **dage** Gyr apart from the reference redshift.</span>
+<span class="sd">    </span>
+<span class="sd">    :param z: reference redshift</span>
+<span class="sd">    :type z: int or float</span>
+<span class="sd">    :param dage: age interval in Gyr</span>
+<span class="sd">    :type dage: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict cosmology: (**Optional**) parameters for the desired cosmology. See `cosmolopy &lt;https://roban.github.io/CosmoloPy/&gt;`_ for more information.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: upper and lower redshift bounds</span>
+<span class="sd">    :rtype: float, float</span>
+<span class="sd">    '''</span>
+    
+    <span class="c1"># Function to find the zero for the lower bound</span>
+    <span class="k">def</span> <span class="nf">func_min</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        
+        <span class="c1"># Make sure redshift do not fall outside interpolation range</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">x</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">100</span>
+        
+        <span class="n">age_x</span>        <span class="o">=</span> <span class="n">age_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">cc</span><span class="o">.</span><span class="n">Gyr_s</span> <span class="c1"># in Gyr</span>
+        <span class="k">return</span> <span class="n">age_z</span> <span class="o">-</span> <span class="n">age_x</span> <span class="o">-</span> <span class="n">dage</span>
+    
+    <span class="c1"># Function to find the zero for the upper bound</span>
+    <span class="k">def</span> <span class="nf">func_max</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        
+        <span class="c1"># Make sure redshift do not fall outside interpolation range</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">x</span><span class="o">&gt;</span><span class="mi">100</span><span class="p">:</span>
+            <span class="n">x</span>        <span class="o">=</span> <span class="mi">100</span>
+            
+        <span class="n">age_x</span>        <span class="o">=</span> <span class="n">age_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">cc</span><span class="o">.</span><span class="n">Gyr_s</span> <span class="c1"># in Gyr</span>
+        <span class="k">return</span> <span class="n">age_x</span> <span class="o">-</span> <span class="n">age_z</span> <span class="o">-</span> <span class="n">dage</span>
+    
+    <span class="k">if</span> <span class="n">cosmology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cosmology</span> <span class="o">=</span> <span class="n">COSMOLOGY</span>
+    
+    <span class="n">cosmology</span>        <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">set_omega_k_0</span><span class="p">(</span><span class="n">cosmology</span><span class="p">)</span>
+    
+    <span class="c1"># age_func gives age as a function of z, z_func gives z as a function of age</span>
+    <span class="n">age_func</span><span class="p">,</span> <span class="n">z_func</span> <span class="o">=</span> <span class="n">cd</span><span class="o">.</span><span class="n">quick_age_function</span><span class="p">(</span><span class="n">zmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">cosmology</span><span class="p">)</span>
+    <span class="n">age_z</span>            <span class="o">=</span> <span class="n">age_func</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">cc</span><span class="o">.</span><span class="n">Gyr_s</span>               <span class="c1"># in Gyr</span>
+    
+    <span class="c1"># Find lower bound</span>
+    <span class="n">guess</span>            <span class="o">=</span> <span class="n">z</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">sol_low</span>          <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">func_min</span><span class="p">,</span> <span class="n">guess</span><span class="p">)</span>
+    
+    <span class="c1"># Find upper bound</span>
+    <span class="n">guess</span>            <span class="o">=</span> <span class="n">z</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">sol_hig</span>          <span class="o">=</span> <span class="n">root</span><span class="p">(</span><span class="n">func_max</span><span class="p">,</span> <span class="n">guess</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">sol_hig</span><span class="p">[</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">sol_low</span><span class="p">[</span><span class="s1">'x'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+    
+
+<div class="viewcode-block" id="separation"><a class="viewcode-back" href="../../galaxy/cosmology.html#galaxy.cosmology.separation">[docs]</a><span class="k">def</span> <span class="nf">separation</span><span class="p">(</span><span class="n">z</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">ra1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dec1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ra2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dec2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+               <span class="n">units</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'deg'</span><span class="p">,</span> <span class="s1">'deg'</span><span class="p">,</span> <span class="s1">'deg'</span><span class="p">,</span> <span class="s1">'deg'</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the comoving separation between two objects at the same redshift given their position.</span>
+
+<span class="sd">    :param z: redshift of the two objects</span>
+<span class="sd">    :type z: int or float</span>
+
+<span class="sd">    :param float ra1: right ascension of the first object</span>
+<span class="sd">    :param float dec1: declination of the first object</span>
+<span class="sd">    :param float ra2: right ascension of the second object</span>
+<span class="sd">    :param float dec2: declination of the second object</span>
+<span class="sd">    </span>
+<span class="sd">    :param units: units of the different coordinates in this order: ra1, dec1, ra2, dec2</span>
+<span class="sd">    :type units:  list[float] or list[astropy unit] or str</span>
+
+<span class="sd">    :returns: comoving separation in **Mpc**</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: if **units** is neither an iterable of length 4 or a str</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="n">units</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span>
+        
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'4 units should be given nor a single one only. Cheers !'</span><span class="p">)</span>
+    
+    <span class="c1"># Objects representing the coordinates</span>
+    <span class="n">coord1</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra1</span><span class="p">,</span> <span class="n">dec1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">units</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">coord2</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra2</span><span class="p">,</span> <span class="n">dec2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">units</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+    
+    <span class="n">sep</span>   <span class="o">=</span> <span class="n">coord1</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">coord2</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">comoving_separation</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span></div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2022, Wilfried Mercier |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/main.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    </body>
+</html>

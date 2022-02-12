@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Miscellaneous GALFIT functions — wilfried library 1.0 documentation</title>
+<link href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../genindex.html" rel="index" title="Index">
+<link href="../../search.html" rel="search" title="Search"/>
+<link href="profiles.html" rel="next" title="GALFIT profile functions"/>
+<link href="index.html" rel="prev" title="Galfit models"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+<div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+</a>
+</div><form action="../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form>
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+</li>
+</ul>
+<ul class="current nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galaxy/index.html">
+   Galaxy module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/cosmology.html">
+     Cosmology computations
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/kinematics.html">
+     Galaxy kinematics
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/misc.html">
+     Miscellaneous
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/massModels.html">
+     Galaxy mass models
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/models.html">
+     1D and 2D light models
+    </a>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/morphology/index.html">
+     Galaxies morphology
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Morpho.html">
+       Morphological parameters
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/MUSE.html">
+       MUSE related functions
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Other.html">
+       Other Sersic related functions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/photometry/index.html">
+     Galaxies photometry
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 current active collapsible-parent expanded">
+<a class="reference internal" href="../index.html">
+   Galfit module
+  </a>
+<ul class="current collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../galfit.html">
+     Galfit auto-routines
+    </a>
+</li>
+<li class="toctree-l2 current active collapsible-parent expanded">
+<a class="reference internal" href="index.html">
+     Galfit models
+    </a>
+<ul class="current collapse-ul">
+<li class="toctree-l3 current active expanded">
+<a class="current reference internal" href="#">
+       Miscellaneous GALFIT functions
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="profiles.html">
+       GALFIT profile functions
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="tags.html">
+       Additional GALFIT tag functions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+</div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Download this page" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fas fa-download"></i></button>
+<div class="dropdown-buttons">
+<a class="dropdown-buttons" href="../../_sources/galfit/models/misc.rst.txt"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Download source file" type="button">.rst</button></a>
+<button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" id="download-print" onclick="window.print()" title="Print to PDF" type="button">.pdf</button>
+</div>
+</div>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+<a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galfit/models/misc.rst"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Edit this page" type="button"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+</div>
+</div>
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
+</div>
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<div class="section" id="miscellaneous-galfit-functions">
+<h1>Miscellaneous GALFIT functions<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#miscellaneous-galfit-functions">¶</a></h1>
+<dl class="py function">
+<dt id="galfit.models.createIsFixedDict">
+<code class="sig-prename descclassname">galfit.models.</code><code class="sig-name descname">createIsFixedDict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fullListOfNames</span></em>, <em class="sig-param"><span class="n">fixedParams</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galfit/models.html#createIsFixedDict"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.models.createIsFixedDict">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Make a dictionnary which stores which parameters should be fixed (value of 0) and which should not (value of 1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixedParams</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – <p>list of parameters names which must be fixed during galfit fitting routine.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>BY DEFAULT, ALL PARAMETERS ARE SET FREE.</p>
+</div>
+<p class="rubric"><strong>Example</strong></p>
+<p>For instance, if one wants to fix <code class="samp docutils literal notranslate">re</code> and <code class="samp docutils literal notranslate">n</code>, one may provide</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fixedParams</span><span class="o">=</span><span class="p">[</span><span class="s2">"re"</span><span class="p">,</span> <span class="s2">"n"</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">createIsFixedDict</span><span class="p">(</span><span class="n">fullListOfNames</span><span class="p">,</span> <span class="n">fixedParams</span><span class="p">)</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>fullListOfNames</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – complete list of parameter names which can either be fixed or let free</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionnary with key names equal to parameter names of the model and key values equal to 0 or 1</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="galfit.models.createCommentsDict">
+<code class="sig-prename descclassname">galfit.models.</code><code class="sig-name descname">createCommentsDict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fullListOfNames</span></em>, <em class="sig-param"><span class="n">comments</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galfit/models.html#createCommentsDict"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.models.createCommentsDict">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Make a dictionnary which stores the comments associated to each line in the galfit configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comments</strong> (<em>dict</em>) – <p>dictionnary which contains a comment for each line. If <strong>comments</strong> is None, default comments will be used instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general, the dictionnary key name is the parameter name of the galfit configuration line (ex: ‘pos’ for position, ‘mag’ for total magnitude, ‘bOvera’ for b/a ratio, etc.). The key value is the comment you want.</p>
+<p>You only need to provide comments for the parameters you want. Unprovided key names will result in no comment given to the line.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<ul>
+<li><p>for the POSITION, USE THE KEY ‘pos’ INSTEAD OF ‘x’ or ‘y’ as both values appear on the same line</p></li>
+<li><p>you can also provide a comment for the 0th line (i.e. the model name). To do so, use the key name ‘object’.</p></li>
+</ul>
+</div>
+</p></li>
+<li><p><strong>fullListOfNames</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – complete list of parameter names which can either be fixed or let free</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionnary with key names equal to parameter names of the model and key values equal to their comment</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="galfit.models.genModel">
+<code class="sig-prename descclassname">galfit.models.</code><code class="sig-name descname">genModel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">modelName</span></em>, <em class="sig-param"><span class="n">listLineIndex</span></em>, <em class="sig-param"><span class="n">params</span></em>, <em class="sig-param"><span class="n">fixedOrNot</span></em>, <em class="sig-param"><span class="n">paramsFormat</span></em>, <em class="sig-param"><span class="n">comments</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">noComments</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">mainComment</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">removeLine0</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galfit/models.html#genModel"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galfit.models.genModel">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Very general function which can output any GALFIT model configuration.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function is not supposed to be used directly by the user, but should be called by a function whose goal is to output the galfilt configuration of a specific profile.</p>
+<p>This should only be seen as a bare skeleton which is used in function calls in order to build specific galfit model configuration for feedme files.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fixedOrNot</strong> (<em>list</em><em>[</em><em>bool</em><em>]</em>) – whether each parameter given in <strong>params</strong> must be fixed during GALFIT fitting routine or not. This takes the same shape as <strong>params</strong>.</p></li>
+<li><p><strong>listLineIndex</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of GALFIT indices for each line (generally from 1 to 10, including Z at the end)</p></li>
+<li><p><strong>modelName</strong> (<em>str</em>) – name of the model used</p></li>
+<li><p><strong>params</strong> (<em>list</em>) – <p>parameters value for each line given in the same order as the indices. If, for a certain index, there are more than one parameter (ex: model center), then provide these as a list.</p>
+<p class="rubric"><strong>*Example</strong></p>
+<p>Say two indices are given such that</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listLineIndex</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> 
+</pre></div>
+</div>
+<p>where the first one is for the Sersic index n=1 and the other for the effective radius re=10, then we would have</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Say three indices are given such that</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">listLineIndex</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> 
+</pre></div>
+</div>
+<p>with the first two as before and the last one as the model center position (let us assume it lies at position (3, 5)), then we would have</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>This generalises for any number of parameters.</p>
+</p></li>
+<li><p><strong>paramsFormat</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – <p>format of the parameters used for the output. The shape of this parameter should be identical as that of params.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This uses old Python format. If you do not care about the output format, just provide a simple format for each argument (“%d” for int, “%f” for float, “%e” for scientific notation, etc.).</p>
+<p>Otherwise, you can use more complex notation to truncate values, align strings to the left or the right and so on.</p>
+</div>
+</p></li>
+<li><p><strong>comments</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – (<strong>Optional</strong>) comments to add at the end of the lines. If you do not want to provide a comment for a specific index, just give None.</p></li>
+<li><p><strong>mainComment</strong> (<em>str</em>) – (<strong>Optional</strong>) main comment which appears before the configuration line (generally the full model name)</p></li>
+<li><p><strong>noComments</strong> (<em>bool</em>) – (<strong>Optional</strong>) whether to not provide any comments or not</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – (<strong>Optional</strong>) prefix to add before the line index. For instance the index 1) would become B1) with the prefix “B”.</p></li>
+<li><p><strong>removeLine0</strong> (<em>bool</em>) – whether to remove line number 0 (model name). This is useful when one wants to make an output for additional terms such as bending modes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>galfit model configuration as formatted text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+</div>
+<div class="prev-next-bottom">
+<a class="left-prev" href="index.html" id="prev-link" title="previous page">Galfit models</a>
+<a class="right-next" href="profiles.html" id="next-link" title="next page">GALFIT profile functions</a>
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
+        
+          By Wilfried Mercier<br/>
+        
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
+</main>
+</div>
+</div>
+<script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+Miscellaneous GALFIT functions
+==============================
+
+.. autofunction:: galfit.models.createIsFixedDict
+.. autofunction:: galfit.models.createCommentsDict
+.. autofunction:: galfit.models.genModel

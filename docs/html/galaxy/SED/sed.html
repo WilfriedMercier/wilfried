@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SED objects — wilfried library 1.0 documentation</title>
+<link href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+<script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../genindex.html" rel="index" title="Index">
+<link href="../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+<div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+</a>
+</div><form action="../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form>
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+</li>
+</ul>
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../index.html">
+   Galaxy module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../cosmology.html">
+     Cosmology computations
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../kinematics.html">
+     Galaxy kinematics
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../misc.html">
+     Miscellaneous
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../massModels.html">
+     Galaxy mass models
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../models.html">
+     Galaxy models
+    </a>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../morphology/index.html">
+     Galaxies morphology
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Morpho.html">
+       Morphological parameters
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/MUSE.html">
+       MUSE related functions
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Other.html">
+       Other Sersic related functions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../photometry/index.html">
+     Galaxies photometry
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Magnitudes.html">
+       Magnitude conversions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+</div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Download this page" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fas fa-download"></i></button>
+<div class="dropdown-buttons">
+<a class="dropdown-buttons" href="../../_sources/galaxy/SED/sed.rst.txt"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Download source file" type="button">.rst</button></a>
+<button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" id="download-print" onclick="window.print()" title="Print to PDF" type="button">.pdf</button>
+</div>
+</div>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+<a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/SED/sed.rst"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Edit this page" type="button"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+</div>
+</div>
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
+</div>
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<div class="section" id="module-galaxy.SED.sed">
+<span id="sed-objects"></span><h1>SED objects<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-galaxy.SED.sed">¶</a></h1>
+<p><em>Code author: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Utilties related to generating 2D mass and SFR maps using LePhare SED fitting codes.</p>
+<dl class="py class">
+<dt id="galaxy.SED.sed.LePhareSED">
+<em class="property">class </em><code class="sig-prename descclassname">galaxy.SED.sed.</code><code class="sig-name descname">LePhareSED</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ID</span></em>, <em class="sig-param"><span class="n">properties</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/sed.html#LePhareSED"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.sed.LePhareSED">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#galaxy.SED.sed.SED" title="galaxy.SED.sed.SED"><code class="xref py py-class docutils literal notranslate">galaxy.SED.sed.SED</code></a></p>
+<p>Implements LePhare SED object.</p>
+<dl class="py method">
+<dt id="galaxy.SED.sed.LePhareSED.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ID</span></em>, <em class="sig-param"><span class="n">properties</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/sed.html#LePhareSED.__init__"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.sed.LePhareSED.__init__">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Init LePhare object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ID</strong> – an identifier used to name the output files created during the SED fitting process</p></li>
+<li><p><strong>properties</strong> (<em>dict</em>) – (<strong>Optional</strong>) properties to be passed to LePhare to compute the models grid and perform the SED fitting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – if one of the properties items is not of type str</p></li>
+<li><p><strong>ValueError</strong> – if one of the properties does not have a valid name (see list below)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Accepted properties are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>STAR_SED</strong> [str]: stellar library list file (full path)</p></li>
+<li><p><strong>STAR_FSCALE</strong> [int/float]: stellar flux scale</p></li>
+<li><p><strong>STAR_LIB</strong> [str]: stellar library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a stellar library, provide ‘NONE’.</p></li>
+<li><p><strong>QSO_SED</strong> [str]: QSO list file (full path)</p></li>
+<li><p><strong>QSO_FSCALE</strong> [int, float]: QSO flux scale</p></li>
+<li><p><strong>QSO_LIB</strong> [str]: QSO library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a QSO library, provide ‘NONE’.</p></li>
+<li><p><strong>GAL_SED</strong> [str]: galaxy library list file (full path)</p></li>
+<li><p><strong>GAL_FSCALE</strong> [int, float]: galaxy flux scale</p></li>
+<li><p><strong>GAL_LIB</strong> [str]: galaxy library to use (default libraries found at $LEPHAREWORK/lib_bin). To not use a galaxy library, provide ‘NONE’.</p></li>
+<li><p><strong>SEL_AGE</strong> [str]: stellar ages list (full path)</p></li>
+<li><p><strong>AGE_RANGE</strong> [list[int/float]]: minimum and maximum ages in years</p></li>
+<li><p><strong>FILTER_LIST</strong> [list[str]]: list of filter names used for the fit (must all be located in $LEPHAREDIR/filt directory)</p></li>
+<li><p><strong>TRANS_TYPE</strong> [int]: transmission type (0 for Energy, 1 for photons)</p></li>
+<li><p><strong>FILTER_CALIB</strong> [int]: filter calibration (0 for fnu=ctt, 1 for nu.fnu=ctt, 2 for fnu=nu, 3=fnu=Black Body @ T=10000K, 4 for MIPS (leff with nu fnu=ctt and flux with BB @ 10000K)</p></li>
+<li><p><strong>FILTER_FILE</strong> [str]: filter file (must be located in $LEPHAREWORK/filt directory)</p></li>
+<li><p><strong>STAR_LIB_IN</strong> [str]: input stellar library (dupplicate with <strong>STAR_LIB</strong> ?)</p></li>
+<li><p><strong>STAR_LIB_OUT</strong> [str]: output stellar magnitudes</p></li>
+<li><p><strong>QSO_LIB_IN</strong> [str]: input QSO library (dupplicate with <strong>QSO_LIB</strong> ?)</p></li>
+<li><p><strong>QSO_LIB_OUT</strong> [str]: output QSO magnitudes</p></li>
+<li><p><strong>GAL_LIB_IN</strong> [str]: input galaxy library (dupplicate with <strong>GAL_LIB</strong> ?)</p></li>
+<li><p><strong>GAL_LIB_OUT</strong> [str]: output galaxy magnitudes</p></li>
+<li><p><strong>MAGTYPE</strong> [str]: magnitude system used (AB or VEGA)</p></li>
+<li><p><strong>Z_STEP</strong> [list[int/float]]: redshift step properties. Values are: redshift step, max redshift, redshift step for redshifts above 6 (coarser sampling).</p></li>
+<li><p><strong>COSMOLOGY</strong> [list[int/float]]: cosmology parameters. Values are: Hubble constant H0, baryon fraction Omegam0, cosmological constant fraction Omegalambda0.</p></li>
+<li><p><strong>MOD_EXTINC</strong> [list[int/float]]: minimum and maximum model extinctions</p></li>
+<li><p><strong>EXTINC_LAW</strong> [str]: extinction law file (in $LEPHAREDIR/ext)</p></li>
+<li><p><strong>EB_V</strong> [list[int/float]]: color excess E(B-V). It must contain less than 50 values.</p></li>
+<li><p><strong>EM_LINES</strong> [str]: whether to consider emission lines or not. Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>BD_SCALE</strong> [int]: number of bands used for scaling (0 means all bands). See LePhare documentation for more details.</p></li>
+<li><p><strong>GLB_CONTEXT</strong> [int]: context number (0 means all bands). See LePhare documentation for more details.</p></li>
+<li><p><strong>ERR_SCALE</strong> [list[int/float]]: magnitude errors per band to add in quadrature</p></li>
+<li><p><strong>ERR_FACTOR</strong> [int/float]: scaling factor to apply to the errors</p></li>
+<li><p><strong>ZPHOTLIB</strong> [list[str]]: librairies used to compute the Chi2. Maximum number is 3.</p></li>
+<li><p><strong>ADD_EMLINES</strong> [str]: whether to add emission lines or not (dupplicate with <strong>EM_LINES</strong> ?). Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>FIR_LIB</strong> [str]: far IR library</p></li>
+<li><p><strong>FIR_LMIN</strong> [int/float]: minimum wavelength (in microns) for the far IR analysis</p></li>
+<li><p><strong>FIR_CONT</strong> [int/float]: far IR continuum. Use -1 for no continuum.</p></li>
+<li><p><strong>FIR_SCALE</strong> [int/float]: far IR flux scale. Use -1 to skip flux scale.</p></li>
+<li><p><strong>FIR_FREESCALE</strong> [str]: whether to let the far IR spectrum freely scale</p></li>
+<li><p><strong>FIR_SUBSTELLAR</strong> [str]: ???</p></li>
+<li><p><strong>PHYS_LIB</strong> [str]: physical stochastic library</p></li>
+<li><p><strong>PHYS_CONT</strong> [int/float]: physical continuum. Use -1 for no continuum.</p></li>
+<li><p><strong>PHYS_SCALE</strong> [int/float]: physical flux scale. Use -1 to skip flux scale.</p></li>
+<li><p><strong>PHYS_NMAX</strong> [int]: ???</p></li>
+<li><p><strong>MAG_ABS</strong> [list[int/float]]: minimum and maximum values for the magnitudes.</p></li>
+<li><p><strong>MAG_REF</strong> [int]: reference band used by <strong>MAG_ABS</strong></p></li>
+<li><p><strong>Z_RANGE</strong> [list[int/float]]: minimum and maximum redshifts used by the galaxy library</p></li>
+<li><p><strong>EBV_RANGE</strong> [list[int/float]]: minimum and maximum colour excess E(B-V)</p></li>
+<li><p><strong>ZFIX</strong> [str]: whether to fix the redshift or let it free. Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>Z_INTERP</strong> [str]: whether to perform an interpolation to find the redshift. Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>DZ_WIN</strong> [int/float]: window search for second peak. Must be between 0 and 5.</p></li>
+<li><p><strong>MIN_THRES</strong> [int/float]: minimum threshold for second peak. Must be between 0 and 1.</p></li>
+<li><p><strong>MABS_METHOD</strong> [int]: method used to compute magnitudes (0 : obs-&gt;Ref, 1 : best obs-&gt;Ref, 2 : fixed obs-&gt;Ref, 3 : mag from best SED, 4 : Zbin). See LePhare documentation for more details.</p></li>
+<li><p><strong>MABS_CONTEXT</strong> [int]: context for absolute magnitudes. See LePhare documentation for more details.</p></li>
+<li><p><strong>MABS_REF</strong> [int]: reference band used to compute the absolute magnitudes. This is only used if <strong>MABS_METHOD</strong> = 2.</p></li>
+<li><p><strong>MABS_FILT</strong> [list[int]]: filters used in each redshift bin (see <strong>MABS_ZBIN</strong>). This is only used if <strong>MABS_METHOD</strong> = 4.</p></li>
+<li><p><strong>MABS_ZBIN</strong> [list[int/float]]: redshift bins (must be an even number). This is only used if <strong>MABS_METHOD</strong> = 4.</p></li>
+<li><p><strong>SPEC_OUT</strong> [str]: whether to output the spectrum of each object or not. Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>CHI2_OUT</strong> [str]: whether to generate an output file with all the values or not. Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>PDZ_OUT</strong> [str]: output file name for the PDZ analysis. To not do the pdz analysis, provide ‘NONE’.</p></li>
+<li><p><strong>PDZ_MABS_FILT</strong> [list[int]]: absolute magnitude for reference filters to be extracted. See LePhare documentation for more details.</p></li>
+<li><p><strong>FAST_MODE</strong> [str]: whether to perform a fast computation or not. Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>COL_NUM</strong> [int]: number of colors used</p></li>
+<li><p><strong>COL_SIGMA</strong> [int/float]: quantity by which to enlarge the errors on the colors</p></li>
+<li><p><strong>COL_SEL</strong> [str]: operation used to combine colors. Accepted values are ‘AND’ or ‘OR’.</p></li>
+<li><p><strong>AUTO_ADAPT</strong> [str]: whether to use an adaptive method with a z-spec sample. Accepted values are ‘YES’ or ‘NO’.</p></li>
+<li><p><strong>ADAPT_BAND</strong> [list[int]]: reference band, band1 and band2 for colors</p></li>
+<li><p><strong>ADAPT_LIM</strong> [list[int/float]]: magnitude limit for spectro in reference band</p></li>
+<li><p><strong>ADAPT_POLY</strong> [int]: number of coefficients in polynomial. Maximum is 4.</p></li>
+<li><p><strong>ADAPT_METH</strong> [int]: fit method, 1 for color model, 2 for redshift, 3 for models. See LePhare documentation for more details.</p></li>
+<li><p><strong>ADAPT_CONTEXT</strong> [int]: context for the bands used for training. See LePhare documentation for more details.</p></li>
+<li><p><strong>ADAPT_ZBIN</strong> [list[int/float]]: minimum and maximum redshift interval used for training.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is mandatory to define on your OS two environment variables:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>$LEPHAREWORK which points to LePhare working directory</p></li>
+<li><p>$LEPHAREDIR which points to LePhare main directory</p></li>
+</ul>
+</div></blockquote>
+<p>These paths may be expanded to check whether the given files exist and can be used by the user to shorten some path names when providing the SED properties.</p>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.sed.LePhareSED.parameters">
+<em class="property">property </em><code class="sig-name descname">parameters</code><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.sed.LePhareSED.parameters">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Generate a parameter file used by the SED fitting code.</p>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt id="galaxy.SED.sed.SED">
+<em class="property">class </em><code class="sig-prename descclassname">galaxy.SED.sed.</code><code class="sig-name descname">SED</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/sed.html#SED"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.sed.SED">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate">object</code></p>
+<p>General SED object used for inheritance.</p>
+<dl class="py method">
+<dt id="galaxy.SED.sed.SED.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/sed.html#SED.__init__"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.sed.SED.__init__">¶</a></dt>
+<dd><p>Init SED oject.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.sed.SED.genParams">
+<code class="sig-name descname">genParams</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/sed.html#SED.genParams"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.sed.SED.genParams">¶</a></dt>
+<dd><p>Generate a parameter file used by the SED fitting code.</p>
+</dd></dl>
+</dd></dl>
+</div>
+</div>
+<div class="prev-next-bottom">
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
+        
+          By Wilfried Mercier<br/>
+        
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
+</main>
+</div>
+</div>
+<script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
+</html>

@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Filter and FilterList definitions — wilfried library 1.0 documentation</title>
+<link href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+<script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../genindex.html" rel="index" title="Index">
+<link href="../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+<div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+</a>
+</div><form action="../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form>
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+</li>
+</ul>
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/dict.html">
+     Dictionaries
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/list.html">
+     List manipulations
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/strings.html">
+     Strings manipulation
+    </a>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../utilities/plotUtilities/index.html">
+     Plot utilities
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/asManyHists.html">
+       Histograms
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/hst.html">
+       Galfit related plots
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/misc.html">
+       Miscellaneous
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../utilities/plotUtilities/singleContour.html">
+       Contours
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../index.html">
+   Galaxy module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../cosmology.html">
+     Cosmology computations
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../kinematics.html">
+     Galaxy kinematics
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../misc.html">
+     Miscellaneous
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../massModels.html">
+     Galaxy mass models
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../models.html">
+     Galaxy models
+    </a>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../morphology/index.html">
+     Galaxies morphology
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Morpho.html">
+       Morphological parameters
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/MUSE.html">
+       MUSE related functions
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../morphology/Other.html">
+       Other Sersic related functions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../photometry/index.html">
+     Galaxies photometry
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../photometry/Magnitudes.html">
+       Magnitude conversions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+</div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Download this page" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fas fa-download"></i></button>
+<div class="dropdown-buttons">
+<a class="dropdown-buttons" href="../../_sources/galaxy/SED/filters.rst.txt"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Download source file" type="button">.rst</button></a>
+<button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" id="download-print" onclick="window.print()" title="Print to PDF" type="button">.pdf</button>
+</div>
+</div>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+<a class="edit-button" href="https://github.com/WilfriedMercier/wilfried/edit/master/galaxy/SED/filters.rst"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Edit this page" type="button"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+</div>
+</div>
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
+</div>
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<div class="section" id="module-galaxy.SED.filters">
+<span id="filter-and-filterlist-definitions"></span><h1>Filter and FilterList definitions<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-galaxy.SED.filters">¶</a></h1>
+<p><em>Code author: Hugo Plombat - LUPM &amp; Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Base classes used to generate resolved stellar and SFR maps with LePhare or Cigale SED fitting codes.</p>
+<dl class="py class">
+<dt id="galaxy.SED.filters.Filter">
+<em class="property">class </em><code class="sig-prename descclassname">galaxy.SED.filters.</code><code class="sig-name descname">Filter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filt</span></em>, <em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">errFile</span></em>, <em class="sig-param"><span class="n">zeropoint</span></em>, <em class="sig-param"><span class="n">ext</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">extErr</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">texpFactor</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate">object</code></p>
+<p>Base class implementing data related to a single filter.</p>
+<dl class="py method">
+<dt id="galaxy.SED.filters.Filter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filt</span></em>, <em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">errFile</span></em>, <em class="sig-param"><span class="n">zeropoint</span></em>, <em class="sig-param"><span class="n">ext</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">extErr</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">texpFactor</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter.__init__"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter.__init__">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Initialise filter object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filt</strong> (<em>str</em>) – filter name</p></li>
+<li><p><strong>file</strong> (<em>str</em>) – data file name. File must exist and be a loadable FITS file.</p></li>
+<li><p><strong>errFile</strong> (<em>str</em>) – error file name. File must exist and be a loadable FITS file. Error file is assumed to be the variance map.</p></li>
+<li><p><strong>zeropoint</strong> (<em>float</em>) – filter AB magnitude zeropoint</p></li>
+<li><p><strong>ext</strong> (<em>int</em>) – (<strong>Optional</strong>) extension in the data FITS file</p></li>
+<li><p><strong>extErr</strong> (<em>int</em>) – (<strong>Optional</strong>) extension in the error FITS file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – <ul class="simple">
+<li><p>if <strong>filt</strong> is not of type str</p></li>
+<li><p>if <strong>zeropoint</strong> is neither an int nor a float</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.Filter._checkFile">
+<code class="sig-name descname">_checkFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._checkFile"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter._checkFile">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Check whether a file exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em>) – file name</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>True if the file exists</p></li>
+<li><p>False otherwise</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – if <strong>file</strong> is not of type str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.Filter._loadFits">
+<code class="sig-name descname">_loadFits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">ext</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._loadFits"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter._loadFits">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Load data and header from a FITS file at the given extension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>str</em>) – file name</p></li>
+<li><p><strong>ext</strong> (<em>int</em>) – (<strong>Optional</strong>) extension to load data from</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>None, None if the file cannot be loaded as a FITS file or if the hdu extension is too large</p></li>
+<li><p>header, data</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>astropy Header, ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – if <strong>ext</strong> is not an int</p></li>
+<li><p><strong>ValueError</strong> – if <strong>ext</strong> is negative</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.Filter._mask">
+<em class="property">static </em><code class="sig-name descname">_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arr</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#Filter._mask"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.Filter._mask">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Apply the given mask by placing NaN values onto the array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>ndarary</em>) – array to mask</p></li>
+<li><p><strong>mask</strong> (<em>ndarary</em><em>[</em><em>bool</em><em>]</em>) – mask with boolean values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array with masked values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt id="galaxy.SED.filters.FilterList">
+<em class="property">class </em><code class="sig-prename descclassname">galaxy.SED.filters.</code><code class="sig-name descname">FilterList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">code</span><span class="o">=</span><span class="default_value">'cigale'</span></em>, <em class="sig-param"><span class="n">redshift</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate">object</code></p>
+<p>Base class implementing the object used to stored SED fitting into.</p>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">code</span><span class="o">=</span><span class="default_value">'cigale'</span></em>, <em class="sig-param"><span class="n">redshift</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.__init__"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.__init__">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Initialise filter list object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filters</strong> (<em>list</em><em>[</em><a class="reference internal" href="#galaxy.SED.filters.Filter" title="galaxy.SED.filters.Filter"><em>Filter</em></a><em>]</em>) – filters used to perform the SED fitting</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em><em>[</em><em>bool</em><em>]</em>) – mask for bad pixels (True for bad pixels, False for good ones)</p></li>
+<li><p><strong>code</strong> (<em>str</em>) – (<strong>Optional</strong>) code used to perform the SED fitting. Either ‘lephare’ or ‘cigale’ are accepted.</p></li>
+<li><p><strong>redshift</strong> – (<strong>Optional</strong>) redshift of the galaxy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – <ul class="simple">
+<li><p>if <strong>filters</strong> is not a list</p></li>
+<li><p>if <strong>redshift</strong> is neither an int nor a float</p></li>
+<li><p>if one of the filters is not of type Filter</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.clean">
+<em class="property">static </em><code class="sig-name descname">clean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'zero'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.clean"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.clean">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Clean given data and error maps by masking pixels and dealing with negative values.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>If <strong>method</strong> is ‘zero’, negative values in the data and error maps are set to 0</p></li>
+<li><p>If <strong>method</strong> is ‘min’, negative values in the data and error maps are set to the minimum value in the array</p></li>
+<li><p>If <strong>method</strong> is neither ‘zero’ nor ‘negative’, ‘zero’ is used as default</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – data map</p></li>
+<li><p><strong>var</strong> (<em>ndarray</em>) – variance map</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em><em>[</em><em>bool</em><em>]</em>) – mask used to apply NaN values</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – (<strong>Optional</strong>) method to deal with negative values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cleaned data and variance maps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>method</strong> is not of type str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.meanMap">
+<code class="sig-name descname">meanMap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">maskVal</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.meanMap"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.meanMap">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Compute the averaged data and error maps over the spectral dimension for non masked pixels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>maskVal</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) value to put into masked pixels</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>averaged data and averaged error map</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>maskVal</strong> is neither int nor float</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.poissonVar">
+<em class="property">static </em><code class="sig-name descname">poissonVar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">texp</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">texpFac</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.poissonVar"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.poissonVar">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Compute a scaled Poisson variance term from a given flux map. The variance <img alt="(\Delta F)^2" class="math" src="../../_images/math/07292f283c92d1df75423cae4f34ccd4e465de99.png"/> is computed as</p>
+<div class="math">
+<p><img alt="(\Delta F)^2 = \alpha F" src="../../_images/math/bcb397e02a21830f6e9c7521e40e9a9d651874fb.png"/></p>
+</div><p>where <img alt="F" class="math" src="../../_images/math/df00656702b70b4b6f7ffbf6a9aa9a334bab1914.png"/> is the flux map and <img alt="\alpha" class="math" src="../../_images/math/2f5aa019312e1bbc969deab8dca8b00f76025404.png"/> is a scale factor defined as</p>
+<div class="math">
+<p><img alt="\alpha = {\rm{TEXP / TEXPFAC}}" src="../../_images/math/027d0fd23daa8ff572de23e43c20678147b037a5.png"/></p>
+</div><p>where <img alt="\rm{TEXP}" class="math" src="../../_images/math/81b6f0c96a4f0a609bee021ad0d6254487b9f968.png"/> is the exposure time and <img alt="\rm{TEXPFAC}" class="math" src="../../_images/math/2acf0fa7b34a1a3cdf10c733add0353c8aca16c7.png"/> is a coefficient used to scale it down.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – flux map</p></li>
+<li><p><strong>texp</strong> – (<strong>Optional</strong>) exposure time in seconds</p></li>
+<li><p><strong>texpFac</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) exposure factor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – if <strong>texp</strong> or <strong>texpFac</strong> are not both int or float</p></li>
+<li><p><strong>ValueError</strong> – <ul>
+<li><p>if <strong>texp</strong> is less than or equal to 0</p></li>
+<li><p>if <strong>texpFac</strong> is less than 0</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.scale">
+<em class="property">static </em><code class="sig-name descname">scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">var</span></em>, <em class="sig-param"><span class="n">norm</span></em>, <em class="sig-param"><span class="n">factor</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.scale"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.scale">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Normalise given data and error maps using a norm map and scale by a certain amount. Necessary for LePhare SED fitting code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em>) – data map</p></li>
+<li><p><strong>var</strong> (<em>ndarray</em>) – variance map</p></li>
+<li><p><strong>norm</strong> (<em>ndarray</em>) – normalisation map which divides data and error maps</p></li>
+<li><p><strong>factor</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) scale factor which multiplies the output array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scaled data and variance maps</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray, ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if <strong>data</strong> and <strong>norm</strong> do not have the same shapes</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.setCigale">
+<code class="sig-name descname">setCigale</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.setCigale">¶</a></dt>
+<dd><p>Set Cigale as fitting code</p>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.setCode">
+<code class="sig-name descname">setCode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">code</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.setCode"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.setCode">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Set the SED fitting code.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function also recomputes and rewrites the output table used for the SED fitting.
+If you want a table with different parameters you must run <a class="reference internal" href="#galaxy.SED.filters.FilterList.toTable" title="galaxy.SED.filters.FilterList.toTable"><code class="xref py py-meth docutils literal notranslate">FilterList.toTable()</code></a> again, for e.g.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>                <span class="c1"># setCode and toTable methods are called with default SED fitting code name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">setCode</span><span class="p">(</span><span class="s1">'lephare'</span><span class="p">)</span>                         <span class="c1"># setCode and toTable methods are called with 'lephare' SED fitting code name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flist</span><span class="o">.</span><span class="n">toTable</span><span class="p">(</span><span class="n">cleanMethod</span><span class="o">=</span><span class="s1">'min'</span><span class="p">,</span> <span class="n">scaleFactor</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># toTable is run again with different parameters but still 'lephare' SED fitting code name</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>code</strong> (<em>str</em>) – code used for SED fitting acceptable values are cigale and lephare. If code name is not recognised, cigale is set as default value.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if <strong>code</strong> is not of type str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.setLePhare">
+<code class="sig-name descname">setLePhare</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.setLePhare">¶</a></dt>
+<dd><p>Set LePhare as fitting code</p>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.toCatalogue">
+<code class="sig-name descname">toCatalogue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toCatalogue"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.toCatalogue">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a Catalogue instance given the table associated to the filter list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – name of the output file containing the catalogue when it is saved</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate">Catalogue</code></p>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.toLePhareCat">
+<code class="sig-name descname">toLePhareCat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">tunit</span><span class="o">=</span><span class="default_value">'M'</span></em>, <em class="sig-param"><span class="n">magtype</span><span class="o">=</span><span class="default_value">'AB'</span></em>, <em class="sig-param"><span class="n">tformat</span><span class="o">=</span><span class="default_value">'MEME'</span></em>, <em class="sig-param"><span class="n">ttype</span><span class="o">=</span><span class="default_value">'LONG'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toLePhareCat"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.toLePhareCat">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Construct a Catalogue instance given the table associated to the filter list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – name of the output file containing the catalogue when it is saved</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate">LePhareCat</code></p>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="galaxy.SED.filters.FilterList.toTable">
+<code class="sig-name descname">toTable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cleanMethod</span><span class="o">=</span><span class="default_value">'zero'</span></em>, <em class="sig-param"><span class="n">scaleFactor</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">texpFac</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/galaxy/SED/filters.html#FilterList.toTable"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne tooltipped tooltipped-ne tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#galaxy.SED.filters.FilterList.toTable">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu" rel="nofollow noopener">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Generate an input table for the SED fitting codes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cleanMethod</strong> (<em>str</em>) – (<strong>Optional</strong>) method used to clean pixel with negative values. Accepted values are ‘zero’ and ‘min’.</p></li>
+<li><p><strong>scaleFactor</strong> (<em>int</em><em> or </em><em>float</em>) – (<strong>Optional</strong>) factor used to multiply data and std map. Only used if SED fitting code is LePhare.</p></li>
+<li><p><strong>texpFactor</strong> (<em>int</em>) – (<strong>Optional</strong>) exposure factor used to divide the exposure time when computing Poisson noise. A value of 0 means no Poisson noise is added to the variance map.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>output table</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Astropy Table</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – if there are no filters in the filter list</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+</div>
+</div>
+<div class="prev-next-bottom">
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
+        
+          By Wilfried Mercier<br/>
+        
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
+</main>
+</div>
+</div>
+<script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
+</html>

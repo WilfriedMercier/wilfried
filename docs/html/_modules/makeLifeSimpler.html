@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<title>makeLifeSimpler | wilfried library 1.0 documentation</title>
+<link href="../_static/pygments.css" rel="stylesheet"/>
+<link href="../_static/theme.313ea551d1799b2102b1.css" rel="stylesheet"/>
+<link href="../_static/plot_directive.css" rel="stylesheet"/>
+<link href="../_static/copybutton.css" rel="stylesheet"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+</head>
+<body class="antialiased text-gray">
+<div class="h-screen xl:grid xl:grid-layout" data-action="keydown@window-&gt;search#focus" data-controller="sidebar search" id="page">
+<a class="block text-xl bg-white py-4 z-20 absolute top-0 h-18 inset-x-0 text-center transform -translate-y-full focus:translate-y-0 focus:outline-none transition-transform duration-75" href="#makelifesimpler" title="Skip navigation links">Skip to content</a>
+<header class="grid-area-header z-10 h-14 sm:h-18">
+<div class="bg-gray-dark shadow-md flex items-center h-full xl:px-2 relative"><div class="flex items-center">
+<button class="xl:hidden h-14 w-14 sm:h-18 sm:w-18 leading-14 sm:leading-18 text-gray-100 hover:bg-gray-700 hover:text-brand focus:outline-none focus:bg-gray-700 focus:text-brand" data-action="sidebar#open" data-sidebar-target="hamburger">
+<span class="sr-only">Open navigation menu</span>
+<svg aria-hidden="true" class="fill-current h-8 w-8" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+</button><a aria-label="Back to homepage" class="hover:bg-gray-700 focus:bg-gray-700 focus:outline-none tooltipped tooltipped-sw" href="../index.html"><span class="hidden lg:inline-block shrink-0 font-medium text-gray-100 mx-5 leading-14 sm:leading-18 tracking-wider">wilfried library 1.0 documentation</span>
+</a></div><div class="flex justify-end items-center flex-1"><form action="../search.html" class="flex print:hidden justify-between items-center leading-14 sm:leading-18 md:ml-4 bg-gray-dark text-gray-300 focus-within:bg-gray-50 focus-within:text-gray-800 focus-within:absolute focus-within:inset-x-0 focus-within:top-0 md:focus-within:w-full md:focus-within:static" data-action="click-&gt;search#focusSearchInput" id="searchbox" method="get">
+<button aria-label="Get search results" class="text-inherit h-14 w-14 sm:h-18 sm:w-18" tabindex="-1">
+<svg aria-hidden="true" class="fill-current stroke-current h-8 w-8" stroke-width="0.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+</button>
+<input aria-label="Search the docs" class="pr-2 bg-transparent text-inherit focus:outline-none w-0 md:w-auto focus:w-full transition-all duration-100" data-search-target="searchInput" id="search-input" name="q" placeholder="Search the docs" type="search"/>
+</form></div>
+</div>
+</header>
+<aside class="grid-area-sidebar h-full fixed xl:relative inset-y-0 left-0 z-20 xl:z-0 print:hidden overflow-y-auto transition-all transform transform-gpu -translate-x-full opacity-0 duration-300 xl:translate-x-0 xl:opacity-100" data-sidebar-target="sidebar">
+<nav class="h-full overflow-y-auto bg-white text-gray-600 pt-8 flex flex-col" role="navigation">
+<div class="nav-toc flex-1 pl-6"><ul>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../dependencies.html">Required dependencies</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../makeLifeSimpler.html">makeLifeSimpler</a></div></li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/index.html">Useful utilities</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html">Colored messages</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#example">Example</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/coloredMessages.html#module-utilities.coloredMessages">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html">Dictionaries</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/dict.html#module-utilities.dictionaries">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html">Input/Output</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/io.html#module-utilities.io">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html">List manipulations</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/list.html#module-utilities.lists">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html">Strings manipulation</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#list-of-available-functions">List of available functions</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#examples">Examples</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/strings.html#module-utilities.strings">Documentation</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/index.html">Plot utilities</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/asManyHists.html">Histograms</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/hst.html">Galfit related plots</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../utilities/plotUtilities/singleContour.html">Contours</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/index.html">Galaxy module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/angularMomentum.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/cosmology.html">Cosmology computations</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/geometry.html">Galaxies angular momentum</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/kinematics.html">Galaxy kinematics</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/misc.html">Miscellaneous</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/massModels.html">Galaxy mass models</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html">Galaxy models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html#d-profiles">1D profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/models.html#id1">2D profiles</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/morphology/index.html">Galaxies morphology</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/morphology/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/photometry/index.html">Galaxies photometry</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galaxy/photometry/index.html#functions-are-split-into-the-following-modules">Functions are split into the following modules:</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/index.html">Galfit module</a></div><ul>
+<li class="toctree-l2"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/galfit.html">Galfit auto-routines</a></div></li>
+<li class="toctree-l2"><div class="nav-link"><svg class="expand" data-action="click-&gt;sidebar#expand keydown-&gt;sidebar#expandKeyPressed" tabindex="0" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html">Galfit models</a></div><ul>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#miscellaneous">Miscellaneous</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#galfit-profiles">Galfit profiles</a></div></li>
+<li class="toctree-l3"><div class="nav-link"><a class="reference internal" data-action="click-&gt;sidebar#close" href="../galfit/models.html#galfit-additional-tags">Galfit additional tags</a></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<button class="text-4xl text-gray-800 p-4 bottom-0 hover:text-brand xl:hidden focus:text-brand self-center" data-action="" title="Close navigation menu">
+<span class="sr-only">Close navigation menu</span>
+<svg aria-hidden="true" class="fill-current stroke-current h-6 w-6" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</aside>
+<main class="px-10 xl:ml-fluid grid-area-main overflow-y-auto flex flex-col h-full mx-0 md:mx-auto xl:mr-0" data-action="scroll-&gt;scroll#showButton" data-controller="scroll"><nav aria-label="breadcrumbs" class="print:hidden mt-12 text-sm text-gray-light" role="navigation">
+<a class="text-gray-light text-sm hover:text-gray-dark font-medium focus:text-gray-dark" href="../index.html">wilfried library 1.0 documentation</a>
+<span class="mr-1">/</span><a class="text-gray-light text-sm hover:text-gray-dark" href="index.html">Module code</a>
+<span class="mr-1">/</span><span aria-current="page">makeLifeSimpler</span>
+</nav>
+<article class="flex-1" role="main">
+<h1>Source code for makeLifeSimpler</h1><div class="highlight"><pre>
+<code><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""</span>
+<span class="sd">*Author:* Wilfried Mercier - IRAP</span>
+
+<span class="sd">A set of useful functions to make life simpler when analysing data.</span>
+
+<span class="sd">.. warning::</span>
+<span class="sd">    Some functions have not been updated or used in months and may not behave as would be expected.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span>   <span class="nn">scipy.stats</span>  <span class="kn">import</span> <span class="n">median_abs_deviation</span>
+<span class="kn">import</span> <span class="nn">numpy</span>        <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.random</span> <span class="k">as</span>     <span class="nn">rand</span>
+
+
+<div class="viewcode-block" id="inferError"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.inferError">[docs]</a><span class="k">def</span> <span class="nf">inferError</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">err_params</span><span class="p">,</span> <span class="n">minBounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxBounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">centralValue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    Infer the 1 sigma error on the output of a function by estimating its standard deviation when perturbating its parameters according to their errors.</span>
+<span class="sd">    Errors are assumed to be Gaussian.</span>
+
+<span class="sd">    :param func function: function to infer the output error</span>
+<span class="sd">    :param list parameters: parameters to pass to the function. Order must be identical as in the function declaration.</span>
+<span class="sd">    :param list err_params: 1 sigma errors of the parameters. If the parameter is fixed or perfectly known, provide None instead to bypass the pertubation part.</span>
+<span class="sd">    :param centralValue: value used to compute the standard deviation (usually median or mean). If no value is provided, the median value of the perturbed iterations is used.</span>
+<span class="sd">    :type centralValue: int or float</span>
+<span class="sd">    :param int num: number of iterations to perform</span>
+<span class="sd">    :param list maxBounds: maximum limit allowed for the parameters when perturbating them. All perturbed parameters beyond these thresholds will be set to these values.</span>
+<span class="sd">    :param list minBounds: minimum limit allowed for the parameters when perturbating them. All perturbed parameters beyond these thresholds will be set to these values.</span>
+<span class="sd">    :param dict kwargs: additional parameters to pass onto the function at the end</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: 1 sigma error of the function around the median value</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    :raises TypeError: if num is not an int, or if parameters, err_params, minBounds or maxBounds are not lists, or if centralValue is neither int nor float</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Number of iterations must be an integer.'</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Parameters must be given as a list.'</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">err_params</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Parameters errors must be given as a list.'</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">minBounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">minBounds</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">maxBounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">maxBounds</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">minBounds</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Minimum bounds should be given as a list.'</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maxBounds</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Maximum bounds should be given as a list.'</span><span class="p">)</span>
+        
+    <span class="c1"># Generating the perturbations for each parameter</span>
+    <span class="n">perturbations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">mini</span><span class="p">,</span> <span class="n">maxi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">err_params</span><span class="p">,</span> <span class="n">minBounds</span><span class="p">,</span> <span class="n">maxBounds</span><span class="p">):</span>
+        
+        <span class="c1"># Without error, we had the parameter value without perturbations</span>
+        <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">perturbations</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">value</span><span class="p">]</span><span class="o">*</span><span class="n">num</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">param</span> <span class="o">=</span> <span class="n">rand</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">error</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">num</span><span class="p">)</span>
+            
+            <span class="c1"># If there is a min or max bound, we clip outliers</span>
+            <span class="k">if</span> <span class="n">mini</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">param</span><span class="p">[</span><span class="n">param</span><span class="o">&lt;</span><span class="n">mini</span><span class="p">]</span> <span class="o">=</span> <span class="n">mini</span>
+            <span class="k">if</span> <span class="n">maxi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">param</span><span class="p">[</span><span class="n">param</span><span class="o">&gt;</span><span class="n">maxi</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxi</span>
+                
+            <span class="n">perturbations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="n">perturbations</span> <span class="o">=</span> <span class="n">transpose</span><span class="p">(</span><span class="n">perturbations</span><span class="p">)</span>
+
+    <span class="c1"># Apply the function to each element</span>
+    <span class="n">result</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">perturbations</span><span class="p">])</span>
+    
+    <span class="k">if</span> <span class="n">centralValue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">centralValue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">centralValue</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Central value should either be an int or a float.'</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">median_abs_deviation</span><span class="p">(</span><span class="n">result</span><span class="o">-</span><span class="n">centralValue</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">'omit'</span><span class="p">)</span></div>
+    
+    
+
+<div class="viewcode-block" id="transpose"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.transpose">[docs]</a><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">lists</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    Take the transpose of a list of lists/tuples.</span>
+<span class="sd">    All the inner lists are assumed to be of equal length, otherwise the transpose will not work correctly.</span>
+
+<span class="sd">    :param lists: list of all the lists or tuples to perform the transpose onto</span>
+<span class="sd">    :type lists: list[list] or lists[tuple]</span>
+<span class="sd">    :returns: the transposed list</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lists</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'lists parameter should be of type list only. Cheers !'</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">lists</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="convertCoords"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.convertCoords">[docs]</a><span class="k">def</span> <span class="nf">convertCoords</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">inSize</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">outSize</span><span class="o">=</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="n">conversionFactor</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    Transforms the coordinates of a/many point(s) from one image to another</span>
+<span class="sd">    </span>
+<span class="sd">    :param coordinates: coordinates of the points to convert from one image to another</span>
+<span class="sd">    :type coordinates: dict or list of dict</span>
+<span class="sd">    :param float conversionFactor: numerical factor to convert the position from pixel to another relavant unit</span>
+<span class="sd">    :param inSize: size of the image the points are from</span>
+<span class="sd">    :type inSize: 2-tuple[int] or list[int]</span>
+<span class="sd">    :param outSize: size of the image whereto we want to convert the positions of the points</span>
+<span class="sd">    :type outSize: 2-tuple[int] or list[int]</span>
+<span class="sd">    :returns: a list of dictionnaries with transformed coordinates</span>
+<span class="sd">    :rtype: list[dict]</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[</span><span class="n">coordinates</span><span class="p">]</span>
+        
+    <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">points</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">coordinates</span><span class="p">[</span><span class="n">num</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">*=</span> <span class="n">outSize</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="o">/</span><span class="n">inSize</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="o">*</span><span class="n">conversionFactor</span>
+    <span class="k">return</span> <span class="n">coordinates</span></div>
+
+
+
+<div class="viewcode-block" id="printSimpleStat"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.printSimpleStat">[docs]</a><span class="k">def</span> <span class="nf">printSimpleStat</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Print basic stats such as median and mean values, as well as 1st and 3rd quantiles.</span>
+<span class="sd">    </span>
+<span class="sd">    :param catalog: array from which the statistic is computed</span>
+<span class="sd">    :type catalog: ndarray or astropy table or list or list[ndarray] or list[astropy table] or list[list]</span>
+<span class="sd">    :param unit: unit of the array if there is one</span>
+<span class="sd">    :type unit: astropy unit</span>
+<span class="sd">    :returns: None</span>
+<span class="sd">    """</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="p">[</span><span class="n">catalog</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">cat</span><span class="p">,</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">catalog</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cat</span> <span class="o">=</span> <span class="n">cat</span><span class="o">*</span><span class="n">unit</span>
+            
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Stat for catalog number"</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="s2">":"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Maximum separation is"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">cat</span><span class="p">))</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Mean separation is"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cat</span><span class="p">))</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Median separation is"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">cat</span><span class="p">))</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"1st quantile is"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">))</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"3rd quantile is"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">))</span> <span class="o">+</span> <span class="s2">"."</span><span class="p">)</span>
+        
+    <span class="k">return</span>   </div>
+   
+
+<div class="viewcode-block" id="uniqueArr"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.uniqueArr">[docs]</a><span class="k">def</span> <span class="nf">uniqueArr</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">arraysToBeUnique</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Apply a mask from np.unique on arraysToBeUnique for many arrays.</span>
+<span class="sd">    </span>
+<span class="sd">    :param tables: tables to which the mask is applied</span>
+<span class="sd">    :type tables: astropy table or ndarray or list[astropy table] or list[ndarray]</span>
+<span class="sd">    :param arraysToBeUnique: tables or arrays from which the mask is computed (with np.unique)</span>
+<span class="sd">    :type arraysToBeUnique: astropy table or ndarray or list[astropy table] or list[array]</span>
+<span class="sd">    :returns: tables with the mask applied</span>
+<span class="sd">    :rtype: Same as tables</span>
+<span class="sd">    """</span>
+    
+    <span class="c1">#Transform into a list if it is an array</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="n">tables</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">arraysToBeUnique</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">arraysToBeUnique</span> <span class="o">=</span> <span class="p">[</span><span class="n">arraysToBeUnique</span><span class="p">]</span>
+        
+    <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">uniq</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tables</span><span class="p">)),</span> <span class="n">arraysToBeUnique</span><span class="p">):</span>    
+        <span class="n">arr</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">tables</span><span class="p">[</span><span class="n">num</span><span class="p">]</span>  <span class="o">=</span> <span class="n">tables</span><span class="p">[</span><span class="n">num</span><span class="p">][</span><span class="n">indices</span><span class="p">]</span>
+        
+    <span class="k">return</span> <span class="n">tables</span></div>
+
+
+<div class="viewcode-block" id="maskToRemoveVal"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.maskToRemoveVal">[docs]</a><span class="k">def</span> <span class="nf">maskToRemoveVal</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">astroTableMask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Computes a mask by finding occurences in a list of arrays.</span>
+<span class="sd">    </span>
+<span class="sd">    :param list[ndarray] listOfArrays: list of arrays from which the mask is built</span>
+<span class="sd">    :param val: value to find. If None, it looks for nan values.</span>
+<span class="sd">    :type val: int or float or None</span>
+<span class="sd">    :param bool keep: if True, it builds a mask with True everywhere the value val is encountered. If False, it does the opposite.</span>
+<span class="sd">    :param bool astroTableMask: if True returns a mask from the astropy table column instead of looking for some value/nans with False values everywhere the data is masked.</span>
+<span class="sd">    :returns: a mask</span>
+<span class="sd">    :rtype: ndarray</span>
+<span class="sd">    """</span>
+    
+    <span class="n">shp</span> <span class="o">=</span> <span class="n">listOfArrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+    <span class="c1">#Checking that arrays have the same shape</span>
+    <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">listOfArrays</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="n">shp</span> <span class="o">!=</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Arrays do not have the same dimensions, thus making the masking operation unfit."</span><span class="p">)</span>
+  
+    <span class="c1">#Constructing first mask</span>
+    <span class="k">if</span> <span class="n">astroTableMask</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">listOfArrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">val</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        
+    <span class="c1">#Applying logical and on all the masks</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">array</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="c1">#consider we are looking for nan in the arrays</span>
+        <span class="k">if</span> <span class="n">astroTableMask</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">mask</span><span class="p">))</span>  
+        <span class="k">elif</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">array</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">keep</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">array</span><span class="o">==</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">array</span> <span class="o">!=</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tmp</span></div>
+
+
+<div class="viewcode-block" id="logicalAndFromList"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.logicalAndFromList">[docs]</a><span class="k">def</span> <span class="nf">logicalAndFromList</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Compute the intersection of all the subarrays in the main array</span>
+<span class="sd">    </span>
+<span class="sd">    :param lst: list of arrays containing True of False values</span>
+<span class="sd">    :type lst: list[ndarray]</span>
+<span class="sd">    :returns: np.logical_and applied on all the subarrays</span>
+<span class="sd">    :rtype: ndarray</span>
+<span class="sd">    """</span>
+    
+    
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">lst</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">tmp</span></div>
+
+
+<div class="viewcode-block" id="applyMask"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.applyMask">[docs]</a><span class="k">def</span> <span class="nf">applyMask</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Apply the same mask to a list of arrays and return the new arrays.</span>
+<span class="sd">    </span>
+<span class="sd">    :param list[ndarray] listOfArrays: list of arrays the mask is applied to</span>
+<span class="sd">    :param ndarray mask: mask to apply</span>
+<span class="sd">    :returns: list of arrays with the mask applied. If len(listOfArrays) is 1, it returns only an array instead of a list of arrays with one object.</span>
+<span class="sd">    :rtype: list[ndarray] if len(listOfArrays) != 1 else ndarray</span>
+<span class="sd">    """</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">array</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">listOfArrays</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">listOfArrays</span><span class="p">[</span><span class="n">num</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">listOfArrays</span></div>
+
+
+<div class="viewcode-block" id="findWhereIsValue"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.findWhereIsValue">[docs]</a><span class="k">def</span> <span class="nf">findWhereIsValue</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Find and print the first position where a value is found within a list of arrays.</span>
+<span class="sd">    </span>
+<span class="sd">    :param list[ndarray] listOfArrays: list from which the value val is searched</span>
+<span class="sd">    :param val: value to look for. If None, it looks for nan values.</span>
+<span class="sd">    :type val: int or float or None</span>
+<span class="sd">    :returns: list of booleans with the same length as listOfArrays, with True when the value was found in the array and False otherwise.</span>
+<span class="sd">    :rtype: list[bool]</span>
+<span class="sd">    """</span>
+    
+    <span class="n">returnArr</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">array</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">listOfArrays</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+                <span class="n">returnArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"A nan was found at position"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">array</span><span class="p">))[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"within array number"</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">returnArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"No nan was found in array number"</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">array</span><span class="o">==</span><span class="n">val</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">returnArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"No value"</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="s2">"found within array number"</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">returnArr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"Value"</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="s2">"found at position"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">array</span><span class="o">==</span><span class="n">val</span><span class="p">))[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"within array number"</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">returnArr</span></div>
+                
+
+<div class="viewcode-block" id="checkDupplicates"><a class="viewcode-back" href="../makeLifeSimpler.html#makeLifeSimpler.checkDupplicates">[docs]</a><span class="k">def</span> <span class="nf">checkDupplicates</span><span class="p">(</span><span class="n">master</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Check if galaxies are found multiple times in an array by looking for duplicates of (RA, DEC) pairs.</span>
+<span class="sd">    </span>
+<span class="sd">    :param master: list of structured arrays to check</span>
+<span class="sd">    :type master: list of structured ndarrays (with 'RA' and 'DEC' fields)</span>
+<span class="sd">    :param list[str] names: names of the arrays</span>
+<span class="sd">    :returns: None</span>
+<span class="sd">    """</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">master</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">master</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Given names were not enough. Using position in the list as name instead."</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">'catalog nb '</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">master</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">master</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'str'</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">catalog</span><span class="p">,</span> <span class="n">nameCat</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">master</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">nb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s1">'RA'</span><span class="p">],</span> <span class="n">catalog</span><span class="p">[</span><span class="s1">'DEC'</span><span class="p">],</span> <span class="nb">range</span><span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s1">'RA'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            
+            <span class="n">where1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s1">'RA'</span><span class="p">]</span><span class="o">==</span><span class="n">ra</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">where2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">catalog</span><span class="p">[</span><span class="s1">'DEC'</span><span class="p">]</span><span class="o">==</span><span class="n">dec</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">where1</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">where2</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">):</span>
+                
+                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">where2</span><span class="p">:</span>
+                    
+                    <span class="k">if</span> <span class="n">flag</span> <span class="ow">and</span> <span class="p">(</span><span class="n">w</span> <span class="ow">in</span> <span class="n">where1</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">"RA ="</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="s2">"deg and DEC ="</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="s2">"deg galaxy (line "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nb</span><span class="p">)</span> <span class="o">+</span> <span class="s2">") is present more than once in catalog"</span><span class="p">,</span> <span class="n">nameCat</span><span class="p">)</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">cnt</span>  <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">cnt</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"All the galaxies are only listed once in the catalog"</span><span class="p">,</span> <span class="n">nameCat</span><span class="p">)</span>     
+    <span class="k">return</span></div>
+</code></pre></div>
+</article>
+<footer>
+<div class="mt-20 mb-4 text-sm text-gray-700">© 2022, Wilfried Mercier Made with <a href="https://www.sphinx-doc.org">Sphinx 4.4.0</a></div>
+</footer></main>
+<button class="fixed bottom-0 right-0 z-20 opacity-0 p-4 m-4 tracking-wide bg-gray-900 text-gray-100 transition transform transform-gpu duration-500 translate-y-full" data-action="search#hideSnackbar" data-search-target="snackbar">
+  Clear highlights
+</button><div class="fixed hidden inset-0 bg-black bg-opacity-50" data-action="click-&gt;sidebar#close" data-sidebar-target="screen">
+</div>
+</div>
+<script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+<script src="../_static/jquery.js"></script>
+<script src="../_static/underscore.js"></script>
+<script src="../_static/doctools.js"></script>
+<script src="../_static/clipboard.min.js"></script>
+<script src="../_static/copybutton.js"></script>
+<script src="../_static/theme.3666d2347a4c66e5d7a8.js"></script>
+</body>
+</html>

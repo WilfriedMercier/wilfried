@@ -1,0 +1,509 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Useful utilities" href="utilities/index.html" /><link rel="prev" title="Required dependencies" href="dependencies.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2021.09.22"/>
+        <title>makeLifeSimpler - wilfried library 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=16fb25fabf47304eee183a5e9af80b1ba98259b1" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-admonition-background: orange;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: red;
+  --color-brand-content: #CC3333;
+  --color-content-foreground: #ababab;
+  --color-api-overall: white;
+  --color-sidebar-brand-text: red;
+  --color-sidebar-item-background--current: #CC3333;
+  --color-sidebar-link-text: white;
+  --color-sidebar-link-text--top-level: white;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">wilfried library 1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">wilfried library 1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Required dependencies</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">makeLifeSimpler</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="utilities/index.html">Useful utilities</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="utilities/coloredMessages.html">Colored messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/dict.html">Dictionaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/io.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/list.html">List manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/strings.html">Strings manipulation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="utilities/plotUtilities/index.html">Plot utilities</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities/plotUtilities/asManyHists.html">Histograms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/plotUtilities/hst.html">Galfit related plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/plotUtilities/misc.html">Miscellaneous</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/plotUtilities/singleContour.html">Contours</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="galaxy/index.html">Galaxy module</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="galaxy/angularMomentum.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="galaxy/cosmology.html">Cosmology computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="galaxy/geometry.html">Galaxies angular momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="galaxy/kinematics.html">Galaxy kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="galaxy/misc.html">Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="galaxy/massModels.html">Galaxy mass models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="galaxy/models.html">Galaxy models</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="galaxy/morphology/index.html">Galaxies morphology</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/morphology/SersicFlux.html">Sersic fluxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/morphology/Morpho.html">Morphological parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/morphology/Thickness.html">Galaxies thickness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/morphology/MUSE.html">MUSE related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/morphology/Other.html">Other Sersic related functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="galaxy/photometry/index.html">Galaxies photometry</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/photometry/Fluxes.html">Fluxes, colour excess and attenuation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/photometry/Masses_SFR.html">Masses and SFR estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="galaxy/photometry/Magnitudes.html">Magnitude conversions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="galfit/index.html">Galfit module</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="galfit/galfit.html">Galfit auto-routines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="galfit/models.html">Galfit models</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-makeLifeSimpler">
+<span id="makelifesimpler"></span><h1>makeLifeSimpler<a class="headerlink" href="#module-makeLifeSimpler" title="Permalink to this headline">¶</a></h1>
+<p><em>Author:</em> Wilfried Mercier - IRAP</p>
+<p>A set of useful functions to make life simpler when analysing data.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Some functions have not been updated or used in months and may not behave as would be expected.</p>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.applyMask">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">applyMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listOfArrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#applyMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.applyMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the same mask to a list of arrays and return the new arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listOfArrays</strong> (<em>list</em><em>[</em><em>ndarray</em><em>]</em>) – list of arrays the mask is applied to</p></li>
+<li><p><strong>mask</strong> (<em>ndarray</em>) – mask to apply</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of arrays with the mask applied. If len(listOfArrays) is 1, it returns only an array instead of a list of arrays with one object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[ndarray] if len(listOfArrays) != 1 else ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.checkDupplicates">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">checkDupplicates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">master</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#checkDupplicates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.checkDupplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if galaxies are found multiple times in an array by looking for duplicates of (RA, DEC) pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>master</strong> (<em>list of structured ndarrays</em><em> (</em><em>with 'RA' and 'DEC' fields</em><em>)</em>) – list of structured arrays to check</p></li>
+<li><p><strong>names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – names of the arrays</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.convertCoords">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">convertCoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(200,</span> <span class="pre">200)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(31,</span> <span class="pre">31)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conversionFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#convertCoords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.convertCoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms the coordinates of a/many point(s) from one image to another</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coordinates</strong> (<em>dict</em><em> or </em><em>list of dict</em>) – coordinates of the points to convert from one image to another</p></li>
+<li><p><strong>conversionFactor</strong> (<em>float</em>) – numerical factor to convert the position from pixel to another relavant unit</p></li>
+<li><p><strong>inSize</strong> (<em>2-tuple</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>int</em><em>]</em>) – size of the image the points are from</p></li>
+<li><p><strong>outSize</strong> (<em>2-tuple</em><em>[</em><em>int</em><em>] or </em><em>list</em><em>[</em><em>int</em><em>]</em>) – size of the image whereto we want to convert the positions of the points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of dictionnaries with transformed coordinates</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[dict]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.findWhereIsValue">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">findWhereIsValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listOfArrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#findWhereIsValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.findWhereIsValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and print the first position where a value is found within a list of arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listOfArrays</strong> (<em>list</em><em>[</em><em>ndarray</em><em>]</em>) – list from which the value val is searched</p></li>
+<li><p><strong>val</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>None</em>) – value to look for. If None, it looks for nan values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of booleans with the same length as listOfArrays, with True when the value was found in the array and False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[bool]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.inferError">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">inferError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxBounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centralValue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#inferError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.inferError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer the 1 sigma error on the output of a function by estimating its standard deviation when perturbating its parameters according to their errors.
+Errors are assumed to be Gaussian.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> (<em>func</em>) – function to infer the output error</p></li>
+<li><p><strong>parameters</strong> (<em>list</em>) – parameters to pass to the function. Order must be identical as in the function declaration.</p></li>
+<li><p><strong>err_params</strong> (<em>list</em>) – 1 sigma errors of the parameters. If the parameter is fixed or perfectly known, provide None instead to bypass the pertubation part.</p></li>
+<li><p><strong>centralValue</strong> (<em>int</em><em> or </em><em>float</em>) – value used to compute the standard deviation (usually median or mean). If no value is provided, the median value of the perturbed iterations is used.</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – number of iterations to perform</p></li>
+<li><p><strong>maxBounds</strong> (<em>list</em>) – maximum limit allowed for the parameters when perturbating them. All perturbed parameters beyond these thresholds will be set to these values.</p></li>
+<li><p><strong>minBounds</strong> (<em>list</em>) – minimum limit allowed for the parameters when perturbating them. All perturbed parameters beyond these thresholds will be set to these values.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – additional parameters to pass onto the function at the end</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1 sigma error of the function around the median value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – if num is not an int, or if parameters, err_params, minBounds or maxBounds are not lists, or if centralValue is neither int nor float</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.logicalAndFromList">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">logicalAndFromList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#logicalAndFromList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.logicalAndFromList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the intersection of all the subarrays in the main array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lst</strong> (<em>list</em><em>[</em><em>ndarray</em><em>]</em>) – list of arrays containing True of False values</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>np.logical_and applied on all the subarrays</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.maskToRemoveVal">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">maskToRemoveVal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listOfArrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">astroTableMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#maskToRemoveVal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.maskToRemoveVal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a mask by finding occurences in a list of arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listOfArrays</strong> (<em>list</em><em>[</em><em>ndarray</em><em>]</em>) – list of arrays from which the mask is built</p></li>
+<li><p><strong>val</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>None</em>) – value to find. If None, it looks for nan values.</p></li>
+<li><p><strong>keep</strong> (<em>bool</em>) – if True, it builds a mask with True everywhere the value val is encountered. If False, it does the opposite.</p></li>
+<li><p><strong>astroTableMask</strong> (<em>bool</em>) – if True returns a mask from the astropy table column instead of looking for some value/nans with False values everywhere the data is masked.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a mask</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.printSimpleStat">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">printSimpleStat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#printSimpleStat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.printSimpleStat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print basic stats such as median and mean values, as well as 1st and 3rd quantiles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>catalog</strong> (<em>ndarray</em><em> or </em><em>astropy table</em><em> or </em><em>list</em><em> or </em><em>list</em><em>[</em><em>ndarray</em><em>] or </em><em>list</em><em>[</em><em>astropy table</em><em>] or </em><em>list</em><em>[</em><em>list</em><em>]</em>) – array from which the statistic is computed</p></li>
+<li><p><strong>unit</strong> (<em>astropy unit</em>) – unit of the array if there is one</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.transpose">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lists</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take the transpose of a list of lists/tuples.
+All the inner lists are assumed to be of equal length, otherwise the transpose will not work correctly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lists</strong> (<em>list</em><em>[</em><em>list</em><em>] or </em><em>lists</em><em>[</em><em>tuple</em><em>]</em>) – list of all the lists or tuples to perform the transpose onto</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the transposed list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="makeLifeSimpler.uniqueArr">
+<span class="sig-prename descclassname"><span class="pre">makeLifeSimpler.</span></span><span class="sig-name descname"><span class="pre">uniqueArr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arraysToBeUnique</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/makeLifeSimpler.html#uniqueArr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeLifeSimpler.uniqueArr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a mask from np.unique on arraysToBeUnique for many arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tables</strong> (<em>astropy table</em><em> or </em><em>ndarray</em><em> or </em><em>list</em><em>[</em><em>astropy table</em><em>] or </em><em>list</em><em>[</em><em>ndarray</em><em>]</em>) – tables to which the mask is applied</p></li>
+<li><p><strong>arraysToBeUnique</strong> (<em>astropy table</em><em> or </em><em>ndarray</em><em> or </em><em>list</em><em>[</em><em>astropy table</em><em>] or </em><em>list</em><em>[</em><em>array</em><em>]</em>) – tables or arrays from which the mask is computed (with np.unique)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tables with the mask applied</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Same as tables</p>
+</dd>
+</dl>
+</dd></dl>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="utilities/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Useful utilities</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="dependencies.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Required dependencies</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2022, Wilfried Mercier |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>. |
+            <a class="muted-link" href="_sources/makeLifeSimpler.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/main.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    </body>
+</html>

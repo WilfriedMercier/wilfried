@@ -1,0 +1,7 @@
+Additional GALFIT tag functions
+===============================
+
+.. autofunction:: galfit.models.bendingModes
+.. autofunction:: galfit.models.boxy_diskyness
+.. autofunction:: galfit.models.fourierModes
+   

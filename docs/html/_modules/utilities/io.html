@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>utilities.io — wilfried library 1.0 documentation</title>
+<link href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+<script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../genindex.html" rel="index" title="Index">
+<link href="../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+<div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+</a>
+</div><form action="../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form>
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+</li>
+</ul>
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../utilities/index.html">
+   Useful utilities
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/coloredMessages.html">
+     Colored messages
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../utilities/io.html">
+     Input/Output
+    </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galaxy/index.html">
+   Galaxy module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/cosmology.html">
+     Cosmology computations
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/kinematics.html">
+     Galaxy kinematics
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/misc.html">
+     Miscellaneous
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/massModels.html">
+     Galaxy mass models
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/models.html">
+     Galaxy models
+    </a>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/morphology/index.html">
+     Galaxies morphology
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Morpho.html">
+       Morphological parameters
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/MUSE.html">
+       MUSE related functions
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Other.html">
+       Other Sersic related functions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/photometry/index.html">
+     Galaxies photometry
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+</div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+</div>
+</div>
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
+</div>
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<h1>Source code for utilities.io</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""</span>
+<span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">Functions related to input-output interaction.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span> <span class="nn">astropy.table.table</span>
+<span class="kn">from</span>   <span class="nn">astropy.table</span>          <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span>   <span class="nn">astropy.io.votable</span>     <span class="kn">import</span> <span class="n">is_votable</span><span class="p">,</span> <span class="n">writeto</span><span class="p">,</span> <span class="n">parse</span>
+<span class="kn">import</span> <span class="nn">numpy.lib.recfunctions</span> <span class="k">as</span>     <span class="nn">rec</span>
+<span class="kn">import</span> <span class="nn">numpy</span>                  <span class="k">as</span>     <span class="nn">np</span>
+
+<span class="c1">################################################################################################</span>
+<span class="c1">#                                   VOtable functions                                          #</span>
+<span class="c1">################################################################################################</span>
+
+<div class="viewcode-block" id="is_VOtable"><a class="viewcode-back" href="../../utilities/io.html#utilities.io.is_VOtable">[docs]</a><span class="k">def</span> <span class="nf">is_VOtable</span><span class="p">(</span><span class="n">fullname</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Check whether a file is a VOtable.</span>
+
+<span class="sd">    :param str fullname: name of the file</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: True if it is a VOtable</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    </span>
+<span class="sd">    :raises IOError: if **fullname** is no a VOtable</span>
+<span class="sd">    """</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_votable</span><span class="p">(</span><span class="n">fullname</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">'File </span><span class="si">%s</span><span class="s1"> is not a VOtable.'</span> <span class="o">%</span><span class="n">fullname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="loadVOtable"><a class="viewcode-back" href="../../utilities/io.html#utilities.io.loadVOtable">[docs]</a><span class="k">def</span> <span class="nf">loadVOtable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">outputType</span><span class="o">=</span><span class="s1">'Table'</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pedantic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_names_over_ids</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Load a VOtable using astropy.</span>
+
+<span class="sd">    :param str name: VOtable catalogue file name</span>
+
+<span class="sd">    :param int num: (**Optional**) positon of the table to load within the VOtable file</span>
+<span class="sd">    :param str outputType: (**Optional**) type of output data. Must be one of the following:</span>
+<span class="sd">        </span>
+<span class="sd">        * 'default' to load it as an Astropy VOtable data type</span>
+<span class="sd">        * 'array' to load it as a numpy structured array</span>
+<span class="sd">        * 'Table' to load it as an Astropy Table</span>
+
+<span class="sd">    :param bool pedantic: (**Optional**) whether to disable Exceptions when reading VOtable files with unusual keywords</span>
+<span class="sd">    :param bool use_names_over_id: (**Optional**) whether (when creating as astropy Table out of the VOtable table element) to use columns names rather than the unique IDs in the VOtable columns to name the astropy Table columns</span>
+<span class="sd">                </span>
+<span class="sd">    :returns: loaded table</span>
+
+<span class="sd">    :raises TypeError: </span>
+<span class="sd">        </span>
+<span class="sd">        * if **outputType** is not of type str</span>
+<span class="sd">        * if **num** is not of type int</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputType</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'output type must be a string.'</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Please only provide an integer value for the table number. Cheers !'</span><span class="p">)</span>
+    
+    <span class="n">outputType</span>     <span class="o">=</span> <span class="n">outputType</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">outputType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'votable'</span><span class="p">,</span> <span class="s1">'tableelement'</span><span class="p">,</span> <span class="s1">'array'</span><span class="p">,</span> <span class="s1">'table'</span><span class="p">]:</span>
+        <span class="n">outputType</span> <span class="o">=</span> <span class="s1">'votable'</span>
+
+    <span class="c1"># Convert data to the given format</span>
+    <span class="k">if</span> <span class="n">is_VOtable</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="n">data</span>           <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pedantic</span><span class="o">=</span><span class="n">pedantic</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">outputType</span> <span class="o">!=</span> <span class="s1">'votable'</span><span class="p">:</span>
+        <span class="n">data</span>       <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get_table_by_index</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">outputType</span> <span class="o">==</span> <span class="s1">'array'</span><span class="p">:</span>
+            <span class="n">data</span>   <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">array</span>
+        <span class="k">elif</span> <span class="n">outputType</span> <span class="o">==</span> <span class="s1">'table'</span><span class="p">:</span>
+            <span class="n">data</span>   <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to_table</span><span class="p">(</span><span class="n">use_names_over_ids</span><span class="o">=</span><span class="n">use_names_over_ids</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="VOtableColumns"><a class="viewcode-back" href="../../utilities/io.html#utilities.io.VOtableColumns">[docs]</a><span class="k">def</span> <span class="nf">VOtableColumns</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fullInfo</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Show the column names in the VOtable object.</span>
+
+<span class="sd">    :param str name: VOtable file name</span>
+<span class="sd">    :param bool fullInfo: (**Optional**) whether to show full information or just the names</span>
+<span class="sd">    '''</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">loadVOtable</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">fullInfo</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
+    
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="write_array_to_vot"><a class="viewcode-back" href="../../utilities/io.html#utilities.io.write_array_to_vot">[docs]</a><span class="k">def</span> <span class="nf">write_array_to_vot</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">outputFile</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Write a numpy array or an astropy Table into a VOtable file.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">        </span>
+<span class="sd">        If **array** is not an astropy Table, it is converted to it.</span>
+
+<span class="sd">    :param array: array to write into the file</span>
+<span class="sd">    :type array: numpy structured array of astropy Table</span>
+<span class="sd">    :param str outputFile: file to write the array into</span>
+<span class="sd">    """</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">astropy</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">Table</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">array</span><span class="p">)</span>
+        
+    <span class="n">writeto</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">outputFile</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+
+
+<span class="c1">################################################################################################</span>
+<span class="c1">#                          MUSE catalogues specific functions                                  #</span>
+<span class="c1">################################################################################################</span>
+
+
+<div class="viewcode-block" id="add_new_array_to_previous"><a class="viewcode-back" href="../../utilities/io.html#utilities.io.add_new_array_to_previous">[docs]</a><span class="k">def</span> <span class="nf">add_new_array_to_previous</span><span class="p">(</span><span class="n">newArray</span><span class="p">,</span> <span class="n">fullFileName</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">oldArray</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">isFirstArray</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fieldsToDrop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">typesToDrop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Append a new structured array to another one, only keeping some fields after applying their corresponding data types onto the new columns.</span>
+<span class="sd">    This function is used to combine data from different MUSE catalogues where field names and data types may vary between different versions.</span>
+
+<span class="sd">    :param list[str] fields: field names</span>
+<span class="sd">    :param str fullfilename: name of the new array to append to the previous one</span>
+<span class="sd">    :param newArray: new array to append to the previous one</span>
+<span class="sd">        </span>
+<span class="sd">    :param list[str] fieldsToDrop: (**Optional**)  names of the fields to move to the bottom and change their type. If not None, **typesToDrop** must be a list of the same size.</span>
+<span class="sd">    :param bool isFirstArray: (**Optional**) whether this is the first array generated with this function or not. If True a check will be made at the end.</span>
+<span class="sd">    :param oldArray: previous array whereto append new data</span>
+<span class="sd">    :type oldArray: (**Optional**) structured ndarray</span>
+<span class="sd">    :param list typesToDrop: (**Optional**) data types corresponding to the specified fields which must be dropped to the bottom</span>
+<span class="sd">          </span>
+<span class="sd">    :returns: new structured array where all the content of the previous ones has been correctly appended</span>
+<span class="sd">    :rtype: structured ndarray          </span>
+<span class="sd">    """</span>
+    
+    <span class="c1">#Try to keep all the required fields (common to every catalogue if they all had the same name)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">newArray</span><span class="p">[</span><span class="n">fields</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1">#Dealing with exceptions because of variations in field names between catalogues</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"CGR34-32_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_nov18_withFOF_withGALFIT_withGALKIN_jan19.vot"</span> <span class="ow">in</span> <span class="n">fullFileName</span><span class="p">:</span>            
+            <span class="n">newArray</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">rename_fields</span><span class="p">(</span><span class="n">newArray</span><span class="p">,</span> <span class="p">{</span><span class="s1">'groupe_secure_z'</span><span class="p">:</span><span class="s1">'group_secure_z'</span><span class="p">,</span> <span class="s1">'groupe_unsecure_z'</span><span class="p">:</span><span class="s1">'group_unsecure_z'</span><span class="p">})</span>
+            
+        <span class="k">elif</span> <span class="p">(</span><span class="s2">"CGR79-77_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_nov18_withFOF_withGALFIT_withGALKIN_jan19.vot"</span> <span class="ow">in</span> <span class="n">fullFileName</span> <span class="ow">or</span> 
+              <span class="s2">"CGR32-32-M123_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_withnewz_jan19_withFOF_withGALFIT_withGALKIN_jan19_COSMOSGroupNumberOldCorrected.vot"</span> <span class="ow">in</span> <span class="n">fullFileName</span><span class="p">):</span>
+            <span class="n">newArray</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">rename_fields</span><span class="p">(</span><span class="n">newArray</span><span class="p">,</span> <span class="p">{</span><span class="s1">'TYPE_2'</span><span class="p">:</span><span class="s1">'TYPE'</span><span class="p">,</span> <span class="s1">'secure_z_ss'</span><span class="p">:</span><span class="s1">'secure_z'</span><span class="p">,</span> <span class="s1">'unsecure_z_ss'</span><span class="p">:</span><span class="s1">'unsecure_z'</span><span class="p">,</span> <span class="s1">'no_z_ss'</span><span class="p">:</span><span class="s1">'no_z'</span><span class="p">,</span> 
+                                                    <span class="s1">'group_secure_z_ss'</span><span class="p">:</span><span class="s1">'group_secure_z'</span><span class="p">,</span> <span class="s1">'group_unsecure_z_ss'</span><span class="p">:</span><span class="s1">'group_unsecure_z'</span><span class="p">})</span>
+    
+        <span class="k">elif</span> <span class="s2">"CGR32-32-M123_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_withnewz_jan19_withFOF_withGALFIT_withGALKIN_jan19_COSMOSGroupNumberOldCorrected.vot"</span> <span class="ow">in</span> <span class="n">fullFileName</span><span class="p">:</span>
+            <span class="n">newArray</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">rename_fields</span><span class="p">(</span><span class="n">newArray</span><span class="p">,</span> <span class="p">{</span><span class="s1">'TYPE_2'</span><span class="p">:</span><span class="s1">'TYPE'</span><span class="p">})</span>
+            
+        <span class="k">elif</span> <span class="s2">"CGR114_116_zcatalog_withLaigle+16_withFAST_withPLATEFIT_weightedflux_oct18_withFOF_withGALFIT_withGALKIN_jan19.vot"</span> <span class="ow">in</span> <span class="n">fullFileName</span><span class="p">:</span>
+            <span class="n">newArray</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">rename_fields</span><span class="p">(</span><span class="n">newArray</span><span class="p">,</span> <span class="p">{</span><span class="s1">'TYPE_2'</span><span class="p">:</span><span class="s1">'TYPE'</span><span class="p">,</span> <span class="s1">'COSMOS_Group_number'</span><span class="p">:</span><span class="s1">'COSMOS_Group_Number'</span><span class="p">,</span>
+                                                    <span class="s1">'COSMOS_Group_number__old_'</span><span class="p">:</span><span class="s1">'COSMOS_Group_Number__old_'</span><span class="p">,</span> <span class="s1">'FLAG_COSMOS_1'</span><span class="p">:</span><span class="s1">'FLAG_COSMOS'</span><span class="p">})</span>
+    
+        <span class="k">if</span> <span class="s2">"CGR30-28_FD_zcatalog_withLaigle+16_withFAST_withnewPLATEFIT_totalflux_nov18_withFOF_withGALFIT_withGALKIN_jan19.vot"</span> <span class="ow">in</span> <span class="n">fullFileName</span><span class="p">:</span>
+            <span class="n">newArray</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">rename_fields</span><span class="p">(</span><span class="n">newArray</span><span class="p">,</span> <span class="p">{</span><span class="s1">'TYPE_2'</span><span class="p">:</span><span class="s1">'TYPE'</span><span class="p">,</span> <span class="s1">'ID_Laigle_16_or_ORIGIN'</span><span class="p">:</span><span class="s1">'ID_Laigle_16'</span><span class="p">})</span>
+
+        <span class="n">array</span> <span class="o">=</span> <span class="n">newArray</span><span class="p">[</span><span class="n">fields</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+    <span class="c1">#Moving to the bottom the fields of interest and changing their type according to those specified</span>
+    <span class="k">if</span> <span class="n">fieldsToDrop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">typesToDrop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fieldsToDrop</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">typesToDrop</span><span class="p">):</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">move_bad_fields_to_bottom</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">fieldsToDrop</span><span class="p">,</span> <span class="n">typesToDrop</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'The field names list and the type list should have the same length in order to drop them to the bottom of the table.'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'No field and/or no type list was given, thus no field was dropped to the bottom of the table.'</span><span class="p">)</span>
+
+    <span class="c1">#Checking that field management went fine</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isFirstArray</span><span class="p">:</span>
+        <span class="n">typeOld</span> <span class="o">=</span> <span class="n">oldArray</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">typeNew</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">sz</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">typeOld</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sz</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">typeNew</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"ERROR: old and new arrays do not have the same number of fields."</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sz</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">typeOld</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">typeNew</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'The following type change was applied </span><span class="si">%s</span><span class="s1"> -&gt; </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span><span class="p">(</span><span class="n">typeOld</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">typeNew</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    
+    <span class="k">if</span> <span class="n">oldArray</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">outArray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">oldArray</span><span class="p">,</span> <span class="n">array</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">outArray</span> <span class="o">=</span> <span class="n">array</span>
+    
+    <span class="k">return</span> <span class="n">outArray</span></div>
+
+
+<div class="viewcode-block" id="move_bad_fields_to_bottom"><a class="viewcode-back" href="../../utilities/io.html#utilities.io.move_bad_fields_to_bottom">[docs]</a><span class="k">def</span> <span class="nf">move_bad_fields_to_bottom</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">orderedFieldList</span><span class="p">,</span> <span class="n">orderedTypeList</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Move a list of fields from a structured array to the bottom and change their type.</span>
+<span class="sd">                                                </span>
+<span class="sd">    :param array: array to modify               </span>
+<span class="sd">    :type array: structured ndarray</span>
+<span class="sd">    :param list[str] orderedFieldList: list of field names to move and to change type </span>
+<span class="sd">    :param list orderedTypeList: list of new types for the fields (same order as **orderedFieldList**)</span>
+<span class="sd">                           </span>
+<span class="sd">    :returns: array with some fields moved to the bottom and with different types</span>
+<span class="sd">    :rtype: structured ndarray</span>
+<span class="sd">    """</span>
+    
+    <span class="n">outArray</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">typ</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">orderedFieldList</span><span class="p">,</span> <span class="n">orderedTypeList</span><span class="p">):</span>
+        
+        <span class="c1">#Remove field of interest from the array</span>
+        <span class="n">tmpArray</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">rec_drop_fields</span><span class="p">(</span><span class="n">outArray</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        
+        <span class="c1">#Append the same field at the end of the array with the right data type</span>
+        <span class="n">outArray</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">rec_append_fields</span><span class="p">(</span><span class="n">tmpArray</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">array</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">dtypes</span><span class="o">=</span><span class="n">typ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outArray</span></div>
+</pre></div>
+</div>
+<div class="prev-next-bottom">
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
+        
+          By Wilfried Mercier<br/>
+        
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
+</main>
+</div>
+</div>
+<script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
+</html>

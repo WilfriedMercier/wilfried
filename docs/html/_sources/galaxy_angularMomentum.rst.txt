@@ -1,0 +1,5 @@
+angularMomentum
+===============
+
+.. automodule:: galaxy.angularMomentum
+   :members:

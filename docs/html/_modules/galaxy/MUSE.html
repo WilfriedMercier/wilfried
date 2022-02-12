@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>galaxy.MUSE — wilfried library 1.0 documentation</title>
+<link href="../../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css" rel="stylesheet"/>
+<link href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../_static/vendor/open-sans_all/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/vendor/lato_latin-ext/1.44.1/index.css" rel="stylesheet"/>
+<link href="../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../_static/js/index.d3f166471bb80abb5163.js" rel="preload"/>
+<script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/jquery.js"></script>
+<script src="../../_static/underscore.js"></script>
+<script src="../../_static/doctools.js"></script>
+<script src="../../_static/sphinx-book-theme.7d483ff0a819d6edff12ce0b1ead3928.js"></script>
+<link href="../../genindex.html" rel="index" title="Index">
+<link href="../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+<div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+<h1 class="site-logo" id="site-title">wilfried library 1.0 documentation</h1>
+</a>
+</div><form action="../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form>
+<nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../index.html">
+   Table of content
+  </a>
+</li>
+</ul>
+<ul class="nav sidenav_l1">
+<li class="toctree-l1">
+<a class="reference internal" href="../../dependencies.html">
+   Required dependencies
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="../../makeLifeSimpler.html">
+   makeLifeSimpler
+  </a>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galaxy/index.html">
+   Galaxy module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/angularMomentum.html">
+     Galaxies angular momentum
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/cosmology.html">
+     Cosmology computations
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/kinematics.html">
+     Galaxy kinematics
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/misc.html">
+     Miscellaneous
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/massModels.html">
+     Galaxy mass models
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galaxy/models.html">
+     Galaxy models
+    </a>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/morphology/index.html">
+     Galaxies morphology
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/SersicFlux.html">
+       Sersic fluxes
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Morpho.html">
+       Morphological parameters
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Thickness.html">
+       Galaxies thickness
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/MUSE.html">
+       MUSE related functions
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/morphology/Other.html">
+       Other Sersic related functions
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l2 collapsible-parent">
+<a class="reference internal" href="../../galaxy/photometry/index.html">
+     Galaxies photometry
+    </a>
+<ul class="collapse-ul">
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Fluxes.html">
+       Fluxes, colour excess and attenuation
+      </a>
+</li>
+<li class="toctree-l3">
+<a class="reference internal" href="../../galaxy/photometry/Masses_SFR.html">
+       Masses and SFR estimates
+      </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+<li class="toctree-l1 collapsible-parent">
+<a class="reference internal" href="../../galfit/index.html">
+   Galfit module
+  </a>
+<ul class="collapse-ul">
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/galfit.html">
+     Galfit auto-routines
+    </a>
+</li>
+<li class="toctree-l2">
+<a class="reference internal" href="../../galfit/models.html">
+     Galfit models
+    </a>
+</li>
+</ul>
+<i class="fas fa-chevron-down">
+</i>
+</li>
+</ul>
+</nav>
+<div class="navbar_extra_footer">
+  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+</div>
+</div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<div class="topbar container-xl fixed-top">
+<div class="topbar-contents row">
+<div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+<div class="col pl-md-4 topbar-main">
+<button aria-controls="site-navigation" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler ml-0" data-placement="left" data-target=".site-navigation" data-toggle="tooltip" id="navbar-toggler" title="Toggle navigation" type="button">
+<i class="fas fa-bars"></i>
+<i class="fas fa-arrow-left"></i>
+<i class="fas fa-arrow-up"></i>
+</button>
+<div class="dropdown-buttons-trigger">
+<button aria-label="Connect with source repository" class="btn btn-secondary topbarbtn" id="dropdown-buttons-trigger"><i class="fab fa-github"></i></button>
+<div class="dropdown-buttons sourcebuttons">
+<a class="repository-button" href="https://github.com/WilfriedMercier/wilfried"><button class="btn btn-secondary topbarbtn" data-placement="left" data-toggle="tooltip" title="Source repository" type="button"><i class="fab fa-github"></i>repository</button></a>
+</div>
+</div>
+<a class="full-screen-button"><button aria-label="Fullscreen mode" class="btn btn-secondary topbarbtn" data-placement="bottom" data-toggle="tooltip" onclick="toggleFullScreen()" title="Fullscreen mode" type="button"><i class="fas fa-expand"></i></button></a>
+</div>
+<div class="d-none d-md-block col-md-2 bd-toc show">
+</div>
+</div>
+</div>
+<div class="row" id="main-content">
+<div class="col-12 col-md-9 pl-md-3 pr-md-0">
+<div>
+<h1>Source code for galaxy.MUSE</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">"""</span>
+<span class="sd">.. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+
+<span class="sd">Functions directly related to MUSE instrument and its observations.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>         <span class="k">as</span>     <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span>     <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">astropy.wcs</span>   <span class="k">as</span>     <span class="nn">wcs</span>
+<span class="kn">import</span> <span class="nn">os.path</span>       <span class="k">as</span>     <span class="nn">opath</span>
+<span class="kn">from</span>   <span class="nn">astropy.io</span>    <span class="kn">import</span> <span class="n">fits</span>
+
+
+<div class="viewcode-block" id="centreFromHSTtoMUSE"><a class="viewcode-back" href="../../galaxy/morphology/MUSE.html#galaxy.MUSE.centreFromHSTtoMUSE">[docs]</a><span class="k">def</span> <span class="nf">centreFromHSTtoMUSE</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">imHST</span><span class="p">,</span> <span class="n">imMUSE</span><span class="p">,</span> <span class="n">extHST</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">extMUSE</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">noError</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Convert centre coordinates in pixels in HST image into pixel coordinates in MUSE image/cube.</span>
+
+<span class="sd">    :param X: x centre position</span>
+<span class="sd">    :type X: int or float</span>
+<span class="sd">    :param Y: y centre position</span>
+<span class="sd">    :type Y: int or float</span>
+<span class="sd">    :param str imHST: file containing the HST image to generate wcs object</span>
+<span class="sd">    :param str imMUSE: file containing a MUSE cube or image to generate wcs object</span>
+<span class="sd">        </span>
+<span class="sd">    :param int extHST: extension to open in the HST fits file</span>
+<span class="sd">    :param int extMUSE: extension to open in the MUSE file</span>
+<span class="sd">    :param bool noError: whether to not throw an error or not when HST or MUSE file(s) is/are missing. If True, a tuple (np.nan, np.nan) is returned.</span>
+
+<span class="sd">    :returns: new (MUSE) pixel coordinates</span>
+<span class="sd">    :rtype: tuple</span>
+<span class="sd">    </span>
+<span class="sd">    :raises IOError:</span>
+<span class="sd">        </span>
+<span class="sd">        * if **noError** is False and **imHST** is not found</span>
+<span class="sd">        * if **noError** is False and **imMUSE** is not found</span>
+<span class="sd">    '''</span>
+    
+    <span class="c1"># Check files exist first</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">opath</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">imHST</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">noError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">'HST image </span><span class="si">%s</span><span class="s1"> does not exist.'</span> <span class="o">%</span><span class="n">imHST</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'HST image </span><span class="si">%s</span><span class="s1"> does not exist.'</span> <span class="o">%</span><span class="n">imHST</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">opath</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">imMUSE</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">noError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">'MUSE image/cube </span><span class="si">%s</span><span class="s1"> does not exist.'</span> <span class="o">%</span><span class="n">imMUSE</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'MUSE image/cube </span><span class="si">%s</span><span class="s1"> does not exist.'</span> <span class="o">%</span><span class="n">imMUSE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    
+    <span class="c1"># HST wcs object</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">imHST</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+        <span class="n">wh</span>  <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">WCS</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="n">extHST</span><span class="p">])</span>
+    
+    <span class="c1"># MUSE wcs object</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">imMUSE</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+        <span class="n">wm</span>  <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">WCS</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="n">extMUSE</span><span class="p">])</span>
+    
+    <span class="c1"># Coordinates from HST</span>
+    <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">wh</span><span class="o">.</span><span class="n">wcs_pix2world</span><span class="p">(</span><span class="n">X</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">Y</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+     
+    <span class="c1"># Convert back to MUSE pixels this time</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span>    <span class="o">=</span> <span class="n">wm</span><span class="o">.</span><span class="n">wcs_world2pix</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+<span class="c1">#####################################################################</span>
+<span class="c1">#                            LSF and PSF                            #</span>
+<span class="c1">#####################################################################</span>
+
+<div class="viewcode-block" id="ListGroups"><a class="viewcode-back" href="../../galaxy/morphology/MUSE.html#galaxy.MUSE.ListGroups">[docs]</a><span class="k">class</span> <span class="nc">ListGroups</span><span class="p">:</span>
+    
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    List of PSF values for the different MUSE fields.</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">'''</span>
+<span class="sd">        .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">        </span>
+<span class="sd">        Keep track of the measurements made to know the PSF evolution as a function of wavelength in each MUSE field</span>
+
+<span class="sd">            * FWHM within old fields were measured at two wavelengths ([OII] and [OIII] rest-frame), so that is why PSF FWHM values are given for these two wavelengths along with the redshift of the galaxies on which it was measured.</span>
+<span class="sd">            * For the new fields, FWHM was measured as the median of each star modelled at ~100 different wavelengths.</span>
+<span class="sd">          </span>
+<span class="sd">        So, for these fields, slope and offset are directly given instead of given two measurements and a z value</span>
+<span class="sd">        '''</span>
+        
+        <span class="c1"># Rest-frame wavelengths in Angstrom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OII</span>  <span class="o">=</span> <span class="mi">3729</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">OIII</span> <span class="o">=</span> <span class="mi">5007</span>
+        
+        <span class="c1">#: PSF values using the Gaussian model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaussian</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'114'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span>  <span class="mf">3.705</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.315</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.598849</span><span class="p">},</span>
+                          <span class="s1">'23'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">4.28</span><span class="p">,</span> 
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.65</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.850458</span><span class="p">},</span> 
+                          <span class="s1">'26'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.68</span><span class="p">,</span> 
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.34</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.439973</span><span class="p">},</span> 
+                          <span class="s1">'28'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.62</span><span class="p">,</span> 
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.26</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.950289</span><span class="p">},</span>
+                          <span class="s1">'30_d'</span>  <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.485</span><span class="p">,</span>
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.809828</span><span class="p">},</span> 
+                          <span class="s1">'30_bs'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.185</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.815</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.809828</span><span class="p">},</span>
+                          <span class="s1">'32-M1'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.975</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.58</span><span class="p">,</span>  
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.753319</span><span class="p">},</span> 
+                          <span class="s1">'32-M2'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.16</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.54</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.753319</span><span class="p">},</span> 
+                          <span class="s1">'32-M3'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.61</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.3</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.753319</span><span class="p">},</span>
+                          <span class="s1">'34_d'</span>  <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.31</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.995</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.857549</span><span class="p">},</span> 
+                          <span class="s1">'34_bs'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.3</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.003</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.85754</span><span class="p">},</span>
+                          <span class="s1">'51'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.75</span><span class="p">,</span> 
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.28</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.386245</span><span class="p">},</span> 
+                          <span class="s1">'61'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.915</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.34</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.364009</span><span class="p">},</span> 
+                          <span class="s1">'79'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.29</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.695</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.780482</span><span class="p">},</span>
+                          <span class="s1">'84'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.24</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.055</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.731648</span><span class="p">},</span> 
+                          <span class="s1">'84-N'</span>  <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.89</span><span class="p">,</span>	
+                                     <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.58</span><span class="p">,</span> 
+                                     <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.727755</span><span class="p">},</span>
+                          
+                          <span class="s1">'172'</span>   <span class="p">:</span> <span class="p">{</span><span class="s1">'slope'</span> <span class="p">:</span> <span class="o">-</span><span class="mf">2.99e-04</span><span class="p">,</span>
+                                     <span class="s1">'offset'</span><span class="p">:</span> <span class="mf">4.891</span><span class="p">},</span>
+                          <span class="s1">'35'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'slope'</span> <span class="p">:</span> <span class="o">-</span><span class="mf">2.555e-04</span><span class="p">,</span>
+                                     <span class="s1">'offset'</span><span class="p">:</span> <span class="mf">4.934</span><span class="p">},</span>
+                          <span class="s1">'87'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'slope'</span> <span class="p">:</span> <span class="o">-</span><span class="mf">2.306e-04</span><span class="p">,</span>
+                                     <span class="s1">'offset'</span><span class="p">:</span> <span class="mf">4.756</span><span class="p">},</span>
+                         <span class="p">}</span>
+        
+        <span class="c1">#: PSF values using the Moffat model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moffat</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'23'</span>   <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.97</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.29</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.850458</span><span class="p">},</span> 
+                       <span class="s1">'26'</span>   <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.16</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.9</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.439973</span><span class="p">},</span> 
+                       <span class="s1">'28'</span>   <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.18</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.13</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.950289</span><span class="p">},</span>
+                      <span class="s1">'32-M1'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.46</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">1.9</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.753319</span><span class="p">},</span> 
+                      <span class="s1">'32-M2'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.52</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.31</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.753319</span><span class="p">},</span> 
+                      <span class="s1">'32-M3'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.625</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.465</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.753319</span><span class="p">},</span>
+                      <span class="s1">'51'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.425</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.95</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.386245</span><span class="p">},</span> 
+                      <span class="s1">'61'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.2</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">3.02</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.364009</span><span class="p">},</span> 
+                      <span class="s1">'79'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.895</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.285</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.780482</span><span class="p">},</span> 
+                      <span class="s1">'84-N'</span>  <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.49</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.21</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.727755</span><span class="p">},</span> 
+                      <span class="s1">'30_d'</span>  <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.995</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.68</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.809828</span><span class="p">},</span> 
+                      <span class="s1">'30_bs'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.745</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.45</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.809828</span><span class="p">},</span>
+                      <span class="s1">'84'</span>    <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.835</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.715</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.731648</span><span class="p">},</span> 
+                      <span class="s1">'34_d'</span>  <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">2.89</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.695</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.857549</span><span class="p">},</span> 
+                      <span class="s1">'34_bs'</span> <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.85754</span><span class="p">},</span>
+                      <span class="s1">'114'</span>   <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">3.115</span><span class="p">,</span> 
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">2.81</span><span class="p">,</span> 
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mf">0.598849</span><span class="p">},</span>
+                      
+                      <span class="s1">'MXDF'</span>  <span class="p">:</span> <span class="p">{</span><span class="s1">'OII'</span>  <span class="p">:</span> <span class="mf">0.64221739</span><span class="p">,</span>
+                                 <span class="s1">'OIII'</span> <span class="p">:</span> <span class="mf">0.58665217</span><span class="p">,</span>
+                                 <span class="s1">'z'</span>    <span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+                     <span class="p">}</span></div>
+
+<div class="viewcode-block" id="compute_lsfw"><a class="viewcode-back" href="../../galaxy/morphology/MUSE.html#galaxy.MUSE.compute_lsfw">[docs]</a><span class="k">def</span> <span class="nf">compute_lsfw</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">lambda0</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="mf">5.835e-8</span><span class="p">,</span> <span class="n">a1</span><span class="o">=-</span><span class="mf">9.080e-4</span><span class="p">,</span> <span class="n">a0</span><span class="o">=</span><span class="mf">5.983</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the MUSE Line Spread Fonction FWHM given the rest-frame wavelength of the line and the redshift of the corresponding object.</span>
+
+<span class="sd">    :param lambda0: rest-frame wavelength in Angstroms</span>
+<span class="sd">    :type lambda0: int or float</span>
+<span class="sd">    :param z: redshift of the object</span>
+<span class="sd">    :type z: int or float or ndarray[int] or ndarray[float]</span>
+<span class="sd">      </span>
+<span class="sd">    :param float a0: lambda ** 0 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    :param float a1: lambda ** 1 coefficient of the variation of LSF FWHM with respect to lambda</span>
+<span class="sd">    :param float a2: lambda ** 2 coefficient of the variation of LSF FWHM with respect to lambda</span>
+
+<span class="sd">    :returns: LSF FWHM in Angstroms</span>
+<span class="sd">    :rtype: float or ndarray[float]</span>
+<span class="sd">    </span>
+<span class="sd">    :raises ValueError: if np.any(z&lt;0)</span>
+<span class="sd">    '''</span>
+    
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">z</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Redshift must be positive valued.'</span><span class="p">)</span>
+    
+    <span class="c1"># If the user uses astropy quantities, we convert to the right one    </span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lambda0</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="n">lambda0</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">'Angstrom'</span><span class="p">)</span>
+    
+    <span class="n">lbda</span> <span class="o">=</span> <span class="n">lambda0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">lbda</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">lbda</span> <span class="o">+</span> <span class="n">a0</span></div>
+
+
+<div class="viewcode-block" id="computeFWHM"><a class="viewcode-back" href="../../galaxy/morphology/MUSE.html#galaxy.MUSE.computeFWHM">[docs]</a><span class="k">def</span> <span class="nf">computeFWHM</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">'Gaussian'</span><span class="p">):</span>
+    <span class="sd">'''</span>
+<span class="sd">    .. codeauthor:: Wilfried Mercier - IRAP &lt;wilfried.mercier@irap.omp.eu&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Compute the FWHM at a given observed wavelength assuming a linearly decreasing relation for the FWHM with wavelength (calibrated on OII and OIII measurements at different redshifts).</span>
+<span class="sd">    </span>
+<span class="sd">    Only MUSE fields in the COSMOS field are considered here.</span>
+
+<span class="sd">    :param str field: field name for each desired wavelength</span>
+<span class="sd">    :param wavelength: wavelength for which we want to compute the FWHM in Angstrom</span>
+<span class="sd">    :type wavelength: int or float</span>
+<span class="sd">    </span>
+<span class="sd">    :param model: model to use</span>
+<span class="sd">    :type model: 'Moffat' or 'Gaussian'</span>
+<span class="sd">        </span>
+<span class="sd">    :returns: computed FWHM</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    '''</span>
+    
+    <span class="c1"># The FWHM were computed for two wavelengths at some group redshift</span>
+    <span class="n">groups</span>            <span class="o">=</span> <span class="n">ListGroups</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"gaussian"</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">psfValues</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">gaussian</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">'Given field name </span><span class="si">%s</span><span class="s1"> is not correct. Correct values are </span><span class="si">%s</span><span class="s1">.'</span> <span class="o">%</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">gaussian</span><span class="p">()))[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            
+    <span class="k">elif</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'moffat'</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">psfValues</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">moffat</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">'Given field name </span><span class="si">%s</span><span class="s1"> is not correct. Correct values are </span><span class="si">%s</span><span class="s1">.'</span> <span class="o">%</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">gaussian</span><span class="p">()))[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Model </span><span class="si">%s</span><span class="s2"> not recognised. Available values are </span><span class="si">%s</span><span class="s2">."</span> <span class="o">%</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">"Moffat or Gaussian"</span><span class="p">))</span>
+    
+    
+    <span class="c1">##############################################</span>
+    <span class="c1">#            Get slope and offset            #</span>
+    <span class="c1">##############################################</span>
+    
+    <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'172'</span><span class="p">,</span> <span class="s1">'35'</span><span class="p">,</span> <span class="s1">'87'</span><span class="p">]:</span>
+        <span class="c1"># Wavelength difference</span>
+        <span class="n">deltaLambda</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">OIII</span> <span class="o">-</span> <span class="n">groups</span><span class="o">.</span><span class="n">OII</span>
+        
+        <span class="c1">#A factor of (1+z) must be applied to deltaLambda and OII lambda</span>
+        
+        <span class="n">slope</span>       <span class="o">=</span> <span class="p">(</span><span class="n">psfValues</span><span class="p">[</span><span class="s1">'OIII'</span><span class="p">]</span> <span class="o">-</span> <span class="n">psfValues</span><span class="p">[</span><span class="s1">'OII'</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">deltaLambda</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">psfValues</span><span class="p">[</span><span class="s1">'z'</span><span class="p">]))</span>
+        <span class="n">offset</span>      <span class="o">=</span> <span class="n">psfValues</span><span class="p">[</span><span class="s1">'OII'</span><span class="p">]</span>   <span class="o">-</span> <span class="n">slope</span><span class="o">*</span><span class="n">groups</span><span class="o">.</span><span class="n">OII</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">psfValues</span><span class="p">[</span><span class="s1">'z'</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">slope</span>       <span class="o">=</span> <span class="n">psfValues</span><span class="p">[</span><span class="s1">'slope'</span><span class="p">]</span> 
+        <span class="n">offset</span>      <span class="o">=</span> <span class="n">psfValues</span><span class="p">[</span><span class="s1">'offset'</span><span class="p">]</span>
+    
+    <span class="n">FWHM</span> <span class="o">=</span> <span class="n">slope</span><span class="o">*</span><span class="n">wavelength</span><span class="o">+</span><span class="n">offset</span>
+    <span class="k">return</span> <span class="n">FWHM</span></div>
+</pre></div>
+</div>
+<div class="prev-next-bottom">
+</div>
+</div>
+</div>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<p>
+        
+          By Wilfried Mercier<br/>
+        
+            © Copyright 2021, Wilfried Mercier.<br/>
+</p>
+</div>
+</footer>
+</main>
+</div>
+</div>
+<script src="../../_static/js/index.d3f166471bb80abb5163.js"></script>
+</body>
+</html>
