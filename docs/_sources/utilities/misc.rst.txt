@@ -1,0 +1,16 @@
+Miscellaneous
+=============
+
+List of available functions/classes
+-----------------------------------
+
+* `ProgressBar`_
+      
+Documentation
+-------------
+
+.. automodule:: utilities.misc
+
+   .. _ProgressBar:
+   
+   .. autoclass:: utilities.misc.ProgressBar

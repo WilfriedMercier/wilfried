@@ -184,6 +184,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities/io.html">Input/Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities/list.html">List manipulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities/strings.html">Strings manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/misc.html">Miscellaneous</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../utilities/plotUtilities/index.html">Plot utilities</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../utilities/plotUtilities/asManyHists.html">Histograms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../utilities/plotUtilities/hst.html">Galfit related plots</a></li>
@@ -338,7 +339,7 @@
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="galaxy.kinematics.compute_velres">
-<span class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></span><span class="sig-name descname"><span class="pre">compute_velres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lbda0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.835e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">0.000908</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.983</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/galaxy/kinematics.html#compute_velres"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.compute_velres" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></span><span class="sig-name descname"><span class="pre">compute_velres</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lbda0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5.835e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-</span> <span class="pre">0.000908</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5.983</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/galaxy/kinematics.html#compute_velres"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.compute_velres" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>Code author: Epinat Benoit - LAM &lt;<a class="reference external" href="mailto:benoit.epinat%40lam.fr">benoit<span>.</span>epinat<span>@</span>lam<span>.</span>fr</a>&gt;</em></p>
 <p>Compute the spectral resolution in terms of velocity sigma from the line restframe wavelength, the redshift of the source and from MUSE LSF model</p>
 <div class="math-wrapper"><div class="math notranslate nohighlight">
@@ -357,7 +358,26 @@
 <dd class="field-even"><p>the observed (redshifted) wavelength, the LSF FWHM in <strong>Angstroms</strong> and the LSF dispersion in <strong>km/s</strong>, assuming a Gaussian shape for the LSF profile.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float and float</p>
+<dd class="field-odd"><p>float, float and float</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="galaxy.kinematics.correct_redshift">
+<span class="sig-prename descclassname"><span class="pre">galaxy.kinematics.</span></span><span class="sig-name descname"><span class="pre">correct_redshift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Vsys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">astropy.units.quantity.Quantity</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/galaxy/kinematics.html#correct_redshift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#galaxy.kinematics.correct_redshift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct the given redshifts using the systemic velocity due to the galaxies proper motion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>float</em><em> or </em><em>ndarray</em>) – cosmological redshift</p></li>
+<li><p><strong>Vsys</strong> (<em>float</em><em>, </em><em>ndarray</em><em> or </em><em>Astropy Quantity</em>) – systemic velocity in km/s if not an Astropy Quantity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>corrected redshifts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or ndarray</p>
 </dd>
 </dl>
 </dd></dl>

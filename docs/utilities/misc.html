@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Colored messages" href="coloredMessages.html" /><link rel="prev" title="makeLifeSimpler" href="../makeLifeSimpler.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Plot utilities" href="plotUtilities/index.html" /><link rel="prev" title="Strings manipulation" href="strings.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2021.09.22"/>
-        <title>Useful utilities - wilfried library 1.0 documentation</title>
+        <title>Miscellaneous - wilfried library 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=150e365fa939648e89c22f6d7d13c72a1657915a" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -155,7 +155,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -178,13 +178,13 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Required dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../makeLifeSimpler.html">makeLifeSimpler</a></li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Useful utilities</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Useful utilities</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="coloredMessages.html">Colored messages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dict.html">Dictionaries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io.html">Input/Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="list.html">List manipulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="strings.html">Strings manipulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Miscellaneous</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="plotUtilities/index.html">Plot utilities</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="plotUtilities/asManyHists.html">Histograms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="plotUtilities/hst.html">Galfit related plots</a></li>
@@ -243,62 +243,47 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="useful-utilities">
-<h1>Useful utilities<a class="headerlink" href="#useful-utilities" title="Permalink to this headline">¶</a></h1>
-<p>Fonctions and classes in this module are not galaxy-related. They can be used for other purposes.</p>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="coloredMessages.html">Colored messages</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="coloredMessages.html#list-of-available-functions">List of available functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="coloredMessages.html#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="coloredMessages.html#module-utilities.coloredMessages">Documentation</a></li>
+          <section id="miscellaneous">
+<h1>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h1>
+<section id="list-of-available-functions-classes">
+<h2>List of available functions/classes<a class="headerlink" href="#list-of-available-functions-classes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#progressbar">ProgressBar</a></p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dict.html">Dictionaries</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dict.html#list-of-available-functions">List of available functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dict.html#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dict.html#module-utilities.dictionaries">Documentation</a></li>
+</section>
+<section id="module-utilities.misc">
+<span id="documentation"></span><h2>Documentation<a class="headerlink" href="#module-utilities.misc" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="progressbar"></span><dl class="py class">
+<dt class="sig sig-object py" id="utilities.misc.ProgressBar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utilities.misc.</span></span><span class="sig-name descname"><span class="pre">ProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/utilities/misc.html#ProgressBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utilities.misc.ProgressBar" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Code author: Wilfried Mercier - IRAP &lt;<a class="reference external" href="mailto:wilfried.mercier%40irap.omp.eu">wilfried<span>.</span>mercier<span>@</span>irap<span>.</span>omp<span>.</span>eu</a>&gt;</em></p>
+<p>Implements an easy to use progressbar for Jupyter notebooks.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A description can be provided with the keyword ‘description’. Three custom descriptors can be used to have a dynamical description:</p>
+<ul class="simple">
+<li><p>{index} which prints the current index in the loop</p></li>
+<li><p>{len} which prints the total length of the loop</p></li>
+<li><p>{fraction} which prints the current fraction of the loop</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="io.html">Input/Output</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="io.html#list-of-available-functions">List of available functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="io.html#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="io.html#module-utilities.io">Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="list.html">List manipulations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="list.html#list-of-available-functions">List of available functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="list.html#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="list.html#module-utilities.lists">Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="strings.html">Strings manipulation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="strings.html#list-of-available-functions">List of available functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strings.html#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="strings.html#module-utilities.strings">Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="misc.html#list-of-available-functions-classes">List of available functions/classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="misc.html#module-utilities.misc">Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="plotUtilities/index.html">Plot utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plotUtilities/asManyHists.html">Histograms</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plotUtilities/hst.html">Galfit related plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plotUtilities/misc.html">Miscellaneous</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plotUtilities/singleContour.html">Contours</a></li>
-</ul>
-</li>
-</ul>
+<p>For instance, <code class="code docutils literal notranslate"><span class="pre">description={index}/{len}</span> <span class="pre">({fraction})</span></code> will print something like <code class="code docutils literal notranslate"><span class="pre">11/1000</span> <span class="pre">(1.1%)</span></code>.</p>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – arguments passed to ipywidgets.IntProgress</p></li>
+<li><p><strong>kwargs</strong> – keyword arguments passed to ipywidgets.IntProgress</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+</section>
 </section>
 
         </article>
@@ -306,23 +291,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="coloredMessages.html">
+          <a class="next-page" href="plotUtilities/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Colored messages</div>
+                <div class="title">Plot utilities</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../makeLifeSimpler.html">
+          <a class="prev-page" href="strings.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">makeLifeSimpler</div>
+                <div class="title">Strings manipulation</div>
                 
               </div>
             </a>
@@ -334,7 +319,7 @@
               and
               <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
               <a href="https://github.com/pradyunsg/furo">Furo theme</a>. |
-            <a class="muted-link" href="../_sources/utilities/index.rst.txt"
+            <a class="muted-link" href="../_sources/utilities/misc.rst.txt"
                rel="nofollow">
               Show Source
             </a>
@@ -342,8 +327,28 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Miscellaneous</a><ul>
+<li><a class="reference internal" href="#list-of-available-functions-classes">List of available functions/classes</a></li>
+<li><a class="reference internal" href="#module-utilities.misc">Documentation</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
