@@ -35,7 +35,7 @@ def is_VOtable(fullname):
     return True
 
 
-def loadVOtable(name, outputType='Table', num=0, pedantic=False, use_names_over_ids=False):
+def loadVOtable(name, outputType='Table', num=0, verify='warn', use_names_over_ids=False):
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
@@ -50,7 +50,7 @@ def loadVOtable(name, outputType='Table', num=0, pedantic=False, use_names_over_
         * 'array' to load it as a numpy structured array
         * 'Table' to load it as an Astropy Table
 
-    :param bool pedantic: (**Optional**) whether to disable Exceptions when reading VOtable files with unusual keywords
+    :param str verify: (**Optional**) whether to raise an error if the file violates the spec ('exception'), to issue a warning ('warning') or to do nothing ('ignore')
     :param bool use_names_over_id: (**Optional**) whether (when creating as astropy Table out of the VOtable table element) to use columns names rather than the unique IDs in the VOtable columns to name the astropy Table columns
                 
     :returns: loaded table
@@ -73,7 +73,7 @@ def loadVOtable(name, outputType='Table', num=0, pedantic=False, use_names_over_
 
     # Convert data to the given format
     if is_VOtable(name):
-        data           = parse(name, pedantic=pedantic)
+        data       = parse(name, verify=verify)
     
     if outputType != 'votable':
         data       = data.get_table_by_index(num)
