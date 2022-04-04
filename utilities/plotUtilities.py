@@ -12,7 +12,7 @@ import numpy                              as     np
 import matplotlib.pyplot                  as     plt
 import matplotlib.gridspec                as     gridspec
 import astropy.io.fits                    as     fits
-from   matplotlib.colors                  import Normalize, LogNorm, SymLogNorm, PowerNorm, DivergingNorm, BoundaryNorm
+from   matplotlib.colors                  import Normalize, LogNorm, SymLogNorm, PowerNorm, TwoSlopeNorm, BoundaryNorm
 from   astropy.modeling.functional_models import Gaussian2D
 from   matplotlib.markers                 import MarkerStyle
 from   copy                               import copy
@@ -202,10 +202,10 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
                 sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile = noModelAvailable() 
             elif mini == zeroPoint:
                 mini = - maxi
-                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+                norm = TwoSlopeNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
             elif maxi == zeroPoint:
                 maxi = -mini
-                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+                norm = TwoSlopeNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
         
         # Plotting the three plots side by side
         ax1        = plt.subplot(gs[num])
@@ -241,10 +241,10 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
                 sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile = noModelAvailable() 
             elif mini == zeroPoint:
                 mini = - maxi
-                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+                norm = TwoSlopeNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
             elif maxi == zeroPoint:
                 maxi = -mini
-                norm = DivergingNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
+                norm = TwoSlopeNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
             
         plt.imshow(res, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
         
@@ -1428,11 +1428,11 @@ def asManyPlots2(numPlot, datax, datay,
             colorbar.scale = 'div'
         
         # Creating the normalize instance for the colorbar
-        colorbarDict = {'linear':   {'function':Normalize,     'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max}},
-                        'div':      {'function':DivergingNorm, 'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max, 'vcenter':colorbar.offsetCenter}},
-                        'log':      {'function':LogNorm,       'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max}},
-                        'symlog':   {'function':SymLogNorm,    'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max, 'linthresh':colorbar.symLogLinThresh, 'linscale':colorbar.symLogLinScale}},
-                        'powerlaw': {'function':PowerNorm,     'params': {'gamma':colorbar.powerlaw}},
+        colorbarDict = {'linear':   {'function':Normalize,    'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max}},
+                        'div':      {'function':TwoSlopeNorm, 'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max, 'vcenter':colorbar.offsetCenter}},
+                        'log':      {'function':LogNorm,      'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max}},
+                        'symlog':   {'function':SymLogNorm,   'params': {'vmin':colorbar.cmap.min, 'vmax':colorbar.cmap.max, 'linthresh':colorbar.symLogLinThresh, 'linscale':colorbar.symLogLinScale}},
+                        'powerlaw': {'function':PowerNorm,    'params': {'gamma':colorbar.powerlaw}},
                        }
         
         colorbar.norm = colorbarDict[colorbar.scale]['function'](**colorbarDict[colorbar.scale]['params'])
