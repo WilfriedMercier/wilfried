@@ -6,7 +6,7 @@
 Functions related to automating galfit modelling.
 """
 
-from   .io                              import errorMessage, okMessage, brightMessage, dimMessage
+from   ..utilities.coloredMessages      import errorMessage, okMessage, brightMessage, dimMessage
 from   .models                          import gendeVaucouleur, genEdgeOnDisk, genExpDisk, genFerrer, genGaussian, genKing, genMoffat, genNuker, genPSF, genSersic, genSky, bendingModes, boxy_diskyness, fourierModes
 from   wilfried.utilities.dictionaries  import checkDictKeys, removeKeys, setDict
 from   wilfried.utilities.strings       import putStringsTogether, toStr, maxStringsLen
