@@ -140,10 +140,52 @@ class PhotoMomentum:
         #: Radial grid in kpc
         self.R_kpc        = angular_diameter_size(self.z, self.R, scaleFactor=pscale/3600*np.pi/180)
         return
+     
+    def custom_rotation_curve_resolved(self, rotation_curve: Callable[..., Union[int, float]],
+                                       normalise: bool           = True, 
+                                       r_norm: Union[int, float] = np.inf, 
+                                       norm: Optional[ndarray]   = None,
+                                       args: List                = []) -> Union[float, float]:
+         r'''
+         Compute the resolved angular momentum map using a custom rotation curve.
+         
+         :param func rotation_curve: function representing the total rotation curve used to compute the angular momentum. Its first parameter must always be the radial distance r.
+         
+         :param bool normalise: (**Optional**) whether to normalise. If **norm** is None, the norm is calculated from the photometry within **r_norm**. Default is True.
+         :param r_norm: (**Optional**) radius where to compute the normalisation. Only used if **normalise** is True and **norm** is None. Default is inifinity.
+         :type r_norm: int or float
+         :param ndarray norm: (**Optional**) custom normalisation to apply
+         
+         :param args: (**Optional**) arguments to pass to the rotation curve function. Default is no argument (empty list).
+         
+         :returns: central angular momentum along the vertical axis using the custom rotation curve. When normalised the unit is similar to **r** * **rotation_curve**
+         :rtype: int or float
+         
+         :raises TypeError: if **rotation_curve** is not a callable function
+         :raises ValueError: if **r** < 0
+         '''
+         
+         if not callable(rotation_curve):
+             raise TypeError(f'rotation_curve is of type {type(rotation_curve)} but it must be a callable function.')
+             
+         if normalise and norm is None:
+             norm   = self.norm(r=r_norm)
+         elif not normalise:
+             norm   = 1/self.psurface
+             
+         # Velocity computed at each point within the given radius
+         V          = rotation_curve(self.R_kpc, *args)
+             
+         # Unnnormalised angular momentum
+         J          = V*self.R_kpc*self.im
+         
+         return J/norm
     
     def custom_rotation_curve(self, rotation_curve: Callable[..., Union[int, float]], r: Union[int, float],
-                              normalise: bool = True, r_norm: Union[int, float] = np.inf, norm: Optional[ndarray] = None,
-                              args: List = []) -> Union[float, float]:
+                              normalise: bool           = True, 
+                              r_norm: Union[int, float] = np.inf, 
+                              norm: Optional[ndarray]   = None,
+                              args: List                = []) -> Union[float, float]:
         r'''
         Compute the angular momentum using a custom rotation curve up to radius r.
         
@@ -165,27 +207,13 @@ class PhotoMomentum:
         :raises ValueError: if **r** < 0
         '''
         
-        if not callable(rotation_curve):
-            raise TypeError(f'rotation_curve is of type {type(rotation_curve)} but it must be a callable function.')
-            
         if r<0:
             raise ValueError(f'Radius r is {r} but it must be positive.')
             
-        if normalise and norm is None:
-            norm   = self.norm(r=r_norm)
-        elif not normalise:
-            norm   = 1/self.psurface
-            
         # Mask to apply to the data
         mask       = self.R_kpc <= r
-            
-        # Velocity computed at each point within the given radius
-        V          = rotation_curve(self.R_kpc[mask], *args)
-            
-        # Unnnormalised angular momentum
-        J          = np.nansum(V*self.R_kpc[mask]*self.im[mask])
         
-        return J/norm
+        return np.nansum(self.custom_rotation_curve_resolved(rotation_curve, normalise=normalise, r_norm=r_norm, norm=norm, args=args)[mask])
     
     def norm(self, r: Union[int, float] = np.inf) -> Union[int, float]:
         r'''
