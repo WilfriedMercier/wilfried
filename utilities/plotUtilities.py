@@ -1579,8 +1579,8 @@ def asManyPlots2(numPlot, datax, datay,
             markerObject = MarkerStyle(marker=mrkr, fillstyle=fllstl)
             
             sct          = plt.scatter(dtx, dty, label=lbl, marker=markerObject, zorder=zrdr, 
-                                       cmap=colorbar.cmap.name, norm=colorbar.norm, vmin=colorbar.cmap.min, 
-                                       vmax=colorbar.cmap.max, alpha=trnsprnc, c=clr, s=mrkrSz, edgecolors=mrkrDgClr)
+                                       cmap=colorbar.cmap.name, norm=colorbar.norm, 
+                                       alpha=trnsprnc, c=clr, s=mrkrSz, edgecolors=mrkrDgClr)
             
             if nfll:
                 sct.set_facecolor('none')

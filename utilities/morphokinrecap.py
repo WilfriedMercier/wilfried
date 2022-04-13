@@ -93,6 +93,8 @@ def plot_hst(gs, hstmap, xc, yc, pix, xminh, xmaxh, yminh, ymaxh, xch, xmah1, xm
     
     # Clipping and plotting (logarithmic scale)
     hstmap[hstmap < vmin] = vmin
+    hstmap[hstmap > vmax] = vmax
+        
     imfluxmap             = axhstmap.imshow(hstmap, cmap=plt.cm.gray_r, origin='lower', interpolation='nearest')
     
     ##################################################################
@@ -414,14 +416,16 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     ncols         = 3
     gs            = gridspec.GridSpec(nlines, ncols, width_ratios=width_ratios, height_ratios=height_ratios)
     
-    ## HST values
-    vmin0         = 3e1
+    ## HST value
+    #vmin0         = 3e1
+    vmin0         = 0
     hstimmap     += vmin0
     hstmodmap    += vmin0
     hstresmap    += vmin0
-    vmin          = 1.5e1
-    vmax          = 1.5e2
-
+    #vmin          = 1.5e1
+    vmin          = np.nanmin(hstimmap)
+    #vmax          = 1.5e2
+    vmax          = np.nanmax(hstimmap)/5
 
     #############################################################################
     #                    HST plots (image, model, residuals)                    #
@@ -441,7 +445,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     axcbhst.set_position([pos_axres.bounds[0], pos_axcbhst.bounds[1], pos_axres.width, pos_axcbhst.height])
 
     cb             = plt.colorbar(imres, orientation='horizontal', cax=axcbhst)
-    cb.set_label(r'arbitrary (log)')
+    cb.set_label(r'arbitrary')
     cb.ax.set_xticklabels([], rotation=0)
     cb.ax.tick_params(labelbottom=False, labelleft=False, labelright=False, labeltop=False)
     
