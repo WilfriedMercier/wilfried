@@ -7,16 +7,40 @@ Fonctions related to kinematical modelling of galaxies.
 """
 
 import os, glob
-import numpy             as     np
-import astropy.io.ascii  as     asci
-import astropy.io.fits   as     fits
-import astropy.constants as     ct
+import numpy                     as     np
+import astropy.io.ascii          as     asci
+import astropy.io.fits           as     fits
+import astropy.constants         as     ct
+import astropy.units             as     u
+from   typing                    import Union
 from   .symlinks.coloredMessages import *
-from   .MUSE                       import compute_lsfw
+from   .MUSE                     import compute_lsfw
 
 ##########################################################################################################
 #                                         Kinematical properties                                         #
 ##########################################################################################################
+
+def correct_redshift(z: Union[float, np.ndarray], Vsys: Union[float, np.ndarray, u.Quantity]) -> Union[float, np.ndarray]:
+    r'''
+    .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
+    
+    Correct the redshift of the intrisic motion of the galaxy.
+    
+    :param z: cosmological redshift
+    :type z: float or np.ndarray
+    :param Vsys: systemic velocity of the galaxy in km/s
+    :type Vsys: float, np.ndarray or astropy Quantity
+    
+    :returns: redshift corrected of intrinsic motion
+    :rtype: float or np.ndarray
+    '''
+    
+    if not isinstance(Vsys, u.Quantity):
+        Vsys = u.Quantity(Vsys, unit='km/s')
+    
+    z_sys = (Vsys/ct.c).to('').value
+    
+    return (1+z)*(1+z_sys)-1
 
 def velocityAtR(radius, Vt, Rt, Rlast, verbose=True):
     r'''
