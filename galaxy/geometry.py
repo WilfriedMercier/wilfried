@@ -11,12 +11,62 @@ import numpy         as     np
 from   numpy         import ndarray
 from   astropy.units import Quantity
 from   typing        import Union, Tuple
+from   abc           import ABC, abstractmethod
 
-class DiskGeometry:
-    '''Geometry of a razor-thin disk.'''
+class Geometry(ABC):
+   
+   def __init__(self, *args, **kwargs):
+      pass
+   
+   @abstractmethod
+   def XY(self, X_sky: ndarray, Y_sky: ndarray, *args, **kwargs) -> Tuple[ndarray, ndarray]:
+      r'''
+      Compute the X, Y coordinates in the the given geometry from sky coordinates.
+      
+      :param ndarray X_sky: X-coordinates on sky plane
+      :param ndarray Y_sky: Y-coordinates on sky plane
+      
+      :returns: X, Y in disk plane
+      :rtype: ndarray, ndarray
+      '''
+      
+      return
+   
+   def distance(self, X_sky: ndarray, Y_sky: ndarray, *args, **kwargs) -> ndarray:
+      r'''
+      Compute the X, Y coordinates in the given geometry from sky coordinates.
+      
+      :param ndarray X_sky: X-coordinates on sky plane
+      :param ndarray Y_sky: Y-coordinates on sky plane
+      
+      :returns: X, Y in disk plane
+      :rtype: ndarray, ndarray
+      '''
+      
+      X, Y = self.XY(X_sky, Y_sky, *args, **kwargs)
+      return np.sqrt(X*X + Y*Y)
+
+class BulgeGeometry(Geometry):
+   r'''Geometry of a spherically symetric bulge.'''
+   
+   def XY(self, X_sky: ndarray, Y_sky: ndarray, *args, **kwargs) -> Tuple[ndarray, ndarray]:
+      r'''
+      Compute the X, Y coordinates in the bulge from sky coordinates.
+      
+      :param ndarray X_sky: X-coordinates on sky plane
+      :param ndarray Y_sky: Y-coordinates on sky plane
+      
+      :returns: X, Y in disk plane
+      :rtype: ndarray, ndarray
+      '''
+      
+      return X_sky, Y_sky
+
+class DiskGeometry(Geometry):
+    r'''Geometry of a razor-thin disk.'''
     
-    def __init__(self, inc: Union[int, float]=0, PA: Union[int, float]=0, e: Union[int, float]=None) -> None:
-        '''
+    def __init__(self, inc: Union[int, float] = 0, PA: Union[int, float] = 0, e: Union[int, float] = None) -> None:
+        r'''
         Initialise a razor-thin disk.
         
         :param inc: disk inclination in degrees (0 means face-on, 90 means edge-on). If **e** is provided, it is not used.
@@ -25,6 +75,8 @@ class DiskGeometry:
         :type PA: int or float
         :param e: disk ellipticity (0 means circular, 1 means edge-on). If provided, it overrides **inc**.
         '''
+        
+        super().__init__()
         
         for pname, param in zip(['inc', 'PA'], [inc, PA]):
             if not isinstance(param, (int, float)):
@@ -50,7 +102,7 @@ class DiskGeometry:
         self.PA    = Quantity(PA, unit='deg')
         
     def XY(self, X_sky: ndarray, Y_sky: ndarray, *args, **kwargs) -> Tuple[ndarray, ndarray]:
-        '''
+        r'''
         Compute the X, Y coordinates in the disk plane from sky coordinates.
         
         :param ndarray X_sky: X-coordinates on sky plane
@@ -67,20 +119,6 @@ class DiskGeometry:
         Y = (Y_sky*cos_PA - X_sky*sin_PA)
         
         return X, Y
-    
-    def distance(self, X_sky: ndarray, Y_sky: ndarray, *args, **kwargs) -> ndarray:
-        '''
-        Compute the X, Y coordinates in the disk plane from sky coordinates.
-        
-        :param ndarray X_sky: X-coordinates on sky plane
-        :param ndarray Y_sky: Y-coordinates on sky plane
-        
-        :returns: X, Y in disk plane
-        :rtype: ndarray, ndarray
-        '''
-        
-        X, Y = self.XY(X_sky, Y_sky, *args, **kwargs)
-        return np.sqrt(X*X + Y*Y)
         
             
             
