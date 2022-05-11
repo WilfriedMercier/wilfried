@@ -97,7 +97,7 @@ class ListGroups:
         self.OIII = 5007
         
         #: PSF values using the Gaussian model
-        self.gaussian = {'114'    : {'OII'  :  3.705,	
+        self.gaussian = {'114'    : {'OII'  : 3.705,	
                                      'OIII' : 3.315, 
                                      'z'    : 0.598849},
                           '23'    : {'OII'  : 4.28, 
@@ -110,7 +110,7 @@ class ListGroups:
                                      'OIII' : 3.26, 
                                      'z'    : 0.950289},
                           '30_d'  : {'OII'  : 3.485,
-                                     'OIII' : 1, 
+                                     'OIII' : 3.11, 
                                      'z'    : 0.809828}, 
                           '30_bs' : {'OII'  : 3.185,	
                                      'OIII' : 2.815, 

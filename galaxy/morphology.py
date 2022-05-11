@@ -353,10 +353,11 @@ def fluxSersics(r: Union[float, ndarray], listn: List[Union[int, float]], listRe
             lum = fluxSersic(r, n, re, bn=bn, Ie=ie)
         else:
             lum = analyticFluxFrom0(r, n, re, bn=bn, Ie=ie)
-        res    += lum['value']
-        err    += lum['error']
         
-    return {'value':np.asarray(res), 'error':np.asarray(err)}
+        res    += np.asarray(lum['value'])
+        err    += np.asarray(lum['error'])
+        
+    return {'value':res, 'error':err}
 
 
 def ratioFlux1D(r1: float, r2: float, listn: List[Union[int, float]], listRe: List[float],
