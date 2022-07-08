@@ -12,7 +12,7 @@ import numpy                              as     np
 import matplotlib.pyplot                  as     plt
 import matplotlib.gridspec                as     gridspec
 import astropy.io.fits                    as     fits
-from   matplotlib.colors                  import Normalize, LogNorm, SymLogNorm, PowerNorm, TwoSlopeNorm, BoundaryNorm
+from   matplotlib.colors                  import Normalize, LogNorm, SymLogNorm, PowerNorm, TwoSlopeNorm, BoundaryNorm, CenteredNorm
 from   astropy.modeling.functional_models import Gaussian2D
 from   matplotlib.markers                 import MarkerStyle
 from   copy                               import copy
@@ -236,6 +236,7 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
         if not noFile:
             maxi = np.nanmax(res)
             mini = np.nanmin(res)
+            print(maxi, mini, zeroPoint)
             
             if mini == maxi:
                 sz, data, model, res, maxi, mini, log, diverging, cmap, norm, noFile = noModelAvailable() 
@@ -246,7 +247,7 @@ def genMeThatPDF(fnamesList, pdfOut, readFromFile=False, groupNumbers=None, log=
                 maxi = -mini
                 norm = TwoSlopeNorm(vmin=mini, vcenter=zeroPoint, vmax=maxi)
             
-        plt.imshow(res, origin='lower', cmap=cmap, interpolation='nearest', vmin=mini, vmax=maxi, norm=norm)
+        plt.imshow(res, origin='lower', cmap=cmap, interpolation='nearest', norm=CenteredNorm(vcenter=0))
         
         if not noFile:
             plt.colorbar(fraction=0.05, shrink=1.)
