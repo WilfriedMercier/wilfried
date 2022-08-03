@@ -18,8 +18,9 @@ from   astropy.units import Quantity
 class PSFModels(enum.Enum):
     
     GAUSSIAN_OLD = enum.auto()
-    MOFFAT       = enum.auto()
+    MOFFAT_OLD   = enum.auto()
     GAUSSIAN_NEW = enum.auto()
+    MOFFAT_NEW   = enum.auto()
 
 def centreFromHSTtoMUSE(X, Y, imHST, imMUSE, extHST=0, extMUSE=0, noError=False):
     '''
@@ -203,8 +204,62 @@ class ListGroups:
                            'offset': 0.645},
                }
     
+    #: New PSF values from Benoit using the Moffat model
+    moffat = {'114'   : {'slope' : -0.400,
+                         'offset': 0.588,
+                         'beta'  : 2.340},
+              '23'    : {'slope' : -0.342,
+                         'offset': 0.615,
+                         'beta'  : 2.592}, 
+              '26'    : {'slope' : -0.270,
+                         'offset': 0.586,
+                         'beta'  : 2.707}, 
+              '28'    : {'slope' : -0.368,
+                         'offset': 0.569,
+                         'beta'  : 2.594},
+              '30_d'  : {'slope' : -0.282,
+                         'offset': 0.588,
+                         'beta'  : 2.606}, 
+              '32-M1' : {'slope' : -0.405,
+                         'offset': 0.480,
+                         'beta'  : 2.206}, 
+              '32-M2' : {'slope' : -0.406,
+                         'offset': 0.490,
+                         'beta'  : 2.037}, 
+              '32-M3' : {'slope' : -0.498,
+                         'offset': 0.546,
+                         'beta'  : 2.241},
+              '34_d'  : {'slope' : -0.236,
+                         'offset': 0.571,
+                         'beta'  : 2.825}, 
+              '51'    : {'slope' : -0.339,
+                         'offset': 0.577,
+                         'beta'  : 2.714}, 
+              '61'    : {'slope' : -0.344,
+                         'offset': 0.596,
+                         'beta'  : 3.320}, 
+              '79'    : {'slope' : -0.345,
+                         'offset': 0.501,
+                         'beta'  : 2.474},
+              '84'    : {'slope' : -0.249,
+                         'offset': 0.532,
+                         'beta'  : 2.568}, 
+              '84-N'  : {'slope' : -0.526,
+                         'offset': 0.608,
+                         'beta'  : 2.068},
+              '172'   : {'slope' : -0.483,
+                         'offset': 0.481,
+                         'beta'  : 2.074},
+              '35'    : {'slope' : -0.447,
+                         'offset': 0.555,
+                         'beta'  : 2.448},
+              '87'    : {'slope' : -0.368,
+                         'offset': 0.540,
+                         'beta'  : 2.191}
+             }
+    
     #: PSF values using the Moffat model
-    moffat = {'23'    : {'OII'  : 3.97, 
+    moffatOld = {'23'    : {'OII'  : 3.97, 
                          'OIII' : 3.29, 
                          'z'    : 0.850458}, 
               '26'    : {'OII'  : 3.16, 
@@ -312,10 +367,12 @@ def computeFWHM(wavelength: Union[int, float], field: str, model: PSFModels = PS
     # Get values
     if model == PSFModels.GAUSSIAN_OLD:
         psfDict = ListGroups.gaussianOld
-    elif model == PSFModels.MOFFAT:
-        psfDict = ListGroups.moffat
+    elif model == PSFModels.MOFFAT_OLD:
+        psfDict = ListGroups.moffatOld
     elif model == PSFModels.GAUSSIAN_NEW:
         psfDict = ListGroups.gaussian
+    elif model == PSFModels.MOFFAT_NEW:
+        psfDict = ListGroups.moffat
     else:
         raise Exception(f'Model {model} not recognised')
         
@@ -329,7 +386,7 @@ def computeFWHM(wavelength: Union[int, float], field: str, model: PSFModels = PS
     ##############################################
     
     # Old and Gaussian and model values must be computed in a convoluted way...
-    if model in [PSFModels.GAUSSIAN_OLD, PSFModels.MOFFAT]:
+    if model in [PSFModels.GAUSSIAN_OLD, PSFModels.MOFFAT_OLD]:
         
         if field not in ['172', '35', '87']:
             
@@ -344,7 +401,7 @@ def computeFWHM(wavelength: Union[int, float], field: str, model: PSFModels = PS
         
         FWHM            = slope*wavelength + offset
         
-    elif model == PSFModels.GAUSSIAN_NEW:
+    elif model in [PSFModels.GAUSSIAN_NEW, PSFModels.MOFFAT_NEW]:
         
         slope           = Quantity(psfValues['slope'],  unit='arcsec/micron')
         offset          = Quantity(psfValues['offset'], unit='arcsec')

@@ -310,6 +310,7 @@ def run_galfit(feedmeFiles, header={}, listProfiles=[], inputNames=[], outputNam
             genMeThatPDF(outputFiles[mini:maxi], opath.join(pathRecap, 'recap%d.pdf' %i), log=False, diverging=divergingNorm)
             print(okMessage("Recap file number %d made." %i))
         except:
+            print('Error while generating recap file.')
             pass
         semaphore.release()
         return
