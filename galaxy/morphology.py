@@ -772,7 +772,7 @@ def disk_thickness(z: Union[float, ndarray]) -> Union[float, ndarray]:
     '''
     .. codeauthor:: Wilfried Mercier - IRAP <wilfried.mercier@irap.omp.eu>
     
-    Return the thickness of MS disk-like galaxies (see Mercier et al., 2021) prescription as a function of redshift.
+    Return the thickness of MS disk-like galaxies (see Mercier et al., 2022) prescription as a function of redshift.
 
     :param z: redshift
     :type z: float or ndarray[float]

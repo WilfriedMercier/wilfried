@@ -425,7 +425,7 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     #vmin          = 1.5e1
     vmin          = np.nanmin(hstimmap)
     #vmax          = 1.5e2
-    vmax          = np.nanmax(hstimmap)/5
+    vmax          = np.nanmax(hstimmap)/2
 
     #############################################################################
     #                    HST plots (image, model, residuals)                    #
@@ -689,11 +689,14 @@ def paper_map(hst, flux, snr, vf, vfm, vfr, sig, sigm, sigr, name, z, xc, yc, vs
     
     axsigm       = plt.subplot(gs[2 + 1 * ncols])
     
+    # Only keep velocity dispersion residuals for pixels with a dispersion larger than the lsf FWHM
+    sm           = np.sqrt(sigmmap**2 - lsf**2)
+    
     # Axes limits
     axsigm.set_xlim(xmin, xmax)
     axsigm.set_ylim(ymin, ymax)
     
-    imsigm       = axsigm.imshow(np.sqrt(sigmmap**2), vmin=vmin, vmax=vmax, cmap=plt.cm.CMRmap, origin='lower', interpolation='nearest')
+    imsigm       = axsigm.imshow(np.sqrt(sm**2), vmin=vmin, vmax=vmax, cmap=plt.cm.CMRmap, origin='lower', interpolation='nearest')
     
     # Ticks and ticks labels
     axsigm.set_xticks(xticks)
