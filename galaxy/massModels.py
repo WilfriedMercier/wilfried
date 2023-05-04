@@ -481,16 +481,16 @@ class Hernquist(MassModelBase):
         except UnitConversionError:
             raise UnitConversionError('The unit of Vmax (%s) could not be converted to km/s. Please check carefully the units of F, a and M_L parameters. Cheers !' %(np.sqrt(G*self.M_L*self.F/self.a).unit))
         
-        #: Offset parameter to make the conversion Re (Sersic) <-> a (Hernquist) (see Mercier et al., 2021)
+        #: Offset parameter to make the conversion Re (Sersic) <-> a (Hernquist) (see Mercier et al., 2022)
         self._alpha_a = -0.454
         
-        #: Slope parameter to make the conversion Re (Sersic) <-> a (Hernquist) (see Mercier et al., 2021)
+        #: Slope parameter to make the conversion Re (Sersic) <-> a (Hernquist) (see Mercier et al., 2022)
         self._beta_a  = 0.725
         
-        #: Offset parameter to make the conversion Ie (Sersic) <-> F (Hernquist) (see Mercier et al., 2021)
+        #: Offset parameter to make the conversion Ie (Sersic) <-> F (Hernquist) (see Mercier et al., 2022)
         self._alpha_F = 1.194
         
-        #: Slope parameter to make the conversion Ie (Sersic) <-> F (Hernquist) (see Mercier et al., 2021)
+        #: Slope parameter to make the conversion Ie (Sersic) <-> F (Hernquist) (see Mercier et al., 2022)
         self._beta_F  = 1.75
         
         

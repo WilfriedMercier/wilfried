@@ -219,7 +219,7 @@ class PhotoMomentum:
         r'''
         Compute the normalisation factor from the photometry.
         
-        :param r: (**Optional**) radius where the normalisation is computedin kpc. By default the normalisation is computed at infinity.
+        :param r: (**Optional**) radius where the normalisation is computed in kpc. By default the normalisation is computed at infinity.
         :type r: int or float
         
         :returns: normalisation factor
