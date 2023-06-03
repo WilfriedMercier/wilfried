@@ -1407,20 +1407,22 @@ def asManyPlots2(numPlot, datax, datay,
         #        Compute cmap minimum and maximum         #
         ###################################################
         
-        if colorbar.cmap.min is None or colorbar.cmap.max is None:
-            tmp = []
-            for col, typ in zip(data.color, data.type):
-                if typ == 'scatter':
-                    tmp.append(col)
-            if len(tmp) > 0:
-                if colorbar.cmap.min is None:
-                    colorbar.cmap.min = np.min([np.min(i) for i in tmp])
-                if colorbar.cmap.max is None:
-                    colorbar.cmap.max = np.max([np.max(i) for i in tmp])
-        else:
-            if colorbar.cmap.min > colorbar.cmap.max:
-                raise ValueError("Given minimum cmap value with key 'min' in colorbarProperties dict is larger than given maximum cmap value with key 'max'. Please provide value such that min <= max. Cheers !")
-        
+        # If colormap normalisation is not a string (i.e. it is a matplotlib.norm instance, we do not update the min and max)
+        if type(colorbar.scale) is str:
+            if colorbar.cmap.min is None or colorbar.cmap.max is None:
+                tmp = []
+                for col, typ in zip(data.color, data.type):
+                    if typ == 'scatter':
+                        tmp.append(col)
+                if len(tmp) > 0:
+                    if colorbar.cmap.min is None:
+                        colorbar.cmap.min = np.min([np.min(i) for i in tmp])
+                    if colorbar.cmap.max is None:
+                        colorbar.cmap.max = np.max([np.max(i) for i in tmp])
+            else:
+                if colorbar.cmap.min > colorbar.cmap.max:
+                    raise ValueError("Given minimum cmap value with key 'min' in colorbarProperties dict is larger than given maximum cmap value with key 'max'. Please provide value such that min <= max. Cheers !")
+            
         #####################################################
         #           Defining colorbar normalisation         #
         #####################################################
@@ -1436,7 +1438,10 @@ def asManyPlots2(numPlot, datax, datay,
                         'powerlaw': {'function':PowerNorm,    'params': {'gamma':colorbar.powerlaw}},
                        }
         
-        colorbar.norm = colorbarDict[colorbar.scale]['function'](**colorbarDict[colorbar.scale]['params'])
+        if type(colorbar.scale) is str:
+            colorbar.norm = colorbarDict[colorbar.scale]['function'](**colorbarDict[colorbar.scale]['params'])
+        else:
+            colorbar.norm = colorbar.scale
     
     
     ###########################################
